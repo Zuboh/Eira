@@ -1,49 +1,63 @@
-import datetime
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from fastapi import APIRouter, Depends
-
-from app.deps import CurrentUserDep, require_roles
+from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente
+from app.models.paziente import Paziente
 from app.schemas.paziente import PazienteCreate, PazienteRead, PazienteUpdate
 
 router = APIRouter(prefix="/pazienti", tags=["pazienti"])
 
 
 @router.post("/", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
-def create_paziente(payload: PazienteCreate) -> PazienteRead:
-    return PazienteRead(id=1, dimesso=False, **payload.model_dump())
+def create_paziente(payload: PazienteCreate, current_user: CurrentUserDep, db: DbDep) -> PazienteRead:
+    data = payload.model_dump(exclude={"reparto_id"})
+    paziente = Paziente(**data, reparto_id=current_user.reparto_id)
+    db.add(paziente)
+    db.commit()
+    db.refresh(paziente)
+    return PazienteRead.model_validate(paziente)
 
 
 @router.get("/")
-def list_pazienti(current_user: CurrentUserDep) -> list[PazienteRead]:
-    return []
+def list_pazienti(current_user: CurrentUserDep, db: DbDep) -> list[PazienteRead]:
+    pazienti = (
+        db.query(Paziente)
+        .filter(Paziente.reparto_id == current_user.reparto_id)
+        .order_by(Paziente.cognome)
+        .all()
+    )
+    return [PazienteRead.model_validate(paziente) for paziente in pazienti]
 
 
 @router.get("/{paziente_id}")
-def get_paziente(paziente_id: int, current_user: CurrentUserDep) -> PazienteRead:
-    return PazienteRead(
-        id=paziente_id,
-        nome="Mock",
-        cognome="Paziente",
-        eta=70,
-        letto="1A",
-        data_ricovero=datetime.date.today(),
-        diagnosi_ingresso="mock",
-        reparto_id=1,
-        dimesso=False,
-    )
+def get_paziente(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> PazienteRead:
+    paziente = db.get(Paziente, paziente_id)
+    if paziente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paziente non trovato")
+    if paziente.reparto_id != current_user.reparto_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Paziente di un altro reparto"
+        )
+    return PazienteRead.model_validate(paziente)
 
 
 @router.patch("/{paziente_id}", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
-def update_paziente(paziente_id: int, payload: PazienteUpdate) -> PazienteRead:
-    return PazienteRead(
-        id=paziente_id,
-        nome="Mock",
-        cognome="Paziente",
-        eta=70,
-        letto=payload.letto or "1A",
-        data_ricovero=datetime.date.today(),
-        diagnosi_ingresso=payload.diagnosi_ingresso or "mock",
-        reparto_id=1,
-        dimesso=payload.dimesso if payload.dimesso is not None else False,
-    )
+def update_paziente(
+    paziente_id: int, payload: PazienteUpdate, current_user: CurrentUserDep, db: DbDep
+) -> PazienteRead:
+    paziente = db.get(Paziente, paziente_id)
+    if paziente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paziente non trovato")
+    if paziente.reparto_id != current_user.reparto_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Paziente di un altro reparto"
+        )
+    if payload.letto is not None:
+        paziente.letto = payload.letto
+    if payload.diagnosi_ingresso is not None:
+        paziente.diagnosi_ingresso = payload.diagnosi_ingresso
+    if payload.dimesso is not None:
+        paziente.dimesso = payload.dimesso
+    db.commit()
+    db.refresh(paziente)
+    return PazienteRead.model_validate(paziente)
