@@ -1,260 +1,275 @@
-<mxfile host="Electron" modified="2026-07-04T00:00:00.000Z" version="26.0.0">
+<mxfile host="app.diagrams.net">
   <diagram id="er-page-1" name="ER - Consegne Infermieristiche">
-    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1250" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="2934" dy="1489" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1250" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-
-        <mxCell id="title" value="Modello ER — Consegne Infermieristiche (Sett.1 Design)" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="0" width="600" height="30" as="geometry" />
+        <mxCell id="title" parent="1" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="Modello ER — Consegne Infermieristiche" vertex="1">
+          <mxGeometry height="30" width="600" x="40" y="40" as="geometry" />
         </mxCell>
-
-        <!-- Reparto -->
-        <mxCell id="reparto" value="Reparto" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="40" y="40" width="220" height="90" as="geometry" />
+        <mxCell id="reparto" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Reparto" vertex="1">
+          <mxGeometry height="90" width="220" x="610" y="10" as="geometry" />
         </mxCell>
-        <mxCell id="reparto-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="reparto">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
+        <mxCell id="reparto-r1" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="reparto-r2" value="nome" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="reparto">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
+        <mxCell id="reparto-r2" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="nome" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="reparto-r3" value="descrizione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="reparto">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
+        <mxCell id="reparto-r3" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="descrizione" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
         </mxCell>
-
-        <!-- Utente -->
-        <mxCell id="utente" value="Utente" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="320" y="40" width="220" height="110" as="geometry" />
+        <mxCell id="utente" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Utente" vertex="1">
+          <mxGeometry height="110" width="220" x="130" y="130" as="geometry" />
         </mxCell>
-        <mxCell id="utente-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="utente">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
+        <mxCell id="utente-r1" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="utente-r2" value="email" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="utente">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
+        <mxCell id="utente-r2" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="email" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="utente-r3" value="ruolo (infermiere|caposala)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="utente">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
+        <mxCell id="utente-r3" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ruolo (infermiere|caposala)" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
         </mxCell>
-        <mxCell id="utente-r4" value="reparto_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="utente">
-          <mxGeometry x="0" y="90" width="220" height="20" as="geometry" />
+        <mxCell id="utente-r4" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="90" as="geometry" />
         </mxCell>
-
-        <!-- ProfiloInfermiere -->
-        <mxCell id="profiloinf" value="ProfiloInfermiere" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="600" y="40" width="220" height="70" as="geometry" />
+        <mxCell id="profiloinf" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ProfiloInfermiere" vertex="1">
+          <mxGeometry height="70" width="220" x="10" y="300" as="geometry" />
         </mxCell>
-        <mxCell id="profiloinf-r1" value="utente_id (PK/FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="profiloinf">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
+        <mxCell id="profiloinf-r1" parent="profiloinf" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="utente_id (PK/FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="profiloinf-r2" value="ore_contrattuali_mensili" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="profiloinf">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
+        <mxCell id="profiloinf-r2" parent="profiloinf" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ore_contrattuali_mensili" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
         </mxCell>
-
-        <!-- Paziente -->
-        <mxCell id="paziente" value="Paziente" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="880" y="40" width="220" height="130" as="geometry" />
+        <mxCell id="paziente" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Paziente" vertex="1">
+          <mxGeometry height="130" width="220" x="850" y="120" as="geometry" />
         </mxCell>
-        <mxCell id="paziente-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="paziente">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
+        <mxCell id="paziente-r1" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="paziente-r2" value="nome, cognome, eta" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="paziente">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
+        <mxCell id="paziente-r2" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="nome, cognome, eta" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="paziente-r3" value="letto, data_ricovero" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="paziente">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
+        <mxCell id="paziente-r3" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="letto, data_ricovero" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
         </mxCell>
-        <mxCell id="paziente-r4" value="reparto_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="paziente">
-          <mxGeometry x="0" y="90" width="220" height="20" as="geometry" />
+        <mxCell id="paziente-r4" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="90" as="geometry" />
         </mxCell>
-        <mxCell id="paziente-r5" value="dimesso" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="paziente">
-          <mxGeometry x="0" y="110" width="220" height="20" as="geometry" />
+        <mxCell id="paziente-r5" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="dimesso" vertex="1">
+          <mxGeometry height="20" width="220" y="110" as="geometry" />
         </mxCell>
-
-        <!-- Turno -->
-        <mxCell id="turno" value="Turno" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="40" y="210" width="220" height="110" as="geometry" />
+        <mxCell id="turno" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Turno" vertex="1">
+          <mxGeometry height="110" width="220" x="1090" y="130" as="geometry" />
         </mxCell>
-        <mxCell id="turno-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="turno">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
+        <mxCell id="turno-r1" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="turno-r2" value="data, tipo (mattina|pom.|notte)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="turno">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
+        <mxCell id="turno-r2" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="data, tipo (mattina|pom.|notte)" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="turno-r3" value="reparto_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="turno">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
+        <mxCell id="turno-r3" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
         </mxCell>
-        <mxCell id="turno-r4" value="ora_inizio, ora_fine" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="turno">
-          <mxGeometry x="0" y="90" width="220" height="20" as="geometry" />
+        <mxCell id="turno-r4" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ora_inizio, ora_fine" vertex="1">
+          <mxGeometry height="20" width="220" y="90" as="geometry" />
         </mxCell>
-
-        <!-- AssegnazioneTurno -->
-        <mxCell id="assegnazione" value="AssegnazioneTurno" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="320" y="210" width="220" height="110" as="geometry" />
+        <mxCell id="assegnazione" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="AssegnazioneTurno" vertex="1">
+          <mxGeometry height="110" width="220" x="250" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="assegnazione-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="assegnazione">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
+        <mxCell id="assegnazione-r1" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="assegnazione-r2" value="turno_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="assegnazione">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
+        <mxCell id="assegnazione-r2" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="assegnazione-r3" value="infermiere_id (FK -&gt; Utente)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="assegnazione">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
+        <mxCell id="assegnazione-r3" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="infermiere_id (FK -&gt; Utente)" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
         </mxCell>
-        <mxCell id="assegnazione-r4" value="stato (attiva|cambiata)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="assegnazione">
-          <mxGeometry x="0" y="90" width="220" height="20" as="geometry" />
+        <mxCell id="assegnazione-r4" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato (attiva|cambiata)" vertex="1">
+          <mxGeometry height="20" width="220" y="90" as="geometry" />
         </mxCell>
-
-        <!-- RichiestaCambioTurno -->
-        <mxCell id="richiestacambio" value="RichiestaCambioTurno" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="600" y="210" width="260" height="150" as="geometry" />
+        <mxCell id="richiestacambio" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="RichiestaCambioTurno" vertex="1">
+          <mxGeometry height="150" width="260" x="230" y="420" as="geometry" />
         </mxCell>
-        <mxCell id="richiestacambio-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="richiestacambio">
-          <mxGeometry x="0" y="30" width="260" height="20" as="geometry" />
+        <mxCell id="richiestacambio-r1" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="260" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="richiestacambio-r2" value="assegnazione_turno_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="richiestacambio">
-          <mxGeometry x="0" y="50" width="260" height="20" as="geometry" />
+        <mxCell id="richiestacambio-r2" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="assegnazione_turno_id (FK)" vertex="1">
+          <mxGeometry height="20" width="260" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="richiestacambio-r3" value="richiedente_id (FK -&gt; Utente)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="richiestacambio">
-          <mxGeometry x="0" y="70" width="260" height="20" as="geometry" />
+        <mxCell id="richiestacambio-r3" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="richiedente_id (FK -&gt; Utente)" vertex="1">
+          <mxGeometry height="20" width="260" y="70" as="geometry" />
         </mxCell>
-        <mxCell id="richiestacambio-r4" value="collega_id (FK -&gt; Utente)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="richiestacambio">
-          <mxGeometry x="0" y="90" width="260" height="20" as="geometry" />
+        <mxCell id="richiestacambio-r4" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="collega_id (FK -&gt; Utente)" vertex="1">
+          <mxGeometry height="20" width="260" y="90" as="geometry" />
         </mxCell>
-        <mxCell id="richiestacambio-r5" value="risposta_caposala_id (FK -&gt; Utente)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="richiestacambio">
-          <mxGeometry x="0" y="110" width="260" height="20" as="geometry" />
+        <mxCell id="richiestacambio-r5" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="risposta_caposala_id (FK -&gt; Utente)" vertex="1">
+          <mxGeometry height="20" width="260" y="110" as="geometry" />
         </mxCell>
-        <mxCell id="richiestacambio-r6" value="stato (5 valori, v. bozza ER)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="richiestacambio">
-          <mxGeometry x="0" y="130" width="260" height="20" as="geometry" />
+        <mxCell id="richiestacambio-r6" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato (5 valori, v. bozza ER)" vertex="1">
+          <mxGeometry height="20" width="260" y="130" as="geometry" />
         </mxCell>
-
-        <!-- ConsegnaSbar -->
-        <mxCell id="consegnasbar" value="ConsegnaSbar" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="40" y="400" width="220" height="130" as="geometry" />
+        <mxCell id="consegnasbar" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ConsegnaSbar" vertex="1">
+          <mxGeometry height="130" width="220" x="490" y="270" as="geometry" />
         </mxCell>
-        <mxCell id="consegnasbar-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="consegnasbar">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
+        <mxCell id="consegnasbar-r1" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="consegnasbar-r2" value="paziente_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="consegnasbar">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
+        <mxCell id="consegnasbar-r2" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="consegnasbar-r3" value="turno_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="consegnasbar">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
+        <mxCell id="consegnasbar-r3" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
         </mxCell>
-        <mxCell id="consegnasbar-r4" value="autore_id (FK -&gt; Utente)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="consegnasbar">
-          <mxGeometry x="0" y="90" width="220" height="20" as="geometry" />
+        <mxCell id="consegnasbar-r4" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1">
+          <mxGeometry height="20" width="220" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="consegnasbar-r5" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="S/B/A/R, priorita" vertex="1">
+          <mxGeometry height="20" width="220" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="vocediario" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="VoceDiarioCedema" vertex="1">
+          <mxGeometry height="110" width="220" x="730" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="vocediario-r1" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vocediario-r2" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vocediario-r3" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vocediario-r4" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK, opzionale)" vertex="1">
+          <mxGeometry height="20" width="220" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="valnorton" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ValutazioneNorton" vertex="1">
+          <mxGeometry height="110" width="220" x="970" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="valnorton-r1" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="valnorton-r2" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="valnorton-r3" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="valnorton-r4" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="5 sottoscale, punteggio_totale" vertex="1">
+          <mxGeometry height="20" width="220" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="valconley" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ValutazioneConley" vertex="1">
+          <mxGeometry height="110" width="220" x="1210" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="valconley-r1" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
+          <mxGeometry height="20" width="220" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="valconley-r2" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1">
+          <mxGeometry height="20" width="220" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="valconley-r3" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1">
+          <mxGeometry height="20" width="220" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="valconley-r4" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="6 sottovoci, punteggio_totale" vertex="1">
+          <mxGeometry height="20" width="220" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e-reparto-utente" edge="1" parent="1" source="reparto" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="utente" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="110" />
+              <mxPoint x="240" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-reparto-paziente" edge="1" parent="1" source="reparto" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="paziente" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="110" />
+              <mxPoint x="960" y="118.68" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-reparto-turno" edge="1" parent="1" source="reparto" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="turno" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="110" />
+              <mxPoint x="1200" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-utente-profiloinf" edge="1" parent="1" source="utente" style="html=1;startArrow=ERone;endArrow=ERone;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="profiloinf" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="260" />
+              <mxPoint x="120" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-turno-assegnazione" edge="1" parent="1" source="turno" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.6667;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="assegnazione" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1200" y="260" />
+              <mxPoint x="396.67" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-utente-assegnazione" edge="1" parent="1" source="utente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.3333;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="assegnazione" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="260" />
+              <mxPoint x="323.33" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-assegnazione-cambio" edge="1" parent="1" source="assegnazione" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="richiestacambio" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-paziente-consegna" edge="1" parent="1" source="paziente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.3492;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="consegnasbar" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="260" />
+              <mxPoint x="566.83" y="268.68" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-turno-consegna" edge="1" parent="1" source="turno" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.6826;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="consegnasbar" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1200" y="260" />
+              <mxPoint x="640.17" y="268.68" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-paziente-diario" edge="1" parent="1" source="paziente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="vocediario" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="260" />
+              <mxPoint x="840" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-paziente-norton" edge="1" parent="1" source="paziente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="valnorton" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="260" />
+              <mxPoint x="1080" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-paziente-conley" edge="1" parent="1" source="paziente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="valconley" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="260" />
+              <mxPoint x="1320" y="260" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="consegnasbar-r5" value="S/B/A/R, priorita" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="consegnasbar">
-          <mxGeometry x="0" y="110" width="220" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- VoceDiarioCedema -->
-        <mxCell id="vocediario" value="VoceDiarioCedema" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="320" y="400" width="220" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="vocediario">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario-r2" value="paziente_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="vocediario">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario-r3" value="autore_id (FK -&gt; Utente)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="vocediario">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario-r4" value="turno_id (FK, opzionale)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="vocediario">
-          <mxGeometry x="0" y="90" width="220" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- ValutazioneNorton -->
-        <mxCell id="valnorton" value="ValutazioneNorton" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="600" y="400" width="220" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="valnorton">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton-r2" value="paziente_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="valnorton">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton-r3" value="autore_id (FK -&gt; Utente)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="valnorton">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton-r4" value="5 sottoscale, punteggio_totale" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="valnorton">
-          <mxGeometry x="0" y="90" width="220" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- ValutazioneConley -->
-        <mxCell id="valconley" value="ValutazioneConley" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="880" y="400" width="220" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley-r1" value="id (PK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="valconley">
-          <mxGeometry x="0" y="30" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley-r2" value="paziente_id (FK)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="valconley">
-          <mxGeometry x="0" y="50" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley-r3" value="autore_id (FK -&gt; Utente)" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="valconley">
-          <mxGeometry x="0" y="70" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley-r4" value="6 sottovoci, punteggio_totale" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" vertex="1" parent="valconley">
-          <mxGeometry x="0" y="90" width="220" height="20" as="geometry" />
-        </mxCell>
-
-        <!-- Relazioni -->
-        <mxCell id="e-reparto-utente" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="reparto" target="utente" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-reparto-paziente" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="reparto" target="paziente" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-reparto-turno" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="reparto" target="turno" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-utente-profiloinf" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERone;rounded=0;" edge="1" source="utente" target="profiloinf" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-turno-assegnazione" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="turno" target="assegnazione" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-utente-assegnazione" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="utente" target="assegnazione" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-assegnazione-cambio" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="assegnazione" target="richiestacambio" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-utente-cambio-richiedente" value="richiedente" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;fontSize=9;" edge="1" source="utente" target="richiestacambio" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-utente-cambio-collega" value="collega" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;fontSize=9;" edge="1" source="utente" target="richiestacambio" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-utente-cambio-caposala" value="approvatore caposala" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;fontSize=9;" edge="1" source="utente" target="richiestacambio" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-paziente-consegna" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="paziente" target="consegnasbar" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-turno-consegna" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="turno" target="consegnasbar" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-utente-consegna" value="autore" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;fontSize=9;" edge="1" source="utente" target="consegnasbar" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-paziente-diario" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="paziente" target="vocediario" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-utente-diario" value="autore" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;fontSize=9;" edge="1" source="utente" target="vocediario" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-turno-diario" value="opzionale" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERmany;rounded=0;dashed=1;fontSize=9;" edge="1" source="turno" target="vocediario" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-paziente-norton" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="paziente" target="valnorton" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e-paziente-conley" value="" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERone;endArrow=ERmany;rounded=0;" edge="1" source="paziente" target="valconley" parent="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
       </root>
     </mxGraphModel>
   </diagram>
