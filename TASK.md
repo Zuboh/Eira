@@ -29,9 +29,9 @@ puri (dati finti, nessuna query DB):
 
 ## Feature core (da requisiti progetto)
 
-- [ ] Priorità urgenza su consegna SBAR (`priorità: normale|urgente`) — campo già in schema? verificare
-- [ ] Dashboard caposala: turni scoperti + richieste cambio turno in attesa (badge/lista in-app)
-- [ ] Scoping ruolo: infermiere vede solo pazienti/consegne del proprio turno assegnato (oggi query non filtrano per turno, solo per reparto)
+- [x] Priorità urgenza su consegna SBAR (`priorità: normale|urgente`) — già presente in modello/schema/create/update/read, nessuna azione necessaria
+- [x] Dashboard caposala: turni scoperti + richieste cambio turno in attesa (`GET /dashboard/caposala`, aggregato con count; test in `tests/test_dashboard.py`)
+- [x] Scoping ruolo: infermiere vede pazienti reparto solo se ha almeno un'assegnazione turno attiva (gate, non filtro per turno specifico — pazienti non hanno turno_id); consegne_sbar già turno-scoped correttamente; test in `tests/test_pazienti.py`
 
 ## Frontend
 

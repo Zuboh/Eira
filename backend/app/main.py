@@ -7,6 +7,7 @@ from app.routers import (
     banca_ore,
     cambi_turno,
     consegne_sbar,
+    dashboard,
     diario_cedema,
     pazienti,
     turni,
@@ -26,6 +27,7 @@ app.include_router(consegne_sbar.router, prefix=API_V1_PREFIX)
 app.include_router(diario_cedema.router, prefix=API_V1_PREFIX)
 app.include_router(valutazioni.router, prefix=API_V1_PREFIX)
 app.include_router(banca_ore.router, prefix=API_V1_PREFIX)
+app.include_router(dashboard.router, prefix=API_V1_PREFIX)
 
 
 @app.on_event("startup")

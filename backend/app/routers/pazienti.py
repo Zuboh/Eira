@@ -1,11 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.deps import CurrentUserDep, DbDep, require_roles
-from app.models.enums import RuoloUtente
+from app.models.enums import RuoloUtente, StatoAssegnazione
 from app.models.paziente import Paziente
+from app.models.turno import AssegnazioneTurno
 from app.schemas.paziente import PazienteCreate, PazienteRead, PazienteUpdate
 
 router = APIRouter(prefix="/pazienti", tags=["pazienti"])
+
+
+def _infermiere_ha_turno_attivo(current_user, db) -> bool:
+    return (
+        db.query(AssegnazioneTurno)
+        .filter(
+            AssegnazioneTurno.infermiere_id == current_user.id,
+            AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+        )
+        .first()
+        is not None
+    )
 
 
 @router.post("/", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
@@ -20,6 +33,11 @@ def create_paziente(payload: PazienteCreate, current_user: CurrentUserDep, db: D
 
 @router.get("/")
 def list_pazienti(current_user: CurrentUserDep, db: DbDep) -> list[PazienteRead]:
+    if current_user.ruolo == RuoloUtente.infermiere and not _infermiere_ha_turno_attivo(
+        current_user, db
+    ):
+        return []
+
     pazienti = (
         db.query(Paziente)
         .filter(Paziente.reparto_id == current_user.reparto_id)
@@ -37,6 +55,12 @@ def get_paziente(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> P
     if paziente.reparto_id != current_user.reparto_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Paziente di un altro reparto"
+        )
+    if current_user.ruolo == RuoloUtente.infermiere and not _infermiere_ha_turno_attivo(
+        current_user, db
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Nessun turno attivo assegnato"
         )
     return PazienteRead.model_validate(paziente)
 
