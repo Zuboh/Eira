@@ -89,7 +89,7 @@ def test_full_flow_accepted_swaps_infermiere(client, db_session, reparti):
         headers=headers_a,
         json={"assegnazione_turno_id": assegnazione.id, "collega_id": infermiere_b.id},
     )
-    assert created.status_code == 200, created.text
+    assert created.status_code == 201, created.text
     richiesta_id = created.json()["id"]
     assert created.json()["stato"] == "in_attesa_collega"
 

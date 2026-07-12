@@ -7,12 +7,18 @@ from app.models.consegna_sbar import ConsegnaSbar
 from app.models.enums import RuoloUtente, StatoAssegnazione
 from app.models.paziente import Paziente
 from app.models.turno import AssegnazioneTurno, Turno
+from app.openapi_errors import CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.consegna_sbar import ConsegnaSbarCreate, ConsegnaSbarRead, ConsegnaSbarUpdate
 
 router = APIRouter(prefix="/consegne-sbar", tags=["consegne-sbar"])
 
 
-@router.post("/", dependencies=[Depends(require_roles(RuoloUtente.infermiere))])
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(RuoloUtente.infermiere))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT),
+)
 def create_consegna(
     payload: ConsegnaSbarCreate, current_user: CurrentUserDep, db: DbDep
 ) -> ConsegnaSbarRead:
@@ -58,7 +64,7 @@ def create_consegna(
     return ConsegnaSbarRead.model_validate(consegna)
 
 
-@router.get("/")
+@router.get("/", responses=errors(UNAUTHORIZED))
 def list_consegne(current_user: CurrentUserDep, db: DbDep) -> list[ConsegnaSbarRead]:
     if current_user.ruolo == RuoloUtente.caposala:
         consegne = (
@@ -85,7 +91,11 @@ def list_consegne(current_user: CurrentUserDep, db: DbDep) -> list[ConsegnaSbarR
     return [ConsegnaSbarRead.model_validate(consegna) for consegna in consegne]
 
 
-@router.patch("/{consegna_id}", dependencies=[Depends(require_roles(RuoloUtente.infermiere))])
+@router.patch(
+    "/{consegna_id}",
+    dependencies=[Depends(require_roles(RuoloUtente.infermiere))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
+)
 def update_consegna(
     consegna_id: int, payload: ConsegnaSbarUpdate, current_user: CurrentUserDep, db: DbDep
 ) -> ConsegnaSbarRead:

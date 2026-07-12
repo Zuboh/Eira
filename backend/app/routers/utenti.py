@@ -5,12 +5,18 @@ from app.core.security import hash_password
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente
 from app.models.utente import Utente
+from app.openapi_errors import CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.utente import UtenteCreate, UtenteRead, UtenteUpdate
 
 router = APIRouter(prefix="/utenti", tags=["utenti"])
 
 
-@router.post("/", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, CONFLICT),
+)
 def create_utente(payload: UtenteCreate, current_user: CurrentUserDep, db: DbDep) -> UtenteRead:
     data = payload.model_dump(exclude={"password", "reparto_id"})
     utente = Utente(
@@ -31,7 +37,11 @@ def create_utente(payload: UtenteCreate, current_user: CurrentUserDep, db: DbDep
     return UtenteRead.model_validate(utente)
 
 
-@router.get("/", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
+@router.get(
+    "/",
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN),
+)
 def list_utenti(current_user: CurrentUserDep, db: DbDep) -> list[UtenteRead]:
     utenti = (
         db.query(Utente)
@@ -42,7 +52,7 @@ def list_utenti(current_user: CurrentUserDep, db: DbDep) -> list[UtenteRead]:
     return [UtenteRead.model_validate(utente) for utente in utenti]
 
 
-@router.get("/{utente_id}")
+@router.get("/{utente_id}", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND))
 def get_utente(utente_id: int, current_user: CurrentUserDep, db: DbDep) -> UtenteRead:
     utente = db.get(Utente, utente_id)
     if utente is None:
@@ -54,7 +64,11 @@ def get_utente(utente_id: int, current_user: CurrentUserDep, db: DbDep) -> Utent
     return UtenteRead.model_validate(utente)
 
 
-@router.patch("/{utente_id}", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
+@router.patch(
+    "/{utente_id}",
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
+)
 def update_utente(
     utente_id: int, payload: UtenteUpdate, current_user: CurrentUserDep, db: DbDep
 ) -> UtenteRead:

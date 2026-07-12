@@ -6,6 +6,7 @@ from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente, StatoAssegnazione
 from app.models.turno import AssegnazioneTurno, Turno
 from app.models.utente import Utente
+from app.openapi_errors import CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.turno import (
     AssegnazioneTurnoCreate,
     AssegnazioneTurnoRead,
@@ -16,7 +17,12 @@ from app.schemas.turno import (
 router = APIRouter(prefix="/turni", tags=["turni"])
 
 
-@router.post("/", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, CONFLICT),
+)
 def create_turno(payload: TurnoCreate, current_user: CurrentUserDep, db: DbDep) -> TurnoRead:
     data = payload.model_dump()
     data["reparto_id"] = current_user.reparto_id
@@ -34,7 +40,7 @@ def create_turno(payload: TurnoCreate, current_user: CurrentUserDep, db: DbDep) 
     return TurnoRead.model_validate(turno)
 
 
-@router.get("/")
+@router.get("/", responses=errors(UNAUTHORIZED))
 def list_turni(current_user: CurrentUserDep, db: DbDep) -> list[TurnoRead]:
     turni = (
         db.query(Turno)
@@ -45,7 +51,11 @@ def list_turni(current_user: CurrentUserDep, db: DbDep) -> list[TurnoRead]:
     return [TurnoRead.model_validate(turno) for turno in turni]
 
 
-@router.get("/scoperti", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
+@router.get(
+    "/scoperti",
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN),
+)
 def list_turni_scoperti(current_user: CurrentUserDep, db: DbDep) -> list[TurnoRead]:
     coperto = exists().where(
         and_(
@@ -63,7 +73,10 @@ def list_turni_scoperti(current_user: CurrentUserDep, db: DbDep) -> list[TurnoRe
 
 
 @router.post(
-    "/{turno_id}/assegnazioni", dependencies=[Depends(require_roles(RuoloUtente.caposala))]
+    "/{turno_id}/assegnazioni",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT),
 )
 def assegna_turno(
     turno_id: int, payload: AssegnazioneTurnoCreate, current_user: CurrentUserDep, db: DbDep
@@ -113,7 +126,10 @@ def assegna_turno(
 
 
 @router.delete(
-    "/{turno_id}/assegnazioni", dependencies=[Depends(require_roles(RuoloUtente.caposala))]
+    "/{turno_id}/assegnazioni",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
 )
 def rimuovi_assegnazione(
     turno_id: int, assegnazione_id: int, current_user: CurrentUserDep, db: DbDep
@@ -130,7 +146,11 @@ def rimuovi_assegnazione(
     db.commit()
 
 
-@router.get("/mie-assegnazioni", dependencies=[Depends(require_roles(RuoloUtente.infermiere))])
+@router.get(
+    "/mie-assegnazioni",
+    dependencies=[Depends(require_roles(RuoloUtente.infermiere))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN),
+)
 def list_mie_assegnazioni(
     current_user: CurrentUserDep, db: DbDep
 ) -> list[AssegnazioneTurnoRead]:
