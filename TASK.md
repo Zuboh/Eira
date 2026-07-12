@@ -49,7 +49,11 @@ puri (dati finti, nessuna query DB):
 
 - [x] ER/UML in draw.io (`docs/diagrams/er-consegne-infermieristiche.drawio`) — 11 entità, relazioni complete (aggiunte 2 mancanti: autore_id su Norton/Conley), validato
 - [x] Export PNG del diagramma per report (`docs/diagrams/er-consegne-infermieristiche.drawio.png`)
-- [ ] Swagger/OpenAPI (`/docs`) — verificare copertura tutte le entità una volta router reali
+- [x] Swagger/OpenAPI (`/docs`) — verificata copertura tutte le entità una volta router reali: 21 path/32 operazioni, tutti gli 8 router entità + auth taggati, `/docs`+`/openapi.json` rispondono 200, Authorize (OAuth2 Bearer) funzionante
+  - [ ] Aggiungere `summary`/`description` sugli endpoint con logica non ovvia (`cambi_turno`, `banca_ore`) — oggi solo summary auto-generato dal nome funzione
+  - [ ] Documentare risposte d'errore (401/403/404/409) nello schema via `responses={...}` — oggi ogni endpoint mostra solo 200/422 pur sollevando quegli errori (rilevante lato audit IDOR)
+  - [ ] POST di creazione ritornano 200 invece di 201 Created (`status_code=status.HTTP_201_CREATED`)
+  - [ ] `DELETE /turni/{id}/assegnazioni` ritorna 200 con body null invece di 204 No Content
 
 ## Test funzionale (deliverable traccia, no unit test richiesti)
 
