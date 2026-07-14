@@ -1,24 +1,114 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import { useAuthStore } from '@/stores/auth'
+import { listReparti, listUtentiByReparto, type Reparto, type UtenteTile } from '@/api/reparti'
 
-const email = ref('')
+const DEVICE_REPARTO_KEY = 'eira_device_reparto'
+
+type Step = 'reparto' | 'tiles' | 'password'
+
+const step = ref<Step>('reparto')
+const reparti = ref<Reparto[]>([])
+const utenti = ref<UtenteTile[]>([])
+const selectedUtente = ref<UtenteTile | null>(null)
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
+const stepError = ref('')
+
+const firstRepartoBtn = ref<HTMLButtonElement | null>(null)
+const firstTileBtn = ref<HTMLButtonElement | null>(null)
+const passwordInputRef = ref<InstanceType<typeof Password> | null>(null)
 
 const auth = useAuthStore()
 const router = useRouter()
 
+async function focusFirstOf(el: 'reparto' | 'tile' | 'password') {
+  await nextTick()
+  if (el === 'reparto') firstRepartoBtn.value?.focus()
+  else if (el === 'tile') firstTileBtn.value?.focus()
+  else if (el === 'password') {
+    const input = (passwordInputRef.value as unknown as { $el?: HTMLElement })?.$el?.querySelector(
+      'input',
+    ) as HTMLInputElement | undefined
+    input?.focus()
+  }
+}
+
+async function loadReparti() {
+  stepError.value = ''
+  loading.value = true
+  try {
+    const { data } = await listReparti()
+    reparti.value = data
+  } catch {
+    stepError.value = 'Impossibile caricare i reparti.'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function chooseReparto(reparto: Reparto) {
+  localStorage.setItem(DEVICE_REPARTO_KEY, String(reparto.id))
+  await loadTilesForDevice()
+}
+
+async function loadTilesForDevice() {
+  const repartoId = Number(localStorage.getItem(DEVICE_REPARTO_KEY))
+  if (!repartoId) {
+    step.value = 'reparto'
+    await loadReparti()
+    await focusFirstOf('reparto')
+    return
+  }
+  stepError.value = ''
+  loading.value = true
+  try {
+    const { data } = await listUtentiByReparto(repartoId)
+    utenti.value = data
+    step.value = 'tiles'
+    await focusFirstOf('tile')
+  } catch {
+    stepError.value = 'Impossibile caricare il personale del reparto.'
+  } finally {
+    loading.value = false
+  }
+}
+
+function cambiaReparto() {
+  localStorage.removeItem(DEVICE_REPARTO_KEY)
+  utenti.value = []
+  selectedUtente.value = null
+  password.value = ''
+  error.value = ''
+  step.value = 'reparto'
+  loadReparti().then(() => focusFirstOf('reparto'))
+}
+
+async function selectUtente(utente: UtenteTile) {
+  selectedUtente.value = utente
+  password.value = ''
+  error.value = ''
+  step.value = 'password'
+  await focusFirstOf('password')
+}
+
+function tornaAiTile() {
+  step.value = 'tiles'
+  password.value = ''
+  error.value = ''
+  focusFirstOf('tile')
+}
+
 async function onSubmit() {
+  if (!selectedUtente.value) return
   error.value = ''
   loading.value = true
   try {
-    await auth.login(email.value, password.value)
+    await auth.login(selectedUtente.value.id, password.value)
     await router.push({ name: `${auth.ruolo}-dashboard` })
   } catch {
     error.value = 'Credenziali non valide.'
@@ -26,35 +116,102 @@ async function onSubmit() {
     loading.value = false
   }
 }
+
+onMounted(async () => {
+  const savedReparto = localStorage.getItem(DEVICE_REPARTO_KEY)
+  if (!savedReparto) {
+    step.value = 'reparto'
+    await loadReparti()
+    await focusFirstOf('reparto')
+  } else {
+    await loadTilesForDevice()
+  }
+})
 </script>
 
 <template>
   <div class="login-view">
-    <form class="login-card" @submit.prevent="onSubmit">
+    <div class="login-card">
       <h1>Eira</h1>
-      <p class="subtitle">Accedi con le tue credenziali di reparto.</p>
 
-      <div class="field">
-        <label for="email">Email</label>
-        <InputText id="email" v-model="email" type="email" autocomplete="username" required />
-      </div>
+      <!-- Step A: device reparto setup -->
+      <template v-if="step === 'reparto'">
+        <p class="subtitle">Seleziona il reparto di questo dispositivo.</p>
+        <ul class="reparto-list">
+          <li v-for="(reparto, i) in reparti" :key="reparto.id">
+            <button
+              type="button"
+              class="reparto-item"
+              :ref="i === 0 ? (el) => (firstRepartoBtn = el as HTMLButtonElement) : undefined"
+              :disabled="loading"
+              @click="chooseReparto(reparto)"
+            >
+              {{ reparto.nome }}
+            </button>
+          </li>
+        </ul>
+        <p v-if="!loading && reparti.length === 0 && !stepError" class="hint">
+          Nessun reparto disponibile.
+        </p>
+      </template>
 
-      <div class="field">
-        <label for="password">Password</label>
-        <Password
-          id="password"
-          v-model="password"
-          :feedback="false"
-          toggle-mask
-          autocomplete="current-password"
-          required
-        />
-      </div>
+      <!-- Step B: tile grid -->
+      <template v-else-if="step === 'tiles'">
+        <p class="subtitle">Seleziona il tuo nome.</p>
+        <template v-if="utenti.length > 0">
+          <div class="tile-grid">
+            <button
+              v-for="(utente, i) in utenti"
+              :key="utente.id"
+              type="button"
+              class="tile"
+              :ref="i === 0 ? (el) => (firstTileBtn = el as HTMLButtonElement) : undefined"
+              :disabled="loading"
+              @click="selectUtente(utente)"
+            >
+              {{ utente.nome }} {{ utente.cognome }}
+            </button>
+          </div>
+        </template>
+        <p v-else class="hint">Nessun utente in questo reparto.</p>
+        <button type="button" class="link-btn" @click="cambiaReparto">Cambia reparto</button>
+      </template>
 
-      <p v-if="error" class="error">{{ error }}</p>
+      <!-- Step C: password -->
+      <form v-else class="password-step" @submit.prevent="onSubmit">
+        <p class="subtitle">{{ selectedUtente?.nome }} {{ selectedUtente?.cognome }}</p>
 
-      <Button type="submit" label="Accedi" :loading="loading" class="submit" />
-    </form>
+        <div class="field">
+          <label for="password">Password</label>
+          <Password
+            id="password"
+            ref="passwordInputRef"
+            v-model="password"
+            :feedback="false"
+            toggle-mask
+            autocomplete="current-password"
+            :disabled="loading"
+            :aria-invalid="!!error"
+            required
+          />
+        </div>
+
+        <Transition name="error-pop">
+          <p v-if="error" class="error" role="alert">{{ error }}</p>
+        </Transition>
+
+        <Button type="submit" label="Accedi" :loading="loading" class="submit" />
+
+        <div class="password-links">
+          <button type="button" class="link-btn" @click="tornaAiTile">Non sei tu?</button>
+          <button type="button" class="link-btn" @click="cambiaReparto">Cambia reparto</button>
+        </div>
+      </form>
+
+      <Transition name="error-pop">
+        <p v-if="stepError" class="error" role="alert">{{ stepError }}</p>
+      </Transition>
+    </div>
   </div>
 </template>
 
@@ -69,7 +226,7 @@ async function onSubmit() {
 
 .login-card {
   width: 100%;
-  max-width: 360px;
+  max-width: 420px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -84,6 +241,78 @@ async function onSubmit() {
   color: var(--steel);
   font-size: 0.9375rem;
   margin-bottom: 8px;
+}
+
+.hint {
+  color: var(--steel);
+  font-size: 0.875rem;
+}
+
+.reparto-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reparto-item {
+  width: 100%;
+  min-height: 44px;
+  text-align: left;
+  padding: 12px 16px;
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.reparto-item:hover {
+  background: var(--surface);
+}
+
+.reparto-item:active {
+  transform: scale(0.98);
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.tile {
+  min-height: 44px;
+  padding: 16px 12px;
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.tile:hover {
+  background: var(--surface);
+}
+
+.tile:active {
+  transform: scale(0.98);
+}
+
+.password-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .field {
@@ -107,11 +336,42 @@ async function onSubmit() {
   font-size: 0.8125rem;
 }
 
+.error-pop-enter-active,
+.error-pop-leave-active {
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.error-pop-enter-from,
+.error-pop-leave-to {
+  opacity: 0;
+  transform: translateY(-2px);
+}
+
 .submit {
   margin-top: 8px;
 }
 
 .submit:active {
   transform: scale(0.98);
+}
+
+.password-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  color: var(--steel);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  cursor: pointer;
+  align-self: flex-start;
+  min-height: 44px;
 }
 </style>

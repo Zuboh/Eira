@@ -10,8 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value)
   const ruolo = computed(() => user.value?.ruolo ?? null)
 
-  async function login(email: string, password: string) {
-    const { data } = await authApi.login(email, password)
+  async function login(utenteId: number, password: string) {
+    const { data } = await authApi.login(utenteId, password)
     token.value = data.access_token
     localStorage.setItem('eira_token', data.access_token)
     await fetchMe()
