@@ -104,3 +104,67 @@ def test_update_utente_other_reparto_forbidden(client, db_session, caposala_a, r
     )
 
     assert response.status_code == 403
+
+
+def test_create_temporary_password_other_reparto_forbidden(
+    client, db_session, caposala_a, reparti
+):
+    from app.core.security import hash_password
+    from app.models.enums import RuoloUtente
+    from app.models.utente import Utente
+
+    _, reparto_b = reparti
+    utente_b = Utente(
+        email="nurse.reset.b@example.com",
+        password_hash=hash_password("password123"),
+        nome="Nurse",
+        cognome="B",
+        ruolo=RuoloUtente.infermiere,
+        reparto_id=reparto_b.id,
+    )
+    db_session.add(utente_b)
+    db_session.commit()
+    db_session.refresh(utente_b)
+
+    headers = auth_headers(client, caposala_a.email, "password123")
+    response = client.post(
+        f"/api/v1/utenti/{utente_b.id}/password-temporanea", headers=headers
+    )
+
+    assert response.status_code == 403
+
+
+def test_create_temporary_password_caposala_forbidden(client, caposala_a):
+    headers = auth_headers(client, caposala_a.email, "password123")
+    response = client.post(
+        f"/api/v1/utenti/{caposala_a.id}/password-temporanea", headers=headers
+    )
+
+    assert response.status_code == 403
+
+
+def test_create_temporary_password_pending_user_forbidden(
+    client, db_session, caposala_a, reparti
+):
+    from app.core.security import hash_password
+    from app.models.enums import RuoloUtente, StatoUtente
+    from app.models.utente import Utente
+
+    reparto_a, _ = reparti
+    utente = Utente(
+        email="nurse.pending.reset@example.com",
+        password_hash=hash_password("password123"),
+        nome="Pending",
+        cognome="Reset",
+        ruolo=RuoloUtente.infermiere,
+        reparto_id=reparto_a.id,
+        stato=StatoUtente.in_attesa,
+    )
+    db_session.add(utente)
+    db_session.commit()
+    db_session.refresh(utente)
+
+    headers = auth_headers(client, caposala_a.email, "password123")
+    response = client.post(f"/api/v1/utenti/{utente.id}/password-temporanea", headers=headers)
+
+    assert response.status_code == 403

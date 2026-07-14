@@ -12,7 +12,7 @@ riflette lo stato attuale, incluse le lacune note.
 + JWT.
 
 - `POST /auth/token` (`routers/auth.py`) accetta
-  `OAuth2PasswordRequestForm` (username = email, password in chiaro),
+  `OAuth2PasswordRequestForm` (username = id utente, password in chiaro),
   verifica contro `Utente.password_hash` con `bcrypt.checkpw`
   (`core/security.py`), emette un JWT firmato HS256.
 - **Claim del token:** solo `sub` (id utente, come stringa) ed `exp`.
@@ -27,6 +27,13 @@ riflette lo stato attuale, incluse le lacune note.
   refresh token — a scadenza serve nuovo login.
 - **Password hashing:** `bcrypt` diretto (non passlib — passlib 1.7.4
   è incompatibile con bcrypt ≥ 5.0, vedi bug fix in `TASK.md`).
+- **Reset password assistito:** una caposala può generare una password
+  temporanea per un infermiere attivo dello stesso reparto
+  (`POST /utenti/{id}/password-temporanea`). Il login con password
+  temporanea non emette JWT: ritorna `403 password_change_required`.
+  L'utente deve completare `POST /auth/change-temporary-password`, che
+  verifica ancora la temporanea, aggiorna l'hash e rimuove il flag
+  monouso (`PasswordResetRequirement`). Reset caposala fuori scope.
 - **Secret di default:** `settings.jwt_secret_key` ha fallback
   `"dev-secret-change-in-production"` in `core/config.py` — va
   sovrascritto da env var in ogni deploy reale.

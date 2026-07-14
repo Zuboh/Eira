@@ -37,6 +37,11 @@ ancora un `.env.example` in `backend/`** — da creare con queste chiavi
 | `JWT_SECRET_KEY` | `dev-secret-change-in-production` | placeholder insicuro — sovrascrivere sempre fuori da locale |
 | `JWT_ALGORITHM` | `HS256` | |
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | `480` (8h) | |
+| `SEED_REPARTO_NOME` | `Medicina Generale e Geriatria` | reparto principale creato/assicurato allo startup |
+| `SEED_SECONDO_REPARTO_NOME` | `Chirurgia Generale` | secondo reparto di sviluppo creato/assicurato allo startup |
+| `SEED_CAPOSALA_PASSWORD` | `dev-caposala-change-in-production` | password del caposala seed |
+| `SEED_INFERMIERE_EMAIL` | `infermiere@eira.local` | email stabile dell'infermiere seed |
+| `SEED_INFERMIERE_PASSWORD` | `dev-infermiere-change-in-production` | password dell'infermiere seed |
 
 Per lo sviluppo locale i default bastano così come sono: nessun `.env`
 è strettamente necessario per far partire l'app, serve solo per fare
@@ -106,6 +111,10 @@ crea/aggiorna così:
 - `app/main.py`, evento `startup`, chiama
   `Base.metadata.create_all(bind=engine)` — crea le tabelle mancanti
   sull'engine di produzione ogni volta che l'app parte.
+- Lo stesso startup assicura dati minimi di sviluppo in modo
+  idempotente: i due reparti configurati, almeno un caposala attivo e
+  l'infermiere seed attivo. Gli id da usare come username vengono
+  stampati nel log `[seed] ...`.
 - `create_all` è **additivo soltanto**: non altera colonne esistenti,
   non gestisce drop/rename. Se cambi un modello (es. aggiungi una
   colonna a una tabella già creata), l'unico modo per vedere lo schema

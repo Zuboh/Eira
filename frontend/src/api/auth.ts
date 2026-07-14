@@ -32,6 +32,12 @@ export interface RegisterResponse {
   stato: 'in_attesa' | 'attivo' | 'disattivato'
 }
 
+export interface ChangeTemporaryPasswordPayload {
+  utente_id: number
+  temporary_password: string
+  new_password: string
+}
+
 export function login(utenteId: number, password: string) {
   const form = new URLSearchParams()
   form.append('username', String(utenteId))
@@ -43,6 +49,10 @@ export function login(utenteId: number, password: string) {
 
 export function register(payload: RegisterPayload) {
   return apiClient.post<RegisterResponse>('/auth/register', payload)
+}
+
+export function changeTemporaryPassword(payload: ChangeTemporaryPasswordPayload) {
+  return apiClient.post<MeResponse>('/auth/change-temporary-password', payload)
 }
 
 export function me() {

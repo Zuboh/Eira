@@ -10,12 +10,6 @@ from app.schemas.paziente import PazienteCreate, PazienteRead, PazienteUpdate
 router = APIRouter(prefix="/pazienti", tags=["pazienti"])
 
 
-@router.post(
-    "/",
-    status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
-    responses=errors(UNAUTHORIZED, FORBIDDEN),
-)
 def _infermiere_ha_turno_attivo(current_user, db) -> bool:
     return (
         db.query(AssegnazioneTurno)
@@ -28,8 +22,15 @@ def _infermiere_ha_turno_attivo(current_user, db) -> bool:
     )
 
 
-@router.post("/", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
-def create_paziente(payload: PazienteCreate, current_user: CurrentUserDep, db: DbDep) -> PazienteRead:
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN),
+)
+def create_paziente(
+    payload: PazienteCreate, current_user: CurrentUserDep, db: DbDep
+) -> PazienteRead:
     data = payload.model_dump(exclude={"reparto_id"})
     paziente = Paziente(**data, reparto_id=current_user.reparto_id)
     db.add(paziente)

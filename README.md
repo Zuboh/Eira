@@ -19,9 +19,9 @@ Sett.2-5 in corso (piano Pegaso in `TASK.md`).
   pazienti, turni/assegnazioni, consegne SBAR, valutazioni
   Norton/Conley, diario CEDEMA, cambi turno (doppia conferma
   collega→caposala), banca ore, dashboard caposala. Audit IDOR fatto
-  (4 occorrenze trovate e fixate). Seed automatico di reparto +
-  caposala al primo avvio su DB vuoto — senza, nessun utente potrebbe
-  mai loggarsi (tutte le mutazioni richiedono un caposala esistente).
+  (4 occorrenze trovate e fixate). Seed automatico di reparti,
+  caposala e infermiere di sviluppo — senza un caposala, nessun utente
+  potrebbe mai creare personale/reparti.
   33+ test in `backend/tests/`.
 - **Frontend**: login (tile-picker dispositivo/reparto), registrazione
   con approvazione caposala, gestione personale fatti. Dashboard
@@ -42,8 +42,9 @@ DB, note migrazioni) → `docs/SETUP.md`.
 ```
 
 Avvia backend (`:8000`) + frontend (`:5173`) insieme, liberando le
-porte se occupate. Su DB vuoto crea in automatico un reparto e un
-caposala di default (id di login stampato nel log come `[seed] ...`).
+porte se occupate. All'avvio assicura i reparti di sviluppo, un
+caposala e un infermiere attivi (id di login stampati nel log come
+`[seed] ...`; password nei setting `seed_*_password`).
 
 Manuale:
 

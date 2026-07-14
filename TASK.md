@@ -84,6 +84,27 @@ design su semantica "turno attivo").
 - [ ] Vista banca ore (saldo mensile infermiere)
 - [ ] Applicare branding da `docs/DESIGN.md` (Google Stitch) — style.css ha `--logo-accent` non ancora usato in componenti
 
+### Frontend — architecture review (2026-07-14)
+
+Report visuale generato in
+`/private/var/folders/vw/wn7n954d21l5pwb74s8cwmj80000gn/T/architecture-review-20260714-155636.html`
+(file temp, non repo). Candidati di deepening:
+
+- [ ] **Eira data-fetching module** — riallineare frontend ad ADR-0003:
+      sostituire axios/manual types con `openapi-fetch` +
+      `openapi-typescript`; concentrare auth headers, 401 policy,
+      response shape ed error mapping dietro un'unica interfaccia.
+      Top recommendation.
+- [ ] **Reparto access module** — estrarre da `LoginView.vue` il flusso
+      reparto dispositivo → tile utente → login → cambio password
+      temporanea; lasciare alla view solo presentazione/focus.
+- [ ] **Caposala staff workflow module** — concentrare caricamento
+      personale, filtri stato, approvazione utenti, reset password
+      temporanea e pending count riusato dalla dashboard.
+- [ ] **Session module** (speculativo) — se auth/ruoli crescono,
+      concentrare token persistence, hydration, 401 e landing route per
+      ruolo fuori da router/store/client sparsi.
+
 ## Diagrammi / documentazione tesi
 
 - [x] ER/UML in draw.io (`docs/diagrams/er-consegne-infermieristiche.drawio`) — 11 entità, relazioni complete (aggiunte 2 mancanti: autore_id su Norton/Conley), validato

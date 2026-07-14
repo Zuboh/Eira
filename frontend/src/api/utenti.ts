@@ -19,3 +19,7 @@ export function listUtenti() {
 export function updateUtente(id: number, payload: Partial<Pick<Utente, 'stato'>>) {
   return apiClient.patch<Utente>(`/utenti/${id}`, payload)
 }
+
+export function createTemporaryPassword(id: number) {
+  return apiClient.post<{ temporary_password: string }>(`/utenti/${id}/password-temporanea`)
+}

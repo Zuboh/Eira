@@ -4,18 +4,23 @@ import { useRouter } from 'vue-router'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import { useAuthStore } from '@/stores/auth'
+import { changeTemporaryPassword } from '@/api/auth'
 import { listReparti, listUtentiByReparto, type Reparto, type UtenteTile } from '@/api/reparti'
 
 const DEVICE_REPARTO_KEY = 'eira_device_reparto'
 
-type Step = 'reparto' | 'tiles' | 'password'
+type Step = 'reparto' | 'tiles' | 'password' | 'change-password'
 
 const step = ref<Step>('reparto')
 const reparti = ref<Reparto[]>([])
 const utenti = ref<UtenteTile[]>([])
 const selectedUtente = ref<UtenteTile | null>(null)
 const password = ref('')
+const temporaryPassword = ref('')
+const newPassword = ref('')
+const confirmPassword = ref('')
 const error = ref('')
+const success = ref('')
 const loading = ref(false)
 const stepError = ref('')
 
@@ -83,7 +88,11 @@ function cambiaReparto() {
   utenti.value = []
   selectedUtente.value = null
   password.value = ''
+  temporaryPassword.value = ''
+  newPassword.value = ''
+  confirmPassword.value = ''
   error.value = ''
+  success.value = ''
   step.value = 'reparto'
   loadReparti().then(() => focusFirstOf('reparto'))
 }
@@ -91,7 +100,11 @@ function cambiaReparto() {
 async function selectUtente(utente: UtenteTile) {
   selectedUtente.value = utente
   password.value = ''
+  temporaryPassword.value = ''
+  newPassword.value = ''
+  confirmPassword.value = ''
   error.value = ''
+  success.value = ''
   step.value = 'password'
   await focusFirstOf('password')
 }
@@ -99,19 +112,62 @@ async function selectUtente(utente: UtenteTile) {
 function tornaAiTile() {
   step.value = 'tiles'
   password.value = ''
+  temporaryPassword.value = ''
+  newPassword.value = ''
+  confirmPassword.value = ''
   error.value = ''
+  success.value = ''
   focusFirstOf('tile')
 }
 
 async function onSubmit() {
   if (!selectedUtente.value) return
   error.value = ''
+  success.value = ''
   loading.value = true
   try {
     await auth.login(selectedUtente.value.id, password.value)
     await router.push({ name: `${auth.ruolo}-dashboard` })
+  } catch (err: unknown) {
+    const response = (err as { response?: { status?: number; data?: { detail?: string } } })
+      ?.response
+    if (response?.status === 403 && response.data?.detail === 'password_change_required') {
+      temporaryPassword.value = password.value
+      password.value = ''
+      newPassword.value = ''
+      confirmPassword.value = ''
+      step.value = 'change-password'
+    } else {
+      error.value = 'Credenziali non valide.'
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
+async function onChangeTemporaryPassword() {
+  if (!selectedUtente.value) return
+  error.value = ''
+  success.value = ''
+  if (newPassword.value !== confirmPassword.value) {
+    error.value = 'Le password non coincidono.'
+    return
+  }
+  loading.value = true
+  try {
+    await changeTemporaryPassword({
+      utente_id: selectedUtente.value.id,
+      temporary_password: temporaryPassword.value,
+      new_password: newPassword.value,
+    })
+    temporaryPassword.value = ''
+    newPassword.value = ''
+    confirmPassword.value = ''
+    step.value = 'password'
+    success.value = 'Password aggiornata. Accedi con la nuova password.'
+    await focusFirstOf('password')
   } catch {
-    error.value = 'Credenziali non valide.'
+    error.value = 'Impossibile aggiornare la password.'
   } finally {
     loading.value = false
   }
@@ -178,7 +234,7 @@ onMounted(async () => {
       </template>
 
       <!-- Step C: password -->
-      <form v-else class="password-step" @submit.prevent="onSubmit">
+      <form v-else-if="step === 'password'" class="password-step" @submit.prevent="onSubmit">
         <p class="subtitle">{{ selectedUtente?.nome }} {{ selectedUtente?.cognome }}</p>
 
         <div class="field">
@@ -200,7 +256,56 @@ onMounted(async () => {
           <p v-if="error" class="error" role="alert">{{ error }}</p>
         </Transition>
 
+        <Transition name="error-pop">
+          <p v-if="success" class="success" role="status">{{ success }}</p>
+        </Transition>
+
         <Button type="submit" label="Accedi" :loading="loading" class="submit" />
+
+        <div class="password-links">
+          <button type="button" class="link-btn" @click="tornaAiTile">Non sei tu?</button>
+          <button type="button" class="link-btn" @click="cambiaReparto">Cambia reparto</button>
+        </div>
+      </form>
+
+      <form v-else class="password-step" @submit.prevent="onChangeTemporaryPassword">
+        <p class="subtitle">{{ selectedUtente?.nome }} {{ selectedUtente?.cognome }}</p>
+
+        <div class="field">
+          <label for="new-password">Nuova password</label>
+          <Password
+            id="new-password"
+            v-model="newPassword"
+            :feedback="false"
+            toggle-mask
+            autocomplete="new-password"
+            :disabled="loading"
+            :aria-invalid="!!error"
+            required
+            minlength="8"
+          />
+        </div>
+
+        <div class="field">
+          <label for="confirm-password">Conferma password</label>
+          <Password
+            id="confirm-password"
+            v-model="confirmPassword"
+            :feedback="false"
+            toggle-mask
+            autocomplete="new-password"
+            :disabled="loading"
+            :aria-invalid="!!error"
+            required
+            minlength="8"
+          />
+        </div>
+
+        <Transition name="error-pop">
+          <p v-if="error" class="error" role="alert">{{ error }}</p>
+        </Transition>
+
+        <Button type="submit" label="Aggiorna password" :loading="loading" class="submit" />
 
         <div class="password-links">
           <button type="button" class="link-btn" @click="tornaAiTile">Non sei tu?</button>
@@ -333,6 +438,11 @@ onMounted(async () => {
 
 .error {
   color: var(--state-urgente);
+  font-size: 0.8125rem;
+}
+
+.success {
+  color: var(--state-attiva);
   font-size: 0.8125rem;
 }
 

@@ -1,5 +1,8 @@
-from app.models.enums import StatoUtente
+from app.core.security import hash_password
+from app.models.enums import RuoloUtente, StatoUtente
+from app.models.password_reset import PasswordResetRequirement
 from app.models.utente import Utente
+from tests.conftest import auth_headers
 
 
 def test_login_rejects_in_attesa(client, caposala_a, db_session):
@@ -104,3 +107,59 @@ def test_register_unknown_reparto_404(client):
         },
     )
     assert response.status_code == 404, response.text
+
+
+def test_temporary_password_requires_change_before_login(client, db_session, caposala_a, reparti):
+    reparto_a, _ = reparti
+    infermiere = Utente(
+        email="nurse.reset@example.com",
+        password_hash=hash_password("old-password"),
+        nome="Nurse",
+        cognome="Reset",
+        ruolo=RuoloUtente.infermiere,
+        reparto_id=reparto_a.id,
+        stato=StatoUtente.attivo,
+    )
+    db_session.add(infermiere)
+    db_session.commit()
+    db_session.refresh(infermiere)
+
+    headers = auth_headers(client, caposala_a.email, "password123")
+    created = client.post(
+        f"/api/v1/utenti/{infermiere.id}/password-temporanea", headers=headers
+    )
+
+    assert created.status_code == 200, created.text
+    temporary_password = created.json()["temporary_password"]
+    assert len(temporary_password) == 12
+    assert db_session.get(PasswordResetRequirement, infermiere.id) is not None
+
+    login = client.post(
+        "/api/v1/auth/token",
+        data={"username": str(infermiere.id), "password": temporary_password},
+    )
+    assert login.status_code == 403, login.text
+    assert login.json()["detail"] == "password_change_required"
+
+    changed = client.post(
+        "/api/v1/auth/change-temporary-password",
+        json={
+            "utente_id": infermiere.id,
+            "temporary_password": temporary_password,
+            "new_password": "new-password",
+        },
+    )
+    assert changed.status_code == 200, changed.text
+    assert db_session.get(PasswordResetRequirement, infermiere.id) is None
+
+    old_login = client.post(
+        "/api/v1/auth/token",
+        data={"username": str(infermiere.id), "password": temporary_password},
+    )
+    assert old_login.status_code == 401, old_login.text
+
+    new_login = client.post(
+        "/api/v1/auth/token",
+        data={"username": str(infermiere.id), "password": "new-password"},
+    )
+    assert new_login.status_code == 200, new_login.text

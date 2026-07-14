@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import Button from 'primevue/button'
-import { listUtenti, updateUtente, type Utente, type StatoUtente } from '@/api/utenti'
+import {
+  createTemporaryPassword,
+  listUtenti,
+  updateUtente,
+  type Utente,
+  type StatoUtente,
+} from '@/api/utenti'
 
 const utenti = ref<Utente[]>([])
 const filtro = ref<StatoUtente>('in_attesa')
 const loading = ref(false)
+const resetLoadingId = ref<number | null>(null)
 const error = ref('')
+const temporaryPassword = ref<string | null>(null)
 
 const filtri: { value: StatoUtente; label: string }[] = [
   { value: 'in_attesa', label: 'In attesa' },
@@ -35,6 +43,29 @@ async function approva(utente: Utente) {
     utente.stato = 'attivo'
   } catch {
     error.value = 'Impossibile approvare l\'utente.'
+  }
+}
+
+async function reimpostaPassword(utente: Utente) {
+  error.value = ''
+  resetLoadingId.value = utente.id
+  temporaryPassword.value = null
+  try {
+    const { data } = await createTemporaryPassword(utente.id)
+    temporaryPassword.value = data.temporary_password
+  } catch {
+    error.value = 'Impossibile generare la password temporanea.'
+  } finally {
+    resetLoadingId.value = null
+  }
+}
+
+async function copiaPassword() {
+  if (!temporaryPassword.value) return
+  try {
+    await navigator.clipboard.writeText(temporaryPassword.value)
+  } catch {
+    error.value = 'Impossibile copiare la password.'
   }
 }
 
@@ -83,12 +114,28 @@ onMounted(load)
               size="small"
               @click="approva(utente)"
             />
+            <Button
+              v-else-if="utente.stato === 'attivo' && utente.ruolo === 'infermiere'"
+              label="Reimposta password"
+              size="small"
+              severity="secondary"
+              :loading="resetLoadingId === utente.id"
+              @click="reimpostaPassword(utente)"
+            />
           </td>
         </tr>
       </tbody>
     </table>
 
-    <p v-else-if="!loading" class="hint">Nessun utente in questo filtro.</p>
+    <section v-if="temporaryPassword" class="temporary-password" role="status">
+      <div>
+        <p class="temporary-title">Password temporanea</p>
+        <code>{{ temporaryPassword }}</code>
+      </div>
+      <Button label="Copia" size="small" severity="secondary" @click="copiaPassword" />
+    </section>
+
+    <p v-if="!loading && filtrati.length === 0" class="hint">Nessun utente in questo filtro.</p>
   </div>
 </template>
 
@@ -141,6 +188,30 @@ onMounted(load)
   padding: 8px 12px;
   border-top: 1px solid var(--border);
   font-size: 0.9375rem;
+}
+
+.temporary-password {
+  margin-top: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.temporary-title {
+  margin: 0 0 4px;
+  color: var(--steel);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.temporary-password code {
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  color: var(--ink);
 }
 
 .error {

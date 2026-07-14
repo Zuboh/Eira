@@ -43,3 +43,7 @@ class UtenteRegister(BaseModel):
     nome: str
     cognome: str
     reparto_id: int
+
+
+class TemporaryPasswordResponse(BaseModel):
+    temporary_password: str

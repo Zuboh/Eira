@@ -10,9 +10,15 @@ class Settings(BaseSettings):
     jwt_access_token_expire_minutes: int = 60 * 8
 
     seed_reparto_nome: str = "Medicina Generale e Geriatria"
+    seed_secondo_reparto_nome: str = "Chirurgia Generale"
     seed_caposala_nome: str = "Admin"
     seed_caposala_cognome: str = "Caposala"
     seed_caposala_password: str = "dev-caposala-change-in-production"
+    seed_infermiere_email: str = "infermiere@eira.local"
+    seed_infermiere_nome: str = "Giulia"
+    seed_infermiere_cognome: str = "Bianchi"
+    seed_infermiere_password: str = "dev-infermiere-change-in-production"
+    seed_infermiere_ore_contrattuali_mensili: int = 150
 
 
 settings = Settings()

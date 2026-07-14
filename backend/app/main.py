@@ -6,6 +6,7 @@ from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import hash_password
 from app.models.enums import RuoloUtente, StatoUtente
+from app.models.profilo_infermiere import ProfiloInfermiere
 from app.models.reparto import Reparto
 from app.models.utente import Utente
 from app.routers import (
@@ -49,44 +50,89 @@ app.include_router(reparti.router, prefix=API_V1_PREFIX)
 @app.on_event("startup")
 def on_startup() -> None:
     Base.metadata.create_all(bind=engine)
-    _seed_bootstrap_caposala()
+    _seed_dev_data()
 
 
-def _seed_bootstrap_caposala() -> None:
-    """Garantisce almeno un caposala attivo: senza, nessuno può creare
-    reparti/utenti (tutte le mutazioni richiedono require_roles(caposala))
-    e l'app resta bloccata su DB vuoto."""
+def _seed_dev_data() -> None:
+    """Garantisce dati minimi di sviluppo senza duplicare record esistenti."""
     db = SessionLocal()
     try:
-        if db.query(Utente).filter(Utente.ruolo == RuoloUtente.caposala).first() is not None:
-            return
+        reparto_seed = _get_or_create_reparto(db, settings.seed_reparto_nome)
+        _get_or_create_reparto(db, settings.seed_secondo_reparto_nome)
 
-        reparto = db.query(Reparto).first()
-        if reparto is None:
-            reparto = Reparto(nome=settings.seed_reparto_nome)
-            db.add(reparto)
+        caposala = db.query(Utente).filter(Utente.ruolo == RuoloUtente.caposala).first()
+        if caposala is None:
+            caposala = Utente(
+                email="caposala@eira.local",
+                password_hash=hash_password(settings.seed_caposala_password),
+                nome=settings.seed_caposala_nome,
+                cognome=settings.seed_caposala_cognome,
+                ruolo=RuoloUtente.caposala,
+                reparto_id=reparto_seed.id,
+                stato=StatoUtente.attivo,
+            )
+            db.add(caposala)
             db.flush()
 
-        caposala = Utente(
-            email="caposala@eira.local",
-            password_hash=hash_password(settings.seed_caposala_password),
-            nome=settings.seed_caposala_nome,
-            cognome=settings.seed_caposala_cognome,
-            ruolo=RuoloUtente.caposala,
-            reparto_id=reparto.id,
-            stato=StatoUtente.attivo,
+        reparto_principale = db.get(Reparto, caposala.reparto_id) or reparto_seed
+
+        infermiere = (
+            db.query(Utente)
+            .filter(Utente.email == settings.seed_infermiere_email)
+            .first()
         )
-        db.add(caposala)
+        if infermiere is None:
+            infermiere = Utente(
+                email=settings.seed_infermiere_email,
+                password_hash=hash_password(settings.seed_infermiere_password),
+                nome=settings.seed_infermiere_nome,
+                cognome=settings.seed_infermiere_cognome,
+                ruolo=RuoloUtente.infermiere,
+                reparto_id=reparto_principale.id,
+                stato=StatoUtente.attivo,
+            )
+            db.add(infermiere)
+            db.flush()
+        else:
+            infermiere.ruolo = RuoloUtente.infermiere
+            infermiere.reparto_id = reparto_principale.id
+            infermiere.stato = StatoUtente.attivo
+
+        if db.get(ProfiloInfermiere, infermiere.id) is None:
+            db.add(
+                ProfiloInfermiere(
+                    utente_id=infermiere.id,
+                    ore_contrattuali_mensili=(
+                        settings.seed_infermiere_ore_contrattuali_mensili
+                    ),
+                )
+            )
+
         db.commit()
+        db.refresh(reparto_principale)
         db.refresh(caposala)
+        db.refresh(infermiere)
         print(
-            f"[seed] Nessun caposala trovato: creato reparto "
-            f"'{reparto.nome}' (id={reparto.id}) e caposala "
-            f"id={caposala.id} — login con username={caposala.id} "
-            f"e la password in settings.seed_caposala_password."
+            f"[seed] Dati dev disponibili: reparto principale "
+            f"'{reparto_principale.nome}' (id={reparto_principale.id}), "
+            f"caposala username={caposala.id} "
+            f"(password settings.seed_caposala_password), "
+            f"infermiere username={infermiere.id} "
+            f"(password settings.seed_infermiere_password)."
         )
     finally:
         db.close()
+
+
+def _get_or_create_reparto(db, nome: str) -> Reparto:
+    reparto = db.query(Reparto).filter(Reparto.nome == nome).first()
+    if reparto is not None:
+        return reparto
+
+    reparto = Reparto(nome=nome)
+    db.add(reparto)
+    db.flush()
+    return reparto
 
 
 @app.get("/health")
