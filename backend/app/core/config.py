@@ -9,5 +9,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 60 * 8
 
+    seed_reparto_nome: str = "Medicina Generale e Geriatria"
+    seed_caposala_nome: str = "Admin"
+    seed_caposala_cognome: str = "Caposala"
+    seed_caposala_password: str = "dev-caposala-change-in-production"
+
 
 settings = Settings()

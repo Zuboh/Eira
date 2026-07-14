@@ -33,6 +33,36 @@ puri (dati finti, nessuna query DB):
 - [x] Dashboard caposala: turni scoperti + richieste cambio turno in attesa (`GET /dashboard/caposala`, aggregato con count; test in `tests/test_dashboard.py`)
 - [x] Scoping ruolo: infermiere vede pazienti reparto solo se ha almeno un'assegnazione turno attiva (gate, non filtro per turno specifico — pazienti non hanno turno_id); consegne_sbar già turno-scoped correttamente; test in `tests/test_pazienti.py`
 
+## Backend — findings code review (2026-07-11, non ancora fixati)
+
+Review via 2 agenti `feature-dev:code-reviewer` paralleli (auth/routing +
+data/schema layer). Solo review, nessun fix applicato.
+
+- [ ] 🔴 Crash: `DELETE /turni/{id}/assegnazioni` non controlla
+      `RichiestaCambioTurno` pendenti che referenziano l'assegnazione
+      cancellata → `risposta-caposala` successivo crasha con
+      `AttributeError` non gestito (`turni.py:115-130`,
+      `cambi_turno.py:129-131`). No FK `ondelete`, no
+      `PRAGMA foreign_keys=ON`.
+- [ ] 🔴 Test suite triggera `Base.metadata.create_all` sull'engine di
+      produzione (file `.db` reale su disco) ad ogni run, non solo su
+      DB in-memory isolato (`main.py:33-35`, `core/database.py:7`,
+      `tests/conftest.py`).
+- [ ] 🟡 `StatoAssegnazione.cambiata` enum mai assegnato — flusso swap
+      turno (`cambi_turno.py:157`) muta `infermiere_id` in place senza
+      mai marcare `cambiata`.
+- [ ] 🟡 Gate "turno attivo" su pazienti non è time-scoped — una
+      singola assegnazione passata/futura/altro-reparto basta per
+      sempre (combinato col punto sopra). Scelta esplicita utente via
+      AskUserQuestion: gate su assegnazione attiva, non su turno di
+      oggi — se si rivede, serve filtro su `Turno.data` in
+      `_infermiere_ha_turno_attivo` (`pazienti.py`). Test nuovo non
+      distingue implementazione corretta da bug (usa solo turno di
+      oggi).
+
+Ordine suggerito: 🔴 prima (concreti), 🟡 dopo (richiedono decisione
+design su semantica "turno attivo").
+
 ## Frontend
 
 - [ ] Route guard (`router/index.ts`) — verificare blocchi davvero non autenticati, non solo skeleton
