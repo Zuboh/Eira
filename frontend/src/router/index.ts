@@ -11,6 +11,12 @@ const router = createRouter({
       meta: { public: true },
     },
     {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/RegisterView.vue'),
+      meta: { public: true },
+    },
+    {
       path: '/infermiere',
       name: 'infermiere-dashboard',
       component: () => import('@/views/infermiere/DashboardView.vue'),
@@ -23,13 +29,19 @@ const router = createRouter({
       meta: { ruolo: 'caposala' },
     },
     {
+      path: '/caposala/personale',
+      name: 'caposala-staff',
+      component: () => import('@/views/caposala/StaffView.vue'),
+      meta: { ruolo: 'caposala' },
+    },
+    {
       path: '/',
       redirect: '/login',
     },
   ],
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
   if (to.meta.public) {
@@ -38,6 +50,15 @@ router.beforeEach((to) => {
 
   if (!auth.isAuthenticated) {
     return { name: 'login' }
+  }
+
+  if (auth.user === null) {
+    try {
+      await auth.fetchMe()
+    } catch {
+      auth.logout()
+      return { name: 'login' }
+    }
   }
 
   if (to.meta.ruolo && to.meta.ruolo !== auth.ruolo) {

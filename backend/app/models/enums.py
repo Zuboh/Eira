@@ -6,6 +6,12 @@ class RuoloUtente(str, enum.Enum):
     caposala = "caposala"
 
 
+class StatoUtente(str, enum.Enum):
+    in_attesa = "in_attesa"
+    attivo = "attivo"
+    disattivato = "disattivato"
+
+
 class TipoTurno(str, enum.Enum):
     mattina = "mattina"
     pomeriggio = "pomeriggio"

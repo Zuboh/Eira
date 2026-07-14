@@ -67,8 +67,11 @@ def caposala_a(db_session, reparti):
 
 
 def auth_headers(client: TestClient, email: str, password: str) -> dict[str, str]:
+    db = next(client.app.dependency_overrides[get_db]())
+    user = db.query(Utente).filter(Utente.email == email).first()
+    assert user is not None, f"no utente with email {email}"
     response = client.post(
-        "/api/v1/auth/token", data={"username": email, "password": password}
+        "/api/v1/auth/token", data={"username": str(user.id), "password": password}
     )
     assert response.status_code == 200, response.text
     token = response.json()["access_token"]

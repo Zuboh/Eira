@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.models.enums import RuoloUtente
+from app.models.enums import RuoloUtente, StatoUtente
 
 
 class UtenteBase(BaseModel):
@@ -18,11 +18,28 @@ class UtenteCreate(UtenteBase):
 class UtenteUpdate(BaseModel):
     nome: str | None = None
     cognome: str | None = None
-    attivo: bool | None = None
+    stato: StatoUtente | None = None
 
 
 class UtenteRead(UtenteBase):
     id: int
-    attivo: bool
+    stato: StatoUtente
 
     model_config = {"from_attributes": True}
+
+
+class UtenteTile(BaseModel):
+    id: int
+    nome: str
+    cognome: str
+    ruolo: RuoloUtente
+
+    model_config = {"from_attributes": True}
+
+
+class UtenteRegister(BaseModel):
+    email: str
+    password: str
+    nome: str
+    cognome: str
+    reparto_id: int
