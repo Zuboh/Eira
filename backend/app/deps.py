@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import SessionLocal
-from app.models.enums import RuoloUtente
+from app.models.enums import RuoloUtente, StatoUtente
 from app.models.utente import Utente
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
@@ -38,7 +38,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: DbDep) -
         raise credentials_error
 
     user = db.get(Utente, user_id)
-    if user is None or not user.attivo:
+    if user is None or user.stato != StatoUtente.attivo:
         raise credentials_error
     return user
 

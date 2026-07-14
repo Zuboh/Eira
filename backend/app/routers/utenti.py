@@ -69,8 +69,8 @@ def update_utente(
         utente.nome = payload.nome
     if payload.cognome is not None:
         utente.cognome = payload.cognome
-    if payload.attivo is not None:
-        utente.attivo = payload.attivo
+    if payload.stato is not None:
+        utente.stato = payload.stato
     db.commit()
     db.refresh(utente)
     return UtenteRead.model_validate(utente)

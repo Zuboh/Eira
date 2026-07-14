@@ -2,7 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
-from app.models.enums import RuoloUtente
+from app.models.enums import RuoloUtente, StatoUtente
 
 
 class Utente(Base):
@@ -15,4 +15,6 @@ class Utente(Base):
     cognome: Mapped[str] = mapped_column(sa.String(64))
     ruolo: Mapped[RuoloUtente] = mapped_column(sa.Enum(RuoloUtente))
     reparto_id: Mapped[int] = mapped_column(sa.ForeignKey("reparto.id"))
-    attivo: Mapped[bool] = mapped_column(default=True)
+    stato: Mapped[StatoUtente] = mapped_column(
+        sa.Enum(StatoUtente), default=StatoUtente.attivo
+    )
