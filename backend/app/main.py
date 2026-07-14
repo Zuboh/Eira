@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 import app.models  # noqa: F401 — registra tutti i modelli su Base.metadata
 from app.core.database import Base, engine
@@ -10,12 +11,21 @@ from app.routers import (
     dashboard,
     diario_cedema,
     pazienti,
+    reparti,
     turni,
     utenti,
     valutazioni,
 )
 
 app = FastAPI(title="Consegne Infermieristiche API", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 API_V1_PREFIX = "/api/v1"
 app.include_router(auth.router, prefix=API_V1_PREFIX)
@@ -28,6 +38,7 @@ app.include_router(diario_cedema.router, prefix=API_V1_PREFIX)
 app.include_router(valutazioni.router, prefix=API_V1_PREFIX)
 app.include_router(banca_ore.router, prefix=API_V1_PREFIX)
 app.include_router(dashboard.router, prefix=API_V1_PREFIX)
+app.include_router(reparti.router, prefix=API_V1_PREFIX)
 
 
 @app.on_event("startup")
