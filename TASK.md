@@ -32,6 +32,12 @@ puri (dati finti, nessuna query DB):
 - [ ] Priorità urgenza su consegna SBAR (`priorità: normale|urgente`) — campo già in schema? verificare
 - [ ] Dashboard caposala: turni scoperti + richieste cambio turno in attesa (badge/lista in-app)
 - [ ] Scoping ruolo: infermiere vede solo pazienti/consegne del proprio turno assegnato (oggi query non filtrano per turno, solo per reparto)
+- [ ] **Parametri vitali** (stretch/mock, v. Note) — nuova entità `ParametriVitali`, stesso pattern di `diario_cedema.py` (paziente-scoped, `turno_id` opzionale verificato stesso reparto, `autore_id`, `timestamp`):
+  - `temperatura` (°C), `frequenza_cardiaca` (bpm), `pressione_sistolica`/`pressione_diastolica` (mmHg), `frequenza_respiratoria` (atti/min), `saturazione_o2` (%)
+  - `stato_coscienza`: nuovo enum AVPU `StatoCoscienza` — `vigile | verbale | dolore | coma`
+  - `ossigeno`: bool (ossigenoterapia in corso)
+  - `note` (opzionale)
+  - Router `POST/GET /pazienti/{paziente_id}/parametri-vitali`, no validazioni di range/allarme clinico (scope creep per uno stretch goal)
 
 ## Frontend
 
