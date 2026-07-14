@@ -5,6 +5,7 @@ from app.models.diario_cedema import VoceDiarioCedema
 from app.models.enums import RuoloUtente
 from app.models.paziente import Paziente
 from app.models.turno import Turno
+from app.openapi_errors import FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.diario_cedema import VoceDiarioCedemaCreate, VoceDiarioCedemaRead
 
 router = APIRouter(prefix="/pazienti", tags=["diario-cedema"])
@@ -22,7 +23,10 @@ def _get_paziente_same_reparto(paziente_id: int, current_user, db) -> Paziente:
 
 
 @router.post(
-    "/{paziente_id}/diario-cedema", dependencies=[Depends(require_roles(RuoloUtente.infermiere))]
+    "/{paziente_id}/diario-cedema",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(RuoloUtente.infermiere))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
 )
 def create_voce(
     paziente_id: int, payload: VoceDiarioCedemaCreate, current_user: CurrentUserDep, db: DbDep
@@ -45,7 +49,9 @@ def create_voce(
     return VoceDiarioCedemaRead.model_validate(voce)
 
 
-@router.get("/{paziente_id}/diario-cedema")
+@router.get(
+    "/{paziente_id}/diario-cedema", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND)
+)
 def list_voci(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> list[VoceDiarioCedemaRead]:
     _get_paziente_same_reparto(paziente_id, current_user, db)
 

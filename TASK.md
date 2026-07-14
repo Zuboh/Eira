@@ -29,6 +29,15 @@ puri (dati finti, nessuna query DB):
 
 ## Feature core (da requisiti progetto)
 
+- [ ] Priorità urgenza su consegna SBAR (`priorità: normale|urgente`) — campo già in schema? verificare
+- [ ] Dashboard caposala: turni scoperti + richieste cambio turno in attesa (badge/lista in-app)
+- [ ] Scoping ruolo: infermiere vede solo pazienti/consegne del proprio turno assegnato (oggi query non filtrano per turno, solo per reparto)
+- [ ] **Parametri vitali** (stretch/mock, v. Note) — nuova entità `ParametriVitali`, stesso pattern di `diario_cedema.py` (paziente-scoped, `turno_id` opzionale verificato stesso reparto, `autore_id`, `timestamp`):
+  - `temperatura` (°C), `frequenza_cardiaca` (bpm), `pressione_sistolica`/`pressione_diastolica` (mmHg), `frequenza_respiratoria` (atti/min), `saturazione_o2` (%)
+  - `stato_coscienza`: nuovo enum AVPU `StatoCoscienza` — `vigile | verbale | dolore | coma`
+  - `ossigeno`: bool (ossigenoterapia in corso)
+  - `note` (opzionale)
+  - Router `POST/GET /pazienti/{paziente_id}/parametri-vitali`, no validazioni di range/allarme clinico (scope creep per uno stretch goal)
 - [x] Priorità urgenza su consegna SBAR (`priorità: normale|urgente`) — già presente in modello/schema/create/update/read, nessuna azione necessaria
 - [x] Dashboard caposala: turni scoperti + richieste cambio turno in attesa (`GET /dashboard/caposala`, aggregato con count; test in `tests/test_dashboard.py`)
 - [x] Scoping ruolo: infermiere vede pazienti reparto solo se ha almeno un'assegnazione turno attiva (gate, non filtro per turno specifico — pazienti non hanno turno_id); consegne_sbar già turno-scoped correttamente; test in `tests/test_pazienti.py`
@@ -79,7 +88,11 @@ design su semantica "turno attivo").
 
 - [x] ER/UML in draw.io (`docs/diagrams/er-consegne-infermieristiche.drawio`) — 11 entità, relazioni complete (aggiunte 2 mancanti: autore_id su Norton/Conley), validato
 - [x] Export PNG del diagramma per report (`docs/diagrams/er-consegne-infermieristiche.drawio.png`)
-- [ ] Swagger/OpenAPI (`/docs`) — verificare copertura tutte le entità una volta router reali
+- [x] Swagger/OpenAPI (`/docs`) — verificata copertura tutte le entità una volta router reali: 21 path/32 operazioni, tutti gli 8 router entità + auth taggati, `/docs`+`/openapi.json` rispondono 200, Authorize (OAuth2 Bearer) funzionante
+  - [x] Aggiunte `description` sugli endpoint con logica non ovvia (`cambi_turno.py`: flusso doppia conferma; `banca_ore.py`: calcolo saldo)
+  - [x] Documentate risposte d'errore (400/401/403/404/409) nello schema via `responses={...}` (helper `app/openapi_errors.py`) su tutti i router
+  - [x] POST di creazione ora ritornano 201 Created (`utenti`, `pazienti`, `turni`, `turni/assegnazioni`, `cambi-turno`, `consegne-sbar`, `diario-cedema`, `norton`, `conley`); test aggiornati (33 test passano)
+  - [x] `DELETE /turni/{id}/assegnazioni` ora ritorna 204 No Content
 
 ## Test funzionale (deliverable traccia, no unit test richiesti)
 

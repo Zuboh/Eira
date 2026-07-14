@@ -8,6 +8,7 @@ from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.enums import RuoloUtente, StatoAssegnazione, StatoCambioTurno
 from app.models.turno import AssegnazioneTurno, Turno
 from app.models.utente import Utente
+from app.openapi_errors import BAD_REQUEST, CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.cambio_turno import (
     RichiestaCambioTurnoCreate,
     RichiestaCambioTurnoRead,
@@ -18,10 +19,21 @@ from app.schemas.cambio_turno import (
 router = APIRouter(prefix="/cambi-turno", tags=["cambi-turno"])
 
 
-@router.post("/", dependencies=[Depends(require_roles(RuoloUtente.infermiere))])
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(RuoloUtente.infermiere))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT, BAD_REQUEST),
+)
 def create_richiesta(
     payload: RichiestaCambioTurnoCreate, current_user: CurrentUserDep, db: DbDep
 ) -> RichiestaCambioTurnoRead:
+    """Apre una richiesta di cambio turno, stato iniziale `in_attesa_collega`.
+
+    Il flusso a doppia conferma richiede poi la risposta del collega
+    interpellato (`/risposta-collega`) e infine l'approvazione della
+    caposala (`/risposta-caposala`) prima che lo scambio diventi effettivo.
+    """
     assegnazione = db.get(AssegnazioneTurno, payload.assegnazione_turno_id)
     if assegnazione is None:
         raise HTTPException(
@@ -59,7 +71,7 @@ def create_richiesta(
     return RichiestaCambioTurnoRead.model_validate(richiesta)
 
 
-@router.get("/")
+@router.get("/", responses=errors(UNAUTHORIZED))
 def list_richieste(current_user: CurrentUserDep, db: DbDep) -> list[RichiestaCambioTurnoRead]:
     if current_user.ruolo == RuoloUtente.caposala:
         richieste = (
@@ -89,11 +101,18 @@ def list_richieste(current_user: CurrentUserDep, db: DbDep) -> list[RichiestaCam
 
 
 @router.post(
-    "/{richiesta_id}/risposta-collega", dependencies=[Depends(require_roles(RuoloUtente.infermiere))]
+    "/{richiesta_id}/risposta-collega",
+    dependencies=[Depends(require_roles(RuoloUtente.infermiere))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT),
 )
 def risposta_collega(
     richiesta_id: int, payload: RispostaCollegaRequest, current_user: CurrentUserDep, db: DbDep
 ) -> RichiestaCambioTurnoRead:
+    """Il collega interpellato accetta o rifiuta lo scambio.
+
+    Accettando, la richiesta passa a `in_attesa_caposala`; rifiutando,
+    diventa `rifiutata_collega` e il flusso si ferma qui.
+    """
     richiesta = db.get(RichiestaCambioTurno, richiesta_id)
     if richiesta is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Richiesta non trovata")
@@ -117,11 +136,19 @@ def risposta_collega(
 
 
 @router.post(
-    "/{richiesta_id}/risposta-caposala", dependencies=[Depends(require_roles(RuoloUtente.caposala))]
+    "/{richiesta_id}/risposta-caposala",
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT),
 )
 def risposta_caposala(
     richiesta_id: int, payload: RispostaCaposalaRequest, current_user: CurrentUserDep, db: DbDep
 ) -> RichiestaCambioTurnoRead:
+    """La caposala approva o rifiuta lo scambio già accettato dal collega.
+
+    Approvando, l'`infermiere_id` sull'assegnazione originale viene
+    sostituito con quello del collega (se non crea un doppio turno nella
+    stessa data); rifiutando, la richiesta diventa `rifiutata_caposala`.
+    """
     richiesta = db.get(RichiestaCambioTurno, richiesta_id)
     if richiesta is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Richiesta non trovata")

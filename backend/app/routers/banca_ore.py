@@ -7,6 +7,7 @@ from app.models.enums import RuoloUtente, StatoAssegnazione
 from app.models.profilo_infermiere import ProfiloInfermiere
 from app.models.turno import AssegnazioneTurno, Turno
 from app.models.utente import Utente
+from app.openapi_errors import BAD_REQUEST, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.banca_ore import BancaOreRead
 
 router = APIRouter(prefix="/banca-ore", tags=["banca-ore"])
@@ -20,10 +21,17 @@ def _ore_turno(turno: Turno) -> float:
     return (fine - inizio).total_seconds() / 3600
 
 
-@router.get("/{infermiere_id}")
+@router.get(
+    "/{infermiere_id}", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, BAD_REQUEST)
+)
 def get_banca_ore(
     infermiere_id: int, mese: str, current_user: CurrentUserDep, db: DbDep
 ) -> BancaOreRead:
+    """Saldo ore mensile: ore pianificate (da turni assegnati attivi nel mese) meno ore contrattuali.
+
+    L'infermiere può consultare solo la propria banca ore; la caposala solo
+    quella degli infermieri del proprio reparto. `mese` nel formato `YYYY-MM`.
+    """
     if current_user.ruolo == RuoloUtente.infermiere and current_user.id != infermiere_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

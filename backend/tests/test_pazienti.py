@@ -21,7 +21,7 @@ def test_create_paziente_forces_reparto_from_current_user(client, caposala_a, re
 
     response = client.post("/api/v1/pazienti/", headers=headers, json=_payload(reparto_b.id))
 
-    assert response.status_code == 200, response.text
+    assert response.status_code == 201, response.text
     assert response.json()["reparto_id"] == reparto_a.id
 
 

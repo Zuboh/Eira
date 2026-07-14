@@ -72,7 +72,7 @@ def test_create_norton_computes_punteggio_totale(client, db_session, reparti):
         f"/api/v1/pazienti/{paziente.id}/norton", headers=headers, json=_norton_payload()
     )
 
-    assert response.status_code == 200, response.text
+    assert response.status_code == 201, response.text
     body = response.json()
     assert body["autore_id"] == infermiere.id
     assert body["punteggio_totale"] == 3 + 3 + 2 + 2 + 3
@@ -136,7 +136,7 @@ def test_create_conley_computes_punteggio_totale(client, db_session, reparti):
         f"/api/v1/pazienti/{paziente.id}/conley", headers=headers, json=_conley_payload()
     )
 
-    assert response.status_code == 200, response.text
+    assert response.status_code == 201, response.text
     body = response.json()
     assert body["autore_id"] == infermiere.id
     assert body["punteggio_totale"] == 1 + 0 + 1 + 0 + 0 + 1

@@ -18,7 +18,7 @@ def test_create_utente_forces_reparto_from_current_user(client, caposala_a, repa
         },
     )
 
-    assert response.status_code == 200, response.text
+    assert response.status_code == 201, response.text
     body = response.json()
     assert body["reparto_id"] == reparto_a.id
 

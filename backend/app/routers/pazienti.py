@@ -3,12 +3,19 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente, StatoAssegnazione
 from app.models.paziente import Paziente
+from app.openapi_errors import FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.models.turno import AssegnazioneTurno
 from app.schemas.paziente import PazienteCreate, PazienteRead, PazienteUpdate
 
 router = APIRouter(prefix="/pazienti", tags=["pazienti"])
 
 
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN),
+)
 def _infermiere_ha_turno_attivo(current_user, db) -> bool:
     return (
         db.query(AssegnazioneTurno)
@@ -31,7 +38,7 @@ def create_paziente(payload: PazienteCreate, current_user: CurrentUserDep, db: D
     return PazienteRead.model_validate(paziente)
 
 
-@router.get("/")
+@router.get("/", responses=errors(UNAUTHORIZED))
 def list_pazienti(current_user: CurrentUserDep, db: DbDep) -> list[PazienteRead]:
     if current_user.ruolo == RuoloUtente.infermiere and not _infermiere_ha_turno_attivo(
         current_user, db
@@ -47,7 +54,7 @@ def list_pazienti(current_user: CurrentUserDep, db: DbDep) -> list[PazienteRead]
     return [PazienteRead.model_validate(paziente) for paziente in pazienti]
 
 
-@router.get("/{paziente_id}")
+@router.get("/{paziente_id}", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND))
 def get_paziente(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> PazienteRead:
     paziente = db.get(Paziente, paziente_id)
     if paziente is None:
@@ -65,7 +72,11 @@ def get_paziente(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> P
     return PazienteRead.model_validate(paziente)
 
 
-@router.patch("/{paziente_id}", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
+@router.patch(
+    "/{paziente_id}",
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
+)
 def update_paziente(
     paziente_id: int, payload: PazienteUpdate, current_user: CurrentUserDep, db: DbDep
 ) -> PazienteRead:

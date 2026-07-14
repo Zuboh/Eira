@@ -99,7 +99,7 @@ def test_create_and_get_own_consegna(client, db_session, reparti):
             "recommendation": "r",
         },
     )
-    assert response.status_code == 200, response.text
+    assert response.status_code == 201, response.text
     assert response.json()["autore_id"] == infermiere.id
 
     listed = client.get("/api/v1/consegne-sbar/", headers=headers)

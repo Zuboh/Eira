@@ -76,7 +76,7 @@ def test_create_and_list_voce_same_reparto_succeeds(client, db_session, reparti)
     created = client.post(
         f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers, json=_voce_payload()
     )
-    assert created.status_code == 200, created.text
+    assert created.status_code == 201, created.text
     assert created.json()["autore_id"] == infermiere.id
 
     listed = client.get(f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers)
