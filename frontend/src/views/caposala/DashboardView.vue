@@ -6,6 +6,11 @@ import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import InputText from 'primevue/inputtext'
 import { dialogStyle } from '@/components/ui/dialogStyles'
+import EiraCard from '@/components/ui/EiraCard.vue'
+import EiraTable from '@/components/ui/EiraTable.vue'
+import FormField from '@/components/ui/FormField.vue'
+import InlineError from '@/components/ui/InlineError.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import { listUtenti, type Utente } from '@/api/utenti'
 import { getDashboardCaposala, type DashboardCaposala } from '@/api/dashboard'
@@ -134,64 +139,73 @@ onMounted(load)
 
 <template>
   <div class="dashboard-caposala">
-    <div class="header">
-      <h1>Dashboard Caposala</h1>
-      <RouterLink :to="{ name: 'caposala-staff' }" class="staff-link">
-        Personale
-        <span v-if="pendingCount > 0" class="badge">{{ pendingCount }}</span>
-      </RouterLink>
-    </div>
+    <PageHeader title="Dashboard Caposala">
+      <template #actions>
+        <RouterLink :to="{ name: 'caposala-staff' }" class="staff-link">
+          Personale
+          <span v-if="pendingCount > 0" class="badge">{{ pendingCount }}</span>
+        </RouterLink>
+      </template>
+    </PageHeader>
 
-    <p v-if="error || cambioTurnoError" class="error" role="alert">{{ error || cambioTurnoError }}</p>
+    <InlineError :message="error || cambioTurnoError" />
 
-    <section class="card">
-      <h2>Turni scoperti</h2>
-      <table v-if="!loading && dashboard && dashboard.turni_scoperti.length > 0" class="data-table">
-        <thead>
-          <tr><th>Data</th><th>Turno</th><th>Orario</th><th></th></tr>
-        </thead>
-        <tbody>
-          <tr v-for="t in dashboard.turni_scoperti" :key="t.id">
-            <td>{{ formatData(t.data) }}</td>
-            <td>{{ TIPO_LABEL[t.tipo] }}</td>
-            <td class="mono">{{ t.ora_inizio.slice(0, 5) }}–{{ t.ora_fine.slice(0, 5) }}</td>
-            <td class="actions"><Button label="Assegna" size="small" @click="apriAssegna(t)" /></td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else-if="!loading" class="hint">Nessun turno scoperto.</p>
-    </section>
+    <EiraCard title="Turni scoperti" class="dashboard-card">
+      <EiraTable
+        v-if="!loading && dashboard"
+        :empty="dashboard.turni_scoperti.length === 0"
+        empty-message="Nessun turno scoperto."
+      >
+        <table>
+          <thead>
+            <tr><th>Data</th><th>Turno</th><th>Orario</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="t in dashboard.turni_scoperti" :key="t.id">
+              <td>{{ formatData(t.data) }}</td>
+              <td>{{ TIPO_LABEL[t.tipo] }}</td>
+              <td class="mono">{{ t.ora_inizio.slice(0, 5) }}–{{ t.ora_fine.slice(0, 5) }}</td>
+              <td class="actions"><Button label="Assegna" size="small" @click="apriAssegna(t)" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </EiraTable>
+    </EiraCard>
 
-    <section class="card">
+    <EiraCard class="dashboard-card">
       <div class="section-header">
         <h2>Cambi turno in attesa</h2>
         <RouterLink :to="{ name: 'cambio-turno' }" class="see-all">Vedi tutti</RouterLink>
       </div>
-      <table v-if="!loading && richiesteCambioTurno.length > 0" class="data-table">
-        <thead>
-          <tr><th>Richiedente</th><th>Collega</th><th>Stato</th><th></th></tr>
-        </thead>
-        <tbody>
-          <tr v-for="r in richiesteCambioTurno" :key="r.id">
-            <td>{{ nomeUtenteCambioTurno(r.richiedente_id) }}</td>
-            <td>{{ nomeUtenteCambioTurno(r.collega_id) }}</td>
-            <td><StatusBadge :status="r.stato" /></td>
-            <td class="actions">
-              <template v-if="r.stato === 'in_attesa_caposala'">
-                <Button label="Approva" size="small" @click="approvaCambioTurnoCaposala(r)" />
-                <Button label="Rifiuta" size="small" severity="secondary" @click="apriRifiutoCambioTurno(r)" />
-              </template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else-if="!loading" class="hint">Nessun cambio turno in attesa.</p>
-    </section>
+      <EiraTable
+        v-if="!loading"
+        :empty="richiesteCambioTurno.length === 0"
+        empty-message="Nessun cambio turno in attesa."
+      >
+        <table>
+          <thead>
+            <tr><th>Richiedente</th><th>Collega</th><th>Stato</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="r in richiesteCambioTurno" :key="r.id">
+              <td>{{ nomeUtenteCambioTurno(r.richiedente_id) }}</td>
+              <td>{{ nomeUtenteCambioTurno(r.collega_id) }}</td>
+              <td><StatusBadge :status="r.stato" /></td>
+              <td class="actions">
+                <template v-if="r.stato === 'in_attesa_caposala'">
+                  <Button label="Approva" size="small" @click="approvaCambioTurnoCaposala(r)" />
+                  <Button label="Rifiuta" size="small" severity="secondary" @click="apriRifiutoCambioTurno(r)" />
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </EiraTable>
+    </EiraCard>
 
-    <section class="card">
-      <h2>Calendario turni</h2>
-      <div v-if="!loading && righeCalendario.length > 0" class="calendario-scroll">
-        <table class="calendario">
+    <EiraCard title="Calendario turni" class="dashboard-card">
+      <EiraTable v-if="!loading" :empty="righeCalendario.length === 0" empty-message="Nessun turno pianificato.">
+        <table style="min-width: 30rem">
           <thead>
             <tr>
               <th></th>
@@ -213,17 +227,15 @@ onMounted(load)
             </tr>
           </tbody>
         </table>
-      </div>
-      <p v-else-if="!loading" class="hint">Nessun turno pianificato.</p>
-    </section>
+      </EiraTable>
+    </EiraCard>
 
     <Dialog v-model:visible="assegnaDialog" header="Assegna turno" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="confermaAssegna">
         <p v-if="assegnaTarget" class="hint">
           {{ formatData(assegnaTarget.data) }} · {{ TIPO_LABEL[assegnaTarget.tipo] }}
         </p>
-        <label>
-          Infermiere
+        <FormField label="Infermiere" required>
           <Select
             v-model="assegnaInfermiereId"
             :options="infermieri"
@@ -232,14 +244,16 @@ onMounted(load)
             placeholder="Seleziona infermiere"
             required
           />
-        </label>
+        </FormField>
         <Button type="submit" label="Assegna" :loading="saving" />
       </form>
     </Dialog>
 
     <Dialog v-model:visible="cambioTurnoRifiutoDialog" header="Motivo rifiuto" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="confermaRifiutoCambioTurno">
-        <label>Motivo<InputText v-model="cambioTurnoMotivoRifiuto" /></label>
+        <FormField label="Motivo">
+          <InputText v-model="cambioTurnoMotivoRifiuto" />
+        </FormField>
         <Button type="submit" label="Conferma rifiuto" severity="secondary" />
       </form>
     </Dialog>
@@ -249,14 +263,8 @@ onMounted(load)
 <style scoped>
 .dashboard-caposala {
   padding: var(--page-padding);
-  max-width: 1400px;
+  max-width: var(--page-xl);
   margin: 0 auto;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .staff-link {
@@ -287,23 +295,21 @@ onMounted(load)
   font-weight: 700;
 }
 
-.card {
+.dashboard-card {
   margin-top: 24px;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.card h2 {
-  margin: 0;
-  font-size: 1.0625rem;
 }
 
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.0625rem;
 }
 
 .see-all {
@@ -313,60 +319,9 @@ onMounted(load)
   text-decoration: none;
 }
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-}
-
-.data-table th {
-  text-align: left;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.data-table td {
-  padding: 8px 12px;
-  border-top: 1px solid var(--border);
-  font-size: 0.875rem;
-}
-
 .actions {
   display: flex;
   gap: 8px;
-}
-
-.mono {
-  font-family: var(--mono);
-  font-size: 0.8125rem;
-}
-
-.calendario-scroll {
-  overflow-x: auto;
-  margin-top: 12px;
-}
-
-.calendario {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 480px;
-}
-
-.calendario th,
-.calendario td {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  font-size: 0.8125rem;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.calendario thead th {
-  color: var(--steel);
-  font-weight: 600;
 }
 
 .row-label {
@@ -387,20 +342,6 @@ onMounted(load)
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.form label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-}
-
-.error {
-  color: var(--state-urgente);
-  font-size: 0.8125rem;
 }
 
 .hint {

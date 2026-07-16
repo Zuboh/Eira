@@ -172,6 +172,10 @@ Avvio implementazione:
 - [x] Polish UI primitives: `ConsegneSbarView`, dashboard infermiere e
       tab cliniche paziente migrati a `EiraTable`/`EiraCard`/`PageHeader`
       dove applicabile, rimuovendo wrapper tabella locali.
+- [x] Vue best practices: aggiunta sezione `Vue component/view
+      architecture` in `CLAUDE.md`; verificato router già lazy-loaded.
+- [x] Dashboard caposala migrata a `PageHeader`, `EiraCard`, `EiraTable`,
+      `InlineError` e `FormField`, riducendo CSS locale duplicato.
 - [x] Creati componenti UI comuni `InlineError`, `EmptyState`,
       `PageHeader`, `EiraCard`, `EiraTable`, `FormField`.
 - [x] Migrata view pilota `BancaOreView` su componenti UI comuni.

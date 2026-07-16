@@ -109,6 +109,18 @@ frontend/src/features/<feature>/components/*.vue
 
 Views should mostly wire route params, composables, and presentational components.
 
+
+## Vue component/view architecture
+
+- Route `views/*View.vue` are composition roots: route params, page layout, composables, and wiring.
+- Do not put large workflow/API logic directly in views. Extract it to `features/<feature>/use<Feature>.ts`.
+- Presentational components receive data via props and emit typed events with `defineEmits`; they should not mutate props.
+- Use `computed` for filtered lists; do not combine `v-if` and `v-for` on the same element.
+- Every `v-for` must have a stable `:key`.
+- Use shared UI primitives before local CSS: `PageHeader`, `EiraCard`, `EiraTable`, `InlineError`, `EmptyState`, `FormField`.
+- Use Pinia only for cross-route/global state such as auth/session. Keep dialog/form/loading state local or in feature composables.
+- Route components should stay lazy-loaded with dynamic imports unless there is a specific reason not to.
+
 ## Backend rules
 
 - Follow existing FastAPI router/service/model conventions.
