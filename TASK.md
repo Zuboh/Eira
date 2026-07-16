@@ -169,6 +169,9 @@ Avvio implementazione:
 - [x] Polish UI primitives: `CambioTurnoView` e `StaffView` migrati a
       `PageHeader`, `EiraTable`, `InlineError` e, dove utile,
       `FormField`, riducendo CSS tabella/form duplicato.
+- [x] Polish UI primitives: `ConsegneSbarView`, dashboard infermiere e
+      tab cliniche paziente migrati a `EiraTable`/`EiraCard`/`PageHeader`
+      dove applicabile, rimuovendo wrapper tabella locali.
 - [x] Creati componenti UI comuni `InlineError`, `EmptyState`,
       `PageHeader`, `EiraCard`, `EiraTable`, `FormField`.
 - [x] Migrata view pilota `BancaOreView` su componenti UI comuni.

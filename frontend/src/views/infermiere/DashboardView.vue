@@ -2,6 +2,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import StatusBadge from '@/components/StatusBadge.vue'
+import EiraCard from '@/components/ui/EiraCard.vue'
+import EiraTable from '@/components/ui/EiraTable.vue'
+import InlineError from '@/components/ui/InlineError.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
 import { getMieAssegnazioni, listTurni, type Turno, type AssegnazioneTurno } from '@/api/turni'
 import { listConsegneSbar, type ConsegnaSbar } from '@/api/consegneSbar'
 import { listPazienti, type Paziente } from '@/api/pazienti'
@@ -75,9 +79,9 @@ onMounted(load)
 
 <template>
   <div class="dashboard-infermiere">
-    <h1>Dashboard Infermiere</h1>
+    <PageHeader title="Dashboard Infermiere" />
 
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <InlineError :message="error" />
 
     <div class="quick-links">
       <RouterLink :to="{ name: 'pazienti' }" class="quick-link">Pazienti</RouterLink>
@@ -86,77 +90,79 @@ onMounted(load)
       <RouterLink :to="{ name: 'banca-ore' }" class="quick-link">Banca ore</RouterLink>
     </div>
 
-    <section class="card">
-      <h2>Prossimi turni</h2>
-      <table v-if="!loading && mieiTurni.length > 0" class="data-table">
-        <thead>
-          <tr><th>Data</th><th>Turno</th><th>Orario</th></tr>
-        </thead>
-        <tbody>
-          <tr v-for="t in mieiTurni" :key="t.id">
-            <td>{{ formatData(t.data) }}</td>
-            <td>{{ TIPO_LABEL[t.tipo] }}</td>
-            <td class="mono">{{ t.ora_inizio.slice(0, 5) }}–{{ t.ora_fine.slice(0, 5) }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else-if="!loading" class="hint">Nessun turno assegnato.</p>
-    </section>
+    <EiraCard title="Prossimi turni" class="dashboard-card">
+      <EiraTable v-if="!loading" :empty="mieiTurni.length === 0" empty-message="Nessun turno assegnato.">
+        <table>
+          <thead>
+            <tr><th>Data</th><th>Turno</th><th>Orario</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="t in mieiTurni" :key="t.id">
+              <td>{{ formatData(t.data) }}</td>
+              <td>{{ TIPO_LABEL[t.tipo] }}</td>
+              <td class="mono">{{ t.ora_inizio.slice(0, 5) }}–{{ t.ora_fine.slice(0, 5) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </EiraTable>
+    </EiraCard>
 
-    <section class="card">
+    <EiraCard class="dashboard-card">
       <div class="section-header">
         <h2>Consegne SBAR recenti</h2>
         <RouterLink :to="{ name: 'consegne-sbar' }" class="see-all">Vedi tutte</RouterLink>
       </div>
-      <table v-if="!loading && consegneRecenti.length > 0" class="data-table">
-        <thead>
-          <tr><th>Paziente</th><th>Priorità</th><th></th></tr>
-        </thead>
-        <tbody>
-          <tr v-for="c in consegneRecenti" :key="c.id">
-            <td>
-              <RouterLink :to="{ name: 'paziente-scheda', params: { id: c.paziente_id } }">
-                {{ nomePaziente(c.paziente_id) }}
-              </RouterLink>
-            </td>
-            <td><StatusBadge :status="c.priorita" /></td>
-            <td class="mono">{{ new Date(c.creata_il).toLocaleDateString('it-IT') }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else-if="!loading" class="hint">Nessuna consegna registrata.</p>
-    </section>
+      <EiraTable v-if="!loading" :empty="consegneRecenti.length === 0" empty-message="Nessuna consegna registrata.">
+        <table>
+          <thead>
+            <tr><th>Paziente</th><th>Priorità</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="c in consegneRecenti" :key="c.id">
+              <td>
+                <RouterLink :to="{ name: 'paziente-scheda', params: { id: c.paziente_id } }">
+                  {{ nomePaziente(c.paziente_id) }}
+                </RouterLink>
+              </td>
+              <td><StatusBadge :status="c.priorita" /></td>
+              <td class="mono">{{ new Date(c.creata_il).toLocaleDateString('it-IT') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </EiraTable>
+    </EiraCard>
 
-    <section class="card">
+    <EiraCard class="dashboard-card">
       <div class="section-header">
         <h2>I miei pazienti</h2>
         <RouterLink :to="{ name: 'pazienti' }" class="see-all">Vedi tutti</RouterLink>
       </div>
-      <table v-if="!loading && pazientiAttivi.length > 0" class="data-table">
-        <thead>
-          <tr><th>Paziente</th><th>Letto</th><th>Diagnosi</th></tr>
-        </thead>
-        <tbody>
-          <tr v-for="p in pazientiAttivi" :key="p.id">
-            <td>
-              <RouterLink :to="{ name: 'paziente-scheda', params: { id: p.id } }">
-                {{ p.cognome }} {{ p.nome }}
-              </RouterLink>
-            </td>
-            <td class="mono">{{ p.letto }}</td>
-            <td>{{ p.diagnosi_ingresso }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else-if="!loading" class="hint">Nessun paziente in carico.</p>
-    </section>
+      <EiraTable v-if="!loading" :empty="pazientiAttivi.length === 0" empty-message="Nessun paziente in carico.">
+        <table>
+          <thead>
+            <tr><th>Paziente</th><th>Letto</th><th>Diagnosi</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="p in pazientiAttivi" :key="p.id">
+              <td>
+                <RouterLink :to="{ name: 'paziente-scheda', params: { id: p.id } }">
+                  {{ p.cognome }} {{ p.nome }}
+                </RouterLink>
+              </td>
+              <td class="mono">{{ p.letto }}</td>
+              <td>{{ p.diagnosi_ingresso }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </EiraTable>
+    </EiraCard>
   </div>
 </template>
 
 <style scoped>
 .dashboard-infermiere {
   padding: var(--page-padding);
-  max-width: 1400px;
+  max-width: var(--page-xl);
   margin: 0 auto;
 }
 
@@ -180,23 +186,21 @@ onMounted(load)
   font-size: 0.9375rem;
 }
 
-.card {
+.dashboard-card {
   margin-top: 24px;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.card h2 {
-  margin: 0;
-  font-size: 1.0625rem;
 }
 
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.0625rem;
 }
 
 .see-all {
@@ -206,45 +210,9 @@ onMounted(load)
   text-decoration: none;
 }
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-}
-
-.data-table th {
-  text-align: left;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.data-table td {
-  padding: 8px 12px;
-  border-top: 1px solid var(--border);
-  font-size: 0.875rem;
-}
-
-.data-table td a {
+.dashboard-card :deep(td a) {
   color: inherit;
   font-weight: 600;
   text-decoration: none;
-}
-
-.mono {
-  font-family: var(--mono);
-  font-size: 0.8125rem;
-}
-
-.error {
-  color: var(--state-urgente);
-  font-size: 0.8125rem;
-}
-
-.hint {
-  color: var(--steel);
-  font-size: 0.875rem;
 }
 </style>

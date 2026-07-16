@@ -6,6 +6,10 @@ import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import { useAuthStore } from '@/stores/auth'
 import { dialogStyle } from '@/components/ui/dialogStyles'
+import EiraTable from '@/components/ui/EiraTable.vue'
+import FormField from '@/components/ui/FormField.vue'
+import InlineError from '@/components/ui/InlineError.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import {
   listConsegneSbar,
@@ -142,15 +146,16 @@ onMounted(load)
 
 <template>
   <div class="sbar-view">
-    <div class="header">
-      <h1>Consegne SBAR</h1>
-      <Button v-if="auth.ruolo === 'infermiere'" label="Nuova consegna" size="small" @click="apriNuova" />
-    </div>
+    <PageHeader title="Consegne SBAR">
+      <template #actions>
+        <Button v-if="auth.ruolo === 'infermiere'" label="Nuova consegna" size="small" @click="apriNuova" />
+      </template>
+    </PageHeader>
 
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <InlineError :message="error" />
 
-    <div v-if="!loading && consegne.length > 0" class="table-scroll">
-      <table class="data-table">
+    <EiraTable v-if="!loading" :empty="consegne.length === 0" empty-message="Nessuna consegna SBAR.">
+      <table style="min-width: var(--table-min-wide)">
         <thead>
           <tr><th>Data</th><th>Paziente</th><th>Priorità</th><th>Situation</th><th></th></tr>
         </thead>
@@ -172,26 +177,33 @@ onMounted(load)
           </tr>
         </tbody>
       </table>
-    </div>
-    <p v-else-if="!loading" class="hint">Nessuna consegna SBAR.</p>
+    </EiraTable>
 
     <Dialog v-model:visible="dialogOpen" :header="editingId ? 'Modifica consegna' : 'Nuova consegna'" modal :style="dialogStyle.lg">
       <form class="form" @submit.prevent="salva">
         <template v-if="!editingId">
-          <label>
-            Paziente
+          <FormField label="Paziente" required>
             <Select v-model="form.paziente_id" :options="pazienti" optionLabel="cognome" optionValue="id" placeholder="Seleziona paziente" required />
-          </label>
-          <label>
-            Turno
+          </FormField>
+          <FormField label="Turno" required>
             <Select v-model="form.turno_id" :options="assegnazioni" optionLabel="turno_id" optionValue="turno_id" placeholder="Seleziona turno" required />
-          </label>
+          </FormField>
         </template>
-        <label>Priorità<Select v-model="form.priorita" :options="priorita" optionLabel="label" optionValue="value" /></label>
-        <label>Situation<Textarea v-model="form.situation" rows="2" required /></label>
-        <label>Background<Textarea v-model="form.background" rows="2" required /></label>
-        <label>Assessment<Textarea v-model="form.assessment" rows="2" required /></label>
-        <label>Recommendation<Textarea v-model="form.recommendation" rows="2" required /></label>
+        <FormField label="Priorità">
+          <Select v-model="form.priorita" :options="priorita" optionLabel="label" optionValue="value" />
+        </FormField>
+        <FormField label="Situation" required>
+          <Textarea v-model="form.situation" rows="2" required />
+        </FormField>
+        <FormField label="Background" required>
+          <Textarea v-model="form.background" rows="2" required />
+        </FormField>
+        <FormField label="Assessment" required>
+          <Textarea v-model="form.assessment" rows="2" required />
+        </FormField>
+        <FormField label="Recommendation" required>
+          <Textarea v-model="form.recommendation" rows="2" required />
+        </FormField>
         <Button type="submit" label="Salva" :loading="saving" />
       </form>
     </Dialog>
@@ -205,38 +217,6 @@ onMounted(load)
   margin: 0 auto;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.table-scroll {
-  overflow-x: auto;
-}
-
-.data-table {
-  width: 100%;
-  min-width: 760px;
-  border-collapse: collapse;
-  margin-top: 16px;
-}
-
-.data-table th {
-  text-align: left;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.data-table td {
-  padding: 8px 12px;
-  border-top: 1px solid var(--border);
-  font-size: 0.875rem;
-}
-
 .mono {
   font-family: var(--mono);
   font-size: 0.8125rem;
@@ -246,25 +226,5 @@ onMounted(load)
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.form label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-}
-
-.error {
-  color: var(--state-urgente);
-  font-size: 0.8125rem;
-}
-
-.hint {
-  color: var(--steel);
-  font-size: 0.875rem;
-  margin-top: 16px;
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
+import EiraTable from '@/components/ui/EiraTable.vue'
 import type { ValutazioneConley, ValutazioneNorton } from '@/api/valutazioni'
 
 defineProps<{
@@ -20,8 +21,8 @@ const emit = defineEmits<{
     <Button v-if="canCreate" label="Nuova Conley" size="small" severity="secondary" @click="emit('newConley')" />
   </div>
   <h2>Norton</h2>
-  <div v-if="norton.length > 0" class="table-scroll">
-    <table class="data-table">
+  <EiraTable class="clinical-table" :empty="norton.length === 0" empty-message="Nessuna valutazione Norton.">
+    <table style="min-width: var(--table-min-wide)">
       <thead>
         <tr><th>Data</th><th>Cond. gen.</th><th>Stato mentale</th><th>Attività</th><th>Mobilità</th><th>Incontinenza</th><th>Totale</th></tr>
       </thead>
@@ -37,12 +38,11 @@ const emit = defineEmits<{
         </tr>
       </tbody>
     </table>
-  </div>
-  <p v-else class="hint">Nessuna valutazione Norton.</p>
+  </EiraTable>
 
   <h2>Conley</h2>
-  <div v-if="conley.length > 0" class="table-scroll">
-    <table class="data-table">
+  <EiraTable class="clinical-table" :empty="conley.length === 0" empty-message="Nessuna valutazione Conley.">
+    <table style="min-width: var(--table-min-wide)">
       <thead>
         <tr><th>Data</th><th>Cadute</th><th>Deficit visivo</th><th>Eliminazione</th><th>Agitazione</th><th>Vista oss.</th><th>Andatura</th><th>Totale</th></tr>
       </thead>
@@ -59,16 +59,10 @@ const emit = defineEmits<{
         </tr>
       </tbody>
     </table>
-  </div>
-  <p v-else class="hint">Nessuna valutazione Conley.</p>
+  </EiraTable>
 </template>
 
 <style scoped>
 .panel-header { display: flex; gap: 8px; margin: 12px 0; }
-.data-table { width: 100%; min-width: 760px; border-collapse: collapse; }
-.table-scroll { overflow-x: auto; margin-bottom: 20px; }
-.data-table th { text-align: left; font-size: 0.8125rem; font-weight: 600; color: var(--steel); padding: 8px 12px; border-bottom: 1px solid var(--border); }
-.data-table td { padding: 8px 12px; border-top: 1px solid var(--border); font-size: 0.875rem; }
-.mono { font-family: var(--mono); font-size: 0.8125rem; }
-.hint { color: var(--steel); font-size: 0.875rem; }
+.clinical-table { margin-bottom: 20px; }
 </style>
