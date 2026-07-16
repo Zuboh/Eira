@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
@@ -8,10 +8,14 @@ import InputNumber from 'primevue/inputnumber'
 import DatePicker from 'primevue/datepicker'
 import { useAuthStore } from '@/stores/auth'
 import StatusBadge from '@/components/StatusBadge.vue'
+import EiraTable from '@/components/ui/EiraTable.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
+import FormField from '@/components/ui/FormField.vue'
+import InlineError from '@/components/ui/InlineError.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
 import { listPazienti, createPaziente, type Paziente } from '@/api/pazienti'
 
 const auth = useAuthStore()
-const router = useRouter()
 
 const pazienti = ref<Paziente[]>([])
 const loading = ref(false)
@@ -39,10 +43,6 @@ async function load() {
   } finally {
     loading.value = false
   }
-}
-
-function apri(paziente: Paziente) {
-  router.push({ name: 'paziente-scheda', params: { id: paziente.id } })
 }
 
 function apriNuovo() {
@@ -85,51 +85,76 @@ onMounted(load)
 
 <template>
   <div class="pazienti-view">
-    <div class="header">
-      <h1>Pazienti</h1>
-      <Button v-if="auth.ruolo === 'caposala'" label="Nuovo paziente" size="small" @click="apriNuovo" />
-    </div>
+    <PageHeader title="Pazienti" subtitle="Elenco dei pazienti visibili per reparto e ruolo.">
+      <template v-if="auth.ruolo === 'caposala'" #actions>
+        <Button label="Nuovo paziente" size="small" @click="apriNuovo" />
+      </template>
+    </PageHeader>
 
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <InlineError :message="error" />
 
-    <table v-if="!loading && pazienti.length > 0" class="pazienti-table">
-      <thead>
-        <tr>
-          <th>Cognome</th>
-          <th>Nome</th>
-          <th>Età</th>
-          <th>Letto</th>
-          <th>Diagnosi</th>
-          <th>Ricovero</th>
-          <th>Stato</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="p in pazienti" :key="p.id" class="row" @click="apri(p)">
-          <td>{{ p.cognome }}</td>
-          <td>{{ p.nome }}</td>
-          <td class="mono">{{ p.eta }}</td>
-          <td class="mono">{{ p.letto }}</td>
-          <td>{{ p.diagnosi_ingresso }}</td>
-          <td class="mono">{{ p.data_ricovero }}</td>
-          <td><StatusBadge :status="p.dimesso ? 'dimesso' : 'attivo'" :label="p.dimesso ? 'Dimesso' : 'Attivo'" /></td>
-        </tr>
-      </tbody>
-    </table>
+    <EiraTable v-if="!loading && pazienti.length > 0">
+      <table class="pazienti-table">
+        <thead>
+          <tr>
+            <th>Cognome</th>
+            <th>Nome</th>
+            <th>Età</th>
+            <th>Letto</th>
+            <th>Diagnosi</th>
+            <th>Ricovero</th>
+            <th>Stato</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="p in pazienti" :key="p.id" class="row">
+            <td>
+              <RouterLink class="patient-link" :to="{ name: 'paziente-scheda', params: { id: p.id } }">
+                {{ p.cognome }}
+              </RouterLink>
+            </td>
+            <td>{{ p.nome }}</td>
+            <td class="mono">{{ p.eta }}</td>
+            <td class="mono">{{ p.letto }}</td>
+            <td>{{ p.diagnosi_ingresso }}</td>
+            <td class="mono">{{ p.data_ricovero }}</td>
+            <td><StatusBadge :status="p.dimesso ? 'dimesso' : 'attivo'" :label="p.dimesso ? 'Dimesso' : 'Attivo'" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </EiraTable>
 
-    <p v-if="!loading && pazienti.length === 0 && auth.ruolo === 'infermiere'" class="hint">
-      Nessun turno attivo assegnato: nessun paziente visibile.
-    </p>
-    <p v-else-if="!loading && pazienti.length === 0" class="hint">Nessun paziente in reparto.</p>
+    <EmptyState
+      v-if="!loading && pazienti.length === 0 && auth.ruolo === 'infermiere'"
+      title="Nessun paziente visibile"
+      message="Nessun turno attivo assegnato: nessun paziente visibile."
+    />
+    <EmptyState
+      v-else-if="!loading && pazienti.length === 0"
+      title="Nessun paziente in reparto"
+      message="Quando saranno creati pazienti attivi, appariranno in questa lista."
+    />
 
     <Dialog v-model:visible="dialogOpen" header="Nuovo paziente" modal :style="{ width: '28rem' }">
       <form class="form" @submit.prevent="salva">
-        <label>Nome<InputText v-model="form.nome" required /></label>
-        <label>Cognome<InputText v-model="form.cognome" required /></label>
-        <label>Età<InputNumber v-model="form.eta" :min="0" :max="120" required /></label>
-        <label>Letto<InputText v-model="form.letto" required /></label>
-        <label>Data ricovero<DatePicker v-model="form.data_ricovero" dateFormat="yy-mm-dd" required /></label>
-        <label>Diagnosi ingresso<InputText v-model="form.diagnosi_ingresso" required /></label>
+        <FormField label="Nome" forId="paziente-nome" required>
+          <InputText id="paziente-nome" v-model="form.nome" required />
+        </FormField>
+        <FormField label="Cognome" forId="paziente-cognome" required>
+          <InputText id="paziente-cognome" v-model="form.cognome" required />
+        </FormField>
+        <FormField label="Età" forId="paziente-eta" required>
+          <InputNumber inputId="paziente-eta" v-model="form.eta" :min="0" :max="120" required />
+        </FormField>
+        <FormField label="Letto" forId="paziente-letto" required>
+          <InputText id="paziente-letto" v-model="form.letto" required />
+        </FormField>
+        <FormField label="Data ricovero" forId="paziente-data-ricovero" required>
+          <DatePicker inputId="paziente-data-ricovero" v-model="form.data_ricovero" dateFormat="yy-mm-dd" required />
+        </FormField>
+        <FormField label="Diagnosi ingresso" forId="paziente-diagnosi" required>
+          <InputText id="paziente-diagnosi" v-model="form.diagnosi_ingresso" required />
+        </FormField>
         <Button type="submit" label="Crea" :loading="saving" />
       </form>
     </Dialog>
@@ -143,16 +168,10 @@ onMounted(load)
   margin: 0 auto;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .pazienti-table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
-  margin-top: 16px;
 }
 
 .pazienti-table th {
@@ -171,11 +190,22 @@ onMounted(load)
 }
 
 .row {
-  cursor: pointer;
+  transition: background 150ms ease-out;
 }
 
 .row:hover {
   background: var(--canvas);
+}
+
+.patient-link {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.patient-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
 }
 
 .mono {
@@ -189,23 +219,4 @@ onMounted(load)
   gap: 12px;
 }
 
-.form label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-}
-
-.error {
-  color: var(--state-urgente);
-  font-size: 0.8125rem;
-}
-
-.hint {
-  color: var(--steel);
-  font-size: 0.875rem;
-  margin-top: 16px;
-}
 </style>

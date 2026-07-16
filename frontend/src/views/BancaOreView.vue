@@ -5,6 +5,10 @@ import Button from 'primevue/button'
 import { useAuthStore } from '@/stores/auth'
 import { getBancaOre, type BancaOre } from '@/api/bancaOre'
 import { listUtentiByReparto, type UtenteTile } from '@/api/reparti'
+import EiraCard from '@/components/ui/EiraCard.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
+import InlineError from '@/components/ui/InlineError.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
 
 const auth = useAuthStore()
 
@@ -46,6 +50,7 @@ onMounted(async () => {
     const { data } = await listUtentiByReparto(auth.user.reparto_id)
     infermieri.value = data.filter((u) => u.ruolo === 'infermiere')
     infermiereId.value = infermieri.value[0]?.id ?? null
+    return
   }
   await load()
 })
@@ -60,40 +65,47 @@ const saldoLabel = computed(() => {
 
 <template>
   <div class="banca-ore-view">
-    <h1>Banca Ore</h1>
+    <PageHeader title="Banca Ore" subtitle="Saldo mensile tra ore pianificate e ore contrattuali.">
+      <template #actions>
+        <div class="controls">
+          <Select
+            v-if="auth.ruolo === 'caposala'"
+            v-model="infermiereId"
+            :options="infermieri"
+            optionLabel="cognome"
+            optionValue="id"
+            placeholder="Seleziona infermiere"
+          />
+          <div class="mese-picker">
+            <Button icon="pi pi-chevron-left" text aria-label="Mese precedente" @click="spostaMese(-1)" />
+            <span class="mono">{{ mese }}</span>
+            <Button icon="pi pi-chevron-right" text aria-label="Mese successivo" @click="spostaMese(1)" />
+          </div>
+        </div>
+      </template>
+    </PageHeader>
 
-    <div class="controls">
-      <Select
-        v-if="auth.ruolo === 'caposala'"
-        v-model="infermiereId"
-        :options="infermieri"
-        optionLabel="cognome"
-        optionValue="id"
-        placeholder="Seleziona infermiere"
-      />
-      <div class="mese-picker">
-        <Button icon="pi pi-chevron-left" text @click="spostaMese(-1)" />
-        <span class="mono">{{ mese }}</span>
-        <Button icon="pi pi-chevron-right" text @click="spostaMese(1)" />
-      </div>
-    </div>
-
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <InlineError :message="error" />
 
     <div v-if="bancaOre" class="tiles">
-      <div class="tile">
+      <EiraCard class="tile">
         <span class="tile-label">Ore pianificate</span>
         <span class="tile-value mono">{{ bancaOre.ore_pianificate }}</span>
-      </div>
-      <div class="tile">
+      </EiraCard>
+      <EiraCard class="tile">
         <span class="tile-label">Ore contrattuali</span>
         <span class="tile-value mono">{{ bancaOre.ore_contrattuali }}</span>
-      </div>
-      <div class="tile" :class="{ negative: bancaOre.saldo < 0, positive: bancaOre.saldo >= 0 }">
+      </EiraCard>
+      <EiraCard class="tile" :class="{ negative: bancaOre.saldo < 0, positive: bancaOre.saldo >= 0 }">
         <span class="tile-label">Saldo</span>
         <span class="tile-value mono">{{ saldoLabel }}</span>
-      </div>
+      </EiraCard>
     </div>
+    <EmptyState
+      v-else-if="!loading && !error"
+      title="Nessun saldo disponibile"
+      message="Seleziona un infermiere e un mese per visualizzare la banca ore."
+    />
   </div>
 </template>
 
@@ -108,7 +120,7 @@ const saldoLabel = computed(() => {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin: 16px 0 24px;
+  flex-wrap: wrap;
 }
 
 .mese-picker {
@@ -127,11 +139,6 @@ const saldoLabel = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
 }
 
 .tile-label {
@@ -158,8 +165,9 @@ const saldoLabel = computed(() => {
   font-family: var(--mono);
 }
 
-.error {
-  color: var(--state-urgente);
-  font-size: 0.8125rem;
+@media (max-width: 720px) {
+  .tiles {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

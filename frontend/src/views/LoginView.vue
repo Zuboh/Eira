@@ -6,8 +6,11 @@ import Button from 'primevue/button'
 import { useAuthStore } from '@/stores/auth'
 import { changeTemporaryPassword } from '@/api/auth'
 import { listReparti, listUtentiByReparto, type Reparto, type UtenteTile } from '@/api/reparti'
-
-const DEVICE_REPARTO_KEY = 'eira_device_reparto'
+import {
+  clearDeviceRepartoId,
+  getDeviceRepartoId,
+  setDeviceRepartoId,
+} from '@/features/session/useDeviceReparto'
 
 type Step = 'reparto' | 'tiles' | 'password' | 'change-password'
 
@@ -57,12 +60,12 @@ async function loadReparti() {
 }
 
 async function chooseReparto(reparto: Reparto) {
-  localStorage.setItem(DEVICE_REPARTO_KEY, String(reparto.id))
+  setDeviceRepartoId(reparto.id)
   await loadTilesForDevice()
 }
 
 async function loadTilesForDevice() {
-  const repartoId = Number(localStorage.getItem(DEVICE_REPARTO_KEY))
+  const repartoId = getDeviceRepartoId()
   if (!repartoId) {
     step.value = 'reparto'
     await loadReparti()
@@ -84,7 +87,7 @@ async function loadTilesForDevice() {
 }
 
 function cambiaReparto() {
-  localStorage.removeItem(DEVICE_REPARTO_KEY)
+  clearDeviceRepartoId()
   utenti.value = []
   selectedUtente.value = null
   password.value = ''
@@ -137,6 +140,9 @@ async function onSubmit() {
       newPassword.value = ''
       confirmPassword.value = ''
       step.value = 'change-password'
+    } else if (response?.status === 403 && response.data?.detail === 'temporary_password_expired') {
+      password.value = ''
+      error.value = 'Password temporanea scaduta. Chiedi alla caposala una nuova password temporanea.'
     } else {
       error.value = 'Credenziali non valide.'
     }
@@ -166,15 +172,21 @@ async function onChangeTemporaryPassword() {
     step.value = 'password'
     success.value = 'Password aggiornata. Accedi con la nuova password.'
     await focusFirstOf('password')
-  } catch {
-    error.value = 'Impossibile aggiornare la password.'
+  } catch (err: unknown) {
+    const response = (err as { response?: { status?: number; data?: { detail?: string } } })
+      ?.response
+    if (response?.status === 403 && response.data?.detail === 'temporary_password_expired') {
+      error.value = 'Password temporanea scaduta. Chiedi alla caposala una nuova password temporanea.'
+    } else {
+      error.value = 'Impossibile aggiornare la password.'
+    }
   } finally {
     loading.value = false
   }
 }
 
 onMounted(async () => {
-  const savedReparto = localStorage.getItem(DEVICE_REPARTO_KEY)
+  const savedReparto = getDeviceRepartoId()
   if (!savedReparto) {
     step.value = 'reparto'
     await loadReparti()

@@ -1,42 +1,86 @@
-import apiClient from '@/api/client'
+import { eiraClient } from '@/api/eiraClient'
+import type { components } from '@/api/schema'
 
-export type TipoTurno = 'mattina' | 'pomeriggio' | 'notte'
-export type StatoAssegnazione = 'attiva' | 'cambiata'
+export type TipoTurno = components['schemas']['TipoTurno']
+export type StatoAssegnazione = components['schemas']['StatoAssegnazione']
+export type Turno = components['schemas']['TurnoRead']
+export type AssegnazioneTurno = components['schemas']['AssegnazioneTurnoRead']
+export type TurnoCalendario = components['schemas']['TurnoCalendarioRead']
 
-export interface Turno {
-  id: number
-  data: string
-  tipo: TipoTurno
-  reparto_id: number
-  ora_inizio: string
-  ora_fine: string
+type ApiDataResponse<T> = Promise<{ data: T }>
+
+type EiraResult<T> = {
+  data?: T
+  error?: unknown
+  response: Response
 }
 
-export interface AssegnazioneTurno {
-  id: number
-  turno_id: number
-  infermiere_id: number
-  stato: StatoAssegnazione
+function formatApiError(error: unknown, response: Response) {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  if (typeof error === 'string') {
+    return error
+  }
+
+  if (error === undefined) {
+    return `Request failed with status ${response.status}`
+  }
+
+  try {
+    return JSON.stringify(error)
+  } catch {
+    return `Request failed with status ${response.status}`
+  }
 }
 
-export interface TurnoCalendario extends Turno {
-  assegnazioni: AssegnazioneTurno[]
+function unwrapData<T>(result: EiraResult<T>, operation: string): { data: T } {
+  if (result.error !== undefined) {
+    throw new Error(`${operation} failed: ${formatApiError(result.error, result.response)}`)
+  }
+
+  if (result.data === undefined) {
+    throw new Error(`${operation} failed: response data is undefined`)
+  }
+
+  return { data: result.data }
 }
 
-export function getMieAssegnazioni() {
-  return apiClient.get<AssegnazioneTurno[]>('/turni/mie-assegnazioni')
+export async function getMieAssegnazioni(): ApiDataResponse<AssegnazioneTurno[]> {
+  const result = await eiraClient.GET('/api/v1/turni/mie-assegnazioni')
+
+  return unwrapData(result, 'getMieAssegnazioni')
 }
 
-export function listTurni() {
-  return apiClient.get<Turno[]>('/turni/')
+export async function listTurni(): ApiDataResponse<Turno[]> {
+  const result = await eiraClient.GET('/api/v1/turni/')
+
+  return unwrapData(result, 'listTurni')
 }
 
-export function getCalendarioTurni() {
-  return apiClient.get<TurnoCalendario[]>('/turni/calendario')
+export async function getCalendarioTurni(): ApiDataResponse<TurnoCalendario[]> {
+  const result = await eiraClient.GET('/api/v1/turni/calendario')
+
+  return unwrapData(result, 'getCalendarioTurni')
 }
 
-export function assegnaTurno(turnoId: number, infermiereId: number) {
-  return apiClient.post<AssegnazioneTurno>(`/turni/${turnoId}/assegnazioni`, {
+export async function assegnaTurno(
+  turnoId: number,
+  infermiereId: number,
+): ApiDataResponse<AssegnazioneTurno> {
+  const body: components['schemas']['AssegnazioneTurnoCreate'] = {
     infermiere_id: infermiereId,
+  }
+
+  const result = await eiraClient.POST('/api/v1/turni/{turno_id}/assegnazioni', {
+    params: {
+      path: {
+        turno_id: turnoId,
+      },
+    },
+    body,
   })
+
+  return unwrapData(result, 'assegnaTurno')
 }

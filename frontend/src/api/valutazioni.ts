@@ -1,51 +1,87 @@
-import apiClient from '@/api/client'
+import { eiraClient } from '@/api/eiraClient'
+import type { components } from '@/api/schema'
 
-export interface ValutazioneNortonCreatePayload {
-  data_valutazione: string
-  condizioni_generali: number
-  stato_mentale: number
-  attivita: number
-  mobilita: number
-  incontinenza: number
+export type ValutazioneNortonCreatePayload = components['schemas']['ValutazioneNortonCreate']
+export type ValutazioneNorton = components['schemas']['ValutazioneNortonRead']
+export type ValutazioneConleyCreatePayload = components['schemas']['ValutazioneConleyCreate']
+export type ValutazioneConley = components['schemas']['ValutazioneConleyRead']
+export type ValutazioniAggregate = components['schemas']['ValutazioniAggregateRead']
+
+type ApiDataResponse<T> = Promise<{ data: T }>
+
+type EiraResult<T> = {
+  data?: T
+  error?: unknown
 }
 
-export interface ValutazioneNorton extends ValutazioneNortonCreatePayload {
-  id: number
-  paziente_id: number
-  autore_id: number
-  punteggio_totale: number
+function formatApiError(error: unknown) {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  if (typeof error === 'string') {
+    return error
+  }
+
+  try {
+    return JSON.stringify(error)
+  } catch {
+    return 'Unknown API error'
+  }
 }
 
-export interface ValutazioneConleyCreatePayload {
-  data_valutazione: string
-  storia_cadute: number
-  deficit_visivo: number
-  alterazione_eliminazione: number
-  agitazione: number
-  deficit_vista_osservato: number
-  andatura_alterata: number
+function unwrapData<T>(result: EiraResult<T>, operation: string) {
+  if (result.error !== undefined) {
+    throw new Error(`${operation} failed: ${formatApiError(result.error)}`)
+  }
+
+  if (result.data === undefined) {
+    throw new Error(`${operation} failed: response data is undefined`)
+  }
+
+  return { data: result.data }
 }
 
-export interface ValutazioneConley extends ValutazioneConleyCreatePayload {
-  id: number
-  paziente_id: number
-  autore_id: number
-  punteggio_totale: number
+export async function getValutazioni(pazienteId: number): ApiDataResponse<ValutazioniAggregate> {
+  const result = await eiraClient.GET('/api/v1/pazienti/{paziente_id}/valutazioni', {
+    params: {
+      path: {
+        paziente_id: pazienteId,
+      },
+    },
+  })
+
+  return unwrapData(result, 'getValutazioni')
 }
 
-export interface ValutazioniAggregate {
-  norton: ValutazioneNorton[]
-  conley: ValutazioneConley[]
+export async function createNorton(
+  pazienteId: number,
+  payload: ValutazioneNortonCreatePayload,
+): ApiDataResponse<ValutazioneNorton> {
+  const result = await eiraClient.POST('/api/v1/pazienti/{paziente_id}/norton', {
+    params: {
+      path: {
+        paziente_id: pazienteId,
+      },
+    },
+    body: payload,
+  })
+
+  return unwrapData(result, 'createNorton')
 }
 
-export function getValutazioni(pazienteId: number) {
-  return apiClient.get<ValutazioniAggregate>(`/pazienti/${pazienteId}/valutazioni`)
-}
+export async function createConley(
+  pazienteId: number,
+  payload: ValutazioneConleyCreatePayload,
+): ApiDataResponse<ValutazioneConley> {
+  const result = await eiraClient.POST('/api/v1/pazienti/{paziente_id}/conley', {
+    params: {
+      path: {
+        paziente_id: pazienteId,
+      },
+    },
+    body: payload,
+  })
 
-export function createNorton(pazienteId: number, payload: ValutazioneNortonCreatePayload) {
-  return apiClient.post<ValutazioneNorton>(`/pazienti/${pazienteId}/norton`, payload)
-}
-
-export function createConley(pazienteId: number, payload: ValutazioneConleyCreatePayload) {
-  return apiClient.post<ValutazioneConley>(`/pazienti/${pazienteId}/conley`, payload)
+  return unwrapData(result, 'createConley')
 }

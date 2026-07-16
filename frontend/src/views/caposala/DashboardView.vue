@@ -18,6 +18,17 @@ const TIPO_LABEL: Record<Turno['tipo'], string> = {
 }
 const TIPI: Turno['tipo'][] = ['mattina', 'pomeriggio', 'notte']
 
+type CalendarioCella = {
+  tipo: Turno['tipo']
+  turno: TurnoCalendario | null
+  assegnati: string
+}
+
+type CalendarioRiga = {
+  data: string
+  celle: CalendarioCella[]
+}
+
 const pendingCount = ref(0)
 const utenti = ref<Utente[]>([])
 const dashboard = ref<DashboardCaposala | null>(null)
@@ -25,8 +36,10 @@ const calendario = ref<TurnoCalendario[]>([])
 const loading = ref(false)
 const error = ref('')
 
+const utentiById = computed(() => new Map(utenti.value.map((u) => [u.id, u])))
+
 function nomeUtente(id: number) {
-  const u = utenti.value.find((u) => u.id === id)
+  const u = utentiById.value.get(id)
   return u ? `${u.cognome} ${u.nome}` : `#${id}`
 }
 
@@ -40,11 +53,30 @@ function formatData(data: string) {
 
 const infermieri = computed(() => utenti.value.filter((u) => u.ruolo === 'infermiere'))
 
-const dateCalendario = computed(() => [...new Set(calendario.value.map((t) => t.data))].sort())
+const righeCalendario = computed<CalendarioRiga[]>(() => {
+  const turniByData = new Map<string, Partial<Record<Turno['tipo'], TurnoCalendario>>>()
 
-function turnoCella(data: string, tipo: Turno['tipo']) {
-  return calendario.value.find((t) => t.data === data && t.tipo === tipo) ?? null
-}
+  for (const turno of calendario.value) {
+    const turni = turniByData.get(turno.data) ?? {}
+    turni[turno.tipo] = turno
+    turniByData.set(turno.data, turni)
+  }
+
+  return [...turniByData.entries()]
+    .sort(([dataA], [dataB]) => dataA.localeCompare(dataB))
+    .map(([data, turni]) => ({
+      data,
+      celle: TIPI.map((tipo) => {
+        const turno = turni[tipo] ?? null
+
+        return {
+          tipo,
+          turno,
+          assegnati: turno ? turno.assegnazioni.map((a) => nomeUtente(a.infermiere_id)).join(', ') : '',
+        }
+      }),
+    }))
+})
 
 async function load() {
   error.value = ''
@@ -179,7 +211,7 @@ onMounted(load)
 
     <section class="card">
       <h2>Calendario turni</h2>
-      <div v-if="!loading && dateCalendario.length > 0" class="calendario-scroll">
+      <div v-if="!loading && righeCalendario.length > 0" class="calendario-scroll">
         <table class="calendario">
           <thead>
             <tr>
@@ -188,12 +220,12 @@ onMounted(load)
             </tr>
           </thead>
           <tbody>
-            <tr v-for="data in dateCalendario" :key="data">
-              <th class="row-label">{{ formatData(data) }}</th>
-              <td v-for="tipo in TIPI" :key="tipo">
-                <template v-if="turnoCella(data, tipo)">
-                  <span v-if="turnoCella(data, tipo)!.assegnazioni.length > 0" class="assegnati">
-                    {{ turnoCella(data, tipo)!.assegnazioni.map((a) => nomeUtente(a.infermiere_id)).join(', ') }}
+            <tr v-for="riga in righeCalendario" :key="riga.data">
+              <th class="row-label">{{ formatData(riga.data) }}</th>
+              <td v-for="cella in riga.celle" :key="cella.tipo">
+                <template v-if="cella.turno">
+                  <span v-if="cella.turno.assegnazioni.length > 0" class="assegnati">
+                    {{ cella.assegnati }}
                   </span>
                   <span v-else class="scoperto">Scoperto</span>
                 </template>

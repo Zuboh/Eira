@@ -241,24 +241,26 @@ onMounted(load)
             <div class="panel-header">
               <Button v-if="auth.ruolo === 'infermiere'" label="Nuova voce" size="small" @click="apriCedema" />
             </div>
-            <table v-if="cedema.length > 0" class="data-table">
-              <thead>
-                <tr>
-                  <th>Data</th><th>Coscienza</th><th>Emotività</th><th>Dolore</th><th>Emodinamica</th><th>Mobilizzazione</th><th>Allert</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="v in cedema" :key="v.id">
-                  <td class="mono">{{ v.timestamp.slice(0, 16).replace('T', ' ') }}</td>
-                  <td>{{ v.coscienza }}</td>
-                  <td>{{ v.emotivita }}</td>
-                  <td>{{ v.dolore }}</td>
-                  <td>{{ v.emodinamica }}</td>
-                  <td>{{ v.mobilizzazione }}</td>
-                  <td>{{ v.allert }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div v-if="cedema.length > 0" class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Data</th><th>Coscienza</th><th>Emotività</th><th>Dolore</th><th>Emodinamica</th><th>Mobilizzazione</th><th>Allert</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="v in cedema" :key="v.id">
+                    <td class="mono">{{ v.timestamp.slice(0, 16).replace('T', ' ') }}</td>
+                    <td>{{ v.coscienza }}</td>
+                    <td>{{ v.emotivita }}</td>
+                    <td>{{ v.dolore }}</td>
+                    <td>{{ v.emodinamica }}</td>
+                    <td>{{ v.mobilizzazione }}</td>
+                    <td>{{ v.allert }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <p v-else class="hint">Nessuna voce diario CEDEMA.</p>
           </TabPanel>
 
@@ -268,61 +270,67 @@ onMounted(load)
               <Button v-if="auth.ruolo === 'infermiere'" label="Nuova Conley" size="small" severity="secondary" @click="apriConley" />
             </div>
             <h2>Norton</h2>
-            <table v-if="norton.length > 0" class="data-table">
-              <thead>
-                <tr><th>Data</th><th>Cond. gen.</th><th>Stato mentale</th><th>Attività</th><th>Mobilità</th><th>Incontinenza</th><th>Totale</th></tr>
-              </thead>
-              <tbody>
-                <tr v-for="n in norton" :key="n.id">
-                  <td class="mono">{{ n.data_valutazione }}</td>
-                  <td>{{ n.condizioni_generali }}</td>
-                  <td>{{ n.stato_mentale }}</td>
-                  <td>{{ n.attivita }}</td>
-                  <td>{{ n.mobilita }}</td>
-                  <td>{{ n.incontinenza }}</td>
-                  <td class="mono"><strong>{{ n.punteggio_totale }}</strong></td>
-                </tr>
-              </tbody>
-            </table>
+            <div v-if="norton.length > 0" class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Data</th><th>Cond. gen.</th><th>Stato mentale</th><th>Attività</th><th>Mobilità</th><th>Incontinenza</th><th>Totale</th></tr>
+                </thead>
+                <tbody>
+                  <tr v-for="n in norton" :key="n.id">
+                    <td class="mono">{{ n.data_valutazione }}</td>
+                    <td>{{ n.condizioni_generali }}</td>
+                    <td>{{ n.stato_mentale }}</td>
+                    <td>{{ n.attivita }}</td>
+                    <td>{{ n.mobilita }}</td>
+                    <td>{{ n.incontinenza }}</td>
+                    <td class="mono"><strong>{{ n.punteggio_totale }}</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <p v-else class="hint">Nessuna valutazione Norton.</p>
 
             <h2>Conley</h2>
-            <table v-if="conley.length > 0" class="data-table">
-              <thead>
-                <tr><th>Data</th><th>Cadute</th><th>Deficit visivo</th><th>Eliminazione</th><th>Agitazione</th><th>Vista oss.</th><th>Andatura</th><th>Totale</th></tr>
-              </thead>
-              <tbody>
-                <tr v-for="c in conley" :key="c.id">
-                  <td class="mono">{{ c.data_valutazione }}</td>
-                  <td>{{ c.storia_cadute }}</td>
-                  <td>{{ c.deficit_visivo }}</td>
-                  <td>{{ c.alterazione_eliminazione }}</td>
-                  <td>{{ c.agitazione }}</td>
-                  <td>{{ c.deficit_vista_osservato }}</td>
-                  <td>{{ c.andatura_alterata }}</td>
-                  <td class="mono"><strong>{{ c.punteggio_totale }}</strong></td>
-                </tr>
-              </tbody>
-            </table>
+            <div v-if="conley.length > 0" class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Data</th><th>Cadute</th><th>Deficit visivo</th><th>Eliminazione</th><th>Agitazione</th><th>Vista oss.</th><th>Andatura</th><th>Totale</th></tr>
+                </thead>
+                <tbody>
+                  <tr v-for="c in conley" :key="c.id">
+                    <td class="mono">{{ c.data_valutazione }}</td>
+                    <td>{{ c.storia_cadute }}</td>
+                    <td>{{ c.deficit_visivo }}</td>
+                    <td>{{ c.alterazione_eliminazione }}</td>
+                    <td>{{ c.agitazione }}</td>
+                    <td>{{ c.deficit_vista_osservato }}</td>
+                    <td>{{ c.andatura_alterata }}</td>
+                    <td class="mono"><strong>{{ c.punteggio_totale }}</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <p v-else class="hint">Nessuna valutazione Conley.</p>
           </TabPanel>
 
           <TabPanel value="sbar">
-            <table v-if="consegne.length > 0" class="data-table">
-              <thead>
-                <tr><th>Data</th><th>Priorità</th><th>Situation</th><th>Background</th><th>Assessment</th><th>Recommendation</th></tr>
-              </thead>
-              <tbody>
-                <tr v-for="c in consegne" :key="c.id">
-                  <td class="mono">{{ c.creata_il.slice(0, 16).replace('T', ' ') }}</td>
-                  <td><StatusBadge :status="c.priorita" /></td>
-                  <td>{{ c.situation }}</td>
-                  <td>{{ c.background }}</td>
-                  <td>{{ c.assessment }}</td>
-                  <td>{{ c.recommendation }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div v-if="consegne.length > 0" class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Data</th><th>Priorità</th><th>Situation</th><th>Background</th><th>Assessment</th><th>Recommendation</th></tr>
+                </thead>
+                <tbody>
+                  <tr v-for="c in consegne" :key="c.id">
+                    <td class="mono">{{ c.creata_il.slice(0, 16).replace('T', ' ') }}</td>
+                    <td><StatusBadge :status="c.priorita" /></td>
+                    <td>{{ c.situation }}</td>
+                    <td>{{ c.background }}</td>
+                    <td>{{ c.assessment }}</td>
+                    <td>{{ c.recommendation }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <p v-else class="hint">Nessuna consegna SBAR per questo paziente.</p>
           </TabPanel>
         </TabPanels>
@@ -422,7 +430,12 @@ onMounted(load)
 
 .data-table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
+}
+
+.table-scroll {
+  overflow-x: auto;
   margin-bottom: 20px;
 }
 

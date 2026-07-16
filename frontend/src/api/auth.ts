@@ -1,60 +1,125 @@
-import apiClient from '@/api/client'
+import { eiraClient } from '@/api/eiraClient'
+import type { components } from '@/api/schema'
+
+type TokenSchema = components['schemas']['Token']
+type UtenteReadSchema = components['schemas']['UtenteRead']
+type UtenteRegisterSchema = components['schemas']['UtenteRegister']
+type TemporaryPasswordChangeSchema = components['schemas']['TemporaryPasswordChange']
 
 export interface TokenResponse {
-  access_token: string
-  token_type: string
+  access_token: TokenSchema['access_token']
+  token_type: TokenSchema['token_type']
 }
 
 export interface MeResponse {
-  id: number
-  email: string
-  nome: string
-  cognome: string
-  ruolo: 'infermiere' | 'caposala'
-  reparto_id: number
+  id: UtenteReadSchema['id']
+  email: UtenteReadSchema['email']
+  nome: UtenteReadSchema['nome']
+  cognome: UtenteReadSchema['cognome']
+  ruolo: UtenteReadSchema['ruolo']
+  reparto_id: UtenteReadSchema['reparto_id']
 }
 
 export interface RegisterPayload {
-  email: string
-  password: string
-  nome: string
-  cognome: string
-  reparto_id: number
+  email: UtenteRegisterSchema['email']
+  password: UtenteRegisterSchema['password']
+  nome: UtenteRegisterSchema['nome']
+  cognome: UtenteRegisterSchema['cognome']
+  reparto_id: UtenteRegisterSchema['reparto_id']
 }
 
 export interface RegisterResponse {
-  id: number
-  email: string
-  nome: string
-  cognome: string
-  ruolo: 'infermiere' | 'caposala'
-  reparto_id: number
-  stato: 'in_attesa' | 'attivo' | 'disattivato'
+  id: UtenteReadSchema['id']
+  email: UtenteReadSchema['email']
+  nome: UtenteReadSchema['nome']
+  cognome: UtenteReadSchema['cognome']
+  ruolo: UtenteReadSchema['ruolo']
+  reparto_id: UtenteReadSchema['reparto_id']
+  stato: UtenteReadSchema['stato']
 }
 
 export interface ChangeTemporaryPasswordPayload {
-  utente_id: number
-  temporary_password: string
-  new_password: string
+  utente_id: TemporaryPasswordChangeSchema['utente_id']
+  temporary_password: TemporaryPasswordChangeSchema['temporary_password']
+  new_password: TemporaryPasswordChangeSchema['new_password']
 }
 
-export function login(utenteId: number, password: string) {
-  const form = new URLSearchParams()
-  form.append('username', String(utenteId))
-  form.append('password', password)
-  return apiClient.post<TokenResponse>('/auth/token', form, {
+type ApiResponse<T> = Promise<{ data: T }>
+
+type OpenApiResult<TData, TError> = {
+  data?: TData
+  error?: TError
+  response: Response
+}
+
+function formatApiError(error: unknown, response: Response) {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  if (typeof error === 'string') {
+    return error
+  }
+
+  if (error === undefined) {
+    return `Request failed with status ${response.status}`
+  }
+
+  try {
+    return JSON.stringify(error)
+  } catch {
+    return `Request failed with status ${response.status}`
+  }
+}
+
+function unwrapData<TData, TError>(
+  result: OpenApiResult<TData, TError>,
+  operation: string,
+): { data: TData } {
+  if (result.error !== undefined) {
+    throw new Error(`${operation} failed: ${formatApiError(result.error, result.response)}`)
+  }
+
+  if (result.data === undefined) {
+    throw new Error(`${operation} failed: response data is undefined`)
+  }
+
+  return { data: result.data }
+}
+
+export async function login(utenteId: number, password: string): ApiResponse<TokenResponse> {
+  const result = await eiraClient.POST('/api/v1/auth/token', {
+    body: {
+      username: String(utenteId),
+      password,
+      scope: '',
+    },
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   })
+
+  return unwrapData(result, 'login')
 }
 
-export function register(payload: RegisterPayload) {
-  return apiClient.post<RegisterResponse>('/auth/register', payload)
+export async function register(payload: RegisterPayload): ApiResponse<RegisterResponse> {
+  const result = await eiraClient.POST('/api/v1/auth/register', {
+    body: payload,
+  })
+
+  return unwrapData(result, 'register')
 }
 
-export function changeTemporaryPassword(payload: ChangeTemporaryPasswordPayload) {
-  return apiClient.post<MeResponse>('/auth/change-temporary-password', payload)
+export async function changeTemporaryPassword(
+  payload: ChangeTemporaryPasswordPayload,
+): ApiResponse<MeResponse> {
+  const result = await eiraClient.POST('/api/v1/auth/change-temporary-password', {
+    body: payload,
+  })
+
+  return unwrapData(result, 'changeTemporaryPassword')
 }
 
-export function me() {
-  return apiClient.get<MeResponse>('/auth/me')
+export async function me(): ApiResponse<MeResponse> {
+  const result = await eiraClient.GET('/api/v1/auth/me')
+
+  return unwrapData(result, 'me')
 }

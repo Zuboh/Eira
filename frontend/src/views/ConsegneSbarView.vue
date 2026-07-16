@@ -138,28 +138,30 @@ onMounted(load)
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>
 
-    <table v-if="!loading && consegne.length > 0" class="data-table">
-      <thead>
-        <tr><th>Data</th><th>Paziente</th><th>Priorità</th><th>Situation</th><th></th></tr>
-      </thead>
-      <tbody>
-        <tr v-for="c in consegne" :key="c.id">
-          <td class="mono">{{ c.creata_il.slice(0, 16).replace('T', ' ') }}</td>
-          <td>{{ nomePaziente(c.paziente_id) }}</td>
-          <td><StatusBadge :status="c.priorita" /></td>
-          <td>{{ c.situation }}</td>
-          <td>
-            <Button
-              v-if="auth.user && c.autore_id === auth.user.id"
-              label="Modifica"
-              size="small"
-              severity="secondary"
-              @click="apriEdit(c)"
-            />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-if="!loading && consegne.length > 0" class="table-scroll">
+      <table class="data-table">
+        <thead>
+          <tr><th>Data</th><th>Paziente</th><th>Priorità</th><th>Situation</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="c in consegne" :key="c.id">
+            <td class="mono">{{ c.creata_il.slice(0, 16).replace('T', ' ') }}</td>
+            <td>{{ nomePaziente(c.paziente_id) }}</td>
+            <td><StatusBadge :status="c.priorita" /></td>
+            <td>{{ c.situation }}</td>
+            <td>
+              <Button
+                v-if="auth.user && c.autore_id === auth.user.id"
+                label="Modifica"
+                size="small"
+                severity="secondary"
+                @click="apriEdit(c)"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <p v-else-if="!loading" class="hint">Nessuna consegna SBAR.</p>
 
     <Dialog v-model:visible="dialogOpen" :header="editingId ? 'Modifica consegna' : 'Nuova consegna'" modal :style="{ width: '32rem' }">
@@ -198,8 +200,13 @@ onMounted(load)
   justify-content: space-between;
 }
 
+.table-scroll {
+  overflow-x: auto;
+}
+
 .data-table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
   margin-top: 16px;
 }

@@ -6,20 +6,17 @@ import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
 const router = useRouter()
 
-const dashboardRoute = computed(() => ({ name: `${auth.ruolo}-dashboard` }))
-
 const navItems = computed(() => {
-  const items = [
-    { to: dashboardRoute.value, label: 'Dashboard' },
-    { to: { name: 'pazienti' }, label: 'Pazienti' },
-    { to: { name: 'consegne-sbar' }, label: 'Consegne SBAR' },
-    { to: { name: 'cambio-turno' }, label: 'Cambio Turno' },
-    { to: { name: 'banca-ore' }, label: 'Banca Ore' },
-  ]
-  if (auth.ruolo === 'caposala') {
-    items.push({ to: { name: 'caposala-staff' }, label: 'Personale' })
-  }
-  return items
+  if (!auth.ruolo) return []
+
+  return router
+    .getRoutes()
+    .filter((route) => route.name && route.meta.nav && route.meta.roles?.includes(auth.ruolo!))
+    .sort((a, b) => a.meta.nav!.order - b.meta.nav!.order)
+    .map((route) => ({
+      to: { name: route.name! },
+      label: route.meta.nav!.label,
+    }))
 })
 
 function logout() {

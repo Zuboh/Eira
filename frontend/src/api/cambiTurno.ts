@@ -1,51 +1,131 @@
-import apiClient from '@/api/client'
+import { eiraClient } from '@/api/eiraClient'
+import type { components } from '@/api/schema'
 
-export type StatoCambioTurno =
-  | 'in_attesa_collega'
-  | 'rifiutata_collega'
-  | 'in_attesa_caposala'
-  | 'rifiutata_caposala'
-  | 'approvata'
+export type StatoCambioTurno = components['schemas']['StatoCambioTurno']
 
-export interface RichiestaCambioTurno {
-  id: number
-  assegnazione_turno_id: number
-  richiedente_id: number
-  collega_id: number
-  stato: StatoCambioTurno
-  creata_il: string
-  risposta_collega_il: string | null
-  risposta_caposala_id: number | null
-  risposta_caposala_il: string | null
-  motivo_rifiuto: string | null
+type RichiestaCambioTurnoRead = components['schemas']['RichiestaCambioTurnoRead']
+
+type NullableResponseFields =
+  | 'risposta_collega_il'
+  | 'risposta_caposala_id'
+  | 'risposta_caposala_il'
+  | 'motivo_rifiuto'
+
+export type RichiestaCambioTurno = Omit<RichiestaCambioTurnoRead, NullableResponseFields> &
+  Required<Pick<RichiestaCambioTurnoRead, NullableResponseFields>>
+
+export type RichiestaCambioTurnoCreatePayload =
+  components['schemas']['RichiestaCambioTurnoCreate']
+
+export type RispostaCollegaPayload = components['schemas']['RispostaCollegaRequest']
+export type RispostaCaposalaPayload = components['schemas']['RispostaCaposalaRequest']
+
+type ApiDataResponse<T> = Promise<{ data: T }>
+
+type EiraResult<T> = {
+  data?: T
+  error?: unknown
 }
 
-export interface RichiestaCambioTurnoCreatePayload {
-  assegnazione_turno_id: number
-  collega_id: number
+function formatApiError(error: unknown) {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  if (typeof error === 'string') {
+    return error
+  }
+
+  try {
+    return JSON.stringify(error)
+  } catch {
+    return 'Unknown API error'
+  }
 }
 
-export interface RispostaCollegaPayload {
-  accetta: boolean
+function unwrapData<T>(result: EiraResult<T>, operation: string): T {
+  if (result.error !== undefined) {
+    throw new Error(`${operation} failed: ${formatApiError(result.error)}`)
+  }
+
+  if (result.data === undefined) {
+    throw new Error(`${operation} failed: response data is undefined`)
+  }
+
+  return result.data
 }
 
-export interface RispostaCaposalaPayload {
-  accetta: boolean
-  motivo_rifiuto?: string
+export function normalizeRichiestaCambioTurno(
+  richiesta: RichiestaCambioTurnoRead,
+): RichiestaCambioTurno {
+  return {
+    ...richiesta,
+    risposta_collega_il: richiesta.risposta_collega_il ?? null,
+    risposta_caposala_id: richiesta.risposta_caposala_id ?? null,
+    risposta_caposala_il: richiesta.risposta_caposala_il ?? null,
+    motivo_rifiuto: richiesta.motivo_rifiuto ?? null,
+  }
 }
 
-export function listCambiTurno() {
-  return apiClient.get<RichiestaCambioTurno[]>('/cambi-turno/')
+function wrapRichiestaCambioTurno(
+  richiesta: RichiestaCambioTurnoRead,
+): { data: RichiestaCambioTurno } {
+  return { data: normalizeRichiestaCambioTurno(richiesta) }
 }
 
-export function createRichiestaCambioTurno(payload: RichiestaCambioTurnoCreatePayload) {
-  return apiClient.post<RichiestaCambioTurno>('/cambi-turno/', payload)
+export async function listCambiTurno(): ApiDataResponse<RichiestaCambioTurno[]> {
+  const data = unwrapData(await eiraClient.GET('/api/v1/cambi-turno/'), 'listCambiTurno')
+
+  return { data: data.map(normalizeRichiestaCambioTurno) }
 }
 
-export function rispondiCollega(id: number, payload: RispostaCollegaPayload) {
-  return apiClient.post<RichiestaCambioTurno>(`/cambi-turno/${id}/risposta-collega`, payload)
+export async function createRichiestaCambioTurno(
+  payload: RichiestaCambioTurnoCreatePayload,
+): ApiDataResponse<RichiestaCambioTurno> {
+  const data = unwrapData(
+    await eiraClient.POST('/api/v1/cambi-turno/', {
+      body: payload,
+    }),
+    'createRichiestaCambioTurno',
+  )
+
+  return wrapRichiestaCambioTurno(data)
 }
 
-export function rispondiCaposala(id: number, payload: RispostaCaposalaPayload) {
-  return apiClient.post<RichiestaCambioTurno>(`/cambi-turno/${id}/risposta-caposala`, payload)
+export async function rispondiCollega(
+  id: number,
+  payload: RispostaCollegaPayload,
+): ApiDataResponse<RichiestaCambioTurno> {
+  const data = unwrapData(
+    await eiraClient.POST('/api/v1/cambi-turno/{richiesta_id}/risposta-collega', {
+      params: {
+        path: {
+          richiesta_id: id,
+        },
+      },
+      body: payload,
+    }),
+    'rispondiCollega',
+  )
+
+  return wrapRichiestaCambioTurno(data)
+}
+
+export async function rispondiCaposala(
+  id: number,
+  payload: RispostaCaposalaPayload,
+): ApiDataResponse<RichiestaCambioTurno> {
+  const data = unwrapData(
+    await eiraClient.POST('/api/v1/cambi-turno/{richiesta_id}/risposta-caposala', {
+      params: {
+        path: {
+          richiesta_id: id,
+        },
+      },
+      body: payload,
+    }),
+    'rispondiCaposala',
+  )
+
+  return wrapRichiestaCambioTurno(data)
 }

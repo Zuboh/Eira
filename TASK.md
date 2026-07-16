@@ -111,6 +111,75 @@ Report visuale generato in
       concentrare token persistence, hydration, 401 e landing route per
       ruolo fuori da router/store/client sparsi.
 
+### Frontend — code refactor plan (2026-07-16)
+
+Piano operativo scritto in `docs/FRONTEND-CODE-REFACTOR.md`. Obiettivo:
+ridurre debito architetturale senza bloccare la demo, con fasi
+incrementali sempre compilabili.
+
+- [ ] **Fase 0 — baseline/guardrail**: script `typecheck`, README
+      frontend reale, pulizia file OS, build sempre verde.
+- [ ] **Fase 1 — quick wins accessibilità/performance**: link
+      accessibili nelle tabelle, doppio fetch banca ore, aria-label su
+      icon button, wrapper responsive per tabelle larghe, lookup
+      computed nel calendario caposala.
+- [x] **Fase 2 — mini UI layer**: `PageHeader`, `InlineError`,
+      `EmptyState`, `EiraTable`, `FormField`, `EiraCard`.
+- [x] **Fase 3 — session/routing espliciti**: route metadata ruoli,
+      landing route per ruolo, nav derivata da config condivisa,
+      session status esplicito.
+- [x] **Fase 4 — OpenAPI data-fetching module**: allineare ad
+      ADR-0003 (`openapi-typescript` + `openapi-fetch`), poi rimuovere
+      axios se non resta usato.
+- [ ] **Fase 5 — feature composables**: sgonfiare `LoginView`,
+      `SchedaPazienteView`, cambio turno, staff workflow.
+- [ ] **Fase 6 — over-fetch reduction**: dashboard/scheda paziente con
+      query dedicate o mappe computed e fetch paralleli/cancellabili.
+- [ ] **Fase 7 — token/responsive governance**: allineare
+      `docs/DESIGN.md`, `style.css`, PrimeVue preset e AppShell mobile.
+
+Avvio implementazione:
+
+- [x] Aggiunto script `frontend` `typecheck`.
+- [x] `PazientiView`: riga cliccabile sostituita con `RouterLink`
+      accessibile + wrapper tabella con overflow interno.
+- [x] `BancaOreView`: evitato doppio fetch iniziale caposala.
+- [x] `BancaOreView`: aggiunti `aria-label` ai bottoni mese
+      precedente/successivo.
+- [x] `SchedaPazienteView`: aggiunti wrapper responsive alle tabelle
+      CEDEMA, Norton, Conley e storico SBAR.
+- [x] `ConsegneSbarView`: aggiunto wrapper responsive alla tabella
+      consegne.
+- [x] `DashboardView` caposala: normalizzato calendario in computed
+      `righeCalendario` ed evitati lookup `.find()` ripetuti nel
+      render loop.
+- [x] Creati componenti UI comuni `InlineError`, `EmptyState`,
+      `PageHeader`, `EiraCard`, `EiraTable`, `FormField`.
+- [x] Migrata view pilota `BancaOreView` su componenti UI comuni.
+- [x] Migrata seconda view `PazientiView` su `PageHeader`,
+      `InlineError`, `EmptyState`, `EiraTable`, `FormField`.
+- [x] `stores/auth`: aggiunto stato sessione esplicito
+      `unknown|authenticated|anonymous`, `ensureSession`,
+      `clearSession`, `landingRoute`.
+- [x] `router/index`: aggiunti metadata `roles`/`nav`, redirect
+      diretto `/` e `/login` verso dashboard ruolo quando autenticato.
+- [x] `AppShell`: nav derivata dai metadata route invece che da array
+      hardcoded locale.
+- [x] `LoginView`: persistenza reparto dispositivo migrata su
+      `features/session/useDeviceReparto`.
+- [x] Fase 4 avviata: installati `openapi-fetch` +
+      `openapi-typescript`, generati `api/openapi.json` e
+      `api/schema.d.ts`.
+- [x] Creato `api/eiraClient.ts` tipizzato OpenAPI con auth header e
+      401 → clear session.
+- [x] Migrati a OpenAPI client mantenendo shape `{ data }`:
+      `bancaOre`, `reparti`, `pazienti`.
+- [x] Migrati a OpenAPI client mantenendo shape `{ data }`:
+      `auth`, `turni`, `consegneSbar`, `cambiTurno`, `utenti`,
+      `dashboard`, `diarioCedema`, `valutazioni`.
+- [x] Rimosso vecchio `api/client.ts` axios e rimossa dependency
+      `axios` da `package.json`/lock.
+
 ## Diagrammi / documentazione tesi
 
 - [x] ER/UML in draw.io (`docs/diagrams/er-consegne-infermieristiche.drawio`) — 11 entità, relazioni complete (aggiunte 2 mancanti: autore_id su Norton/Conley), validato
