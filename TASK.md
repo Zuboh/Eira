@@ -11,6 +11,15 @@ fare sul codice.
       bytes` su qualsiasi input). Blocca login/creazione utenti.
       Fix: rimosso passlib, `bcrypt` diretto (passlib inadatto,
       nessuna release supporta bcrypt 5.x).
+- [x] DB vuoto → app inutilizzabile: nessun endpoint crea `reparto`,
+      `POST /auth/register` crea solo `infermiere` in `in_attesa`, ogni
+      mutazione richiede `require_roles(caposala)` — nessun percorso
+      legale verso un primo utente. Fix: `main.py:_seed_dev_data`
+      su startup, idempotente (check by role, non by table-empty) —
+      garantisce reparti (`seed_reparto_nome`,
+      `seed_secondo_reparto_nome`), un caposala e un infermiere attivi
+      con `ProfiloInfermiere`; id/credenziali in `.env`
+      (`seed_*_password`), stampati in log `[seed] ...` all'avvio.
 
 ## Backend — persistenza DB reale
 
@@ -29,9 +38,6 @@ puri (dati finti, nessuna query DB):
 
 ## Feature core (da requisiti progetto)
 
-- [ ] Priorità urgenza su consegna SBAR (`priorità: normale|urgente`) — campo già in schema? verificare
-- [ ] Dashboard caposala: turni scoperti + richieste cambio turno in attesa (badge/lista in-app)
-- [ ] Scoping ruolo: infermiere vede solo pazienti/consegne del proprio turno assegnato (oggi query non filtrano per turno, solo per reparto)
 - [ ] **Parametri vitali** (stretch/mock, v. Note) — nuova entità `ParametriVitali`, stesso pattern di `diario_cedema.py` (paziente-scoped, `turno_id` opzionale verificato stesso reparto, `autore_id`, `timestamp`):
   - `temperatura` (°C), `frequenza_cardiaca` (bpm), `pressione_sistolica`/`pressione_diastolica` (mmHg), `frequenza_respiratoria` (atti/min), `saturazione_o2` (%)
   - `stato_coscienza`: nuovo enum AVPU `StatoCoscienza` — `vigile | verbale | dolore | coma`
@@ -74,14 +80,14 @@ design su semantica "turno attivo").
 
 ## Frontend
 
-- [ ] Route guard (`router/index.ts`) — verificare blocchi davvero non autenticati, non solo skeleton
-- [ ] `LoginView` → collegare a `POST /auth/token` reale (bloccato da bug hash sopra per test end-to-end)
+- [x] Route guard (`router/index.ts`) — reale: redirect non-autenticati a `/login`, `fetchMe` con fallback logout, redirect per ruolo
+- [x] `LoginView` → collegato a `POST /auth/token` reale via `stores/auth.ts` + `api/auth.ts` (bug hash sopra fixato)
 - [ ] Dashboard infermiere — collegare a dati reali (`mie-assegnazioni`, consegne, CEDEMA)
 - [ ] Dashboard caposala — calendario turni, assegnazione, scoperti, cambi turno in attesa
-- [ ] Vista consegna SBAR (form + lettura)
-- [ ] Vista valutazioni Norton/Conley (dashboard multidimensionale per paziente)
-- [ ] Vista cambio turno (richiesta + risposta collega + approvazione caposala)
-- [ ] Vista banca ore (saldo mensile infermiere)
+- [x] Vista consegna SBAR (form + lettura) — `ConsegneSbarView.vue`, verificata end-to-end
+- [x] Vista valutazioni Norton/Conley (dashboard multidimensionale per paziente) — tab in `SchedaPazienteView.vue`, non ancora verificata end-to-end (creazione CEDEMA/Norton/Conley)
+- [x] Vista cambio turno (richiesta + risposta collega + approvazione caposala) — `CambioTurnoView.vue`, non ancora verificata end-to-end (serve secondo account infermiere)
+- [x] Vista banca ore (saldo mensile infermiere) — `BancaOreView.vue`, non ancora verificata end-to-end (solo code review)
 - [ ] Applicare branding da `docs/DESIGN.md` (Google Stitch) — style.css ha `--logo-accent` non ancora usato in componenti
 
 ### Frontend — architecture review (2026-07-14)

@@ -35,6 +35,32 @@ const router = createRouter({
       meta: { ruolo: 'caposala' },
     },
     {
+      path: '/pazienti',
+      name: 'pazienti',
+      component: () => import('@/views/PazientiView.vue'),
+    },
+    {
+      path: '/pazienti/:id',
+      name: 'paziente-scheda',
+      component: () => import('@/views/SchedaPazienteView.vue'),
+      props: true,
+    },
+    {
+      path: '/consegne-sbar',
+      name: 'consegne-sbar',
+      component: () => import('@/views/ConsegneSbarView.vue'),
+    },
+    {
+      path: '/cambio-turno',
+      name: 'cambio-turno',
+      component: () => import('@/views/CambioTurnoView.vue'),
+    },
+    {
+      path: '/banca-ore',
+      name: 'banca-ore',
+      component: () => import('@/views/BancaOreView.vue'),
+    },
+    {
       path: '/',
       redirect: '/login',
     },
