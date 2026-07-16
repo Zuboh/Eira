@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import Button from 'primevue/button'
+import EiraTable from '@/components/ui/EiraTable.vue'
+import InlineError from '@/components/ui/InlineError.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
 import TemporaryPasswordNotice from '@/features/staff/TemporaryPasswordNotice.vue'
 import { useStaffWorkflow } from '@/features/staff/useStaffWorkflow'
 
@@ -23,7 +26,7 @@ onMounted(load)
 
 <template>
   <div class="staff-view">
-    <h1>Personale</h1>
+    <PageHeader title="Personale" />
 
     <div class="filtri">
       <button
@@ -38,51 +41,51 @@ onMounted(load)
       </button>
     </div>
 
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <InlineError :message="error" />
 
-    <table v-if="!loading && filtrati.length > 0" class="staff-table">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Cognome</th>
-          <th>Email</th>
-          <th>Ruolo</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="utente in filtrati" :key="utente.id">
-          <td>{{ utente.nome }}</td>
-          <td>{{ utente.cognome }}</td>
-          <td>{{ utente.email }}</td>
-          <td>{{ utente.ruolo }}</td>
-          <td>
-            <Button
-              v-if="utente.stato === 'in_attesa'"
-              label="Approva"
-              size="small"
-              @click="approva(utente)"
-            />
-            <Button
-              v-else-if="utente.stato === 'attivo' && utente.ruolo === 'infermiere'"
-              label="Reimposta password"
-              size="small"
-              severity="secondary"
-              :loading="resetLoadingId === utente.id"
-              @click="reimpostaPassword(utente)"
-            />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <EiraTable v-if="!loading" :empty="filtrati.length === 0" empty-message="Nessun utente in questo filtro.">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Email</th>
+            <th>Ruolo</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="utente in filtrati" :key="utente.id">
+            <td>{{ utente.nome }}</td>
+            <td>{{ utente.cognome }}</td>
+            <td>{{ utente.email }}</td>
+            <td>{{ utente.ruolo }}</td>
+            <td>
+              <Button
+                v-if="utente.stato === 'in_attesa'"
+                label="Approva"
+                size="small"
+                @click="approva(utente)"
+              />
+              <Button
+                v-else-if="utente.stato === 'attivo' && utente.ruolo === 'infermiere'"
+                label="Reimposta password"
+                size="small"
+                severity="secondary"
+                :loading="resetLoadingId === utente.id"
+                @click="reimpostaPassword(utente)"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </EiraTable>
 
     <TemporaryPasswordNotice
       v-if="temporaryPassword"
       :password="temporaryPassword"
       @copy="copiaPassword"
     />
-
-    <p v-if="!loading && filtrati.length === 0" class="hint">Nessun utente in questo filtro.</p>
   </div>
 </template>
 
@@ -118,33 +121,4 @@ onMounted(load)
   color: var(--color-on-primary);
 }
 
-.staff-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.staff-table th {
-  text-align: left;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.staff-table td {
-  padding: 8px 12px;
-  border-top: 1px solid var(--border);
-  font-size: 0.9375rem;
-}
-
-.error {
-  color: var(--state-urgente);
-  font-size: 0.8125rem;
-}
-
-.hint {
-  color: var(--steel);
-  font-size: 0.875rem;
-}
 </style>
