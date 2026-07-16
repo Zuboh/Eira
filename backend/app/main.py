@@ -1,9 +1,14 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 import app.models  # noqa: F401 — registra tutti i modelli su Base.metadata
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
+from app.core.rate_limit import limiter
 from app.core.security import hash_password
 from app.models.enums import RuoloUtente, StatoUtente
 from app.models.profilo_infermiere import ProfiloInfermiere
@@ -24,6 +29,9 @@ from app.routers import (
 )
 
 app = FastAPI(title="Consegne Infermieristiche API", version="0.1.0")
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -46,9 +54,17 @@ app.include_router(banca_ore.router, prefix=API_V1_PREFIX)
 app.include_router(dashboard.router, prefix=API_V1_PREFIX)
 app.include_router(reparti.router, prefix=API_V1_PREFIX)
 
+logger = logging.getLogger("uvicorn.error")
+
 
 @app.on_event("startup")
 def on_startup() -> None:
+    if settings.jwt_secret_key == "dev-secret-change-in-production":
+        logger.warning(
+            "JWT_SECRET_KEY non impostata: uso il default di sviluppo. "
+            "Token firmati con questo secret sono forgeabili da chiunque conosca "
+            "il codice sorgente. Impostare JWT_SECRET_KEY prima di qualunque deploy."
+        )
     Base.metadata.create_all(bind=engine)
     _seed_dev_data()
 

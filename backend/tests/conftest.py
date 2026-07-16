@@ -4,13 +4,24 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
+from app.core import login_attempts
 from app.core.database import Base
+from app.core.rate_limit import limiter
 from app.core.security import hash_password
 from app.deps import get_db
 from app.main import app
 from app.models.enums import RuoloUtente
 from app.models.reparto import Reparto
 from app.models.utente import Utente
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limit_state():
+    limiter.reset()
+    login_attempts.reset()
+    yield
+    limiter.reset()
+    login_attempts.reset()
 
 
 @pytest.fixture()
