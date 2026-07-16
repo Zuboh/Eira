@@ -96,7 +96,7 @@ const router = createRouter({
       path: '/banca-ore',
       name: 'banca-ore',
       component: () => import('@/views/BancaOreView.vue'),
-      meta: { roles: ALL_ROLES, nav: { label: 'Banca Ore', order: 50 } },
+      meta: { roles: ['caposala'], nav: { label: 'Banca Ore', order: 50 } },
     },
   ],
 })

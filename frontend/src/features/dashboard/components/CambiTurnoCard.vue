@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import EiraCard from '@/components/ui/EiraCard.vue'
 import EiraTable from '@/components/ui/EiraTable.vue'
+import DashboardSectionHeader from '@/features/dashboard/components/DashboardSectionHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import type { RichiestaCambioTurno } from '@/api/cambiTurno'
 
@@ -20,10 +20,7 @@ const emit = defineEmits<{
 
 <template>
   <EiraCard class="dashboard-card">
-    <div class="section-header">
-      <h2>Cambi turno in attesa</h2>
-      <RouterLink :to="{ name: 'cambio-turno' }" class="see-all">Vedi tutti</RouterLink>
-    </div>
+    <DashboardSectionHeader title="Cambi turno in attesa" route-name="cambio-turno" link-label="Vedi tutti" />
     <EiraTable v-if="!loading" :empty="richieste.length === 0" empty-message="Nessun cambio turno in attesa.">
       <table>
         <thead>
@@ -50,26 +47,6 @@ const emit = defineEmits<{
 <style scoped>
 .dashboard-card {
   margin-top: 24px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.section-header h2 {
-  margin: 0;
-  font-size: 1.0625rem;
-}
-
-.see-all {
-  color: var(--steel);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  text-decoration: none;
 }
 
 .actions {

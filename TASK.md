@@ -263,6 +263,9 @@ rispettivi feature modules.
 - [x] **Fase DM-14 — Dashboard infermiere feature split**:
       estratti `useInfermiereDashboard`, quick links e card presentational per
       prossimi turni, SBAR recenti e pazienti attivi; view ridotta a wiring.
+- [x] **Fase DM-15 — Dashboard consolidation**:
+      `Banca Ore` rimossa dalla nav infermiere/lasciata caposala; estratto
+      header sezione dashboard condiviso per card con link "vedi".
 
 ## Diagrammi / documentazione tesi
 
