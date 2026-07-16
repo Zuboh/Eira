@@ -242,6 +242,9 @@ rispettivi feature modules.
 - [x] **Fase DM-7 — Patient chart dialogs/form module**:
       create `features/patient-chart/types.ts`, `form.ts` e dialog componenti;
       `SchedaPazienteView` ridotta a route/tabs/dialog wiring.
+- [x] **Fase DM-8 — Patient chart composable split**:
+      split `usePatientChart` in query state, dialog mutations e lazy SBAR
+      composables; il composable pubblico resta una facade stabile per la view.
 
 ## Diagrammi / documentazione tesi
 
