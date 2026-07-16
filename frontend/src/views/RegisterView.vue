@@ -140,7 +140,7 @@ onMounted(async () => {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 32px;
+  padding: var(--page-padding);
   display: flex;
   flex-direction: column;
   gap: 16px;

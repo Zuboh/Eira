@@ -24,6 +24,8 @@
   --border: rgba(226, 232, 240, 0.5);
 
   --color-primary: #3b82f6;
+  --color-on-primary: #ffffff;
+  --color-on-danger: #ffffff;
 
   /* Stati semantici — docs/DESIGN.md sez. 3 */
   --state-urgente: #dc2626;
@@ -34,6 +36,23 @@
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   --radius: 0.625rem;
   --radius-sm: 0.5rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --size-touch: 2.75rem;
+  --page-sm: 56.25rem;
+  --page-md: 60rem;
+  --page-lg: 75rem;
+  --page-xl: 87.5rem;
+  --page-padding: clamp(var(--space-4), 3vw, var(--space-8));
+  --table-min-wide: 47.5rem;
+  --dialog-sm: 24rem;
+  --dialog-md: 28rem;
+  --dialog-lg: 32rem;
 
   --sans: 'Geist', system-ui, sans-serif;
   --mono: 'Geist Mono', ui-monospace, monospace;

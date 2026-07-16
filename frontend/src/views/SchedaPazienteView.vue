@@ -12,6 +12,7 @@ import TabList from 'primevue/tablist'
 import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
+import { dialogStyle } from '@/components/ui/dialogStyles'
 import StatusBadge from '@/components/StatusBadge.vue'
 import CedemaTab from '@/features/patient-chart/components/CedemaTab.vue'
 import ValutazioniTab from '@/features/patient-chart/components/ValutazioniTab.vue'
@@ -118,7 +119,7 @@ onMounted(load)
       </Tabs>
     </template>
 
-    <Dialog v-model:visible="editing" header="Modifica paziente" modal :style="{ width: '24rem' }">
+    <Dialog v-model:visible="editing" header="Modifica paziente" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="salvaEdit">
         <label>Letto<InputText v-model="editForm.letto" required /></label>
         <label>Diagnosi ingresso<InputText v-model="editForm.diagnosi_ingresso" required /></label>
@@ -129,7 +130,7 @@ onMounted(load)
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="cedemaDialog" header="Nuova voce CEDEMA" modal :style="{ width: '28rem' }">
+    <Dialog v-model:visible="cedemaDialog" header="Nuova voce CEDEMA" modal :style="dialogStyle.md">
       <form class="form" @submit.prevent="salvaCedema">
         <label v-if="assegnazioni.length > 0">
           Turno (opzionale)
@@ -145,7 +146,7 @@ onMounted(load)
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="nortonDialog" header="Nuova valutazione Norton" modal :style="{ width: '24rem' }">
+    <Dialog v-model:visible="nortonDialog" header="Nuova valutazione Norton" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="salvaNorton">
         <label>Data<InputText v-model="nortonForm.data_valutazione" type="date" required /></label>
         <label>Condizioni generali (1-4)<InputNumber v-model="nortonForm.condizioni_generali" :min="1" :max="4" /></label>
@@ -157,7 +158,7 @@ onMounted(load)
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="conleyDialog" header="Nuova valutazione Conley" modal :style="{ width: '24rem' }">
+    <Dialog v-model:visible="conleyDialog" header="Nuova valutazione Conley" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="salvaConley">
         <label>Data<InputText v-model="conleyForm.data_valutazione" type="date" required /></label>
         <label>Storia cadute<InputNumber v-model="conleyForm.storia_cadute" :min="0" /></label>
@@ -174,7 +175,7 @@ onMounted(load)
 
 <style scoped>
 .scheda-view {
-  padding: 32px;
+  padding: var(--page-padding);
   max-width: 1200px;
   margin: 0 auto;
 }

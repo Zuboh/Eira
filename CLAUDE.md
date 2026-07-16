@@ -209,18 +209,16 @@ Completed:
 - Fase 4 — OpenAPI data-fetching module.
 - Fase 5 — feature composables.
 - Fase 6 — over-fetch reduction frontend-only.
+- Fase 7 — token/responsive governance.
 
 Remaining from `docs/FRONTEND-CODE-REFACTOR.md`:
 
-- Fase 7 — token/responsive governance.
+- Manual viewport validation on real devices/browser, if needed.
+- Backend/API aggregate endpoints for true over-fetch elimination, if the task explicitly spans backend.
 
 ## Recommended next frontend work
 
-1. Fase 7:
-   - add missing semantic tokens such as `--on-accent` / `--on-danger` if needed;
-   - remove hardcoded colors;
-   - improve `AppShell` responsive behavior.
-2. Backend/API follow-up for Fase 6 if the task explicitly spans backend:
+1. Backend/API follow-up for Fase 6 if the task explicitly spans backend:
    - add `GET /dashboard/infermiere`;
    - add patient-scoped SBAR endpoint, e.g. `GET /pazienti/{id}/consegne-sbar`;
    - add filtered list query parameters for users/patients/SBAR where needed.

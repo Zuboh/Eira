@@ -88,7 +88,9 @@ design su semantica "turno attivo").
 - [x] Vista valutazioni Norton/Conley (dashboard multidimensionale per paziente) — tab in `SchedaPazienteView.vue`, non ancora verificata end-to-end (creazione CEDEMA/Norton/Conley)
 - [x] Vista cambio turno (richiesta + risposta collega + approvazione caposala) — `CambioTurnoView.vue`, non ancora verificata end-to-end (serve secondo account infermiere)
 - [x] Vista banca ore (saldo mensile infermiere) — `BancaOreView.vue`, non ancora verificata end-to-end (solo code review)
-- [ ] Applicare branding da `docs/DESIGN.md` (Google Stitch) — style.css ha `--logo-accent` non ancora usato in componenti
+- [x] Applicare branding da `docs/DESIGN.md` (Google Stitch) — verificato:
+      non serve `--logo-accent`; il design system usa `--color-primary`
+      come unico accent swappabile.
 
 ### Frontend — architecture review (2026-07-14)
 
@@ -135,7 +137,7 @@ incrementali sempre compilabili.
       `SchedaPazienteView`, cambio turno, staff workflow.
 - [x] **Fase 6 — over-fetch reduction**: dashboard/scheda paziente con
       query dedicate o mappe computed e fetch paralleli/cancellabili.
-- [ ] **Fase 7 — token/responsive governance**: allineare
+- [x] **Fase 7 — token/responsive governance**: allineare
       `docs/DESIGN.md`, `style.css`, PrimeVue preset e AppShell mobile.
 
 Avvio implementazione:
@@ -160,6 +162,10 @@ Avvio implementazione:
       assegnati caricati solo quando si apre il dialog nuova consegna.
 - [x] `SchedaPazienteView`: storico SBAR caricato lazy solo quando si
       apre la tab, in attesa di endpoint paziente-dedicato.
+- [x] Fase 7: aggiunti token spacing/layout/dialog/on-color in
+      `style.css`, `AppShell` responsive tablet/mobile, dialog sizing
+      governato da helper condiviso, rimossi raw `#fff`/fallback
+      primary dalle view.
 - [x] Creati componenti UI comuni `InlineError`, `EmptyState`,
       `PageHeader`, `EiraCard`, `EiraTable`, `FormField`.
 - [x] Migrata view pilota `BancaOreView` su componenti UI comuni.

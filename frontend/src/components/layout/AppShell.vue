@@ -52,16 +52,17 @@ function logout() {
 .app-shell {
   display: flex;
   min-height: 100dvh;
+  background: var(--canvas);
 }
 
 .sidebar {
-  width: 220px;
+  width: 13.75rem;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border);
   background: var(--surface);
-  padding: 20px 12px;
+  padding: var(--space-5) var(--space-3);
 }
 
 .brand {
@@ -69,21 +70,21 @@ function logout() {
   font-weight: 700;
   font-size: 1.125rem;
   color: var(--ink);
-  padding: 8px 12px 20px;
+  padding: var(--space-2) var(--space-3) var(--space-5);
 }
 
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   flex: 1;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  min-height: 44px;
-  padding: 0 12px;
+  min-height: var(--size-touch);
+  padding: 0 var(--space-3);
   border-radius: var(--radius-sm);
   color: var(--steel);
   text-decoration: none;
@@ -103,8 +104,8 @@ function logout() {
 }
 
 .logout {
-  min-height: 44px;
-  padding: 0 12px;
+  min-height: var(--size-touch);
+  padding: 0 var(--space-3);
   border: none;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -126,5 +127,51 @@ function logout() {
 .content {
   flex: 1;
   min-width: 0;
+}
+
+@media (max-width: 48rem) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-2);
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-2);
+  }
+
+  .brand {
+    flex: 0 0 auto;
+    padding: 0 var(--space-2);
+  }
+
+  .nav {
+    min-width: 0;
+    flex-direction: row;
+    gap: var(--space-1);
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .nav-link {
+    flex: 0 0 auto;
+    min-height: 2.5rem;
+    padding-inline: var(--space-3);
+    white-space: nowrap;
+  }
+
+  .logout {
+    flex: 0 0 auto;
+    min-height: 2.5rem;
+    padding-inline: var(--space-3);
+    white-space: nowrap;
+  }
 }
 </style>

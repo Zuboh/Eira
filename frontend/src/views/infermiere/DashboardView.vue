@@ -155,7 +155,7 @@ onMounted(load)
 
 <style scoped>
 .dashboard-infermiere {
-  padding: 32px;
+  padding: var(--page-padding);
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -169,7 +169,7 @@ onMounted(load)
 
 .quick-link {
   padding: 8px 16px;
-  min-height: 44px;
+  min-height: var(--size-touch);
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--border);

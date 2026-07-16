@@ -88,20 +88,21 @@ onMounted(load)
 
 <style scoped>
 .staff-view {
-  padding: 32px;
+  padding: var(--page-padding);
   max-width: 960px;
   margin: 0 auto;
 }
 
 .filtri {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin: 16px 0;
 }
 
 .chip {
   padding: 6px 14px;
-  min-height: 44px;
+  min-height: var(--size-touch);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -112,9 +113,9 @@ onMounted(load)
 }
 
 .chip.active {
-  background: var(--color-primary, #3b82f6);
-  border-color: var(--color-primary, #3b82f6);
-  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .staff-table {

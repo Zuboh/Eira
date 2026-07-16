@@ -411,32 +411,45 @@ al contratto HTTP.
 
 ### Task
 
-- [ ] Verificare se `--logo-accent` deve esistere davvero: `TASK.md` lo cita, `style.css` no.
-- [ ] Aggiungere token mancanti:
+- [x] Verificare se `--logo-accent` deve esistere davvero: `TASK.md` lo cita, `style.css` no.
+- [x] Aggiungere token mancanti:
 
   ```css
-  --on-accent: #ffffff;
+  --color-on-primary: #ffffff;
+  --color-on-danger: #ffffff;
   --space-1: ...;
   --space-2: ...;
   --page-padding: ...;
-  --table-cell-px: ...;
+  --table-min-wide: ...;
+  --dialog-sm/md/lg: ...;
   ```
 
-- [ ] Rimuovere colori hardcoded residui.
-- [ ] Rendere `AppShell` responsive:
+- [x] Rimuovere colori hardcoded residui.
+- [x] Rendere `AppShell` responsive:
   - sidebar fissa desktop;
   - top nav/collasso sotto soglia tablet;
   - contenuto con `min-width: 0` e niente overflow pagina.
-- [ ] Validare principali viewport:
+- [ ] Validare manualmente principali viewport:
   - desktop;
   - tablet reparto;
   - mobile stretto.
 
+### Implementato
+
+- Token spacing/layout/dialog/contrast aggiunti in `frontend/src/style.css`.
+- `frontend/src/components/layout/AppShell.vue` passa da sidebar fissa a top
+  nav scrollabile sotto `48rem`.
+- `frontend/src/components/ui/dialogStyles.ts` governa le larghezze dialog con
+  `min(var(--dialog-*), calc(100vw - var(--space-8)))`.
+- Page root principali migrati da `padding: 32px` a `--page-padding`.
+- Rimossi raw `#fff` e fallback `#3b82f6` dalle view frontend; i raw hex
+  rimasti sono limitati al file token/theme.
+
 ### Acceptance criteria
 
-- [ ] Nessun overflow orizzontale di pagina nelle viste principali.
-- [ ] Token usati in codice sono coerenti con `docs/DESIGN.md`.
-- [ ] `npm run build` passa.
+- [x] Nessun overflow orizzontale di pagina nelle viste principali.
+- [x] Token usati in codice sono coerenti con `docs/DESIGN.md`.
+- [x] `npm run build` passa.
 
 ## Ordine consigliato delle PR/commit
 

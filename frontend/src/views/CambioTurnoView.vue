@@ -5,6 +5,7 @@ import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import InputText from 'primevue/inputtext'
 import { useAuthStore } from '@/stores/auth'
+import { dialogStyle } from '@/components/ui/dialogStyles'
 import StatusBadge from '@/components/StatusBadge.vue'
 import { useCambiTurno } from '@/features/cambi-turno/useCambiTurno'
 
@@ -67,7 +68,7 @@ onMounted(load)
     </table>
     <p v-else-if="!loading" class="hint">Nessuna richiesta di cambio turno.</p>
 
-    <Dialog v-model:visible="dialogOpen" header="Richiedi cambio turno" modal :style="{ width: '24rem' }">
+    <Dialog v-model:visible="dialogOpen" header="Richiedi cambio turno" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="salva">
         <label>
           Tuo turno
@@ -81,7 +82,7 @@ onMounted(load)
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="rifiutoDialog" header="Motivo rifiuto" modal :style="{ width: '24rem' }">
+    <Dialog v-model:visible="rifiutoDialog" header="Motivo rifiuto" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="confermaRifiuto">
         <label>Motivo<InputText v-model="motivoRifiuto" /></label>
         <Button type="submit" label="Conferma rifiuto" severity="secondary" />
@@ -92,7 +93,7 @@ onMounted(load)
 
 <style scoped>
 .cambio-view {
-  padding: 32px;
+  padding: var(--page-padding);
   max-width: 1200px;
   margin: 0 auto;
 }

@@ -195,7 +195,7 @@ const {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 32px;
+  padding: var(--page-padding);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -223,7 +223,7 @@ const {
 
 .reparto-item {
   width: 100%;
-  min-height: 44px;
+  min-height: var(--size-touch);
   text-align: left;
   padding: 12px 16px;
   background: var(--canvas);
@@ -251,7 +251,7 @@ const {
 }
 
 .tile {
-  min-height: 44px;
+  min-height: var(--size-touch);
   padding: 16px 12px;
   background: var(--canvas);
   border: 1px solid var(--border);
@@ -341,6 +341,6 @@ const {
   text-decoration: underline;
   cursor: pointer;
   align-self: flex-start;
-  min-height: 44px;
+  min-height: var(--size-touch);
 }
 </style>

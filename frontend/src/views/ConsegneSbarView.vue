@@ -5,6 +5,7 @@ import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import { useAuthStore } from '@/stores/auth'
+import { dialogStyle } from '@/components/ui/dialogStyles'
 import StatusBadge from '@/components/StatusBadge.vue'
 import {
   listConsegneSbar,
@@ -174,7 +175,7 @@ onMounted(load)
     </div>
     <p v-else-if="!loading" class="hint">Nessuna consegna SBAR.</p>
 
-    <Dialog v-model:visible="dialogOpen" :header="editingId ? 'Modifica consegna' : 'Nuova consegna'" modal :style="{ width: '32rem' }">
+    <Dialog v-model:visible="dialogOpen" :header="editingId ? 'Modifica consegna' : 'Nuova consegna'" modal :style="dialogStyle.lg">
       <form class="form" @submit.prevent="salva">
         <template v-if="!editingId">
           <label>
@@ -199,7 +200,7 @@ onMounted(load)
 
 <style scoped>
 .sbar-view {
-  padding: 32px;
+  padding: var(--page-padding);
   max-width: 1200px;
   margin: 0 auto;
 }

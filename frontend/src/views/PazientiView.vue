@@ -12,6 +12,7 @@ import EiraTable from '@/components/ui/EiraTable.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import FormField from '@/components/ui/FormField.vue'
 import InlineError from '@/components/ui/InlineError.vue'
+import { dialogStyle } from '@/components/ui/dialogStyles'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import { listPazienti, createPaziente, type Paziente } from '@/api/pazienti'
 
@@ -135,7 +136,7 @@ onMounted(load)
       message="Quando saranno creati pazienti attivi, appariranno in questa lista."
     />
 
-    <Dialog v-model:visible="dialogOpen" header="Nuovo paziente" modal :style="{ width: '28rem' }">
+    <Dialog v-model:visible="dialogOpen" header="Nuovo paziente" modal :style="dialogStyle.md">
       <form class="form" @submit.prevent="salva">
         <FormField label="Nome" forId="paziente-nome" required>
           <InputText id="paziente-nome" v-model="form.nome" required />
@@ -163,7 +164,7 @@ onMounted(load)
 
 <style scoped>
 .pazienti-view {
-  padding: 32px;
+  padding: var(--page-padding);
   max-width: 1200px;
   margin: 0 auto;
 }

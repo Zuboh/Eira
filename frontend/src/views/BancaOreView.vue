@@ -111,7 +111,7 @@ const saldoLabel = computed(() => {
 
 <style scoped>
 .banca-ore-view {
-  padding: 32px;
+  padding: var(--page-padding);
   max-width: 900px;
   margin: 0 auto;
 }

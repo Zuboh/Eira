@@ -5,6 +5,7 @@ import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import InputText from 'primevue/inputtext'
+import { dialogStyle } from '@/components/ui/dialogStyles'
 import StatusBadge from '@/components/StatusBadge.vue'
 import { listUtenti, type Utente } from '@/api/utenti'
 import { getDashboardCaposala, type DashboardCaposala } from '@/api/dashboard'
@@ -216,7 +217,7 @@ onMounted(load)
       <p v-else-if="!loading" class="hint">Nessun turno pianificato.</p>
     </section>
 
-    <Dialog v-model:visible="assegnaDialog" header="Assegna turno" modal :style="{ width: '24rem' }">
+    <Dialog v-model:visible="assegnaDialog" header="Assegna turno" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="confermaAssegna">
         <p v-if="assegnaTarget" class="hint">
           {{ formatData(assegnaTarget.data) }} · {{ TIPO_LABEL[assegnaTarget.tipo] }}
@@ -236,7 +237,7 @@ onMounted(load)
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="cambioTurnoRifiutoDialog" header="Motivo rifiuto" modal :style="{ width: '24rem' }">
+    <Dialog v-model:visible="cambioTurnoRifiutoDialog" header="Motivo rifiuto" modal :style="dialogStyle.sm">
       <form class="form" @submit.prevent="confermaRifiutoCambioTurno">
         <label>Motivo<InputText v-model="cambioTurnoMotivoRifiuto" /></label>
         <Button type="submit" label="Conferma rifiuto" severity="secondary" />
@@ -247,7 +248,7 @@ onMounted(load)
 
 <style scoped>
 .dashboard-caposala {
-  padding: 32px;
+  padding: var(--page-padding);
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -263,7 +264,7 @@ onMounted(load)
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  min-height: 44px;
+  min-height: var(--size-touch);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -281,7 +282,7 @@ onMounted(load)
   padding: 0 6px;
   border-radius: 999px;
   background: var(--state-urgente);
-  color: #fff;
+  color: var(--color-on-danger);
   font-size: 0.75rem;
   font-weight: 700;
 }
