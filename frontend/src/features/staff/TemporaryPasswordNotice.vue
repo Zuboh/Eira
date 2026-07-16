@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
+import type {
+  TemporaryPasswordNoticeEmits,
+  TemporaryPasswordNoticeProps,
+} from '@/features/staff/types'
 
-defineProps<{
-  password: string
-}>()
+defineProps<TemporaryPasswordNoticeProps>()
 
-const emit = defineEmits<{
-  copy: []
-}>()
+const emit = defineEmits<TemporaryPasswordNoticeEmits>()
 </script>
 
 <template>

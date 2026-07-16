@@ -254,6 +254,9 @@ rispettivi feature modules.
 - [x] **Fase DM-11 — Cambio turno presentational split**:
       estratti contratti/form mapping e componenti `CambiTurnoTable`,
       `NewCambioTurnoDialog`, `RifiutoCambioTurnoDialog`; view ridotta a wiring.
+- [x] **Fase DM-12 — Staff view presentational split**:
+      estratti contratti e componenti `StaffFilters`/`StaffTable`;
+      `StaffView` ridotta a wiring del workflow e notice password temporanea.
 
 ## Diagrammi / documentazione tesi
 

@@ -6,8 +6,9 @@ import {
   type StatoUtente,
   type Utente,
 } from '@/api/utenti'
+import type { StaffFilterOption } from '@/features/staff/types'
 
-export const staffFilters: { value: StatoUtente; label: string }[] = [
+export const staffFilters: StaffFilterOption[] = [
   { value: 'in_attesa', label: 'In attesa' },
   { value: 'attivo', label: 'Attivi' },
   { value: 'disattivato', label: 'Disattivati' },
