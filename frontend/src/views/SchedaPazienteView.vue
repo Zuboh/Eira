@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
@@ -28,6 +28,7 @@ const {
   norton,
   conley,
   consegne,
+  consegneLoaded,
   assegnazioni,
   editing,
   editForm,
@@ -43,6 +44,7 @@ const {
   canEditPatient,
   canCreateClinicalEntries,
   load,
+  loadConsegneSbar,
   apriEdit,
   salvaEdit,
   apriCedema,
@@ -52,6 +54,19 @@ const {
   apriConley,
   salvaConley,
 } = usePatientChart(pazienteId)
+
+const activeTab = ref('cedema')
+
+watch(activeTab, async (tab) => {
+  if (tab !== 'sbar' || consegneLoaded.value) return
+
+  try {
+    await loadConsegneSbar()
+  } catch {
+    // The composable keeps the page-level error for the primary chart load.
+    // Keep the lazy SBAR tab non-blocking until the backend exposes a patient-scoped endpoint.
+  }
+})
 
 onMounted(load)
 </script>
@@ -75,7 +90,7 @@ onMounted(load)
         </div>
       </div>
 
-      <Tabs value="cedema">
+      <Tabs v-model:value="activeTab">
         <TabList>
           <Tab value="cedema">CEDEMA</Tab>
           <Tab value="valutazioni">Valutazioni</Tab>

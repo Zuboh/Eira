@@ -133,7 +133,7 @@ incrementali sempre compilabili.
       axios se non resta usato.
 - [x] **Fase 5 — feature composables**: sgonfiare `LoginView`,
       `SchedaPazienteView`, cambio turno, staff workflow.
-- [ ] **Fase 6 — over-fetch reduction**: dashboard/scheda paziente con
+- [x] **Fase 6 — over-fetch reduction**: dashboard/scheda paziente con
       query dedicate o mappe computed e fetch paralleli/cancellabili.
 - [ ] **Fase 7 — token/responsive governance**: allineare
       `docs/DESIGN.md`, `style.css`, PrimeVue preset e AppShell mobile.
@@ -153,6 +153,13 @@ Avvio implementazione:
 - [x] `DashboardView` caposala: normalizzato calendario in computed
       `righeCalendario` ed evitati lookup `.find()` ripetuti nel
       render loop.
+- [x] `DashboardView` infermiere: lookup pazienti/turni spostati in
+      `computed Map`, stato locale ridotto a consegne recenti e pazienti
+      attivi mostrati dalla UI.
+- [x] `ConsegneSbarView`: lookup pazienti in `computed Map`; turni
+      assegnati caricati solo quando si apre il dialog nuova consegna.
+- [x] `SchedaPazienteView`: storico SBAR caricato lazy solo quando si
+      apre la tab, in attesa di endpoint paziente-dedicato.
 - [x] Creati componenti UI comuni `InlineError`, `EmptyState`,
       `PageHeader`, `EiraCard`, `EiraTable`, `FormField`.
 - [x] Migrata view pilota `BancaOreView` su componenti UI comuni.

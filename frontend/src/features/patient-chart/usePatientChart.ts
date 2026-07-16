@@ -76,6 +76,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
   const norton = ref<ValutazioneNorton[]>([])
   const conley = ref<ValutazioneConley[]>([])
   const consegne = ref<ConsegnaSbar[]>([])
+  const consegneLoaded = ref(false)
   const assegnazioni = ref<AssegnazioneTurno[]>([])
 
   const editing = ref(false)
@@ -100,17 +101,15 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     error.value = ''
     loading.value = true
     try {
-      const [p, d, v, s] = await Promise.all([
+      const [p, d, v] = await Promise.all([
         getPaziente(currentPazienteId.value),
         listDiarioCedema(currentPazienteId.value),
         getValutazioni(currentPazienteId.value),
-        listConsegneSbar(),
       ])
       paziente.value = p.data
       cedema.value = d.data
       norton.value = v.data.norton
       conley.value = v.data.conley
-      consegne.value = s.data.filter((c) => c.paziente_id === currentPazienteId.value)
       if (auth.ruolo === 'infermiere') {
         const a = await getMieAssegnazioni()
         assegnazioni.value = a.data
@@ -119,6 +118,19 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
       error.value = 'Impossibile caricare la scheda paziente.'
     } finally {
       loading.value = false
+    }
+  }
+
+  async function loadConsegneSbar() {
+    if (consegneLoaded.value) return
+
+    try {
+      const { data } = await listConsegneSbar()
+      consegne.value = data.filter((c) => c.paziente_id === currentPazienteId.value)
+      consegneLoaded.value = true
+    } catch {
+      error.value = 'Impossibile caricare lo storico SBAR.'
+      throw new Error(error.value)
     }
   }
 
@@ -203,6 +215,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     norton,
     conley,
     consegne,
+    consegneLoaded,
     assegnazioni,
     editing,
     editForm,
@@ -218,6 +231,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     canEditPatient,
     canCreateClinicalEntries,
     load,
+    loadConsegneSbar,
     apriEdit,
     salvaEdit,
     apriCedema,

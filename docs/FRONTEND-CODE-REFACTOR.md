@@ -111,7 +111,7 @@ Questo piano rende il refactor incrementale: ogni fase deve lasciare l'app compi
 - [ ] Navigazione paziente accessibile da tastiera.
 - [ ] Nessun doppio `GET /banca-ore/{id}` all'apertura caposala.
 - [ ] Tabelle principali non causano overflow orizzontale della pagina.
-- [ ] `npm run build` passa.
+- [x] `npm run build` passa.
 
 ## Fase 2 — Mini UI layer interno
 
@@ -362,6 +362,10 @@ frontend/src/features/
 
 **Obiettivo:** ridurre `list tutto + join client-side` nelle schermate operative.
 
+**Stato:** completata la quota frontend-only. Restano candidati backend/API
+per eliminare davvero i payload globali quando il progetto consente modifiche
+al contratto HTTP.
+
 ### Candidati backend/API
 
 - [ ] `GET /dashboard/infermiere`
@@ -370,7 +374,7 @@ frontend/src/features/
 
 ### Candidati frontend-only se non si cambia backend
 
-- [ ] Query composables con mappe computed:
+- [x] Query composables con mappe computed:
 
   ```ts
   const pazientiById = computed(() => new Map(pazienti.value.map((p) => [p.id, p])))
@@ -378,14 +382,28 @@ frontend/src/features/
   const turniById = computed(() => new Map(turni.value.map((t) => [t.id, t])))
   ```
 
-- [ ] Evitare chiamate sequenziali quando possono stare nello stesso `Promise.all` condizionale.
+- [x] Evitare chiamate sequenziali quando possono stare nello stesso `Promise.all` condizionale.
 - [ ] Introdurre cancellation/ignore stale response nei fetch dipendenti da filtri.
+
+### Implementato frontend-only
+
+- `frontend/src/views/infermiere/DashboardView.vue`
+  - lookup `turni`/`pazienti` via `computed Map`;
+  - stato locale ridotto a consegne recenti e pazienti attivi usati dalla UI.
+- `frontend/src/views/ConsegneSbarView.vue`
+  - lookup pazienti via `computed Map`;
+  - `getMieAssegnazioni()` spostato dal load iniziale all'apertura del dialog
+    “Nuova consegna”.
+- `frontend/src/features/patient-chart/usePatientChart.ts`
+  - storico SBAR tolto dal load iniziale della scheda paziente;
+  - fetch globale delle consegne eseguito lazy solo quando la tab SBAR viene
+    aperta.
 
 ### Acceptance criteria
 
-- [ ] Dashboard infermiere non deve caricare dati inutili rispetto alla UI mostrata, oppure il tradeoff deve essere documentato.
-- [ ] Scheda paziente non deve caricare tutte le consegne globali solo per filtrarle client-side, se esiste endpoint/query dedicata.
-- [ ] `npm run build` passa.
+- [x] Dashboard infermiere non deve caricare dati inutili rispetto alla UI mostrata, oppure il tradeoff deve essere documentato.
+- [x] Scheda paziente non deve caricare tutte le consegne globali solo per filtrarle client-side, se esiste endpoint/query dedicata.
+- [x] `npm run build` passa.
 
 ## Fase 7 — Design token governance e responsive finale
 

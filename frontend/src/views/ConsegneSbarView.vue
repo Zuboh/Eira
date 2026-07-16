@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
@@ -24,9 +24,18 @@ const assegnazioni = ref<AssegnazioneTurno[]>([])
 const loading = ref(false)
 const error = ref('')
 
+const pazientiById = computed(() => new Map(pazienti.value.map((p) => [p.id, p])))
+
 function nomePaziente(id: number) {
-  const p = pazienti.value.find((p) => p.id === id)
+  const p = pazientiById.value.get(id)
   return p ? `${p.cognome} ${p.nome}` : `#${id}`
+}
+
+async function loadAssegnazioniIfNeeded() {
+  if (auth.ruolo !== 'infermiere' || assegnazioni.value.length > 0) return
+
+  const { data } = await getMieAssegnazioni()
+  assegnazioni.value = data
 }
 
 async function load() {
@@ -36,10 +45,6 @@ async function load() {
     const [c, p] = await Promise.all([listConsegneSbar(), listPazienti()])
     consegne.value = c.data
     pazienti.value = p.data
-    if (auth.ruolo === 'infermiere') {
-      const a = await getMieAssegnazioni()
-      assegnazioni.value = a.data
-    }
   } catch {
     error.value = 'Impossibile caricare le consegne SBAR.'
   } finally {
@@ -65,7 +70,7 @@ const form = ref({
   priorita: 'normale' as PrioritaConsegna,
 })
 
-function apriNuova() {
+async function apriNuova() {
   editingId.value = null
   form.value = {
     paziente_id: null,
@@ -77,6 +82,11 @@ function apriNuova() {
     priorita: 'normale',
   }
   dialogOpen.value = true
+  try {
+    await loadAssegnazioniIfNeeded()
+  } catch {
+    error.value = 'Impossibile caricare i turni assegnati.'
+  }
 }
 
 function apriEdit(c: ConsegnaSbar) {

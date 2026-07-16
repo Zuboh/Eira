@@ -27,25 +27,27 @@ function formatData(data: string) {
   })
 }
 
+const oggi = new Date().toISOString().slice(0, 10)
+
+const turniById = computed(() => new Map(turni.value.map((t) => [t.id, t])))
+const pazientiById = computed(() => new Map(pazienti.value.map((p) => [p.id, p])))
+
 function nomePaziente(id: number) {
-  const p = pazienti.value.find((p) => p.id === id)
+  const p = pazientiById.value.get(id)
   return p ? `${p.cognome} ${p.nome}` : `#${id}`
 }
 
-const oggi = new Date().toISOString().slice(0, 10)
-
 const mieiTurni = computed(() => {
-  const turnoById = new Map(turni.value.map((t) => [t.id, t]))
   return assegnazioni.value
     .filter((a) => a.stato === 'attiva')
-    .map((a) => turnoById.get(a.turno_id))
+    .map((a) => turniById.value.get(a.turno_id))
     .filter((t): t is Turno => t !== undefined && t.data >= oggi)
     .sort((a, b) => a.data.localeCompare(b.data))
 })
 
-const consegneRecenti = computed(() => consegne.value.slice(0, 5))
+const consegneRecenti = computed(() => consegne.value)
 
-const pazientiAttivi = computed(() => pazienti.value.filter((p) => !p.dimesso))
+const pazientiAttivi = computed(() => pazienti.value)
 
 async function load() {
   error.value = ''
@@ -59,8 +61,8 @@ async function load() {
     ])
     assegnazioni.value = a.data
     turni.value = t.data
-    consegne.value = c.data
-    pazienti.value = p.data
+    consegne.value = c.data.slice(0, 5)
+    pazienti.value = p.data.filter((paziente) => !paziente.dimesso)
   } catch {
     error.value = 'Impossibile caricare la dashboard.'
   } finally {
