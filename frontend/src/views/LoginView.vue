@@ -1,40 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
+import { nextTick, ref } from 'vue'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
-import { useAuthStore } from '@/stores/auth'
-import { changeTemporaryPassword } from '@/api/auth'
-import { listReparti, listUtentiByReparto, type Reparto, type UtenteTile } from '@/api/reparti'
 import {
-  clearDeviceRepartoId,
-  getDeviceRepartoId,
-  setDeviceRepartoId,
-} from '@/features/session/useDeviceReparto'
-
-type Step = 'reparto' | 'tiles' | 'password' | 'change-password'
-
-const step = ref<Step>('reparto')
-const reparti = ref<Reparto[]>([])
-const utenti = ref<UtenteTile[]>([])
-const selectedUtente = ref<UtenteTile | null>(null)
-const password = ref('')
-const temporaryPassword = ref('')
-const newPassword = ref('')
-const confirmPassword = ref('')
-const error = ref('')
-const success = ref('')
-const loading = ref(false)
-const stepError = ref('')
+  useLoginFlow,
+  type LoginFocusTarget,
+} from '@/features/session/useLoginFlow'
 
 const firstRepartoBtn = ref<HTMLButtonElement | null>(null)
 const firstTileBtn = ref<HTMLButtonElement | null>(null)
 const passwordInputRef = ref<InstanceType<typeof Password> | null>(null)
 
-const auth = useAuthStore()
-const router = useRouter()
-
-async function focusFirstOf(el: 'reparto' | 'tile' | 'password') {
+async function focusFirstOf(el: LoginFocusTarget) {
   await nextTick()
   if (el === 'reparto') firstRepartoBtn.value?.focus()
   else if (el === 'tile') firstTileBtn.value?.focus()
@@ -46,155 +23,25 @@ async function focusFirstOf(el: 'reparto' | 'tile' | 'password') {
   }
 }
 
-async function loadReparti() {
-  stepError.value = ''
-  loading.value = true
-  try {
-    const { data } = await listReparti()
-    reparti.value = data
-  } catch {
-    stepError.value = 'Impossibile caricare i reparti.'
-  } finally {
-    loading.value = false
-  }
-}
-
-async function chooseReparto(reparto: Reparto) {
-  setDeviceRepartoId(reparto.id)
-  await loadTilesForDevice()
-}
-
-async function loadTilesForDevice() {
-  const repartoId = getDeviceRepartoId()
-  if (!repartoId) {
-    step.value = 'reparto'
-    await loadReparti()
-    await focusFirstOf('reparto')
-    return
-  }
-  stepError.value = ''
-  loading.value = true
-  try {
-    const { data } = await listUtentiByReparto(repartoId)
-    utenti.value = data
-    step.value = 'tiles'
-    await focusFirstOf('tile')
-  } catch {
-    stepError.value = 'Impossibile caricare il personale del reparto.'
-  } finally {
-    loading.value = false
-  }
-}
-
-function cambiaReparto() {
-  clearDeviceRepartoId()
-  utenti.value = []
-  selectedUtente.value = null
-  password.value = ''
-  temporaryPassword.value = ''
-  newPassword.value = ''
-  confirmPassword.value = ''
-  error.value = ''
-  success.value = ''
-  step.value = 'reparto'
-  loadReparti().then(() => focusFirstOf('reparto'))
-}
-
-async function selectUtente(utente: UtenteTile) {
-  selectedUtente.value = utente
-  password.value = ''
-  temporaryPassword.value = ''
-  newPassword.value = ''
-  confirmPassword.value = ''
-  error.value = ''
-  success.value = ''
-  step.value = 'password'
-  await focusFirstOf('password')
-}
-
-function tornaAiTile() {
-  step.value = 'tiles'
-  password.value = ''
-  temporaryPassword.value = ''
-  newPassword.value = ''
-  confirmPassword.value = ''
-  error.value = ''
-  success.value = ''
-  focusFirstOf('tile')
-}
-
-async function onSubmit() {
-  if (!selectedUtente.value) return
-  error.value = ''
-  success.value = ''
-  loading.value = true
-  try {
-    await auth.login(selectedUtente.value.id, password.value)
-    await router.push({ name: `${auth.ruolo}-dashboard` })
-  } catch (err: unknown) {
-    const response = (err as { response?: { status?: number; data?: { detail?: string } } })
-      ?.response
-    if (response?.status === 403 && response.data?.detail === 'password_change_required') {
-      temporaryPassword.value = password.value
-      password.value = ''
-      newPassword.value = ''
-      confirmPassword.value = ''
-      step.value = 'change-password'
-    } else if (response?.status === 403 && response.data?.detail === 'temporary_password_expired') {
-      password.value = ''
-      error.value = 'Password temporanea scaduta. Chiedi alla caposala una nuova password temporanea.'
-    } else {
-      error.value = 'Credenziali non valide.'
-    }
-  } finally {
-    loading.value = false
-  }
-}
-
-async function onChangeTemporaryPassword() {
-  if (!selectedUtente.value) return
-  error.value = ''
-  success.value = ''
-  if (newPassword.value !== confirmPassword.value) {
-    error.value = 'Le password non coincidono.'
-    return
-  }
-  loading.value = true
-  try {
-    await changeTemporaryPassword({
-      utente_id: selectedUtente.value.id,
-      temporary_password: temporaryPassword.value,
-      new_password: newPassword.value,
-    })
-    temporaryPassword.value = ''
-    newPassword.value = ''
-    confirmPassword.value = ''
-    step.value = 'password'
-    success.value = 'Password aggiornata. Accedi con la nuova password.'
-    await focusFirstOf('password')
-  } catch (err: unknown) {
-    const response = (err as { response?: { status?: number; data?: { detail?: string } } })
-      ?.response
-    if (response?.status === 403 && response.data?.detail === 'temporary_password_expired') {
-      error.value = 'Password temporanea scaduta. Chiedi alla caposala una nuova password temporanea.'
-    } else {
-      error.value = 'Impossibile aggiornare la password.'
-    }
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(async () => {
-  const savedReparto = getDeviceRepartoId()
-  if (!savedReparto) {
-    step.value = 'reparto'
-    await loadReparti()
-    await focusFirstOf('reparto')
-  } else {
-    await loadTilesForDevice()
-  }
-})
+const {
+  step,
+  reparti,
+  utenti,
+  selectedUtente,
+  password,
+  newPassword,
+  confirmPassword,
+  error,
+  success,
+  loading,
+  stepError,
+  chooseReparto,
+  cambiaReparto,
+  selectUtente,
+  tornaAiTile,
+  onSubmit,
+  onChangeTemporaryPassword,
+} = useLoginFlow({ focusFirstOf })
 </script>
 
 <template>

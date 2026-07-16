@@ -9,7 +9,7 @@ import StatusBadge from '@/components/StatusBadge.vue'
 import { listUtenti, type Utente } from '@/api/utenti'
 import { getDashboardCaposala, type DashboardCaposala } from '@/api/dashboard'
 import { getCalendarioTurni, assegnaTurno, type Turno, type TurnoCalendario } from '@/api/turni'
-import { rispondiCaposala, type RichiestaCambioTurno } from '@/api/cambiTurno'
+import { useCambiTurno } from '@/features/cambi-turno/useCambiTurno'
 
 const TIPO_LABEL: Record<Turno['tipo'], string> = {
   mattina: 'Mattina',
@@ -35,13 +35,6 @@ const dashboard = ref<DashboardCaposala | null>(null)
 const calendario = ref<TurnoCalendario[]>([])
 const loading = ref(false)
 const error = ref('')
-
-const utentiById = computed(() => new Map(utenti.value.map((u) => [u.id, u])))
-
-function nomeUtente(id: number) {
-  const u = utentiById.value.get(id)
-  return u ? `${u.cognome} ${u.nome}` : `#${id}`
-}
 
 function formatData(data: string) {
   return new Date(`${data}T00:00:00`).toLocaleDateString('it-IT', {
@@ -72,7 +65,7 @@ const righeCalendario = computed<CalendarioRiga[]>(() => {
         return {
           tipo,
           turno,
-          assegnati: turno ? turno.assegnazioni.map((a) => nomeUtente(a.infermiere_id)).join(', ') : '',
+          assegnati: turno ? turno.assegnazioni.map((a) => nomeUtenteCambioTurno(a.infermiere_id)).join(', ') : '',
         }
       }),
     }))
@@ -85,6 +78,8 @@ async function load() {
     const [u, d, c] = await Promise.all([listUtenti(), getDashboardCaposala(), getCalendarioTurni()])
     utenti.value = u.data
     dashboard.value = d.data
+    setRichiesteCambioTurno(d.data.cambi_turno_in_attesa)
+    setUtentiCambioTurno(u.data)
     calendario.value = c.data
     pendingCount.value = u.data.filter((x) => x.stato === 'in_attesa').length
   } catch {
@@ -120,35 +115,18 @@ async function confermaAssegna() {
   }
 }
 
-async function approvaCaposala(r: RichiestaCambioTurno) {
-  try {
-    await rispondiCaposala(r.id, { accetta: true })
-    await load()
-  } catch {
-    error.value = 'Impossibile approvare la richiesta.'
-  }
-}
-
-const rifiutoDialog = ref(false)
-const rifiutoTarget = ref<RichiestaCambioTurno | null>(null)
-const motivoRifiuto = ref('')
-
-function apriRifiuto(r: RichiestaCambioTurno) {
-  rifiutoTarget.value = r
-  motivoRifiuto.value = ''
-  rifiutoDialog.value = true
-}
-
-async function confermaRifiuto() {
-  if (!rifiutoTarget.value) return
-  try {
-    await rispondiCaposala(rifiutoTarget.value.id, { accetta: false, motivo_rifiuto: motivoRifiuto.value })
-    rifiutoDialog.value = false
-    await load()
-  } catch {
-    error.value = 'Impossibile rifiutare la richiesta.'
-  }
-}
+const {
+  richieste: richiesteCambioTurno,
+  error: cambioTurnoError,
+  rifiutoDialog: cambioTurnoRifiutoDialog,
+  motivoRifiuto: cambioTurnoMotivoRifiuto,
+  setRichieste: setRichiesteCambioTurno,
+  setUtenti: setUtentiCambioTurno,
+  nomeUtente: nomeUtenteCambioTurno,
+  apriRifiuto: apriRifiutoCambioTurno,
+  approvaCaposala: approvaCambioTurnoCaposala,
+  confermaRifiuto: confermaRifiutoCambioTurno,
+} = useCambiTurno({ refreshAfterMutation: load })
 
 onMounted(load)
 </script>
@@ -163,7 +141,7 @@ onMounted(load)
       </RouterLink>
     </div>
 
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <p v-if="error || cambioTurnoError" class="error" role="alert">{{ error || cambioTurnoError }}</p>
 
     <section class="card">
       <h2>Turni scoperti</h2>
@@ -188,19 +166,19 @@ onMounted(load)
         <h2>Cambi turno in attesa</h2>
         <RouterLink :to="{ name: 'cambio-turno' }" class="see-all">Vedi tutti</RouterLink>
       </div>
-      <table v-if="!loading && dashboard && dashboard.cambi_turno_in_attesa.length > 0" class="data-table">
+      <table v-if="!loading && richiesteCambioTurno.length > 0" class="data-table">
         <thead>
           <tr><th>Richiedente</th><th>Collega</th><th>Stato</th><th></th></tr>
         </thead>
         <tbody>
-          <tr v-for="r in dashboard.cambi_turno_in_attesa" :key="r.id">
-            <td>{{ nomeUtente(r.richiedente_id) }}</td>
-            <td>{{ nomeUtente(r.collega_id) }}</td>
+          <tr v-for="r in richiesteCambioTurno" :key="r.id">
+            <td>{{ nomeUtenteCambioTurno(r.richiedente_id) }}</td>
+            <td>{{ nomeUtenteCambioTurno(r.collega_id) }}</td>
             <td><StatusBadge :status="r.stato" /></td>
             <td class="actions">
               <template v-if="r.stato === 'in_attesa_caposala'">
-                <Button label="Approva" size="small" @click="approvaCaposala(r)" />
-                <Button label="Rifiuta" size="small" severity="secondary" @click="apriRifiuto(r)" />
+                <Button label="Approva" size="small" @click="approvaCambioTurnoCaposala(r)" />
+                <Button label="Rifiuta" size="small" severity="secondary" @click="apriRifiutoCambioTurno(r)" />
               </template>
             </td>
           </tr>
@@ -258,9 +236,9 @@ onMounted(load)
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="rifiutoDialog" header="Motivo rifiuto" modal :style="{ width: '24rem' }">
-      <form class="form" @submit.prevent="confermaRifiuto">
-        <label>Motivo<InputText v-model="motivoRifiuto" /></label>
+    <Dialog v-model:visible="cambioTurnoRifiutoDialog" header="Motivo rifiuto" modal :style="{ width: '24rem' }">
+      <form class="form" @submit.prevent="confermaRifiutoCambioTurno">
+        <label>Motivo<InputText v-model="cambioTurnoMotivoRifiuto" /></label>
         <Button type="submit" label="Conferma rifiuto" severity="secondary" />
       </form>
     </Dialog>

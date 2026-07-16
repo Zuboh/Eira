@@ -131,7 +131,7 @@ incrementali sempre compilabili.
 - [x] **Fase 4 — OpenAPI data-fetching module**: allineare ad
       ADR-0003 (`openapi-typescript` + `openapi-fetch`), poi rimuovere
       axios se non resta usato.
-- [ ] **Fase 5 — feature composables**: sgonfiare `LoginView`,
+- [x] **Fase 5 — feature composables**: sgonfiare `LoginView`,
       `SchedaPazienteView`, cambio turno, staff workflow.
 - [ ] **Fase 6 — over-fetch reduction**: dashboard/scheda paziente con
       query dedicate o mappe computed e fetch paralleli/cancellabili.
@@ -179,6 +179,16 @@ Avvio implementazione:
       `dashboard`, `diarioCedema`, `valutazioni`.
 - [x] Rimosso vecchio `api/client.ts` axios e rimossa dependency
       `axios` da `package.json`/lock.
+- [x] `LoginView`: logica reparto/tile/login/password temporanea
+      estratta in `features/session/useLoginFlow`.
+- [x] `SchedaPazienteView`: server-state/workflow estratto in
+      `features/patient-chart/usePatientChart`; tab CEDEMA,
+      valutazioni e storico SBAR estratti in componenti feature.
+- [x] `CambioTurnoView` + dashboard caposala: workflow cambio turno
+      estratto in `features/cambi-turno/useCambiTurno`.
+- [x] `StaffView`: workflow personale estratto in
+      `features/staff/useStaffWorkflow`; notice password temporanea
+      estratta in componente feature.
 
 ## Diagrammi / documentazione tesi
 
