@@ -213,6 +213,29 @@ Avvio implementazione:
       `features/staff/useStaffWorkflow`; notice password temporanea
       estratta in componente feature.
 
+### Frontend — deep module refactor
+
+Obiettivo: trasformare le view più grandi in composition roots leggere,
+spostando workflow, view-model, form mapping, constants e types nei
+rispettivi feature modules.
+
+- [x] **Fase DM-1 — Dashboard caposala deep module**:
+      `features/dashboard/types.ts`, `calendarViewModel.ts`,
+      `useCaposalaDashboard.ts`; spostati stato, computed, load,
+      assegnazione turno e tipi view-model fuori dalla view.
+- [x] **Fase DM-2 — Dashboard caposala presentational cards**:
+      create `TurniScopertiCard`, `CambiTurnoCard`,
+      `CalendarioTurniCard`; view ridotta a composizione props/events.
+- [x] **Fase DM-3 — SBAR feature module**:
+      create `features/sbar/types.ts`, `form.ts`, `useConsegneSbar.ts`;
+      workflow/API/dialog/form/nome paziente spostati fuori dalla view.
+- [x] **Fase DM-4 — shared formatting/constants**:
+      create `utils/dateFormat.ts` e `features/turni/constants.ts`;
+      applicati solo ai file toccati.
+- [x] **Fase DM-5 — review e verifica finale**:
+      `npm run typecheck && npm run build` passa; backend dirty files
+      restano fuori scope.
+
 ## Diagrammi / documentazione tesi
 
 - [x] ER/UML in draw.io (`docs/diagrams/er-consegne-infermieristiche.drawio`) — 11 entità, relazioni complete (aggiunte 2 mancanti: autore_id su Norton/Conley), validato
