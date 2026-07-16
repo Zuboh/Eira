@@ -2,19 +2,18 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import Button from 'primevue/button'
-import Dialog from 'primevue/dialog'
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import Select from 'primevue/select'
-import Textarea from 'primevue/textarea'
 import Tabs from 'primevue/tabs'
 import TabList from 'primevue/tablist'
 import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
-import { dialogStyle } from '@/components/ui/dialogStyles'
+import InlineError from '@/components/ui/InlineError.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
+import CedemaDialog from '@/features/patient-chart/components/CedemaDialog.vue'
 import CedemaTab from '@/features/patient-chart/components/CedemaTab.vue'
+import ConleyDialog from '@/features/patient-chart/components/ConleyDialog.vue'
+import NortonDialog from '@/features/patient-chart/components/NortonDialog.vue'
+import PatientEditDialog from '@/features/patient-chart/components/PatientEditDialog.vue'
 import ValutazioniTab from '@/features/patient-chart/components/ValutazioniTab.vue'
 import StoricoSbarTab from '@/features/patient-chart/components/StoricoSbarTab.vue'
 import { usePatientChart } from '@/features/patient-chart/usePatientChart'
@@ -74,7 +73,7 @@ onMounted(load)
 
 <template>
   <div class="scheda-view">
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <InlineError :message="error" />
 
     <template v-if="paziente">
       <div class="header">
@@ -119,57 +118,19 @@ onMounted(load)
       </Tabs>
     </template>
 
-    <Dialog v-model:visible="editing" header="Modifica paziente" modal :style="dialogStyle.sm">
-      <form class="form" @submit.prevent="salvaEdit">
-        <label>Letto<InputText v-model="editForm.letto" required /></label>
-        <label>Diagnosi ingresso<InputText v-model="editForm.diagnosi_ingresso" required /></label>
-        <label class="checkbox">
-          <input type="checkbox" v-model="editForm.dimesso" /> Dimesso
-        </label>
-        <Button type="submit" label="Salva" />
-      </form>
-    </Dialog>
+    <PatientEditDialog v-model:visible="editing" v-model:form="editForm" @save="salvaEdit" />
 
-    <Dialog v-model:visible="cedemaDialog" header="Nuova voce CEDEMA" modal :style="dialogStyle.md">
-      <form class="form" @submit.prevent="salvaCedema">
-        <label v-if="assegnazioni.length > 0">
-          Turno (opzionale)
-          <Select v-model="cedemaForm.turno_id" :options="assegnazioni" optionLabel="turno_id" optionValue="turno_id" showClear placeholder="Nessuno" />
-        </label>
-        <label>Coscienza<Textarea v-model="cedemaForm.coscienza" rows="2" required /></label>
-        <label>Emotività<Textarea v-model="cedemaForm.emotivita" rows="2" required /></label>
-        <label>Dolore<Textarea v-model="cedemaForm.dolore" rows="2" required /></label>
-        <label>Emodinamica<Textarea v-model="cedemaForm.emodinamica" rows="2" required /></label>
-        <label>Mobilizzazione<Textarea v-model="cedemaForm.mobilizzazione" rows="2" required /></label>
-        <label>Allert<Textarea v-model="cedemaForm.allert" rows="2" required /></label>
-        <Button type="submit" label="Salva" :loading="cedemaSaving" />
-      </form>
-    </Dialog>
+    <CedemaDialog
+      v-model:visible="cedemaDialog"
+      v-model:form="cedemaForm"
+      :assegnazioni="assegnazioni"
+      :saving="cedemaSaving"
+      @save="salvaCedema"
+    />
 
-    <Dialog v-model:visible="nortonDialog" header="Nuova valutazione Norton" modal :style="dialogStyle.sm">
-      <form class="form" @submit.prevent="salvaNorton">
-        <label>Data<InputText v-model="nortonForm.data_valutazione" type="date" required /></label>
-        <label>Condizioni generali (1-4)<InputNumber v-model="nortonForm.condizioni_generali" :min="1" :max="4" /></label>
-        <label>Stato mentale (1-4)<InputNumber v-model="nortonForm.stato_mentale" :min="1" :max="4" /></label>
-        <label>Attività (1-4)<InputNumber v-model="nortonForm.attivita" :min="1" :max="4" /></label>
-        <label>Mobilità (1-4)<InputNumber v-model="nortonForm.mobilita" :min="1" :max="4" /></label>
-        <label>Incontinenza (1-4)<InputNumber v-model="nortonForm.incontinenza" :min="1" :max="4" /></label>
-        <Button type="submit" label="Salva" :loading="nortonSaving" />
-      </form>
-    </Dialog>
+    <NortonDialog v-model:visible="nortonDialog" v-model:form="nortonForm" :saving="nortonSaving" @save="salvaNorton" />
 
-    <Dialog v-model:visible="conleyDialog" header="Nuova valutazione Conley" modal :style="dialogStyle.sm">
-      <form class="form" @submit.prevent="salvaConley">
-        <label>Data<InputText v-model="conleyForm.data_valutazione" type="date" required /></label>
-        <label>Storia cadute<InputNumber v-model="conleyForm.storia_cadute" :min="0" /></label>
-        <label>Deficit visivo<InputNumber v-model="conleyForm.deficit_visivo" :min="0" /></label>
-        <label>Alterazione eliminazione<InputNumber v-model="conleyForm.alterazione_eliminazione" :min="0" /></label>
-        <label>Agitazione<InputNumber v-model="conleyForm.agitazione" :min="0" /></label>
-        <label>Deficit vista osservato<InputNumber v-model="conleyForm.deficit_vista_osservato" :min="0" /></label>
-        <label>Andatura alterata<InputNumber v-model="conleyForm.andatura_alterata" :min="0" /></label>
-        <Button type="submit" label="Salva" :loading="conleySaving" />
-      </form>
-    </Dialog>
+    <ConleyDialog v-model:visible="conleyDialog" v-model:form="conleyForm" :saving="conleySaving" @save="salvaConley" />
   </div>
 </template>
 
@@ -209,34 +170,4 @@ onMounted(load)
   font-size: 0.8125rem;
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.form label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-}
-
-.form label.checkbox {
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-
-.error {
-  color: var(--state-urgente);
-  font-size: 0.8125rem;
-}
-
-.hint {
-  color: var(--steel);
-  font-size: 0.875rem;
-}
 </style>

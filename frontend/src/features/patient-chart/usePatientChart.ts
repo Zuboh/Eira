@@ -1,68 +1,27 @@
 import { computed, ref, unref, type MaybeRef } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { getPaziente, updatePaziente, type Paziente, type PazienteUpdatePayload } from '@/api/pazienti'
+import { getPaziente, updatePaziente, type Paziente } from '@/api/pazienti'
 import { getMieAssegnazioni, type AssegnazioneTurno } from '@/api/turni'
 import {
   listDiarioCedema,
   createVoceDiarioCedema,
   type VoceDiarioCedema,
-  type VoceDiarioCedemaCreatePayload,
 } from '@/api/diarioCedema'
 import {
   getValutazioni,
   createNorton,
   createConley,
   type ValutazioneNorton,
-  type ValutazioneNortonCreatePayload,
   type ValutazioneConley,
-  type ValutazioneConleyCreatePayload,
 } from '@/api/valutazioni'
 import { listConsegneSbar, type ConsegnaSbar } from '@/api/consegneSbar'
-
-type CedemaForm = VoceDiarioCedemaCreatePayload
-type NortonForm = ValutazioneNortonCreatePayload
-type ConleyForm = ValutazioneConleyCreatePayload
-
-type EditForm = Required<Pick<PazienteUpdatePayload, 'letto' | 'diagnosi_ingresso' | 'dimesso'>>
-
-function todayIsoDate(): string {
-  return new Date().toISOString().slice(0, 10)
-}
-
-function createEmptyCedemaForm(): CedemaForm {
-  return {
-    turno_id: null,
-    coscienza: '',
-    emotivita: '',
-    dolore: '',
-    emodinamica: '',
-    mobilizzazione: '',
-    allert: '',
-  }
-}
-
-function createEmptyNortonForm(): NortonForm {
-  return {
-    data_valutazione: todayIsoDate(),
-    condizioni_generali: 1,
-    stato_mentale: 1,
-    attivita: 1,
-    mobilita: 1,
-    incontinenza: 1,
-  }
-}
-
-function createEmptyConleyForm(): ConleyForm {
-  return {
-    data_valutazione: todayIsoDate(),
-    storia_cadute: 0,
-    deficit_visivo: 0,
-    alterazione_eliminazione: 0,
-    agitazione: 0,
-    deficit_vista_osservato: 0,
-    andatura_alterata: 0,
-  }
-}
+import {
+  createEmptyCedemaForm,
+  createEmptyConleyForm,
+  createEmptyNortonForm,
+  createPatientEditForm,
+} from '@/features/patient-chart/form'
+import type { CedemaForm, ConleyForm, NortonForm, PatientEditForm } from '@/features/patient-chart/types'
 
 export function usePatientChart(pazienteId: MaybeRef<number>) {
   const auth = useAuthStore()
@@ -80,7 +39,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
   const assegnazioni = ref<AssegnazioneTurno[]>([])
 
   const editing = ref(false)
-  const editForm = ref<EditForm>({ letto: '', diagnosi_ingresso: '', dimesso: false })
+  const editForm = ref<PatientEditForm>({ letto: '', diagnosi_ingresso: '', dimesso: false })
 
   const cedemaDialog = ref(false)
   const cedemaSaving = ref(false)
@@ -136,11 +95,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
 
   function apriEdit() {
     if (!paziente.value) return
-    editForm.value = {
-      letto: paziente.value.letto,
-      diagnosi_ingresso: paziente.value.diagnosi_ingresso,
-      dimesso: paziente.value.dimesso,
-    }
+    editForm.value = createPatientEditForm(paziente.value)
     editing.value = true
   }
 

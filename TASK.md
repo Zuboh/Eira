@@ -239,6 +239,9 @@ rispettivi feature modules.
       create componenti session `AuthCard`, `RepartoStep`, `UserTilesStep`,
       `PasswordStep`, `TemporaryPasswordStep`; `LoginView` ridotta a wiring
       del composable e gestione focus.
+- [x] **Fase DM-7 — Patient chart dialogs/form module**:
+      create `features/patient-chart/types.ts`, `form.ts` e dialog componenti;
+      `SchedaPazienteView` ridotta a route/tabs/dialog wiring.
 
 ## Diagrammi / documentazione tesi
 
