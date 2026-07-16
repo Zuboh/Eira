@@ -2,8 +2,8 @@
 
 Termini clinici/dominio usati nel codebase, con definizione ancorata al
 modello dati effettivo (non definizioni da manuale). Riferimento
-incrociato: [`docs/er-bozza.md`](./er-bozza.md) per lo schema ER
-completo, [`docs/diagrams/er-consegne-infermieristiche.drawio`](./diagrams/er-consegne-infermieristiche.drawio)
+incrociato: [`docs/archive/er-bozza.md`](./archive/er-bozza.md) per la
+bozza ER storica, [`docs/diagrams/er-consegne-infermieristiche.drawio`](./diagrams/er-consegne-infermieristiche.drawio)
 per il diagramma.
 
 ---
@@ -69,7 +69,7 @@ espone liste `norton` + `conley` per lo stesso paziente.
 Saldo ore lavorate vs. ore contrattuali di un infermiere per un dato
 mese. **Non è una tabella**: è calcolata a runtime in
 `backend/app/routers/banca_ore.py` (`get_banca_ore`), coerentemente
-con quanto dichiarato in `docs/er-bozza.md` ("nessuna tabella
+con quanto dichiarato in `docs/archive/er-bozza.md` ("nessuna tabella
 dedicata"). Formula: `ore_pianificate` (somma delle durate dei
 `Turno` con `AssegnazioneTurno.stato == attiva` nel mese, calcolate da
 `ora_inizio`/`ora_fine` con gestione turno-notte a cavallo di
@@ -160,5 +160,5 @@ percorso applicativo osservato).
 ---
 
 Per lo schema relazionale completo (entità, FK, cardinalità 1—N/1—1)
-vedi [`docs/er-bozza.md`](./er-bozza.md); per il diagramma visuale
+vedi [`docs/archive/er-bozza.md`](./archive/er-bozza.md); per il diagramma visuale
 vedi la cartella [`docs/diagrams/`](./diagrams/).

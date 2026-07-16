@@ -8,7 +8,8 @@ Eira is a full-stack nursing handover app for a university project.
 
 - Backend: FastAPI + SQLite + JWT.
 - Frontend: Vue 3 + Vite + TypeScript + Pinia + PrimeVue.
-- Current frontend architecture plan: `docs/FRONTEND-CODE-REFACTOR.md`.
+- Frontend architecture guide: `docs/FRONTEND-ARCHITECTURE.md`.
+- Backend architecture guide: `docs/BACKEND-ARCHITECTURE.md`.
 - Current task tracker: `TASK.md`.
 - Data-fetching decision: `docs/adr/0003-openapi-fetch-vs-axios.md` and `docs/FETCHING.md`.
 
@@ -223,7 +224,7 @@ Completed:
 - Fase 6 — over-fetch reduction frontend-only.
 - Fase 7 — token/responsive governance.
 
-Remaining from `docs/FRONTEND-CODE-REFACTOR.md`:
+Remaining historical follow-ups from `docs/archive/FRONTEND-CODE-REFACTOR.md`:
 
 - Manual viewport validation on real devices/browser, if needed.
 - Backend/API aggregate endpoints for true over-fetch elimination, if the task explicitly spans backend.

@@ -32,8 +32,9 @@ Sett.2-5 in corso (piano Pegaso in `TASK.md`).
   pendenti; test suite tocca il DB SQLite reale su disco invece di
   restare isolata in-memory.
 
-Checklist completa, per-router → `TASK.md`. Setup dettagliato (env,
-DB, note migrazioni) → `docs/SETUP.md`.
+Checklist completa, per-router → `TASK.md`. Indice documentazione →
+`docs/README.md`. Setup dettagliato (env, DB, note migrazioni) →
+`docs/SETUP.md`.
 
 ## Avvio
 

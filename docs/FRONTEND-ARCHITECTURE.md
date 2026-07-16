@@ -4,7 +4,7 @@ Questo è il documento canonico da seguire quando si spostano, ridisegnano o agg
 
 Per il contesto storico del refactor vedere anche:
 
-- `docs/FRONTEND-REFACTOR-SUMMARY.md`
+- `docs/archive/FRONTEND-REFACTOR-SUMMARY.md`
 
 ## Principio guida
 
