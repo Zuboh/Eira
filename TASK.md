@@ -235,6 +235,10 @@ rispettivi feature modules.
 - [x] **Fase DM-5 — review e verifica finale**:
       `npm run typecheck && npm run build` passa; backend dirty files
       restano fuori scope.
+- [x] **Fase DM-6 — Login view presentational split**:
+      create componenti session `AuthCard`, `RepartoStep`, `UserTilesStep`,
+      `PasswordStep`, `TemporaryPasswordStep`; `LoginView` ridotta a wiring
+      del composable e gestione focus.
 
 ## Diagrammi / documentazione tesi
 
