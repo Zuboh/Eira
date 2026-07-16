@@ -5,18 +5,14 @@ import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
 import { dialogStyle } from '@/components/ui/dialogStyles'
 import FormField from '@/components/ui/FormField.vue'
-import type { ConleyForm } from '@/features/patient-chart/types'
+import type { ConleyForm, PatientChartSaveEmit, ValutazioneDialogProps } from '@/features/patient-chart/types'
 
 const visible = defineModel<boolean>('visible', { required: true })
 const form = defineModel<ConleyForm>('form', { required: true })
 
-defineProps<{
-  saving: boolean
-}>()
+defineProps<ValutazioneDialogProps>()
 
-const emit = defineEmits<{
-  save: []
-}>()
+const emit = defineEmits<PatientChartSaveEmit>()
 </script>
 
 <template>

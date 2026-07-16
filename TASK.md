@@ -245,6 +245,9 @@ rispettivi feature modules.
 - [x] **Fase DM-8 — Patient chart composable split**:
       split `usePatientChart` in query state, dialog mutations e lazy SBAR
       composables; il composable pubblico resta una facade stabile per la view.
+- [x] **Fase DM-9 — Patient chart component contracts**:
+      centralizzati props/emits dei componenti patient-chart in `types.ts` e
+      sostituita formattazione data inline con helper condiviso.
 
 ## Diagrammi / documentazione tesi
 

@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import EiraTable from '@/components/ui/EiraTable.vue'
-import type { VoceDiarioCedema } from '@/api/diarioCedema'
+import { formatDateTimeCompactIt } from '@/utils/dateFormat'
+import type { CedemaTabEmits, CedemaTabProps } from '@/features/patient-chart/types'
 
-defineProps<{
-  entries: VoceDiarioCedema[]
-  canCreate: boolean
-}>()
+defineProps<CedemaTabProps>()
 
-const emit = defineEmits<{
-  newEntry: []
-}>()
+const emit = defineEmits<CedemaTabEmits>()
 </script>
 
 <template>
@@ -26,7 +22,7 @@ const emit = defineEmits<{
       </thead>
       <tbody>
         <tr v-for="v in entries" :key="v.id">
-          <td class="mono">{{ v.timestamp.slice(0, 16).replace('T', ' ') }}</td>
+          <td class="mono">{{ formatDateTimeCompactIt(v.timestamp) }}</td>
           <td>{{ v.coscienza }}</td>
           <td>{{ v.emotivita }}</td>
           <td>{{ v.dolore }}</td>

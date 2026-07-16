@@ -5,20 +5,14 @@ import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import { dialogStyle } from '@/components/ui/dialogStyles'
 import FormField from '@/components/ui/FormField.vue'
-import type { AssegnazioneTurno } from '@/api/turni'
-import type { CedemaForm } from '@/features/patient-chart/types'
+import type { CedemaDialogProps, CedemaForm, PatientChartSaveEmit } from '@/features/patient-chart/types'
 
 const visible = defineModel<boolean>('visible', { required: true })
 const form = defineModel<CedemaForm>('form', { required: true })
 
-defineProps<{
-  assegnazioni: AssegnazioneTurno[]
-  saving: boolean
-}>()
+defineProps<CedemaDialogProps>()
 
-const emit = defineEmits<{
-  save: []
-}>()
+const emit = defineEmits<PatientChartSaveEmit>()
 </script>
 
 <template>

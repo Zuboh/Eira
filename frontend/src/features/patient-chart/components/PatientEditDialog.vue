@@ -4,14 +4,12 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import { dialogStyle } from '@/components/ui/dialogStyles'
 import FormField from '@/components/ui/FormField.vue'
-import type { PatientEditForm } from '@/features/patient-chart/types'
+import type { PatientChartSaveEmit, PatientEditForm } from '@/features/patient-chart/types'
 
 const visible = defineModel<boolean>('visible', { required: true })
 const form = defineModel<PatientEditForm>('form', { required: true })
 
-const emit = defineEmits<{
-  save: []
-}>()
+const emit = defineEmits<PatientChartSaveEmit>()
 </script>
 
 <template>

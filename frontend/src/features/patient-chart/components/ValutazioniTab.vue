@@ -1,18 +1,11 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import EiraTable from '@/components/ui/EiraTable.vue'
-import type { ValutazioneConley, ValutazioneNorton } from '@/api/valutazioni'
+import type { ValutazioniTabEmits, ValutazioniTabProps } from '@/features/patient-chart/types'
 
-defineProps<{
-  norton: ValutazioneNorton[]
-  conley: ValutazioneConley[]
-  canCreate: boolean
-}>()
+defineProps<ValutazioniTabProps>()
 
-const emit = defineEmits<{
-  newNorton: []
-  newConley: []
-}>()
+const emit = defineEmits<ValutazioniTabEmits>()
 </script>
 
 <template>

@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import StatusBadge from '@/components/StatusBadge.vue'
 import EiraTable from '@/components/ui/EiraTable.vue'
-import type { ConsegnaSbar } from '@/api/consegneSbar'
+import { formatDateTimeCompactIt } from '@/utils/dateFormat'
+import type { StoricoSbarTabProps } from '@/features/patient-chart/types'
 
-defineProps<{
-  consegne: ConsegnaSbar[]
-}>()
+defineProps<StoricoSbarTabProps>()
 </script>
 
 <template>
@@ -16,7 +15,7 @@ defineProps<{
       </thead>
       <tbody>
         <tr v-for="c in consegne" :key="c.id">
-          <td class="mono">{{ c.creata_il.slice(0, 16).replace('T', ' ') }}</td>
+          <td class="mono">{{ formatDateTimeCompactIt(c.creata_il) }}</td>
           <td><StatusBadge :status="c.priorita" /></td>
           <td>{{ c.situation }}</td>
           <td>{{ c.background }}</td>
