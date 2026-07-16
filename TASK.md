@@ -251,6 +251,9 @@ rispettivi feature modules.
 - [x] **Fase DM-10 — Pazienti view feature module**:
       estratti `usePatients`, form mapping, contratti e componenti
       `PatientsTable`/`NewPatientDialog`; `PazientiView` ridotta a wiring.
+- [x] **Fase DM-11 — Cambio turno presentational split**:
+      estratti contratti/form mapping e componenti `CambiTurnoTable`,
+      `NewCambioTurnoDialog`, `RifiutoCambioTurnoDialog`; view ridotta a wiring.
 
 ## Diagrammi / documentazione tesi
 

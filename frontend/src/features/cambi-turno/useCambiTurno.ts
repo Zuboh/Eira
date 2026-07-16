@@ -9,6 +9,7 @@ import {
 } from '@/api/cambiTurno'
 import { getMieAssegnazioni, type AssegnazioneTurno } from '@/api/turni'
 import { listUtenti, type Utente } from '@/api/utenti'
+import { createEmptyCambioTurnoForm, toCambioTurnoCreatePayload } from '@/features/cambi-turno/form'
 
 type RefreshAfterMutation = () => void | Promise<void>
 
@@ -27,7 +28,7 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
 
   const dialogOpen = ref(false)
   const saving = ref(false)
-  const form = ref({ assegnazione_turno_id: null as number | null, collega_id: null as number | null })
+  const form = ref(createEmptyCambioTurnoForm())
 
   const rifiutoDialog = ref(false)
   const rifiutoTarget = ref<RichiestaCambioTurno | null>(null)
@@ -38,6 +39,9 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
   const colleghi = computed(() =>
     utenti.value.filter((u) => u.ruolo === 'infermiere' && u.id !== auth.user?.id),
   )
+  const currentRole = computed(() => auth.ruolo)
+  const currentUserId = computed(() => auth.user?.id ?? null)
+  const canRequestChange = computed(() => auth.ruolo === 'infermiere')
 
   function setRichieste(nextRichieste: RichiestaCambioTurno[]) {
     richieste.value = nextRichieste
@@ -80,19 +84,18 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
   }
 
   function apriNuova() {
-    form.value = { assegnazione_turno_id: null, collega_id: null }
+    form.value = createEmptyCambioTurnoForm()
     dialogOpen.value = true
   }
 
   async function salva() {
-    if (!form.value.assegnazione_turno_id || !form.value.collega_id) return
+    const payload = toCambioTurnoCreatePayload(form.value)
+    if (!payload) return
+
     saving.value = true
     error.value = ''
     try {
-      await createRichiestaCambioTurno({
-        assegnazione_turno_id: form.value.assegnazione_turno_id,
-        collega_id: form.value.collega_id,
-      })
+      await createRichiestaCambioTurno(payload)
       dialogOpen.value = false
       await refreshAfterMutation()
     } catch {
@@ -153,6 +156,9 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
     saving,
     form,
     colleghi,
+    currentRole,
+    currentUserId,
+    canRequestChange,
     rifiutoDialog,
     rifiutoTarget,
     motivoRifiuto,
