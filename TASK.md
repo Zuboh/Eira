@@ -82,7 +82,7 @@ design su semantica "turno attivo").
 
 - [x] Route guard (`router/index.ts`) — reale: redirect non-autenticati a `/login`, `fetchMe` con fallback logout, redirect per ruolo
 - [x] `LoginView` → collegato a `POST /auth/token` reale via `stores/auth.ts` + `api/auth.ts` (bug hash sopra fixato)
-- [ ] Dashboard infermiere — collegare a dati reali (`mie-assegnazioni`, consegne, CEDEMA)
+- [x] Dashboard infermiere — collegare a dati reali (turni via `mie-assegnazioni`, consegne SBAR, pazienti in carico) — `DashboardView.vue`, verificata end-to-end. CEDEMA non aggregato: nessun endpoint cross-paziente, resta accessibile per singolo paziente da `SchedaPazienteView`
 - [x] Dashboard caposala — calendario turni, assegnazione, scoperti, cambi turno in attesa — nuovo endpoint `GET /turni/calendario`, verificata end-to-end (assegna turno scoperto, approva/rifiuta cambio turno)
 - [x] Vista consegna SBAR (form + lettura) — `ConsegneSbarView.vue`, verificata end-to-end
 - [x] Vista valutazioni Norton/Conley (dashboard multidimensionale per paziente) — tab in `SchedaPazienteView.vue`, non ancora verificata end-to-end (creazione CEDEMA/Norton/Conley)
