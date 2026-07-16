@@ -248,6 +248,9 @@ rispettivi feature modules.
 - [x] **Fase DM-9 — Patient chart component contracts**:
       centralizzati props/emits dei componenti patient-chart in `types.ts` e
       sostituita formattazione data inline con helper condiviso.
+- [x] **Fase DM-10 — Pazienti view feature module**:
+      estratti `usePatients`, form mapping, contratti e componenti
+      `PatientsTable`/`NewPatientDialog`; `PazientiView` ridotta a wiring.
 
 ## Diagrammi / documentazione tesi
 
