@@ -1,110 +1,35 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import Select from 'primevue/select'
-import Button from 'primevue/button'
-import { useAuthStore } from '@/stores/auth'
-import { getBancaOre, type BancaOre } from '@/api/bancaOre'
-import { listUtentiByReparto, type UtenteTile } from '@/api/reparti'
-import EiraCard from '@/components/ui/EiraCard.vue'
-import EmptyState from '@/components/ui/EmptyState.vue'
-import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
+import BancaOreSection from '@/features/banca-ore/components/BancaOreSection.vue'
+import { useBancaOre } from '@/features/banca-ore/useBancaOre'
+import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
-
-function meseCorrente() {
-  const now = new Date()
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-}
-
-const mese = ref(meseCorrente())
-const infermieri = ref<UtenteTile[]>([])
-const infermiereId = ref<number | null>(auth.user?.id ?? null)
-const bancaOre = ref<BancaOre | null>(null)
-const loading = ref(false)
-const error = ref('')
-
-function spostaMese(delta: number) {
-  const [y, m] = mese.value.split('-').map(Number)
-  const d = new Date(y, m - 1 + delta, 1)
-  mese.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-}
-
-async function load() {
-  if (!infermiereId.value) return
-  error.value = ''
-  loading.value = true
-  try {
-    const { data } = await getBancaOre(infermiereId.value, mese.value)
-    bancaOre.value = data
-  } catch {
-    error.value = 'Impossibile caricare la banca ore.'
-    bancaOre.value = null
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(async () => {
-  if (auth.ruolo === 'caposala' && auth.user) {
-    const { data } = await listUtentiByReparto(auth.user.reparto_id)
-    infermieri.value = data.filter((u) => u.ruolo === 'infermiere')
-    infermiereId.value = infermieri.value[0]?.id ?? null
-    return
-  }
-  await load()
-})
-
-watch([mese, infermiereId], load)
-
-const saldoLabel = computed(() => {
-  if (!bancaOre.value) return ''
-  return bancaOre.value.saldo >= 0 ? `+${bancaOre.value.saldo}` : `${bancaOre.value.saldo}`
-})
+const {
+  mese,
+  infermieri,
+  infermiereId,
+  bancaOre,
+  loading,
+  error,
+  spostaMese,
+} = useBancaOre({ loadInfermieriForCaposala: true })
 </script>
 
 <template>
   <div class="banca-ore-view">
-    <PageHeader title="Banca Ore" subtitle="Saldo mensile tra ore pianificate e ore contrattuali.">
-      <template #actions>
-        <div class="controls">
-          <Select
-            v-if="auth.ruolo === 'caposala'"
-            v-model="infermiereId"
-            :options="infermieri"
-            optionLabel="cognome"
-            optionValue="id"
-            placeholder="Seleziona infermiere"
-          />
-          <div class="mese-picker">
-            <Button icon="pi pi-chevron-left" text aria-label="Mese precedente" @click="spostaMese(-1)" />
-            <span class="mono">{{ mese }}</span>
-            <Button icon="pi pi-chevron-right" text aria-label="Mese successivo" @click="spostaMese(1)" />
-          </div>
-        </div>
-      </template>
-    </PageHeader>
+    <PageHeader title="Banca Ore" subtitle="Saldo mensile tra ore pianificate e ore contrattuali." />
 
-    <InlineError :message="error" />
-
-    <div v-if="bancaOre" class="tiles">
-      <EiraCard class="tile">
-        <span class="tile-label">Ore pianificate</span>
-        <span class="tile-value mono">{{ bancaOre.ore_pianificate }}</span>
-      </EiraCard>
-      <EiraCard class="tile">
-        <span class="tile-label">Ore contrattuali</span>
-        <span class="tile-value mono">{{ bancaOre.ore_contrattuali }}</span>
-      </EiraCard>
-      <EiraCard class="tile" :class="{ negative: bancaOre.saldo < 0, positive: bancaOre.saldo >= 0 }">
-        <span class="tile-label">Saldo</span>
-        <span class="tile-value mono">{{ saldoLabel }}</span>
-      </EiraCard>
-    </div>
-    <EmptyState
-      v-else-if="!loading && !error"
-      title="Nessun saldo disponibile"
-      message="Seleziona un infermiere e un mese per visualizzare la banca ore."
+    <BancaOreSection
+      v-model:infermiere-id="infermiereId"
+      :banca-ore="bancaOre"
+      :mese="mese"
+      :loading="loading"
+      :error="error"
+      :infermieri="infermieri"
+      :show-infermiere-select="auth.ruolo === 'caposala'"
+      @previous-month="spostaMese(-1)"
+      @next-month="spostaMese(1)"
     />
   </div>
 </template>
@@ -114,60 +39,5 @@ const saldoLabel = computed(() => {
   padding: var(--page-padding);
   max-width: 900px;
   margin: 0 auto;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.mese-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tiles {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.tile {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.tile-label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
-}
-
-.tile-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.tile.positive .tile-value {
-  color: var(--state-attiva);
-}
-
-.tile.negative .tile-value {
-  color: var(--state-urgente);
-}
-
-.mono {
-  font-family: var(--mono);
-}
-
-@media (max-width: 720px) {
-  .tiles {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

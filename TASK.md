@@ -257,6 +257,9 @@ rispettivi feature modules.
 - [x] **Fase DM-12 — Staff view presentational split**:
       estratti contratti e componenti `StaffFilters`/`StaffTable`;
       `StaffView` ridotta a wiring del workflow e notice password temporanea.
+- [x] **Fase DM-13 — Banca ore dashboard section**:
+      estratti composable/component condivisi `features/banca-ore`; aggiunta
+      sezione Banca ore nella dashboard infermiere con cambio mese inline.
 
 ## Diagrammi / documentazione tesi
 

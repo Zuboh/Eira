@@ -6,6 +6,8 @@ import EiraCard from '@/components/ui/EiraCard.vue'
 import EiraTable from '@/components/ui/EiraTable.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
+import BancaOreSection from '@/features/banca-ore/components/BancaOreSection.vue'
+import { useBancaOre } from '@/features/banca-ore/useBancaOre'
 import { getMieAssegnazioni, listTurni, type Turno, type AssegnazioneTurno } from '@/api/turni'
 import { listConsegneSbar, type ConsegnaSbar } from '@/api/consegneSbar'
 import { listPazienti, type Paziente } from '@/api/pazienti'
@@ -53,6 +55,14 @@ const consegneRecenti = computed(() => consegne.value)
 
 const pazientiAttivi = computed(() => pazienti.value)
 
+const {
+  mese: bancaOreMese,
+  bancaOre,
+  loading: bancaOreLoading,
+  error: bancaOreError,
+  spostaMese: spostaBancaOreMese,
+} = useBancaOre()
+
 async function load() {
   error.value = ''
   loading.value = true
@@ -87,8 +97,18 @@ onMounted(load)
       <RouterLink :to="{ name: 'pazienti' }" class="quick-link">Pazienti</RouterLink>
       <RouterLink :to="{ name: 'consegne-sbar' }" class="quick-link">Consegne SBAR</RouterLink>
       <RouterLink :to="{ name: 'cambio-turno' }" class="quick-link">Cambio turno</RouterLink>
-      <RouterLink :to="{ name: 'banca-ore' }" class="quick-link">Banca ore</RouterLink>
     </div>
+
+    <EiraCard class="dashboard-card">
+      <BancaOreSection
+        :banca-ore="bancaOre"
+        :mese="bancaOreMese"
+        :loading="bancaOreLoading"
+        :error="bancaOreError"
+        @previous-month="spostaBancaOreMese(-1)"
+        @next-month="spostaBancaOreMese(1)"
+      />
+    </EiraCard>
 
     <EiraCard title="Prossimi turni" class="dashboard-card">
       <EiraTable v-if="!loading" :empty="mieiTurni.length === 0" empty-message="Nessun turno assegnato.">
