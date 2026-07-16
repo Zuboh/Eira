@@ -260,6 +260,9 @@ rispettivi feature modules.
 - [x] **Fase DM-13 — Banca ore dashboard section**:
       estratti composable/component condivisi `features/banca-ore`; aggiunta
       sezione Banca ore nella dashboard infermiere con cambio mese inline.
+- [x] **Fase DM-14 — Dashboard infermiere feature split**:
+      estratti `useInfermiereDashboard`, quick links e card presentational per
+      prossimi turni, SBAR recenti e pazienti attivi; view ridotta a wiring.
 
 ## Diagrammi / documentazione tesi
 
