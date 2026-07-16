@@ -266,6 +266,9 @@ rispettivi feature modules.
 - [x] **Fase DM-15 — Dashboard consolidation**:
       `Banca Ore` rimossa dalla nav infermiere/lasciata caposala; estratto
       header sezione dashboard condiviso per card con link "vedi".
+- [x] **Fase DM-16 — Frontend refactor summary**:
+      creato `docs/FRONTEND-REFACTOR-SUMMARY.md` con regole architetturali,
+      mappa moduli, checklist agenti e miglioramenti rimasti.
 
 ## Diagrammi / documentazione tesi
 
