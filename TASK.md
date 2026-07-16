@@ -269,6 +269,9 @@ rispettivi feature modules.
 - [x] **Fase DM-16 — Frontend refactor summary**:
       creato `docs/FRONTEND-REFACTOR-SUMMARY.md` con regole architetturali,
       mappa moduli, checklist agenti e miglioramenti rimasti.
+- [x] **Fase DM-17 — Architecture guides**:
+      creati `docs/FRONTEND-ARCHITECTURE.md` e
+      `docs/BACKEND-ARCHITECTURE.md` come riferimenti canonici per agenti.
 
 ## Diagrammi / documentazione tesi
 
