@@ -1,0 +1,77 @@
+import datetime
+
+from tests.conftest import auth_headers
+
+
+def _infermiere(db_session, reparto_id, email="nurse.a@example.com"):
+    from app.core.security import hash_password
+    from app.models.enums import RuoloUtente
+    from app.models.utente import Utente
+
+    utente = Utente(
+        email=email,
+        password_hash=hash_password("password123"),
+        nome="Nurse",
+        cognome="A",
+        ruolo=RuoloUtente.infermiere,
+        reparto_id=reparto_id,
+    )
+    db_session.add(utente)
+    db_session.commit()
+    db_session.refresh(utente)
+    return utente
+
+
+def _turno(db_session, reparto_id, data=None, tipo=None):
+    from app.models.enums import TipoTurno
+    from app.models.turno import Turno
+
+    turno = Turno(
+        data=data or datetime.date.today(),
+        tipo=tipo or TipoTurno.mattina,
+        reparto_id=reparto_id,
+        ora_inizio=datetime.time(7, 0),
+        ora_fine=datetime.time(14, 0),
+    )
+    db_session.add(turno)
+    db_session.commit()
+    db_session.refresh(turno)
+    return turno
+
+
+def test_calendario_turni_include_assegnazioni_attive(client, db_session, caposala_a, reparti):
+    from app.models.enums import StatoAssegnazione
+    from app.models.turno import AssegnazioneTurno
+
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    turno_coperto = _turno(db_session, reparto_a.id)
+    _turno(db_session, reparto_a.id, data=datetime.date.today() + datetime.timedelta(days=1))
+
+    assegnazione = AssegnazioneTurno(
+        turno_id=turno_coperto.id, infermiere_id=infermiere.id, stato=StatoAssegnazione.attiva
+    )
+    db_session.add(assegnazione)
+    db_session.commit()
+
+    headers = auth_headers(client, "caposala.a@example.com", "password123")
+    response = client.get("/api/v1/turni/calendario", headers=headers)
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert len(body) == 2
+    coperto = next(t for t in body if t["id"] == turno_coperto.id)
+    scoperto = next(t for t in body if t["id"] != turno_coperto.id)
+    assert len(coperto["assegnazioni"]) == 1
+    assert coperto["assegnazioni"][0]["infermiere_id"] == infermiere.id
+    assert scoperto["assegnazioni"] == []
+
+
+def test_calendario_turni_forbidden_per_infermiere(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.get("/api/v1/turni/calendario", headers=headers)
+
+    assert response.status_code == 403

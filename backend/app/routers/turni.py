@@ -10,6 +10,7 @@ from app.openapi_errors import CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, err
 from app.schemas.turno import (
     AssegnazioneTurnoCreate,
     AssegnazioneTurnoRead,
+    TurnoCalendarioRead,
     TurnoCreate,
     TurnoRead,
 )
@@ -49,6 +50,39 @@ def list_turni(current_user: CurrentUserDep, db: DbDep) -> list[TurnoRead]:
         .all()
     )
     return [TurnoRead.model_validate(turno) for turno in turni]
+
+
+@router.get(
+    "/calendario",
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN),
+)
+def list_calendario_turni(current_user: CurrentUserDep, db: DbDep) -> list[TurnoCalendarioRead]:
+    turni = (
+        db.query(Turno)
+        .filter(Turno.reparto_id == current_user.reparto_id)
+        .order_by(Turno.data)
+        .all()
+    )
+    assegnazioni = (
+        db.query(AssegnazioneTurno)
+        .join(Turno, AssegnazioneTurno.turno_id == Turno.id)
+        .filter(
+            Turno.reparto_id == current_user.reparto_id,
+            AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+        )
+        .all()
+    )
+    per_turno: dict[int, list[AssegnazioneTurno]] = {}
+    for assegnazione in assegnazioni:
+        per_turno.setdefault(assegnazione.turno_id, []).append(assegnazione)
+
+    return [
+        TurnoCalendarioRead.model_validate(
+            {**TurnoRead.model_validate(turno).model_dump(), "assegnazioni": per_turno.get(turno.id, [])}
+        )
+        for turno in turni
+    ]
 
 
 @router.get(

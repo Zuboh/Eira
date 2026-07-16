@@ -34,3 +34,10 @@ class AssegnazioneTurnoRead(BaseModel):
     stato: StatoAssegnazione
 
     model_config = {"from_attributes": True}
+
+
+class TurnoCalendarioRead(TurnoBase):
+    id: int
+    assegnazioni: list[AssegnazioneTurnoRead]
+
+    model_config = {"from_attributes": True}

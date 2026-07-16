@@ -19,10 +19,24 @@ export interface AssegnazioneTurno {
   stato: StatoAssegnazione
 }
 
+export interface TurnoCalendario extends Turno {
+  assegnazioni: AssegnazioneTurno[]
+}
+
 export function getMieAssegnazioni() {
   return apiClient.get<AssegnazioneTurno[]>('/turni/mie-assegnazioni')
 }
 
 export function listTurni() {
   return apiClient.get<Turno[]>('/turni/')
+}
+
+export function getCalendarioTurni() {
+  return apiClient.get<TurnoCalendario[]>('/turni/calendario')
+}
+
+export function assegnaTurno(turnoId: number, infermiereId: number) {
+  return apiClient.post<AssegnazioneTurno>(`/turni/${turnoId}/assegnazioni`, {
+    infermiere_id: infermiereId,
+  })
 }
