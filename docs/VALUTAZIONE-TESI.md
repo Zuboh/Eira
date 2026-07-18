@@ -13,11 +13,14 @@
 - Attorno al nucleo: diario CEDEMA, valutazioni Norton/Conley, cambio turno a
   doppia conferma, banca ore, ferie.
 - 84 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
-  estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto).
-  Zero test frontend (unico gap rimasto). CI attiva su entrambi: backend
-  (`ruff check` + `pytest`, 0 violazioni su 58 iniziali), frontend (`eslint`
-  + `prettier --check` + `typecheck` + `build`, 0 violazioni su 45 iniziali
-  + 80 file riformattati).
+  estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto). 23
+  test frontend (Vitest) sui 3 composable più critici (`useLoginFlow`,
+  `useCaposalaDashboard`, `usePatientChart`); restano 12 composable senza
+  test, stesso pattern da applicare. Zero test e2e (Playwright, ancora da
+  progettare). CI attiva su entrambi: backend (`ruff check` + `pytest`, 0
+  violazioni su 58 iniziali), frontend (`eslint` + `prettier --check` +
+  `vitest` + `typecheck` + `build`, 0 violazioni su 45 iniziali + 80 file
+  riformattati).
 - Zero bug 🔴 aperti (i due erano concreti e circoscritti, entrambi fixati
   con test di regressione), due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md`
   §3) — questi ultimi restano espliciti out-of-scope in attesa di una
@@ -71,12 +74,13 @@
   fail-fast in produzione è implementato; CI (ruff + pytest) attiva su ogni
   push/PR. Restano solo i due 🟡, esplicitamente rimandati in attesa di una
   decisione di design (non un gap di qualità).
-- **Frontend: 27/30.** Architettura il punto più forte — moduli
+- **Frontend: 28/30.** Architettura il punto più forte — moduli
   feature-based, composition roots leggeri, design tokens, accessibilità
   manuale (aria-label, focus, overflow tabelle) — sopra lo standard
-  triennale. Lint/CI ora presenti (ESLint + Prettier, 0 violazioni, gate
-  su ogni push/PR); resta zero verifica empirica via test — nessun test
-  automatico, e alcune viste esplicitamente **non verificate end-to-end**
+  triennale. Lint/CI presenti (ESLint + Prettier, 0 violazioni, gate su
+  ogni push/PR); primi 23 test Vitest sui 3 composable più critici, in
+  CI. Restano: 12 composable senza test, zero e2e Playwright, e alcune
+  viste esplicitamente **non verificate end-to-end**
   (creazione Norton/Conley, cambio turno con secondo account, banca ore
   solo da code review).
 
@@ -105,10 +109,11 @@ verifica solo manuale/dichiarata.
 
 ### Frontend
 
-1. Test: zero oggi. Unit test sui composable critici (`useLoginFlow`,
-   `useCaposalaDashboard`, `usePatientChart`) con Vitest; idealmente 3-4
-   test e2e Playwright sui flussi chiave (login, consegna SBAR, cambio
-   turno, assegnazione turno scoperto).
+1. ~~Unit test sui 3 composable critici~~ — fatto (`useLoginFlow`,
+   `useCaposalaDashboard`, `usePatientChart`, 23 test Vitest, in CI).
+   Restano: gli altri 12 composable (stesso pattern), e 3-4 test e2e
+   Playwright sui flussi chiave (login, consegna SBAR, cambio turno,
+   assegnazione turno scoperto).
 2. Verificare end-to-end le viste segnate come non verificate in `TASK.md`:
    creazione Norton/Conley, cambio turno con secondo account infermiere,
    banca ore.
@@ -173,8 +178,9 @@ punto 1 test coverage, ritorno doppio.
 
 ## 6. Prossimi passi possibili (da scegliere, non decisi)
 
-- Vitest sui composable critici frontend + scaffolding Playwright (e2e +
-  axe) — unico gap rimasto sul frontend (zero test).
+- Vitest sui restanti 12 composable (stesso pattern dei 3 già coperti).
+- Scaffolding Playwright (e2e + axe) — il gap più grande rimasto
+  (nessuna verifica end-to-end automatica).
 - Decidere/implementare i due 🟡 rimasti (enum `StatoAssegnazione.cambiata`,
   scoping "turno attivo").
 - Scaletta del report (Parte Prima + Seconda).
