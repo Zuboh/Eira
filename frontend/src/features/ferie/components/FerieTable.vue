@@ -24,7 +24,11 @@ function isOwn(richiesta: RichiestaFerie) {
 }
 
 function canEditOrCancel(richiesta: RichiestaFerie) {
-  return props.currentRole === 'infermiere' && isOwn(richiesta) && richiesta.stato === 'in_attesa'
+  return (
+    props.currentRole === 'infermiere' &&
+    isOwn(richiesta) &&
+    richiesta.stato === 'in_attesa'
+  )
 }
 
 function canRespond(richiesta: RichiestaFerie) {
@@ -37,10 +41,19 @@ function preferenzeOrdinate(richiesta: RichiestaFerie) {
 </script>
 
 <template>
-  <EiraTable :empty="richieste.length === 0" empty-message="Nessuna richiesta di ferie.">
+  <EiraTable
+    :empty="richieste.length === 0"
+    empty-message="Nessuna richiesta di ferie."
+  >
     <table>
       <thead>
-        <tr><th>Infermiere</th><th>Preferenze</th><th>Stato</th><th>Creata</th><th></th></tr>
+        <tr>
+          <th>Infermiere</th>
+          <th>Preferenze</th>
+          <th>Stato</th>
+          <th>Creata</th>
+          <th></th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="richiesta in richieste" :key="richiesta.id">
@@ -48,24 +61,51 @@ function preferenzeOrdinate(richiesta: RichiestaFerie) {
           <td>
             <ol v-if="richiesta.stato === 'in_attesa'" class="preferenze">
               <li v-for="p in preferenzeOrdinate(richiesta)" :key="p.rank">
-                {{ formatDateShortIt(p.data_inizio) }} → {{ formatDateShortIt(p.data_fine) }}
+                {{ formatDateShortIt(p.data_inizio) }} →
+                {{ formatDateShortIt(p.data_fine) }}
               </li>
             </ol>
-            <span v-else-if="richiesta.data_inizio && richiesta.data_fine" class="mono">
-              {{ formatDateShortIt(richiesta.data_inizio) }} → {{ formatDateShortIt(richiesta.data_fine) }}
+            <span
+              v-else-if="richiesta.data_inizio && richiesta.data_fine"
+              class="mono"
+            >
+              {{ formatDateShortIt(richiesta.data_inizio) }} →
+              {{ formatDateShortIt(richiesta.data_fine) }}
             </span>
             <span v-else class="muted">—</span>
           </td>
           <td><StatusBadge :status="richiesta.stato" /></td>
-          <td class="mono">{{ formatDateTimeCompactIt(richiesta.creata_il) }}</td>
+          <td class="mono">
+            {{ formatDateTimeCompactIt(richiesta.creata_il) }}
+          </td>
           <td class="actions">
             <template v-if="canRespond(richiesta)">
-              <Button label="Approva" size="small" @click="emit('approve', richiesta)" />
-              <Button label="Rifiuta" size="small" severity="secondary" @click="emit('reject', richiesta)" />
+              <Button
+                label="Approva"
+                size="small"
+                @click="emit('approve', richiesta)"
+              />
+              <Button
+                label="Rifiuta"
+                size="small"
+                severity="secondary"
+                @click="emit('reject', richiesta)"
+              />
             </template>
             <template v-if="canEditOrCancel(richiesta)">
-              <Button label="Modifica" size="small" severity="secondary" @click="emit('edit', richiesta)" />
-              <Button label="Annulla" size="small" severity="danger" text @click="emit('cancel', richiesta)" />
+              <Button
+                label="Modifica"
+                size="small"
+                severity="secondary"
+                @click="emit('edit', richiesta)"
+              />
+              <Button
+                label="Annulla"
+                size="small"
+                severity="danger"
+                text
+                @click="emit('cancel', richiesta)"
+              />
             </template>
           </td>
         </tr>

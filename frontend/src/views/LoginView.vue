@@ -5,7 +5,10 @@ import PasswordStep from '@/features/session/components/PasswordStep.vue'
 import RepartoStep from '@/features/session/components/RepartoStep.vue'
 import TemporaryPasswordStep from '@/features/session/components/TemporaryPasswordStep.vue'
 import UserTilesStep from '@/features/session/components/UserTilesStep.vue'
-import { useLoginFlow, type LoginFocusTarget } from '@/features/session/useLoginFlow'
+import {
+  useLoginFlow,
+  type LoginFocusTarget,
+} from '@/features/session/useLoginFlow'
 
 const repartoStepRef = ref<InstanceType<typeof RepartoStep> | null>(null)
 const userTilesStepRef = ref<InstanceType<typeof UserTilesStep> | null>(null)

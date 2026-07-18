@@ -13,12 +13,18 @@ defineProps<{
 
 <template>
   <EiraCard title="Calendario turni" class="dashboard-card">
-    <EiraTable v-if="!loading" :empty="rows.length === 0" empty-message="Nessun turno pianificato.">
+    <EiraTable
+      v-if="!loading"
+      :empty="rows.length === 0"
+      empty-message="Nessun turno pianificato."
+    >
       <table style="min-width: 30rem">
         <thead>
           <tr>
             <th></th>
-            <th v-for="tipo in TIPI_TURNO" :key="tipo">{{ TIPO_TURNO_LABEL[tipo] }}</th>
+            <th v-for="tipo in TIPI_TURNO" :key="tipo">
+              {{ TIPO_TURNO_LABEL[tipo] }}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -26,7 +32,10 @@ defineProps<{
             <th class="row-label">{{ formatDateShortIt(riga.data) }}</th>
             <td v-for="cella in riga.celle" :key="cella.tipo">
               <template v-if="cella.turno">
-                <span v-if="cella.turno.assegnazioni.length > 0" class="assegnati">
+                <span
+                  v-if="cella.turno.assegnazioni.length > 0"
+                  class="assegnati"
+                >
                   {{ cella.assegnati }}
                 </span>
                 <span v-else class="scoperto">Scoperto</span>

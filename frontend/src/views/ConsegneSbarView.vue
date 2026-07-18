@@ -45,20 +45,37 @@ function onPageChange(event: { page: number }) {
   <div class="sbar-view">
     <PageHeader title="Consegne SBAR">
       <template #actions>
-        <Button v-if="canCreateConsegna" label="Nuova consegna" size="small" @click="apriNuova" />
+        <Button
+          v-if="canCreateConsegna"
+          label="Nuova consegna"
+          size="small"
+          @click="apriNuova"
+        />
       </template>
     </PageHeader>
 
     <InlineError :message="error" />
 
-    <EiraTable v-if="!loading" :empty="consegne.length === 0" empty-message="Nessuna consegna SBAR.">
+    <EiraTable
+      v-if="!loading"
+      :empty="consegne.length === 0"
+      empty-message="Nessuna consegna SBAR."
+    >
       <table style="min-width: var(--table-min-wide)">
         <thead>
-          <tr><th>Data</th><th>Paziente</th><th>Priorità</th><th>Situation</th><th></th></tr>
+          <tr>
+            <th>Data</th>
+            <th>Paziente</th>
+            <th>Priorità</th>
+            <th>Situation</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
           <tr v-for="consegna in consegne" :key="consegna.id">
-            <td class="mono">{{ formatDateTimeCompactIt(consegna.creata_il) }}</td>
+            <td class="mono">
+              {{ formatDateTimeCompactIt(consegna.creata_il) }}
+            </td>
             <td>{{ nomePaziente(consegna.paziente_id) }}</td>
             <td><StatusBadge :status="consegna.priorita" /></td>
             <td>{{ consegna.situation }}</td>

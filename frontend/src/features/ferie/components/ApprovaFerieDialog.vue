@@ -25,7 +25,9 @@ watch(
 )
 
 function preferenzeOrdinate() {
-  return (props.richiesta?.preferenze ?? []).slice().sort((a, b) => a.rank - b.rank)
+  return (props.richiesta?.preferenze ?? [])
+    .slice()
+    .sort((a, b) => a.rank - b.rank)
 }
 
 function conferma() {
@@ -36,7 +38,12 @@ function conferma() {
 </script>
 
 <template>
-  <Dialog v-model:visible="visible" header="Approva richiesta ferie" modal :style="dialogStyle.sm">
+  <Dialog
+    v-model:visible="visible"
+    header="Approva richiesta ferie"
+    modal
+    :style="dialogStyle.sm"
+  >
     <form class="form" @submit.prevent="conferma">
       <p class="hint">Scegli quale preferenza approvare:</p>
       <div v-for="p in preferenzeOrdinate()" :key="p.rank" class="option">
@@ -47,10 +54,15 @@ function conferma() {
           name="preferenza"
         />
         <label :for="`pref-${p.rank}`">
-          {{ p.rank }}ª scelta — {{ formatDateShortIt(p.data_inizio) }} → {{ formatDateShortIt(p.data_fine) }}
+          {{ p.rank }}ª scelta — {{ formatDateShortIt(p.data_inizio) }} →
+          {{ formatDateShortIt(p.data_fine) }}
         </label>
       </div>
-      <Button type="submit" label="Conferma approvazione" :disabled="rankSelezionato === null" />
+      <Button
+        type="submit"
+        label="Conferma approvazione"
+        :disabled="rankSelezionato === null"
+      />
     </form>
   </Dialog>
 </template>

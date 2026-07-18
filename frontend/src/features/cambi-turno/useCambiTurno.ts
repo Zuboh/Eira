@@ -10,7 +10,10 @@ import {
 } from '@/api/cambiTurno'
 import { getMieAssegnazioni, type AssegnazioneTurno } from '@/api/turni'
 import { listUtenti, type Utente } from '@/api/utenti'
-import { createEmptyCambioTurnoForm, toCambioTurnoCreatePayload } from '@/features/cambi-turno/form'
+import {
+  createEmptyCambioTurnoForm,
+  toCambioTurnoCreatePayload,
+} from '@/features/cambi-turno/form'
 
 type RefreshAfterMutation = () => void | Promise<void>
 
@@ -38,7 +41,9 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
   const utentiById = computed(() => new Map(utenti.value.map((u) => [u.id, u])))
 
   const colleghi = computed(() =>
-    utenti.value.filter((u) => u.ruolo === 'infermiere' && u.id !== auth.user?.id),
+    utenti.value.filter(
+      (u) => u.ruolo === 'infermiere' && u.id !== auth.user?.id,
+    ),
   )
   const currentRole = computed(() => auth.ruolo)
   const currentUserId = computed(() => auth.user?.id ?? null)
@@ -107,7 +112,10 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
     }
   }
 
-  async function rispondiComeCollega(r: RichiestaCambioTurno, accetta: boolean) {
+  async function rispondiComeCollega(
+    r: RichiestaCambioTurno,
+    accetta: boolean,
+  ) {
     error.value = ''
     try {
       await rispondiCollega(r.id, { accetta })

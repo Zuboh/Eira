@@ -3,7 +3,8 @@ import type { components } from '@/api/schema'
 
 type TokenSchema = components['schemas']['Token']
 type UtenteReadSchema = components['schemas']['UtenteRead']
-type TemporaryPasswordChangeSchema = components['schemas']['TemporaryPasswordChange']
+type TemporaryPasswordChangeSchema =
+  components['schemas']['TemporaryPasswordChange']
 
 export interface TokenResponse {
   access_token: TokenSchema['access_token']
@@ -58,7 +59,9 @@ function unwrapData<TData, TError>(
   operation: string,
 ): { data: TData } {
   if (result.error !== undefined) {
-    throw new Error(`${operation} failed: ${formatApiError(result.error, result.response)}`)
+    throw new Error(
+      `${operation} failed: ${formatApiError(result.error, result.response)}`,
+    )
   }
 
   if (result.data === undefined) {
@@ -68,7 +71,10 @@ function unwrapData<TData, TError>(
   return { data: result.data }
 }
 
-export async function login(utenteId: number, password: string): ApiResponse<TokenResponse> {
+export async function login(
+  utenteId: number,
+  password: string,
+): ApiResponse<TokenResponse> {
   const result = await eiraClient.POST('/api/v1/auth/token', {
     body: {
       username: String(utenteId),
@@ -84,9 +90,12 @@ export async function login(utenteId: number, password: string): ApiResponse<Tok
 export async function changeTemporaryPassword(
   payload: ChangeTemporaryPasswordPayload,
 ): ApiResponse<MeResponse> {
-  const result = await eiraClient.POST('/api/v1/auth/change-temporary-password', {
-    body: payload,
-  })
+  const result = await eiraClient.POST(
+    '/api/v1/auth/change-temporary-password',
+    {
+      body: payload,
+    },
+  )
 
   return unwrapData(result, 'changeTemporaryPassword')
 }

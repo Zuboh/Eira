@@ -38,7 +38,9 @@ export function useStaffWorkflow() {
   const newSaving = ref(false)
   const newForm = ref<NewStaffForm>(createEmptyNewStaffForm())
 
-  const filtrati = computed(() => utenti.value.filter((u) => u.stato === filtro.value))
+  const filtrati = computed(() =>
+    utenti.value.filter((u) => u.stato === filtro.value),
+  )
 
   async function load() {
     error.value = ''
@@ -74,7 +76,7 @@ export function useStaffWorkflow() {
       filtro.value = 'attivo'
       await load()
     } catch {
-      error.value = 'Impossibile creare l\'utente.'
+      error.value = "Impossibile creare l'utente."
     } finally {
       newSaving.value = false
     }
@@ -85,7 +87,7 @@ export function useStaffWorkflow() {
       await updateUtente(utente.id, { stato: 'attivo' })
       utente.stato = 'attivo'
     } catch {
-      error.value = 'Impossibile approvare l\'utente.'
+      error.value = "Impossibile approvare l'utente."
     }
   }
 

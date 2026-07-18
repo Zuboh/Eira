@@ -37,7 +37,9 @@ function formatApiError(error: unknown, response: Response) {
 
 function unwrapData<T>(result: EiraResult<T>, operation: string): { data: T } {
   if (result.error !== undefined) {
-    throw new Error(`${operation} failed: ${formatApiError(result.error, result.response)}`)
+    throw new Error(
+      `${operation} failed: ${formatApiError(result.error, result.response)}`,
+    )
   }
 
   if (result.data === undefined) {
@@ -47,7 +49,9 @@ function unwrapData<T>(result: EiraResult<T>, operation: string): { data: T } {
   return { data: result.data }
 }
 
-export async function getMieAssegnazioni(): ApiDataResponse<AssegnazioneTurno[]> {
+export async function getMieAssegnazioni(): ApiDataResponse<
+  AssegnazioneTurno[]
+> {
   const result = await eiraClient.GET('/api/v1/turni/mie-assegnazioni')
 
   return unwrapData(result, 'getMieAssegnazioni')
@@ -73,14 +77,17 @@ export async function assegnaTurno(
     infermiere_id: infermiereId,
   }
 
-  const result = await eiraClient.POST('/api/v1/turni/{turno_id}/assegnazioni', {
-    params: {
-      path: {
-        turno_id: turnoId,
+  const result = await eiraClient.POST(
+    '/api/v1/turni/{turno_id}/assegnazioni',
+    {
+      params: {
+        path: {
+          turno_id: turnoId,
+        },
       },
+      body,
     },
-    body,
-  })
+  )
 
   return unwrapData(result, 'assegnaTurno')
 }

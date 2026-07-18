@@ -10,7 +10,10 @@ const emit = defineEmits<StaffTableEmits>()
 </script>
 
 <template>
-  <EiraTable :empty="utenti.length === 0" empty-message="Nessun utente in questo filtro.">
+  <EiraTable
+    :empty="utenti.length === 0"
+    empty-message="Nessun utente in questo filtro."
+  >
     <table>
       <thead>
         <tr>
@@ -35,7 +38,9 @@ const emit = defineEmits<StaffTableEmits>()
               @click="emit('approve', utente)"
             />
             <Button
-              v-else-if="utente.stato === 'attivo' && utente.ruolo === 'infermiere'"
+              v-else-if="
+                utente.stato === 'attivo' && utente.ruolo === 'infermiere'
+              "
               label="Reimposta password"
               size="small"
               severity="secondary"

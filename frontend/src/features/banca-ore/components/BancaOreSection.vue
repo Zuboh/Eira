@@ -4,7 +4,10 @@ import Select from 'primevue/select'
 import EiraCard from '@/components/ui/EiraCard.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import InlineError from '@/components/ui/InlineError.vue'
-import type { BancaOreSectionEmits, BancaOreSectionProps } from '@/features/banca-ore/types'
+import type {
+  BancaOreSectionEmits,
+  BancaOreSectionProps,
+} from '@/features/banca-ore/types'
 import { formatMeseIt } from '@/utils/dateFormat'
 
 const props = withDefaults(defineProps<BancaOreSectionProps>(), {
@@ -19,7 +22,9 @@ const emit = defineEmits<BancaOreSectionEmits>()
 
 function saldoLabel() {
   if (!props.bancaOre) return ''
-  return props.bancaOre.saldo >= 0 ? `+${props.bancaOre.saldo}` : `${props.bancaOre.saldo}`
+  return props.bancaOre.saldo >= 0
+    ? `+${props.bancaOre.saldo}`
+    : `${props.bancaOre.saldo}`
 }
 </script>
 
@@ -41,9 +46,19 @@ function saldoLabel() {
           @update:modelValue="emit('update:infermiereId', $event)"
         />
         <div class="mese-picker">
-          <Button icon="pi pi-chevron-left" text aria-label="Mese precedente" @click="emit('previousMonth')" />
+          <Button
+            icon="pi pi-chevron-left"
+            text
+            aria-label="Mese precedente"
+            @click="emit('previousMonth')"
+          />
           <span>{{ formatMeseIt(mese) }}</span>
-          <Button icon="pi pi-chevron-right" text aria-label="Mese successivo" @click="emit('nextMonth')" />
+          <Button
+            icon="pi pi-chevron-right"
+            text
+            aria-label="Mese successivo"
+            @click="emit('nextMonth')"
+          />
         </div>
       </div>
     </div>
@@ -59,7 +74,10 @@ function saldoLabel() {
         <span class="tile-label">Ore contrattuali</span>
         <span class="tile-value mono">{{ bancaOre.ore_contrattuali }}</span>
       </EiraCard>
-      <EiraCard class="tile" :class="{ negative: bancaOre.saldo < 0, positive: bancaOre.saldo >= 0 }">
+      <EiraCard
+        class="tile"
+        :class="{ negative: bancaOre.saldo < 0, positive: bancaOre.saldo >= 0 }"
+      >
         <span class="tile-label">Saldo</span>
         <span class="tile-value mono">{{ saldoLabel() }}</span>
       </EiraCard>

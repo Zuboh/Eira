@@ -16,7 +16,10 @@ declare module 'vue-router' {
   }
 }
 
-const ALL_ROLES = ['infermiere', 'caposala'] as const satisfies readonly UserRole[]
+const ALL_ROLES = [
+  'infermiere',
+  'caposala',
+] as const satisfies readonly UserRole[]
 
 function landingRouteForRole(role: UserRole | null): RouteLocationRaw {
   switch (role) {

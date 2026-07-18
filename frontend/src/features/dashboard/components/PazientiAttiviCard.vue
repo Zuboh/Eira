@@ -10,16 +10,30 @@ defineProps<PazientiAttiviCardProps>()
 
 <template>
   <EiraCard class="dashboard-card">
-    <DashboardSectionHeader title="Pazienti in reparto" route-name="pazienti" link-label="Vedi tutti" />
-    <EiraTable v-if="!loading" :empty="pazienti.length === 0" empty-message="Nessun paziente in reparto.">
+    <DashboardSectionHeader
+      title="Pazienti in reparto"
+      route-name="pazienti"
+      link-label="Vedi tutti"
+    />
+    <EiraTable
+      v-if="!loading"
+      :empty="pazienti.length === 0"
+      empty-message="Nessun paziente in reparto."
+    >
       <table>
         <thead>
-          <tr><th>Paziente</th><th>Letto</th><th>Diagnosi</th></tr>
+          <tr>
+            <th>Paziente</th>
+            <th>Letto</th>
+            <th>Diagnosi</th>
+          </tr>
         </thead>
         <tbody>
           <tr v-for="paziente in pazienti" :key="paziente.id">
             <td>
-              <RouterLink :to="{ name: 'paziente-scheda', params: { id: paziente.id } }">
+              <RouterLink
+                :to="{ name: 'paziente-scheda', params: { id: paziente.id } }"
+              >
                 {{ paziente.cognome }} {{ paziente.nome }}
               </RouterLink>
             </td>

@@ -11,7 +11,12 @@ const links: DashboardInfermiereQuickLink[] = [
 
 <template>
   <div class="quick-links">
-    <RouterLink v-for="link in links" :key="link.routeName" :to="{ name: link.routeName }" class="quick-link">
+    <RouterLink
+      v-for="link in links"
+      :key="link.routeName"
+      :to="{ name: link.routeName }"
+      class="quick-link"
+    >
       {{ link.label }}
     </RouterLink>
   </div>

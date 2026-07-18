@@ -19,10 +19,14 @@ function parseDeviceRepartoId(value: string | null): DeviceRepartoId | null {
 }
 
 function readDeviceRepartoId(): DeviceRepartoId | null {
-  return parseDeviceRepartoId(getStorage()?.getItem(DEVICE_REPARTO_STORAGE_KEY) ?? null)
+  return parseDeviceRepartoId(
+    getStorage()?.getItem(DEVICE_REPARTO_STORAGE_KEY) ?? null,
+  )
 }
 
-export const deviceRepartoId = ref<DeviceRepartoId | null>(readDeviceRepartoId())
+export const deviceRepartoId = ref<DeviceRepartoId | null>(
+  readDeviceRepartoId(),
+)
 
 export function getDeviceRepartoId(): DeviceRepartoId | null {
   const repartoId = readDeviceRepartoId()

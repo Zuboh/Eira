@@ -3,7 +3,8 @@ import type { components } from '@/api/schema'
 
 export type StatoCambioTurno = components['schemas']['StatoCambioTurno']
 
-type RichiestaCambioTurnoRead = components['schemas']['RichiestaCambioTurnoRead']
+type RichiestaCambioTurnoRead =
+  components['schemas']['RichiestaCambioTurnoRead']
 
 type NullableResponseFields =
   | 'risposta_collega_il'
@@ -11,14 +12,19 @@ type NullableResponseFields =
   | 'risposta_caposala_il'
   | 'motivo_rifiuto'
 
-export type RichiestaCambioTurno = Omit<RichiestaCambioTurnoRead, NullableResponseFields> &
+export type RichiestaCambioTurno = Omit<
+  RichiestaCambioTurnoRead,
+  NullableResponseFields
+> &
   Required<Pick<RichiestaCambioTurnoRead, NullableResponseFields>>
 
 export type RichiestaCambioTurnoCreatePayload =
   components['schemas']['RichiestaCambioTurnoCreate']
 
-export type RispostaCollegaPayload = components['schemas']['RispostaCollegaRequest']
-export type RispostaCaposalaPayload = components['schemas']['RispostaCaposalaRequest']
+export type RispostaCollegaPayload =
+  components['schemas']['RispostaCollegaRequest']
+export type RispostaCaposalaPayload =
+  components['schemas']['RispostaCaposalaRequest']
 
 type ApiDataResponse<T> = Promise<{ data: T }>
 
@@ -67,14 +73,19 @@ export function normalizeRichiestaCambioTurno(
   }
 }
 
-function wrapRichiestaCambioTurno(
-  richiesta: RichiestaCambioTurnoRead,
-): { data: RichiestaCambioTurno } {
+function wrapRichiestaCambioTurno(richiesta: RichiestaCambioTurnoRead): {
+  data: RichiestaCambioTurno
+} {
   return { data: normalizeRichiestaCambioTurno(richiesta) }
 }
 
-export async function listCambiTurno(): ApiDataResponse<RichiestaCambioTurno[]> {
-  const data = unwrapData(await eiraClient.GET('/api/v1/cambi-turno/'), 'listCambiTurno')
+export async function listCambiTurno(): ApiDataResponse<
+  RichiestaCambioTurno[]
+> {
+  const data = unwrapData(
+    await eiraClient.GET('/api/v1/cambi-turno/'),
+    'listCambiTurno',
+  )
 
   return { data: data.map(normalizeRichiestaCambioTurno) }
 }
@@ -97,14 +108,17 @@ export async function rispondiCollega(
   payload: RispostaCollegaPayload,
 ): ApiDataResponse<RichiestaCambioTurno> {
   const data = unwrapData(
-    await eiraClient.POST('/api/v1/cambi-turno/{richiesta_id}/risposta-collega', {
-      params: {
-        path: {
-          richiesta_id: id,
+    await eiraClient.POST(
+      '/api/v1/cambi-turno/{richiesta_id}/risposta-collega',
+      {
+        params: {
+          path: {
+            richiesta_id: id,
+          },
         },
+        body: payload,
       },
-      body: payload,
-    }),
+    ),
     'rispondiCollega',
   )
 
@@ -116,14 +130,17 @@ export async function rispondiCaposala(
   payload: RispostaCaposalaPayload,
 ): ApiDataResponse<RichiestaCambioTurno> {
   const data = unwrapData(
-    await eiraClient.POST('/api/v1/cambi-turno/{richiesta_id}/risposta-caposala', {
-      params: {
-        path: {
-          richiesta_id: id,
+    await eiraClient.POST(
+      '/api/v1/cambi-turno/{richiesta_id}/risposta-caposala',
+      {
+        params: {
+          path: {
+            richiesta_id: id,
+          },
         },
+        body: payload,
       },
-      body: payload,
-    }),
+    ),
     'rispondiCaposala',
   )
 
@@ -131,9 +148,12 @@ export async function rispondiCaposala(
 }
 
 export async function deleteCambioTurno(id: number): Promise<void> {
-  const { error } = await eiraClient.DELETE('/api/v1/cambi-turno/{richiesta_id}', {
-    params: { path: { richiesta_id: id } },
-  })
+  const { error } = await eiraClient.DELETE(
+    '/api/v1/cambi-turno/{richiesta_id}',
+    {
+      params: { path: { richiesta_id: id } },
+    },
+  )
 
   if (error !== undefined) {
     throw new Error(`deleteCambioTurno failed: ${formatApiError(error)}`)

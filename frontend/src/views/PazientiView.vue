@@ -27,7 +27,10 @@ onMounted(load)
 
 <template>
   <div class="pazienti-view">
-    <PageHeader title="Pazienti" subtitle="Elenco dei pazienti visibili per reparto e ruolo.">
+    <PageHeader
+      title="Pazienti"
+      subtitle="Elenco dei pazienti visibili per reparto e ruolo."
+    >
       <template v-if="canCreatePatient" #actions>
         <Button label="Nuovo paziente" size="small" @click="apriNuovo" />
       </template>
@@ -35,7 +38,10 @@ onMounted(load)
 
     <InlineError :message="error" />
 
-    <PatientsTable v-if="!loading && pazienti.length > 0" :patients="pazienti" />
+    <PatientsTable
+      v-if="!loading && pazienti.length > 0"
+      :patients="pazienti"
+    />
 
     <EmptyState
       v-if="!loading && pazienti.length === 0 && isNurse"
@@ -48,7 +54,12 @@ onMounted(load)
       message="Quando saranno creati pazienti attivi, appariranno in questa lista."
     />
 
-    <NewPatientDialog v-model:visible="dialogOpen" v-model:form="form" :saving="saving" @save="salva" />
+    <NewPatientDialog
+      v-model:visible="dialogOpen"
+      v-model:form="form"
+      :saving="saving"
+      @save="salva"
+    />
   </div>
 </template>
 

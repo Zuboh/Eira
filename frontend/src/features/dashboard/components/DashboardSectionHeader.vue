@@ -11,7 +11,11 @@ defineProps<{
 <template>
   <div class="section-header">
     <h2>{{ title }}</h2>
-    <RouterLink v-if="routeName && linkLabel" :to="{ name: routeName }" class="see-all">
+    <RouterLink
+      v-if="routeName && linkLabel"
+      :to="{ name: routeName }"
+      class="see-all"
+    >
       {{ linkLabel }}
     </RouterLink>
   </div>

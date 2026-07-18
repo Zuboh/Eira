@@ -29,13 +29,17 @@ function formatOpenApiError(error: unknown, response: Response) {
   }
 }
 
-function unwrapData<TData, TError>(result: OpenApiResult<TData, TError>): { data: TData } {
+function unwrapData<TData, TError>(
+  result: OpenApiResult<TData, TError>,
+): { data: TData } {
   if (result.error !== undefined) {
     throw new Error(formatOpenApiError(result.error, result.response))
   }
 
   if (result.data === undefined) {
-    throw new Error(`Response data is undefined for status ${result.response.status}`)
+    throw new Error(
+      `Response data is undefined for status ${result.response.status}`,
+    )
   }
 
   return { data: result.data }
@@ -57,7 +61,9 @@ export async function getPaziente(id: number): ApiResponse<Paziente> {
   return unwrapData(result)
 }
 
-export async function createPaziente(payload: PazienteCreatePayload): ApiResponse<Paziente> {
+export async function createPaziente(
+  payload: PazienteCreatePayload,
+): ApiResponse<Paziente> {
   const result = await eiraClient.POST('/api/v1/pazienti/', {
     body: payload,
   })

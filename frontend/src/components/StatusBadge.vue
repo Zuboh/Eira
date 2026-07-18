@@ -24,11 +24,17 @@ const STATE_MAP: Record<string, 'urgente' | 'pending' | 'attiva' | 'chiusa'> = {
 }
 
 const state = computed(() => STATE_MAP[props.status] ?? 'chiusa')
-const pulse = computed(() => props.status === 'in_attesa_collega' || props.status === 'in_attesa_caposala')
+const pulse = computed(
+  () =>
+    props.status === 'in_attesa_collega' ||
+    props.status === 'in_attesa_caposala',
+)
 </script>
 
 <template>
-  <span class="status-badge" :class="[state, { pulse }]">{{ label ?? status }}</span>
+  <span class="status-badge" :class="[state, { pulse }]">{{
+    label ?? status
+  }}</span>
 </template>
 
 <style scoped>

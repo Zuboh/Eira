@@ -1,7 +1,12 @@
 import { onMounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { changeTemporaryPassword } from '@/api/auth'
-import { listReparti, listUtentiByReparto, type Reparto, type UtenteTile } from '@/api/reparti'
+import {
+  listReparti,
+  listUtentiByReparto,
+  type Reparto,
+  type UtenteTile,
+} from '@/api/reparti'
 import { useAuthStore } from '@/stores/auth'
 import {
   clearDeviceRepartoId,
@@ -53,7 +58,9 @@ function getLoginErrorResponse(err: unknown): LoginApiError['response'] {
   return (err as LoginApiError)?.response
 }
 
-export function useLoginFlow({ focusFirstOf }: UseLoginFlowOptions): UseLoginFlowResult {
+export function useLoginFlow({
+  focusFirstOf,
+}: UseLoginFlowOptions): UseLoginFlowResult {
   const step = ref<LoginStep>('reparto')
   const reparti = ref<Reparto[]>([])
   const utenti = ref<UtenteTile[]>([])
@@ -157,13 +164,19 @@ export function useLoginFlow({ focusFirstOf }: UseLoginFlowOptions): UseLoginFlo
       await router.push({ name: `${auth.ruolo}-dashboard` })
     } catch (err: unknown) {
       const response = getLoginErrorResponse(err)
-      if (response?.status === 403 && response.data?.detail === 'password_change_required') {
+      if (
+        response?.status === 403 &&
+        response.data?.detail === 'password_change_required'
+      ) {
         temporaryPassword.value = password.value
         password.value = ''
         newPassword.value = ''
         confirmPassword.value = ''
         step.value = 'change-password'
-      } else if (response?.status === 403 && response.data?.detail === 'temporary_password_expired') {
+      } else if (
+        response?.status === 403 &&
+        response.data?.detail === 'temporary_password_expired'
+      ) {
         password.value = ''
         error.value = TEMPORARY_PASSWORD_EXPIRED_MESSAGE
       } else {
@@ -199,7 +212,10 @@ export function useLoginFlow({ focusFirstOf }: UseLoginFlowOptions): UseLoginFlo
       await focusFirstOf('password')
     } catch (err: unknown) {
       const response = getLoginErrorResponse(err)
-      if (response?.status === 403 && response.data?.detail === 'temporary_password_expired') {
+      if (
+        response?.status === 403 &&
+        response.data?.detail === 'temporary_password_expired'
+      ) {
         error.value = TEMPORARY_PASSWORD_EXPIRED_MESSAGE
       } else {
         error.value = 'Impossibile aggiornare la password.'

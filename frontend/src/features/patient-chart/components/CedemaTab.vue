@@ -2,7 +2,10 @@
 import Button from 'primevue/button'
 import EiraTable from '@/components/ui/EiraTable.vue'
 import { formatDateTimeCompactIt } from '@/utils/dateFormat'
-import type { CedemaTabEmits, CedemaTabProps } from '@/features/patient-chart/types'
+import type {
+  CedemaTabEmits,
+  CedemaTabProps,
+} from '@/features/patient-chart/types'
 
 defineProps<CedemaTabProps>()
 
@@ -11,13 +14,28 @@ const emit = defineEmits<CedemaTabEmits>()
 
 <template>
   <div class="panel-header">
-    <Button v-if="canCreate" label="Nuova voce" size="small" @click="emit('newEntry')" />
+    <Button
+      v-if="canCreate"
+      label="Nuova voce"
+      size="small"
+      @click="emit('newEntry')"
+    />
   </div>
-  <EiraTable class="clinical-table" :empty="entries.length === 0" empty-message="Nessuna voce diario CEDEMA.">
+  <EiraTable
+    class="clinical-table"
+    :empty="entries.length === 0"
+    empty-message="Nessuna voce diario CEDEMA."
+  >
     <table style="min-width: var(--table-min-wide)">
       <thead>
         <tr>
-          <th>Data</th><th>Coscienza</th><th>Emotività</th><th>Dolore</th><th>Emodinamica</th><th>Mobilizzazione</th><th>Allert</th>
+          <th>Data</th>
+          <th>Coscienza</th>
+          <th>Emotività</th>
+          <th>Dolore</th>
+          <th>Emodinamica</th>
+          <th>Mobilizzazione</th>
+          <th>Allert</th>
         </tr>
       </thead>
       <tbody>
@@ -36,6 +54,12 @@ const emit = defineEmits<CedemaTabEmits>()
 </template>
 
 <style scoped>
-.panel-header { display: flex; gap: 8px; margin: 12px 0; }
-.clinical-table { margin-bottom: 20px; }
+.panel-header {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+.clinical-table {
+  margin-bottom: 20px;
+}
 </style>

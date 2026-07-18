@@ -9,7 +9,9 @@ export function usePatientChartSbar(pazienteId: MaybeRef<number>) {
     if (consegneLoaded.value && !force) return
 
     const { data } = await listConsegneSbar({ limit: 200 })
-    consegne.value = data.items.filter((consegna) => consegna.paziente_id === unref(pazienteId))
+    consegne.value = data.items.filter(
+      (consegna) => consegna.paziente_id === unref(pazienteId),
+    )
     consegneLoaded.value = true
   }
 

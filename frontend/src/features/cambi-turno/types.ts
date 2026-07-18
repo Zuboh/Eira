@@ -1,9 +1,13 @@
-import type { RichiestaCambioTurno, RichiestaCambioTurnoCreatePayload } from '@/api/cambiTurno'
+import type {
+  RichiestaCambioTurno,
+  RichiestaCambioTurnoCreatePayload,
+} from '@/api/cambiTurno'
 import type { AssegnazioneTurno } from '@/api/turni'
 import type { Utente } from '@/api/utenti'
 
 export type CambioTurnoForm = {
-  assegnazione_turno_id: RichiestaCambioTurnoCreatePayload['assegnazione_turno_id'] | null
+  assegnazione_turno_id:
+    RichiestaCambioTurnoCreatePayload['assegnazione_turno_id'] | null
   collega_id: RichiestaCambioTurnoCreatePayload['collega_id'] | null
 }
 

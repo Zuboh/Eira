@@ -24,7 +24,9 @@ export function useBancaOre(options: UseBancaOreOptions = {}) {
 
   const mese = ref(meseCorrente())
   const infermieri = ref<UtenteTile[]>([])
-  const infermiereId = ref<number | null>(unref(options.infermiereId) ?? auth.user?.id ?? null)
+  const infermiereId = ref<number | null>(
+    unref(options.infermiereId) ?? auth.user?.id ?? null,
+  )
   const bancaOre = ref<BancaOre | null>(null)
   const loading = ref(false)
   const error = ref('')
@@ -49,7 +51,12 @@ export function useBancaOre(options: UseBancaOreOptions = {}) {
   }
 
   async function loadInfermieri() {
-    if (!options.loadInfermieriForCaposala || auth.ruolo !== 'caposala' || !auth.user) return
+    if (
+      !options.loadInfermieriForCaposala ||
+      auth.ruolo !== 'caposala' ||
+      !auth.user
+    )
+      return
 
     const { data } = await listUtentiByReparto(auth.user.reparto_id)
     infermieri.value = data.filter((utente) => utente.ruolo === 'infermiere')

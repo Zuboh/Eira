@@ -12,7 +12,12 @@ const emit = defineEmits<{ save: [] }>()
 </script>
 
 <template>
-  <Dialog v-model:visible="visible" header="Motivo rifiuto" modal :style="dialogStyle.sm">
+  <Dialog
+    v-model:visible="visible"
+    header="Motivo rifiuto"
+    modal
+    :style="dialogStyle.sm"
+  >
     <form class="form" @submit.prevent="emit('save')">
       <FormField label="Motivo">
         <InputText v-model="motivo" />

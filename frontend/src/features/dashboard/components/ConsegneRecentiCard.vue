@@ -11,21 +11,40 @@ defineProps<ConsegneRecentiCardProps>()
 
 <template>
   <EiraCard class="dashboard-card">
-    <DashboardSectionHeader title="Consegne SBAR recenti" route-name="consegne-sbar" link-label="Vedi tutte" />
-    <EiraTable v-if="!loading" :empty="consegne.length === 0" empty-message="Nessuna consegna registrata.">
+    <DashboardSectionHeader
+      title="Consegne SBAR recenti"
+      route-name="consegne-sbar"
+      link-label="Vedi tutte"
+    />
+    <EiraTable
+      v-if="!loading"
+      :empty="consegne.length === 0"
+      empty-message="Nessuna consegna registrata."
+    >
       <table>
         <thead>
-          <tr><th>Paziente</th><th>Priorità</th><th></th></tr>
+          <tr>
+            <th>Paziente</th>
+            <th>Priorità</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
           <tr v-for="consegna in consegne" :key="consegna.id">
             <td>
-              <RouterLink :to="{ name: 'paziente-scheda', params: { id: consegna.paziente_id } }">
+              <RouterLink
+                :to="{
+                  name: 'paziente-scheda',
+                  params: { id: consegna.paziente_id },
+                }"
+              >
                 {{ nomePaziente(consegna.paziente_id) }}
               </RouterLink>
             </td>
             <td><StatusBadge :status="consegna.priorita" /></td>
-            <td class="mono">{{ new Date(consegna.creata_il).toLocaleDateString('it-IT') }}</td>
+            <td class="mono">
+              {{ new Date(consegna.creata_il).toLocaleDateString('it-IT') }}
+            </td>
           </tr>
         </tbody>
       </table>

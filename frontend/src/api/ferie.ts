@@ -5,12 +5,14 @@ export type StatoRichiestaFerie = components['schemas']['StatoRichiestaFerie']
 
 type RichiestaFerieRead = components['schemas']['RichiestaFerieRead']
 
-type NullableResponseFields = 'risposta_caposala_id' | 'risposta_caposala_il' | 'motivo_rifiuto'
+type NullableResponseFields =
+  'risposta_caposala_id' | 'risposta_caposala_il' | 'motivo_rifiuto'
 
 export type RichiestaFerie = Omit<RichiestaFerieRead, NullableResponseFields> &
   Required<Pick<RichiestaFerieRead, NullableResponseFields>>
 
-export type RichiestaFerieCreatePayload = components['schemas']['RichiestaFerieCreate']
+export type RichiestaFerieCreatePayload =
+  components['schemas']['RichiestaFerieCreate']
 export type RispostaFeriePayload = components['schemas']['RispostaFerieRequest']
 
 type ApiDataResponse<T> = Promise<{ data: T }>
@@ -48,7 +50,9 @@ function unwrapData<T>(result: EiraResult<T>, operation: string): T {
   return result.data
 }
 
-function normalizeRichiestaFerie(richiesta: RichiestaFerieRead): RichiestaFerie {
+function normalizeRichiestaFerie(
+  richiesta: RichiestaFerieRead,
+): RichiestaFerie {
   return {
     ...richiesta,
     risposta_caposala_id: richiesta.risposta_caposala_id ?? null,
@@ -57,7 +61,9 @@ function normalizeRichiestaFerie(richiesta: RichiestaFerieRead): RichiestaFerie 
   }
 }
 
-function wrapRichiestaFerie(richiesta: RichiestaFerieRead): { data: RichiestaFerie } {
+function wrapRichiestaFerie(richiesta: RichiestaFerieRead): {
+  data: RichiestaFerie
+} {
   return { data: normalizeRichiestaFerie(richiesta) }
 }
 
@@ -71,7 +77,10 @@ export async function listSlotFerieDisponibili(): ApiDataResponse<string[]> {
 }
 
 export async function listRichiesteFerie(): ApiDataResponse<RichiestaFerie[]> {
-  const data = unwrapData(await eiraClient.GET('/api/v1/ferie/richieste'), 'listRichiesteFerie')
+  const data = unwrapData(
+    await eiraClient.GET('/api/v1/ferie/richieste'),
+    'listRichiesteFerie',
+  )
 
   return { data: data.map(normalizeRichiestaFerie) }
 }
@@ -118,9 +127,12 @@ export async function updateRichiestaFerie(
 }
 
 export async function deleteRichiestaFerie(id: number): Promise<void> {
-  const { error } = await eiraClient.DELETE('/api/v1/ferie/richieste/{richiesta_id}', {
-    params: { path: { richiesta_id: id } },
-  })
+  const { error } = await eiraClient.DELETE(
+    '/api/v1/ferie/richieste/{richiesta_id}',
+    {
+      params: { path: { richiesta_id: id } },
+    },
+  )
 
   if (error !== undefined) {
     throw new Error(`deleteRichiestaFerie failed: ${formatApiError(error)}`)

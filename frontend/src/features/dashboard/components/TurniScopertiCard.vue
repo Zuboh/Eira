@@ -19,17 +19,36 @@ const emit = defineEmits<{
 
 <template>
   <EiraCard title="Turni scoperti" class="dashboard-card">
-    <EiraTable v-if="!loading" :empty="turni.length === 0" empty-message="Nessun turno scoperto.">
+    <EiraTable
+      v-if="!loading"
+      :empty="turni.length === 0"
+      empty-message="Nessun turno scoperto."
+    >
       <table>
         <thead>
-          <tr><th>Data</th><th>Turno</th><th>Orario</th><th></th></tr>
+          <tr>
+            <th>Data</th>
+            <th>Turno</th>
+            <th>Orario</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
           <tr v-for="turno in turni" :key="turno.id">
             <td>{{ formatDateShortIt(turno.data) }}</td>
             <td>{{ TIPO_TURNO_LABEL[turno.tipo] }}</td>
-            <td class="mono">{{ turno.ora_inizio.slice(0, 5) }}–{{ turno.ora_fine.slice(0, 5) }}</td>
-            <td class="actions"><Button label="Assegna" size="small" @click="emit('assign', turno)" /></td>
+            <td class="mono">
+              {{ turno.ora_inizio.slice(0, 5) }}–{{
+                turno.ora_fine.slice(0, 5)
+              }}
+            </td>
+            <td class="actions">
+              <Button
+                label="Assegna"
+                size="small"
+                @click="emit('assign', turno)"
+              />
+            </td>
           </tr>
         </tbody>
       </table>

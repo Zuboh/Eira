@@ -1,7 +1,10 @@
 import type { PazienteUpdatePayload } from '@/api/pazienti'
 import type { AssegnazioneTurno } from '@/api/turni'
 import type { ConsegnaSbar } from '@/api/consegneSbar'
-import type { VoceDiarioCedema, VoceDiarioCedemaCreatePayload } from '@/api/diarioCedema'
+import type {
+  VoceDiarioCedema,
+  VoceDiarioCedemaCreatePayload,
+} from '@/api/diarioCedema'
 import type {
   ValutazioneConley,
   ValutazioneConleyCreatePayload,
@@ -12,7 +15,9 @@ import type {
 export type CedemaForm = VoceDiarioCedemaCreatePayload
 export type NortonForm = ValutazioneNortonCreatePayload
 export type ConleyForm = ValutazioneConleyCreatePayload
-export type PatientEditForm = Required<Pick<PazienteUpdatePayload, 'letto' | 'diagnosi_ingresso' | 'dimesso'>>
+export type PatientEditForm = Required<
+  Pick<PazienteUpdatePayload, 'letto' | 'diagnosi_ingresso' | 'dimesso'>
+>
 
 export type PatientChartSaveEmit = {
   save: []

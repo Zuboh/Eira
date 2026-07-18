@@ -4,7 +4,11 @@ import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import FormField from '@/components/ui/FormField.vue'
 import { dialogStyle } from '@/components/ui/dialogStyles'
-import type { CambioTurnoForm, CambioTurnoSubmitEmits, NewCambioTurnoDialogProps } from '@/features/cambi-turno/types'
+import type {
+  CambioTurnoForm,
+  CambioTurnoSubmitEmits,
+  NewCambioTurnoDialogProps,
+} from '@/features/cambi-turno/types'
 
 const visible = defineModel<boolean>('visible', { required: true })
 const form = defineModel<CambioTurnoForm>('form', { required: true })
@@ -15,7 +19,12 @@ const emit = defineEmits<CambioTurnoSubmitEmits>()
 </script>
 
 <template>
-  <Dialog v-model:visible="visible" header="Richiedi cambio turno" modal :style="dialogStyle.sm">
+  <Dialog
+    v-model:visible="visible"
+    header="Richiedi cambio turno"
+    modal
+    :style="dialogStyle.sm"
+  >
     <form class="form" @submit.prevent="emit('save')">
       <FormField label="Tuo turno" required>
         <Select

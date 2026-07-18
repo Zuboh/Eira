@@ -24,7 +24,9 @@ export function createEmptyConsegnaSbarForm(): ConsegnaSbarForm {
   }
 }
 
-export function createFormFromConsegna(consegna: ConsegnaSbar): ConsegnaSbarForm {
+export function createFormFromConsegna(
+  consegna: ConsegnaSbar,
+): ConsegnaSbarForm {
   return {
     paziente_id: consegna.paziente_id,
     turno_id: consegna.turno_id,
@@ -56,7 +58,9 @@ export function toCreateConsegnaPayload(
   }
 }
 
-export function toUpdateConsegnaPayload(form: ConsegnaSbarForm): ConsegnaSbarUpdatePayload {
+export function toUpdateConsegnaPayload(
+  form: ConsegnaSbarForm,
+): ConsegnaSbarUpdatePayload {
   return {
     situation: form.situation,
     background: form.background,

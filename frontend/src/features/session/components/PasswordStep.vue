@@ -22,9 +22,9 @@ const emit = defineEmits<{
 const passwordInputRef = ref<InstanceType<typeof Password> | null>(null)
 
 function focusPassword() {
-  const input = (passwordInputRef.value as unknown as { $el?: HTMLElement })?.$el?.querySelector(
-    'input',
-  ) as HTMLInputElement | undefined
+  const input = (
+    passwordInputRef.value as unknown as { $el?: HTMLElement }
+  )?.$el?.querySelector('input') as HTMLInputElement | undefined
   input?.focus()
 }
 
@@ -33,7 +33,9 @@ defineExpose({ focusPassword })
 
 <template>
   <form class="password-step" @submit.prevent="emit('submit')">
-    <p class="subtitle">{{ selectedUtente?.nome }} {{ selectedUtente?.cognome }}</p>
+    <p class="subtitle">
+      {{ selectedUtente?.nome }} {{ selectedUtente?.cognome }}
+    </p>
 
     <div class="field">
       <label for="password">Password</label>
@@ -61,8 +63,12 @@ defineExpose({ focusPassword })
     <Button type="submit" label="Accedi" :loading="loading" class="submit" />
 
     <div class="password-links">
-      <button type="button" class="link-btn" @click="emit('backToTiles')">Non sei tu?</button>
-      <button type="button" class="link-btn" @click="emit('changeReparto')">Cambia reparto</button>
+      <button type="button" class="link-btn" @click="emit('backToTiles')">
+        Non sei tu?
+      </button>
+      <button type="button" class="link-btn" @click="emit('changeReparto')">
+        Cambia reparto
+      </button>
     </div>
   </form>
 </template>

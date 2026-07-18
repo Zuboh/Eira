@@ -11,7 +11,10 @@ const navItems = computed(() => {
 
   return router
     .getRoutes()
-    .filter((route) => route.name && route.meta.nav && route.meta.roles?.includes(auth.ruolo!))
+    .filter(
+      (route) =>
+        route.name && route.meta.nav && route.meta.roles?.includes(auth.ruolo!),
+    )
     .sort((a, b) => a.meta.nav!.order - b.meta.nav!.order)
     .map((route) => ({
       to: { name: route.name! },

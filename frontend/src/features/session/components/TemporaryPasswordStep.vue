@@ -4,7 +4,9 @@ import Password from 'primevue/password'
 import type { UtenteTile } from '@/api/reparti'
 
 const newPassword = defineModel<string>('newPassword', { required: true })
-const confirmPassword = defineModel<string>('confirmPassword', { required: true })
+const confirmPassword = defineModel<string>('confirmPassword', {
+  required: true,
+})
 
 defineProps<{
   selectedUtente: UtenteTile | null
@@ -21,7 +23,9 @@ const emit = defineEmits<{
 
 <template>
   <form class="password-step" @submit.prevent="emit('submit')">
-    <p class="subtitle">{{ selectedUtente?.nome }} {{ selectedUtente?.cognome }}</p>
+    <p class="subtitle">
+      {{ selectedUtente?.nome }} {{ selectedUtente?.cognome }}
+    </p>
 
     <div class="field">
       <label for="new-password">Nuova password</label>
@@ -57,11 +61,20 @@ const emit = defineEmits<{
       <p v-if="error" class="error" role="alert">{{ error }}</p>
     </Transition>
 
-    <Button type="submit" label="Aggiorna password" :loading="loading" class="submit" />
+    <Button
+      type="submit"
+      label="Aggiorna password"
+      :loading="loading"
+      class="submit"
+    />
 
     <div class="password-links">
-      <button type="button" class="link-btn" @click="emit('backToTiles')">Non sei tu?</button>
-      <button type="button" class="link-btn" @click="emit('changeReparto')">Cambia reparto</button>
+      <button type="button" class="link-btn" @click="emit('backToTiles')">
+        Non sei tu?
+      </button>
+      <button type="button" class="link-btn" @click="emit('changeReparto')">
+        Cambia reparto
+      </button>
     </div>
   </form>
 </template>

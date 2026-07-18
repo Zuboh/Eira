@@ -6,7 +6,10 @@ export function buildCalendarioRows(
   calendario: TurnoCalendario[],
   resolveInfermiereName: (infermiereId: number) => string,
 ): CalendarioRiga[] {
-  const turniByData = new Map<string, Partial<Record<Turno['tipo'], TurnoCalendario>>>()
+  const turniByData = new Map<
+    string,
+    Partial<Record<Turno['tipo'], TurnoCalendario>>
+  >()
 
   for (const turno of calendario) {
     const turni = turniByData.get(turno.data) ?? {}
@@ -25,7 +28,9 @@ export function buildCalendarioRows(
           tipo,
           turno,
           assegnati: turno
-            ? turno.assegnazioni.map((a) => resolveInfermiereName(a.infermiere_id)).join(', ')
+            ? turno.assegnazioni
+                .map((a) => resolveInfermiereName(a.infermiere_id))
+                .join(', ')
             : '',
         }
       }),

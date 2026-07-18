@@ -49,7 +49,11 @@ const legendItems = [
   --fc-page-bg-color: var(--surface);
   --fc-neutral-bg-color: var(--canvas);
   --fc-list-event-hover-bg-color: var(--canvas);
-  --fc-today-bg-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  --fc-today-bg-color: color-mix(
+    in srgb,
+    var(--color-primary) 12%,
+    transparent
+  );
   --fc-button-bg-color: var(--color-primary);
   --fc-button-border-color: var(--color-primary);
   --fc-button-hover-bg-color: var(--color-primary);

@@ -15,8 +15,13 @@ defineProps<ProssimiTurniCardProps>()
       <li v-for="turno in turni" :key="turno.id">
         <span class="dot" :class="`turno-${turno.tipo}`" aria-hidden="true" />
         <span>
-          {{ formatDateShortIt(turno.data) }} · {{ TIPO_TURNO_LABEL[turno.tipo] }} ·
-          <span class="mono">{{ turno.ora_inizio.slice(0, 5) }}–{{ turno.ora_fine.slice(0, 5) }}</span>
+          {{ formatDateShortIt(turno.data) }} ·
+          {{ TIPO_TURNO_LABEL[turno.tipo] }} ·
+          <span class="mono"
+            >{{ turno.ora_inizio.slice(0, 5) }}–{{
+              turno.ora_fine.slice(0, 5)
+            }}</span
+          >
         </span>
       </li>
     </ul>

@@ -10,7 +10,8 @@ function trimTrailingSlash(url: string) {
 }
 
 function resolveBaseUrl() {
-  const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined
+  const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL as
+    string | undefined
   const baseUrl = trimTrailingSlash(configuredBaseUrl ?? DEFAULT_API_ROOT_URL)
 
   if (baseUrl.endsWith(API_PREFIX_IN_SCHEMA)) {

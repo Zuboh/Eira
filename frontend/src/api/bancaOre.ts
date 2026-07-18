@@ -19,12 +19,15 @@ export async function getBancaOre(
   infermiereId: number,
   mese: string,
 ): Promise<{ data: BancaOre }> {
-  const { data, error } = await eiraClient.GET('/api/v1/banca-ore/{infermiere_id}', {
-    params: {
-      path: { infermiere_id: infermiereId },
-      query: { mese },
+  const { data, error } = await eiraClient.GET(
+    '/api/v1/banca-ore/{infermiere_id}',
+    {
+      params: {
+        path: { infermiere_id: infermiereId },
+        query: { mese },
+      },
     },
-  })
+  )
 
   if (error) {
     throw new Error(getErrorMessage(error))

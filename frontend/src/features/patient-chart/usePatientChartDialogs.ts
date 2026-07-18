@@ -8,7 +8,12 @@ import {
   createEmptyNortonForm,
   createPatientEditForm,
 } from '@/features/patient-chart/form'
-import type { CedemaForm, ConleyForm, NortonForm, PatientEditForm } from '@/features/patient-chart/types'
+import type {
+  CedemaForm,
+  ConleyForm,
+  NortonForm,
+  PatientEditForm,
+} from '@/features/patient-chart/types'
 
 type PatientChartDialogOptions = {
   pazienteId: MaybeRef<number>
@@ -26,7 +31,11 @@ export function usePatientChartDialogs({
   reloadValutazioni,
 }: PatientChartDialogOptions) {
   const editing = ref(false)
-  const editForm = ref<PatientEditForm>({ letto: '', diagnosi_ingresso: '', dimesso: false })
+  const editForm = ref<PatientEditForm>({
+    letto: '',
+    diagnosi_ingresso: '',
+    dimesso: false,
+  })
 
   const cedemaDialog = ref(false)
   const cedemaSaving = ref(false)

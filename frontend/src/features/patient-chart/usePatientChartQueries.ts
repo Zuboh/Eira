@@ -2,9 +2,16 @@ import { ref, unref, type MaybeRef } from 'vue'
 import { getPaziente, type Paziente } from '@/api/pazienti'
 import { getMieAssegnazioni, type AssegnazioneTurno } from '@/api/turni'
 import { listDiarioCedema, type VoceDiarioCedema } from '@/api/diarioCedema'
-import { getValutazioni, type ValutazioneConley, type ValutazioneNorton } from '@/api/valutazioni'
+import {
+  getValutazioni,
+  type ValutazioneConley,
+  type ValutazioneNorton,
+} from '@/api/valutazioni'
 
-export function usePatientChartQueries(pazienteId: MaybeRef<number>, ruolo: MaybeRef<string | null>) {
+export function usePatientChartQueries(
+  pazienteId: MaybeRef<number>,
+  ruolo: MaybeRef<string | null>,
+) {
   const paziente = ref<Paziente | null>(null)
   const error = ref('')
   const loading = ref(false)

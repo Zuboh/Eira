@@ -1,7 +1,10 @@
 import { computed, ref } from 'vue'
 import { createPaziente, listPazienti, type Paziente } from '@/api/pazienti'
 import { useAuthStore } from '@/stores/auth'
-import { createEmptyNewPatientForm, toPatientCreatePayload } from '@/features/patients/form'
+import {
+  createEmptyNewPatientForm,
+  toPatientCreatePayload,
+} from '@/features/patients/form'
 import type { NewPatientForm } from '@/features/patients/types'
 
 export function usePatients() {

@@ -2,7 +2,8 @@ import { eiraClient } from '@/api/eiraClient'
 import type { components } from '@/api/schema'
 
 export type VoceDiarioCedema = components['schemas']['VoceDiarioCedemaRead']
-export type VoceDiarioCedemaCreatePayload = components['schemas']['VoceDiarioCedemaCreate']
+export type VoceDiarioCedemaCreatePayload =
+  components['schemas']['VoceDiarioCedemaCreate']
 
 type ApiDataResponse<T> = Promise<{ data: T }>
 
@@ -32,9 +33,14 @@ function formatOpenApiError(error: unknown, response: Response) {
   }
 }
 
-function unwrapData<TData>(result: OpenApiResult<TData>, operation: string): { data: TData } {
+function unwrapData<TData>(
+  result: OpenApiResult<TData>,
+  operation: string,
+): { data: TData } {
   if (result.error !== undefined) {
-    throw new Error(`${operation} failed: ${formatOpenApiError(result.error, result.response)}`)
+    throw new Error(
+      `${operation} failed: ${formatOpenApiError(result.error, result.response)}`,
+    )
   }
 
   if (result.data === undefined) {
@@ -47,13 +53,16 @@ function unwrapData<TData>(result: OpenApiResult<TData>, operation: string): { d
 export async function listDiarioCedema(
   pazienteId: number,
 ): ApiDataResponse<VoceDiarioCedema[]> {
-  const result = await eiraClient.GET('/api/v1/pazienti/{paziente_id}/diario-cedema', {
-    params: {
-      path: {
-        paziente_id: pazienteId,
+  const result = await eiraClient.GET(
+    '/api/v1/pazienti/{paziente_id}/diario-cedema',
+    {
+      params: {
+        path: {
+          paziente_id: pazienteId,
+        },
       },
     },
-  })
+  )
 
   return unwrapData(result, 'listDiarioCedema')
 }
@@ -62,14 +71,17 @@ export async function createVoceDiarioCedema(
   pazienteId: number,
   payload: VoceDiarioCedemaCreatePayload,
 ): ApiDataResponse<VoceDiarioCedema> {
-  const result = await eiraClient.POST('/api/v1/pazienti/{paziente_id}/diario-cedema', {
-    params: {
-      path: {
-        paziente_id: pazienteId,
+  const result = await eiraClient.POST(
+    '/api/v1/pazienti/{paziente_id}/diario-cedema',
+    {
+      params: {
+        path: {
+          paziente_id: pazienteId,
+        },
       },
+      body: payload,
     },
-    body: payload,
-  })
+  )
 
   return unwrapData(result, 'createVoceDiarioCedema')
 }

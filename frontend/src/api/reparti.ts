@@ -45,7 +45,9 @@ export async function listReparti(): ApiDataResponse<Reparto[]> {
   return unwrapData(result, 'listReparti')
 }
 
-export async function listUtentiByReparto(id: number): ApiDataResponse<UtenteTile[]> {
+export async function listUtentiByReparto(
+  id: number,
+): ApiDataResponse<UtenteTile[]> {
   const result = await eiraClient.GET('/api/v1/reparti/{reparto_id}/utenti', {
     params: {
       path: {

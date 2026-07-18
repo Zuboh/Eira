@@ -95,7 +95,9 @@ export function useFerie() {
   }
 
   async function salva() {
-    const preferenze = preferenzeSelezionate.value.filter((p): p is string => p !== null)
+    const preferenze = preferenzeSelezionate.value.filter(
+      (p): p is string => p !== null,
+    )
     if (preferenze.length === 0) return
     error.value = ''
     saving.value = true

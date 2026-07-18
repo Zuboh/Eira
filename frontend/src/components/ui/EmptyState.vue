@@ -8,7 +8,9 @@ const props = defineProps<{
 
 const slots = useSlots()
 const hasActions = computed(() => Boolean(slots.actions))
-const hasContent = computed(() => Boolean(props.title || props.message || hasActions.value))
+const hasContent = computed(() =>
+  Boolean(props.title || props.message || hasActions.value),
+)
 </script>
 
 <template>

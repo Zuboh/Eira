@@ -20,11 +20,24 @@ const emit = defineEmits<{
 
 <template>
   <EiraCard class="dashboard-card">
-    <DashboardSectionHeader title="Cambi turno in attesa" route-name="cambio-turno" link-label="Vedi tutti" />
-    <EiraTable v-if="!loading" :empty="richieste.length === 0" empty-message="Nessun cambio turno in attesa.">
+    <DashboardSectionHeader
+      title="Cambi turno in attesa"
+      route-name="cambio-turno"
+      link-label="Vedi tutti"
+    />
+    <EiraTable
+      v-if="!loading"
+      :empty="richieste.length === 0"
+      empty-message="Nessun cambio turno in attesa."
+    >
       <table>
         <thead>
-          <tr><th>Richiedente</th><th>Collega</th><th>Stato</th><th></th></tr>
+          <tr>
+            <th>Richiedente</th>
+            <th>Collega</th>
+            <th>Stato</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
           <tr v-for="richiesta in richieste" :key="richiesta.id">
@@ -33,8 +46,17 @@ const emit = defineEmits<{
             <td><StatusBadge :status="richiesta.stato" /></td>
             <td class="actions">
               <template v-if="richiesta.stato === 'in_attesa_caposala'">
-                <Button label="Approva" size="small" @click="emit('approve', richiesta)" />
-                <Button label="Rifiuta" size="small" severity="secondary" @click="emit('reject', richiesta)" />
+                <Button
+                  label="Approva"
+                  size="small"
+                  @click="emit('approve', richiesta)"
+                />
+                <Button
+                  label="Rifiuta"
+                  size="small"
+                  severity="secondary"
+                  @click="emit('reject', richiesta)"
+                />
               </template>
             </td>
           </tr>

@@ -26,9 +26,11 @@ defineExpose({ focusFirst })
   <ul class="reparto-list">
     <li v-for="(reparto, i) in reparti" :key="reparto.id">
       <button
+        :ref="
+          i === 0 ? (el) => (firstButton = el as HTMLButtonElement) : undefined
+        "
         type="button"
         class="reparto-item"
-        :ref="i === 0 ? (el) => (firstButton = el as HTMLButtonElement) : undefined"
         :disabled="loading"
         @click="emit('choose', reparto)"
       >

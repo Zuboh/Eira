@@ -28,9 +28,11 @@ defineExpose({ focusFirst })
       <button
         v-for="(utente, i) in utenti"
         :key="utente.id"
+        :ref="
+          i === 0 ? (el) => (firstButton = el as HTMLButtonElement) : undefined
+        "
         type="button"
         class="tile"
-        :ref="i === 0 ? (el) => (firstButton = el as HTMLButtonElement) : undefined"
         :disabled="loading"
         @click="emit('select', utente)"
       >
@@ -39,7 +41,9 @@ defineExpose({ focusFirst })
     </div>
   </template>
   <p v-else class="hint">Nessun utente in questo reparto.</p>
-  <button type="button" class="link-btn" @click="emit('changeReparto')">Cambia reparto</button>
+  <button type="button" class="link-btn" @click="emit('changeReparto')">
+    Cambia reparto
+  </button>
 </template>
 
 <style scoped>

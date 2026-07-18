@@ -43,7 +43,9 @@ const {
 } = useFerie()
 
 function slotOptionsFor(index: number) {
-  const scelteAltrove = preferenzeSelezionate.value.filter((_, i) => i !== index)
+  const scelteAltrove = preferenzeSelezionate.value.filter(
+    (_, i) => i !== index,
+  )
   return slotDisponibili.value
     .filter((data) => !scelteAltrove.includes(data))
     .map((data) => ({
@@ -52,7 +54,9 @@ function slotOptionsFor(index: number) {
     }))
 }
 
-const showForm = computed(() => canRequestFerie.value || editingId.value !== null)
+const showForm = computed(
+  () => canRequestFerie.value || editingId.value !== null,
+)
 
 onMounted(load)
 </script>
@@ -65,7 +69,11 @@ onMounted(load)
 
     <form v-if="showForm" class="richiesta-form" @submit.prevent="salva">
       <p class="form-title">
-        {{ editingId !== null ? 'Modifica preferenze' : 'Nuova richiesta ferie estive' }}
+        {{
+          editingId !== null
+            ? 'Modifica preferenze'
+            : 'Nuova richiesta ferie estive'
+        }}
       </p>
       <FormField
         v-for="(_, index) in preferenzeSelezionate"
@@ -110,7 +118,9 @@ onMounted(load)
           />
           <Button
             type="submit"
-            :label="editingId !== null ? 'Salva modifiche' : 'Richiedi ferie estive'"
+            :label="
+              editingId !== null ? 'Salva modifiche' : 'Richiedi ferie estive'
+            "
             :loading="saving"
             :disabled="!preferenzeSelezionate[0]"
           />
@@ -130,8 +140,16 @@ onMounted(load)
       @cancel="cancella"
     />
 
-    <RifiutoFerieDialog v-model:visible="rifiutoDialog" v-model:motivo="motivoRifiuto" @save="confermaRifiuto" />
-    <ApprovaFerieDialog v-model:visible="approvaDialog" :richiesta="approvaTarget" @confirm="confermaApprova" />
+    <RifiutoFerieDialog
+      v-model:visible="rifiutoDialog"
+      v-model:motivo="motivoRifiuto"
+      @save="confermaRifiuto"
+    />
+    <ApprovaFerieDialog
+      v-model:visible="approvaDialog"
+      :richiesta="approvaTarget"
+      @confirm="confermaApprova"
+    />
   </div>
 </template>
 

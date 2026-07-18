@@ -40,7 +40,12 @@ onMounted(load)
   <div class="cambio-view">
     <PageHeader title="Cambio Turno">
       <template #actions>
-        <Button v-if="canRequestChange" label="Richiedi cambio" size="small" @click="apriNuova" />
+        <Button
+          v-if="canRequestChange"
+          label="Richiedi cambio"
+          size="small"
+          @click="apriNuova"
+        />
       </template>
     </PageHeader>
 
@@ -67,7 +72,11 @@ onMounted(load)
       @save="salva"
     />
 
-    <RifiutoCambioTurnoDialog v-model:visible="rifiutoDialog" v-model:motivo="motivoRifiuto" @save="confermaRifiuto" />
+    <RifiutoCambioTurnoDialog
+      v-model:visible="rifiutoDialog"
+      v-model:motivo="motivoRifiuto"
+      @save="confermaRifiuto"
+    />
   </div>
 </template>
 

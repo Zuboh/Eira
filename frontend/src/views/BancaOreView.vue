@@ -5,20 +5,16 @@ import { useBancaOre } from '@/features/banca-ore/useBancaOre'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
-const {
-  mese,
-  infermieri,
-  infermiereId,
-  bancaOre,
-  loading,
-  error,
-  spostaMese,
-} = useBancaOre({ loadInfermieriForCaposala: true })
+const { mese, infermieri, infermiereId, bancaOre, loading, error, spostaMese } =
+  useBancaOre({ loadInfermieriForCaposala: true })
 </script>
 
 <template>
   <div class="banca-ore-view">
-    <PageHeader title="Banca Ore" subtitle="Saldo mensile tra ore pianificate e ore contrattuali." />
+    <PageHeader
+      title="Banca Ore"
+      subtitle="Saldo mensile tra ore pianificate e ore contrattuali."
+    />
 
     <BancaOreSection
       v-model:infermiere-id="infermiereId"

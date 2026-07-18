@@ -1,5 +1,9 @@
 import { computed, ref } from 'vue'
-import { createConsegnaSbar, listConsegneSbar, updateConsegnaSbar } from '@/api/consegneSbar'
+import {
+  createConsegnaSbar,
+  listConsegneSbar,
+  updateConsegnaSbar,
+} from '@/api/consegneSbar'
 import { listPazienti } from '@/api/pazienti'
 import { getMieAssegnazioni } from '@/api/turni'
 import { useAuthStore } from '@/stores/auth'
@@ -11,7 +15,11 @@ import {
   toCreateConsegnaPayload,
   toUpdateConsegnaPayload,
 } from '@/features/sbar/form'
-import type { AssegnazioneTurno, ConsegnaSbar, Paziente } from '@/features/sbar/types'
+import type {
+  AssegnazioneTurno,
+  ConsegnaSbar,
+  Paziente,
+} from '@/features/sbar/types'
 
 const PAGE_SIZE = 25
 
@@ -26,14 +34,18 @@ export function useConsegneSbar() {
 
   const page = ref(1)
   const total = ref(0)
-  const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)))
+  const pageCount = computed(() =>
+    Math.max(1, Math.ceil(total.value / PAGE_SIZE)),
+  )
 
   const dialogOpen = ref(false)
   const editingId = ref<number | null>(null)
   const saving = ref(false)
   const form = ref(createEmptyConsegnaSbarForm())
 
-  const pazientiById = computed(() => new Map(pazienti.value.map((p) => [p.id, p])))
+  const pazientiById = computed(
+    () => new Map(pazienti.value.map((p) => [p.id, p])),
+  )
   const isEditing = computed(() => editingId.value !== null)
   const canCreateConsegna = computed(() => auth.ruolo === 'infermiere')
 
@@ -58,7 +70,10 @@ export function useConsegneSbar() {
     loading.value = true
     try {
       const [c, p] = await Promise.all([
-        listConsegneSbar({ skip: (page.value - 1) * PAGE_SIZE, limit: PAGE_SIZE }),
+        listConsegneSbar({
+          skip: (page.value - 1) * PAGE_SIZE,
+          limit: PAGE_SIZE,
+        }),
         listPazienti(),
       ])
       consegne.value = c.data.items
@@ -98,7 +113,10 @@ export function useConsegneSbar() {
     error.value = ''
     try {
       if (editingId.value !== null) {
-        await updateConsegnaSbar(editingId.value, toUpdateConsegnaPayload(form.value))
+        await updateConsegnaSbar(
+          editingId.value,
+          toUpdateConsegnaPayload(form.value),
+        )
       } else {
         if (!canCreateConsegnaPayload(form.value)) return
         await createConsegnaSbar(toCreateConsegnaPayload(form.value))

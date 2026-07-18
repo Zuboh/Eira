@@ -12,6 +12,8 @@ export function formatDateTimeCompactIt(dateTime: string) {
 
 export function formatMeseIt(mese: string) {
   const [anno, month] = mese.split('-').map(Number)
-  const label = new Date(anno, month - 1, 1).toLocaleDateString('it-IT', { month: 'long' })
+  const label = new Date(anno, month - 1, 1).toLocaleDateString('it-IT', {
+    month: 'long',
+  })
   return `${label.charAt(0).toUpperCase()}${label.slice(1)} ${anno}`
 }

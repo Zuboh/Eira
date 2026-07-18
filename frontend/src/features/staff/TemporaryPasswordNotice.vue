@@ -16,7 +16,12 @@ const emit = defineEmits<TemporaryPasswordNoticeEmits>()
       <p class="temporary-title">Password temporanea</p>
       <code>{{ password }}</code>
     </div>
-    <Button label="Copia" size="small" severity="secondary" @click="emit('copy')" />
+    <Button
+      label="Copia"
+      size="small"
+      severity="secondary"
+      @click="emit('copy')"
+    />
   </section>
 </template>
 

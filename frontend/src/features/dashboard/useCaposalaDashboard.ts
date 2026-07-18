@@ -1,6 +1,11 @@
 import { computed, ref } from 'vue'
 import { getDashboardCaposala, type DashboardCaposala } from '@/api/dashboard'
-import { getCalendarioTurni, assegnaTurno, type Turno, type TurnoCalendario } from '@/api/turni'
+import {
+  getCalendarioTurni,
+  assegnaTurno,
+  type Turno,
+  type TurnoCalendario,
+} from '@/api/turni'
 import { listUtenti, type Utente } from '@/api/utenti'
 import { useCambiTurno } from '@/features/cambi-turno/useCambiTurno'
 import { buildCalendarioRows } from '@/features/dashboard/calendarViewModel'
@@ -18,21 +23,31 @@ export function useCaposalaDashboard() {
   const assegnaInfermiereId = ref<number | null>(null)
   const saving = ref(false)
 
-  const utentiById = computed(() => new Map(utenti.value.map((utente) => [utente.id, utente])))
-  const infermieri = computed(() => utenti.value.filter((u) => u.ruolo === 'infermiere'))
+  const utentiById = computed(
+    () => new Map(utenti.value.map((utente) => [utente.id, utente])),
+  )
+  const infermieri = computed(() =>
+    utenti.value.filter((u) => u.ruolo === 'infermiere'),
+  )
 
   function nomeUtente(utenteId: number) {
     const utente = utentiById.value.get(utenteId)
     return utente ? `${utente.cognome} ${utente.nome}` : `#${utenteId}`
   }
 
-  const righeCalendario = computed(() => buildCalendarioRows(calendario.value, nomeUtente))
+  const righeCalendario = computed(() =>
+    buildCalendarioRows(calendario.value, nomeUtente),
+  )
 
   async function load() {
     error.value = ''
     loading.value = true
     try {
-      const [u, d, c] = await Promise.all([listUtenti(), getDashboardCaposala(), getCalendarioTurni()])
+      const [u, d, c] = await Promise.all([
+        listUtenti(),
+        getDashboardCaposala(),
+        getCalendarioTurni(),
+      ])
       utenti.value = u.data
       dashboard.value = d.data
       cambiTurno.setRichieste(d.data.cambi_turno_in_attesa)

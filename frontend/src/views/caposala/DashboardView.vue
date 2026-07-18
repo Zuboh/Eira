@@ -72,10 +72,16 @@ onMounted(load)
 
     <CalendarioTurniCard :rows="righeCalendario" :loading="loading" />
 
-    <Dialog v-model:visible="assegnaDialog" header="Assegna turno" modal :style="dialogStyle.sm">
+    <Dialog
+      v-model:visible="assegnaDialog"
+      header="Assegna turno"
+      modal
+      :style="dialogStyle.sm"
+    >
       <form class="form" @submit.prevent="confermaAssegna">
         <p v-if="assegnaTarget" class="hint">
-          {{ formatDateShortIt(assegnaTarget.data) }} · {{ TIPO_TURNO_LABEL[assegnaTarget.tipo] }}
+          {{ formatDateShortIt(assegnaTarget.data) }} ·
+          {{ TIPO_TURNO_LABEL[assegnaTarget.tipo] }}
         </p>
         <FormField label="Infermiere" required>
           <Select
@@ -91,7 +97,12 @@ onMounted(load)
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="cambioTurnoRifiutoDialog" header="Motivo rifiuto" modal :style="dialogStyle.sm">
+    <Dialog
+      v-model:visible="cambioTurnoRifiutoDialog"
+      header="Motivo rifiuto"
+      modal
+      :style="dialogStyle.sm"
+    >
       <form class="form" @submit.prevent="confermaRifiutoCambioTurno">
         <FormField label="Motivo">
           <InputText v-model="cambioTurnoMotivoRifiuto" />

@@ -94,12 +94,16 @@ onMounted(load)
         <div>
           <h1>{{ paziente.cognome }} {{ paziente.nome }}</h1>
           <p class="sub mono">
-            Letto {{ paziente.letto }} · {{ paziente.eta }} anni · ricovero {{ paziente.data_ricovero }}
+            Letto {{ paziente.letto }} · {{ paziente.eta }} anni · ricovero
+            {{ paziente.data_ricovero }}
           </p>
           <p class="diagnosi">{{ paziente.diagnosi_ingresso }}</p>
         </div>
         <div class="header-actions">
-          <StatusBadge :status="paziente.dimesso ? 'dimesso' : 'attivo'" :label="paziente.dimesso ? 'Dimesso' : 'Attivo'" />
+          <StatusBadge
+            :status="paziente.dimesso ? 'dimesso' : 'attivo'"
+            :label="paziente.dimesso ? 'Dimesso' : 'Attivo'"
+          />
           <Button
             v-if="canCreateClinicalEntries"
             label="Nuova SBAR"
@@ -107,7 +111,13 @@ onMounted(load)
             severity="secondary"
             @click="apriNuovaSbar"
           />
-          <Button v-if="canEditPatient" label="Modifica" size="small" severity="secondary" @click="apriEdit" />
+          <Button
+            v-if="canEditPatient"
+            label="Modifica"
+            size="small"
+            severity="secondary"
+            @click="apriEdit"
+          />
         </div>
       </div>
 
@@ -119,7 +129,11 @@ onMounted(load)
         </TabList>
         <TabPanels>
           <TabPanel value="cedema">
-            <CedemaTab :entries="cedema" :can-create="canCreateClinicalEntries" @new-entry="apriCedema" />
+            <CedemaTab
+              :entries="cedema"
+              :can-create="canCreateClinicalEntries"
+              @new-entry="apriCedema"
+            />
           </TabPanel>
 
           <TabPanel value="valutazioni">
@@ -139,7 +153,11 @@ onMounted(load)
       </Tabs>
     </template>
 
-    <PatientEditDialog v-model:visible="editing" v-model:form="editForm" @save="salvaEdit" />
+    <PatientEditDialog
+      v-model:visible="editing"
+      v-model:form="editForm"
+      @save="salvaEdit"
+    />
 
     <CedemaDialog
       v-model:visible="cedemaDialog"
@@ -149,9 +167,19 @@ onMounted(load)
       @save="salvaCedema"
     />
 
-    <NortonDialog v-model:visible="nortonDialog" v-model:form="nortonForm" :saving="nortonSaving" @save="salvaNorton" />
+    <NortonDialog
+      v-model:visible="nortonDialog"
+      v-model:form="nortonForm"
+      :saving="nortonSaving"
+      @save="salvaNorton"
+    />
 
-    <ConleyDialog v-model:visible="conleyDialog" v-model:form="conleyForm" :saving="conleySaving" @save="salvaConley" />
+    <ConleyDialog
+      v-model:visible="conleyDialog"
+      v-model:form="conleyForm"
+      :saving="conleySaving"
+      @save="salvaConley"
+    />
 
     <SbarDialog
       v-model:visible="sbarDialog"
@@ -200,5 +228,4 @@ onMounted(load)
   font-family: var(--mono);
   font-size: 0.8125rem;
 }
-
 </style>
