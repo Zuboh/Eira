@@ -26,9 +26,14 @@
   --color-primary: #3b82f6;
   --color-on-primary: #ffffff;
   --color-on-danger: #ffffff;
+  /* Text-on-tinted-background variant — --color-primary itself fails 4.5:1
+     contrast on its own light tint (axe: 3.2:1), only used as bg elsewhere. */
+  --color-primary-on-tint: #1d4ed8;
 
   /* Stati semantici — docs/DESIGN.md sez. 3 */
   --state-urgente: #dc2626;
+  /* Same reasoning as --color-primary-on-tint (axe: 4.13:1 on its own tint). */
+  --state-urgente-on-tint: #b91c1c;
   --state-pending: #d97706;
   --state-attiva: #16a34a;
   --state-chiusa: #71717a;
@@ -84,8 +89,10 @@
     --border: rgba(255, 255, 255, 0.08);
 
     --color-primary: #60a5fa;
+    --color-primary-on-tint: #60a5fa;
 
     --state-urgente: #f87171;
+    --state-urgente-on-tint: #f87171;
     --state-pending: #fbbf24;
     --state-attiva: #4ade80;
     --state-chiusa: #a1a1aa;

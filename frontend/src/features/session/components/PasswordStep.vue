@@ -40,9 +40,9 @@ defineExpose({ focusPassword })
     <div class="field">
       <label for="password">Password</label>
       <Password
-        id="password"
         ref="passwordInputRef"
         v-model="password"
+        input-id="password"
         :feedback="false"
         toggle-mask
         autocomplete="current-password"

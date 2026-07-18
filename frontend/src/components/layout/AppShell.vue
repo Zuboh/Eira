@@ -106,7 +106,7 @@ function logout() {
 
 .nav-link.active {
   background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-  color: var(--color-primary);
+  color: var(--color-primary-on-tint);
   font-weight: 600;
 }
 
@@ -116,7 +116,7 @@ function logout() {
   border: none;
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--state-urgente) 10%, transparent);
-  color: var(--state-urgente);
+  color: var(--state-urgente-on-tint);
   font-size: 0.875rem;
   font-weight: 600;
   text-align: left;
