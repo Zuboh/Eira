@@ -14,9 +14,10 @@
   doppia conferma, banca ore, ferie.
 - 84 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
   estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto).
-  Zero test frontend. CI backend attiva (`ruff check` + `pytest` su ogni
-  push/PR a main, 0 violazioni lint su 58 iniziali); CI frontend limitata a
-  `typecheck` + `build` (nessun lint/test frontend ancora configurato).
+  Zero test frontend (unico gap rimasto). CI attiva su entrambi: backend
+  (`ruff check` + `pytest`, 0 violazioni su 58 iniziali), frontend (`eslint`
+  + `prettier --check` + `typecheck` + `build`, 0 violazioni su 45 iniziali
+  + 80 file riformattati).
 - Zero bug 🔴 aperti (i due erano concreti e circoscritti, entrambi fixati
   con test di regressione), due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md`
   §3) — questi ultimi restano espliciti out-of-scope in attesa di una
@@ -70,12 +71,14 @@
   fail-fast in produzione è implementato; CI (ruff + pytest) attiva su ogni
   push/PR. Restano solo i due 🟡, esplicitamente rimandati in attesa di una
   decisione di design (non un gap di qualità).
-- **Frontend: 25/30.** Architettura il punto più forte — moduli
+- **Frontend: 27/30.** Architettura il punto più forte — moduli
   feature-based, composition roots leggeri, design tokens, accessibilità
   manuale (aria-label, focus, overflow tabelle) — sopra lo standard
-  triennale. Ma zero verifica empirica: zero test, zero lint/CI, e alcune
-  viste esplicitamente **non verificate end-to-end** (creazione Norton/
-  Conley, cambio turno con secondo account, banca ore solo da code review).
+  triennale. Lint/CI ora presenti (ESLint + Prettier, 0 violazioni, gate
+  su ogni push/PR); resta zero verifica empirica via test — nessun test
+  automatico, e alcune viste esplicitamente **non verificate end-to-end**
+  (creazione Norton/Conley, cambio turno con secondo account, banca ore
+  solo da code review).
 
 Differenza chiave tra i due: il backend ha verifica empirica (test) a
 sostegno della qualità dichiarata, il frontend ha qualità architetturale ma
@@ -109,8 +112,11 @@ verifica solo manuale/dichiarata.
 2. Verificare end-to-end le viste segnate come non verificate in `TASK.md`:
    creazione Norton/Conley, cambio turno con secondo account infermiere,
    banca ore.
-3. Lint: ESLint + Prettier — CI frontend già esiste (`typecheck` +
-   `build` su ogni push/PR), manca solo il job di lint da aggiungerci.
+3. ~~Lint~~ — ESLint (flat config, typescript-eslint + eslint-plugin-vue
+   recommended) + Prettier, entrambi in CI. `vue/attribute-hyphenation`
+   disattivata di proposito (PrimeVue usa prop camelCase per API
+   documentata, non attributi HTML nativi — la regola avrebbe forzato una
+   riscrittura contro le convenzioni della libreria).
 4. Validazione manuale su viewport/dispositivi reali (follow-up storico mai
    chiuso, v. `CLAUDE.md`).
 5. Audit di accessibilità automatico (dettaglio §5).
@@ -168,9 +174,7 @@ punto 1 test coverage, ritorno doppio.
 ## 6. Prossimi passi possibili (da scegliere, non decisi)
 
 - Vitest sui composable critici frontend + scaffolding Playwright (e2e +
-  axe) — il gap più grande rimasto (zero test frontend).
-- ESLint + Prettier frontend, aggiunti al job CI frontend già esistente
-  (oggi solo typecheck + build).
+  axe) — unico gap rimasto sul frontend (zero test).
 - Decidere/implementare i due 🟡 rimasti (enum `StatoAssegnazione.cambiata`,
   scoping "turno attivo").
 - Scaletta del report (Parte Prima + Seconda).
