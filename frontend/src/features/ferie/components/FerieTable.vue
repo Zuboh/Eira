@@ -52,7 +52,7 @@ function preferenzeOrdinate(richiesta: RichiestaFerie) {
           <th>Preferenze</th>
           <th>Stato</th>
           <th>Creata</th>
-          <th></th>
+          <th><span class="sr-only">Azioni</span></th>
         </tr>
       </thead>
       <tbody>

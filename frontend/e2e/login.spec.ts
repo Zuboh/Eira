@@ -1,6 +1,6 @@
-import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { SEED_CAPOSALA, SEED_REPARTO_NOME } from './helpers/api'
+import { checkA11y } from './helpers/a11y'
 
 test('caposala logs in through the device reparto/tile flow and lands on the dashboard', async ({
   page,
@@ -8,8 +8,7 @@ test('caposala logs in through the device reparto/tile flow and lands on the das
   await page.goto('/login')
 
   await expect(page.getByRole('heading', { name: 'Eira' })).toBeVisible()
-  const a11yLogin = await new AxeBuilder({ page }).analyze()
-  expect(a11yLogin.violations).toEqual([])
+  expect(await checkA11y(page)).toEqual([])
 
   await page.getByRole('button', { name: SEED_REPARTO_NOME }).click()
   await page
@@ -24,6 +23,5 @@ test('caposala logs in through the device reparto/tile flow and lands on the das
     page.getByRole('heading', { name: 'Dashboard Caposala' }),
   ).toBeVisible()
 
-  const a11yDashboard = await new AxeBuilder({ page }).analyze()
-  expect(a11yDashboard.violations).toEqual([])
+  expect(await checkA11y(page)).toEqual([])
 })

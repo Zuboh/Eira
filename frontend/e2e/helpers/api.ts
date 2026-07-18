@@ -148,7 +148,7 @@ export async function createPaziente(
     diagnosi_ingresso: string
     reparto_id: number
   },
-): Promise<{ id: number }> {
+): Promise<{ id: number; nome: string; cognome: string }> {
   const res = await request.post(`${API_BASE}/pazienti/`, {
     headers: authHeaders(caposalaToken),
     data: payload,

@@ -21,7 +21,7 @@ const emit = defineEmits<StaffTableEmits>()
           <th>Cognome</th>
           <th>Email</th>
           <th>Ruolo</th>
-          <th></th>
+          <th><span class="sr-only">Azioni</span></th>
         </tr>
       </thead>
       <tbody>

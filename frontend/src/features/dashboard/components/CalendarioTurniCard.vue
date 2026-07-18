@@ -21,7 +21,7 @@ defineProps<{
       <table style="min-width: 30rem">
         <thead>
           <tr>
-            <th></th>
+            <th><span class="sr-only">Data</span></th>
             <th v-for="tipo in TIPI_TURNO" :key="tipo">
               {{ TIPO_TURNO_LABEL[tipo] }}
             </th>

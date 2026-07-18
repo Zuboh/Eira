@@ -51,7 +51,7 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
           <th>Collega</th>
           <th>Stato</th>
           <th>Creata</th>
-          <th></th>
+          <th><span class="sr-only">Azioni</span></th>
         </tr>
       </thead>
       <tbody>

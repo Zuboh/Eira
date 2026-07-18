@@ -68,7 +68,7 @@ function onPageChange(event: { page: number }) {
             <th>Paziente</th>
             <th>Priorità</th>
             <th>Situation</th>
-            <th></th>
+            <th><span class="sr-only">Azioni</span></th>
           </tr>
         </thead>
         <tbody>

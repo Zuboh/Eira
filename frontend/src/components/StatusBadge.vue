@@ -50,22 +50,22 @@ const pulse = computed(
 
 .status-badge.urgente {
   background: color-mix(in srgb, var(--state-urgente) 15%, transparent);
-  color: var(--state-urgente);
+  color: var(--state-urgente-on-tint);
 }
 
 .status-badge.pending {
   background: color-mix(in srgb, var(--state-pending) 15%, transparent);
-  color: var(--state-pending);
+  color: var(--state-pending-on-tint);
 }
 
 .status-badge.attiva {
   background: color-mix(in srgb, var(--state-attiva) 15%, transparent);
-  color: var(--state-attiva);
+  color: var(--state-attiva-on-tint);
 }
 
 .status-badge.chiusa {
   background: color-mix(in srgb, var(--state-chiusa) 15%, transparent);
-  color: var(--state-chiusa);
+  color: var(--state-chiusa-on-tint);
 }
 
 .status-badge.pulse {

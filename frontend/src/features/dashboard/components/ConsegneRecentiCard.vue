@@ -26,7 +26,7 @@ defineProps<ConsegneRecentiCardProps>()
           <tr>
             <th>Paziente</th>
             <th>Priorità</th>
-            <th></th>
+            <th><span class="sr-only">Azioni</span></th>
           </tr>
         </thead>
         <tbody>

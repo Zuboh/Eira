@@ -30,7 +30,7 @@ const emit = defineEmits<{
             <th>Data</th>
             <th>Turno</th>
             <th>Orario</th>
-            <th></th>
+            <th><span class="sr-only">Azioni</span></th>
           </tr>
         </thead>
         <tbody>

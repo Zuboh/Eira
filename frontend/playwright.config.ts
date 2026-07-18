@@ -5,6 +5,9 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
+  // All specs share one throwaway e2e.db for the run's lifetime (Q3) —
+  // multiple workers would race against the same backend/DB state.
+  workers: 1,
   retries: 0,
   reporter: 'html',
   use: {

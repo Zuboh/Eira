@@ -36,7 +36,7 @@ const emit = defineEmits<{
             <th>Richiedente</th>
             <th>Collega</th>
             <th>Stato</th>
-            <th></th>
+            <th><span class="sr-only">Azioni</span></th>
           </tr>
         </thead>
         <tbody>
