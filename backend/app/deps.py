@@ -35,7 +35,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: DbDep) -
         payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
         user_id = int(payload.get("sub"))
     except (JWTError, TypeError, ValueError):
-        raise credentials_error
+        raise credentials_error from None
 
     user = db.get(Utente, user_id)
     if user is None or user.stato != StatoUtente.attivo:

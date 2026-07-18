@@ -216,7 +216,7 @@ def rispondi_richiesta(
         richiesta.stato = StatoRichiestaFerie.rifiutata
         richiesta.motivo_rifiuto = payload.motivo_rifiuto
         richiesta.risposta_caposala_id = current_user.id
-        richiesta.risposta_caposala_il = datetime.datetime.now(datetime.timezone.utc)
+        richiesta.risposta_caposala_il = datetime.datetime.now(datetime.UTC)
         db.commit()
         db.refresh(richiesta)
         return _to_read(db, richiesta)
@@ -292,7 +292,7 @@ def rispondi_richiesta(
     richiesta.data_fine = preferenza.data_fine
     richiesta.stato = StatoRichiestaFerie.approvata
     richiesta.risposta_caposala_id = current_user.id
-    richiesta.risposta_caposala_il = datetime.datetime.now(datetime.timezone.utc)
+    richiesta.risposta_caposala_il = datetime.datetime.now(datetime.UTC)
     db.commit()
     db.refresh(richiesta)
     return _to_read(db, richiesta)

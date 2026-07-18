@@ -2,7 +2,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
-
 from sqlalchemy.exc import IntegrityError
 
 from app.core.login_attempts import record_failure, record_success, seconds_until_retry

@@ -23,5 +23,5 @@ class ConsegnaSbar(Base):
         sa.Enum(PrioritaConsegna), default=PrioritaConsegna.normale
     )
     creata_il: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+        default=lambda: datetime.datetime.now(datetime.UTC)
     )

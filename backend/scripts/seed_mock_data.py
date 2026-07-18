@@ -40,7 +40,7 @@ random.seed(SEED)
 fake = Faker("it_IT")
 Faker.seed(SEED)
 
-UTC = datetime.timezone.utc
+UTC = datetime.UTC
 OGGI = datetime.date.today()
 
 TURNI_ORARI = {
@@ -198,7 +198,9 @@ def crea_pazienti(db, reparti: list[Reparto], per_reparto: int = 10) -> list[Paz
     return pazienti
 
 
-def crea_turni(db, reparti: list[Reparto], settimane_passate: int = 2, settimane_future: int = 2) -> list[Turno]:
+def crea_turni(
+    db, reparti: list[Reparto], settimane_passate: int = 2, settimane_future: int = 2
+) -> list[Turno]:
     giorni_totali = (settimane_passate + settimane_future) * 7
     inizio = OGGI - datetime.timedelta(days=settimane_passate * 7)
     turni = []
@@ -288,7 +290,7 @@ def crea_richieste_cambio_turno(
 
     candidate = random.sample(assegnazioni, min(len(stati_da_generare), len(assegnazioni)))
 
-    for assegnazione, stato in zip(candidate, stati_da_generare):
+    for assegnazione, stato in zip(candidate, stati_da_generare, strict=True):
         richiedente = infermieri_by_id[assegnazione.infermiere_id]
         pool_colleghi = [
             i for i in infermieri_per_reparto[richiedente.reparto_id] if i.id != richiedente.id
@@ -422,12 +424,24 @@ def crea_diario_cedema(
                     autore_id=random.choice(autori),
                     turno_id=turno.id,
                     timestamp=datetime.datetime.combine(turno.data, turno.ora_inizio, tzinfo=UTC),
-                    coscienza=random.choice(["Vigile e orientato", "Soporoso ma risvegliabile", "Vigile, lieve confusione"]),
-                    emotivita=random.choice(["Collaborante e sereno", "Ansioso per la degenza", "Tranquillo"]),
-                    dolore=random.choice(["Assente (NRS 0)", "Lieve (NRS 2-3)", "Moderato (NRS 4-5), gestito con analgesia"]),
-                    emodinamica=random.choice(["Parametri nella norma", "Lieve ipotensione, monitorata", "Tachicardico, sotto controllo"]),
-                    mobilizzazione=random.choice(["Autonomo", "Mobilizzato con assistenza", "Allettato, cambi posturali regolari"]),
-                    allert=random.choice(["Nessuno", "Rischio caduta, sponde alzate", "Da monitorare idratazione"]),
+                    coscienza=random.choice(
+                        ["Vigile e orientato", "Soporoso ma risvegliabile", "Vigile, lieve confusione"]
+                    ),
+                    emotivita=random.choice(
+                        ["Collaborante e sereno", "Ansioso per la degenza", "Tranquillo"]
+                    ),
+                    dolore=random.choice(
+                        ["Assente (NRS 0)", "Lieve (NRS 2-3)", "Moderato (NRS 4-5), gestito con analgesia"]
+                    ),
+                    emodinamica=random.choice(
+                        ["Parametri nella norma", "Lieve ipotensione", "Tachicardico, controllato"]
+                    ),
+                    mobilizzazione=random.choice(
+                        ["Autonomo", "Mobilizzato con assistenza", "Allettato, cambi posturali regolari"]
+                    ),
+                    allert=random.choice(
+                        ["Nessuno", "Rischio caduta, sponde alzate", "Da monitorare idratazione"]
+                    ),
                 )
             )
     db.add_all(voci)
@@ -508,7 +522,8 @@ def main() -> None:
 
         print("[seed] Dati mock creati:")
         print(f"  reparti: {db.query(Reparto).count()}")
-        print(f"  utenti: {db.query(Utente).count()} (caposale: {len(caposale)}, infermieri: {len(infermieri)})")
+        n_utenti = db.query(Utente).count()
+        print(f"  utenti: {n_utenti} (caposale: {len(caposale)}, infermieri: {len(infermieri)})")
         print(f"  pazienti: {db.query(Paziente).count()}")
         print(f"  turni: {db.query(Turno).count()}")
         print(f"  assegnazioni turno: {db.query(AssegnazioneTurno).count()}")

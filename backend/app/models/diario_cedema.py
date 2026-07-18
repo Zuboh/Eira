@@ -14,7 +14,7 @@ class VoceDiarioCedema(Base):
     autore_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
     turno_id: Mapped[int | None] = mapped_column(sa.ForeignKey("turno.id"), default=None)
     timestamp: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+        default=lambda: datetime.datetime.now(datetime.UTC)
     )
     coscienza: Mapped[str] = mapped_column(sa.Text)
     emotivita: Mapped[str] = mapped_column(sa.Text)

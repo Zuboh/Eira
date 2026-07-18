@@ -18,7 +18,7 @@ class RichiestaCambioTurno(Base):
         sa.Enum(StatoCambioTurno), default=StatoCambioTurno.in_attesa_collega
     )
     creata_il: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+        default=lambda: datetime.datetime.now(datetime.UTC)
     )
     risposta_collega_il: Mapped[datetime.datetime | None] = mapped_column(default=None)
     risposta_caposala_id: Mapped[int | None] = mapped_column(

@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente, StatoAssegnazione
 from app.models.paziente import Paziente
-from app.openapi_errors import FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.models.turno import AssegnazioneTurno
+from app.openapi_errors import FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.paziente import PazienteCreate, PazienteRead, PazienteUpdate
 
 router = APIRouter(prefix="/pazienti", tags=["pazienti"])

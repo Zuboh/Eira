@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta, timezone
 import secrets
 import string
+from datetime import UTC, datetime, timedelta
 
 import bcrypt
 from jose import jwt
@@ -22,7 +22,7 @@ def generate_temporary_password(length: int = 12) -> str:
 
 
 def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
-    expire = datetime.now(timezone.utc) + (
+    expire = datetime.now(UTC) + (
         expires_delta or timedelta(minutes=settings.jwt_access_token_expire_minutes)
     )
     payload = {"sub": subject, "exp": expire}

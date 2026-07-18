@@ -50,7 +50,7 @@ def test_slot_disponibili_sono_tutti_blocchi_di_14_giorni(client, db_session, re
     assert response.status_code == 200
     slot = response.json()
     assert len(slot) > 0
-    for a, b in zip(slot, slot[1:]):
+    for a, b in zip(slot, slot[1:], strict=False):
         data_a = datetime.date.fromisoformat(a)
         data_b = datetime.date.fromisoformat(b)
         assert (data_b - data_a).days == 14

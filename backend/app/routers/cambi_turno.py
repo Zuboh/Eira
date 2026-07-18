@@ -156,7 +156,7 @@ def risposta_collega(
     richiesta.stato = (
         StatoCambioTurno.in_attesa_caposala if payload.accetta else StatoCambioTurno.rifiutata_collega
     )
-    richiesta.risposta_collega_il = datetime.datetime.now(datetime.timezone.utc)
+    richiesta.risposta_collega_il = datetime.datetime.now(datetime.UTC)
     db.commit()
     db.refresh(richiesta)
     return RichiestaCambioTurnoRead.model_validate(richiesta)
@@ -215,7 +215,7 @@ def risposta_caposala(
         richiesta.motivo_rifiuto = payload.motivo_rifiuto
 
     richiesta.risposta_caposala_id = current_user.id
-    richiesta.risposta_caposala_il = datetime.datetime.now(datetime.timezone.utc)
+    richiesta.risposta_caposala_il = datetime.datetime.now(datetime.UTC)
     db.commit()
     db.refresh(richiesta)
     return RichiestaCambioTurnoRead.model_validate(richiesta)

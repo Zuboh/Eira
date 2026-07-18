@@ -18,7 +18,7 @@ class RichiestaFerie(Base):
         sa.Enum(StatoRichiestaFerie), default=StatoRichiestaFerie.in_attesa
     )
     creata_il: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+        default=lambda: datetime.datetime.now(datetime.UTC)
     )
     risposta_caposala_id: Mapped[int | None] = mapped_column(
         sa.ForeignKey("utente.id"), default=None
