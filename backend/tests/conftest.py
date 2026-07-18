@@ -44,6 +44,10 @@ def client(db_session):
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
+    # Evita che l'handler di startup reale (create_all + seed dev data)
+    # giri contro l'engine di produzione: i fixture db_session/reparti/
+    # caposala_a già preparano tutto il necessario sull'engine in-memory.
+    app.router.on_startup.clear()
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()

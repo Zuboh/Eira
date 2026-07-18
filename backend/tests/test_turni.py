@@ -75,3 +75,40 @@ def test_calendario_turni_forbidden_per_infermiere(client, db_session, reparti):
     response = client.get("/api/v1/turni/calendario", headers=headers)
 
     assert response.status_code == 403
+
+
+def test_rimuovi_assegnazione_con_cambio_pendente_ritorna_409(client, db_session, caposala_a, reparti):
+    from app.models.cambio_turno import RichiestaCambioTurno
+    from app.models.enums import StatoAssegnazione, StatoCambioTurno
+    from app.models.turno import AssegnazioneTurno
+
+    reparto_a, _ = reparti
+    infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")
+    infermiere_b = _infermiere(db_session, reparto_a.id, "nurse.b@example.com")
+    turno = _turno(db_session, reparto_a.id)
+
+    assegnazione = AssegnazioneTurno(
+        turno_id=turno.id, infermiere_id=infermiere_a.id, stato=StatoAssegnazione.attiva
+    )
+    db_session.add(assegnazione)
+    db_session.commit()
+    db_session.refresh(assegnazione)
+
+    richiesta = RichiestaCambioTurno(
+        assegnazione_turno_id=assegnazione.id,
+        richiedente_id=infermiere_a.id,
+        collega_id=infermiere_b.id,
+        stato=StatoCambioTurno.in_attesa_collega,
+    )
+    db_session.add(richiesta)
+    db_session.commit()
+
+    headers = auth_headers(client, "caposala.a@example.com", "password123")
+    response = client.delete(
+        f"/api/v1/turni/{turno.id}/assegnazioni",
+        headers=headers,
+        params={"assegnazione_id": assegnazione.id},
+    )
+
+    assert response.status_code == 409, response.text
+    assert db_session.get(AssegnazioneTurno, assegnazione.id) is not None

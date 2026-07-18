@@ -53,16 +53,25 @@ puri (dati finti, nessuna query DB):
 Review via 2 agenti `feature-dev:code-reviewer` paralleli (auth/routing +
 data/schema layer). Solo review, nessun fix applicato.
 
-- [ ] 🔴 Crash: `DELETE /turni/{id}/assegnazioni` non controlla
+- [x] 🔴 Crash: `DELETE /turni/{id}/assegnazioni` non controlla
       `RichiestaCambioTurno` pendenti che referenziano l'assegnazione
       cancellata → `risposta-caposala` successivo crasha con
       `AttributeError` non gestito (`turni.py:115-130`,
       `cambi_turno.py:129-131`). No FK `ondelete`, no
-      `PRAGMA foreign_keys=ON`.
-- [ ] 🔴 Test suite triggera `Base.metadata.create_all` sull'engine di
+      `PRAGMA foreign_keys=ON`. Fix: `rimuovi_assegnazione` ora
+      controlla `RichiestaCambioTurno` con `stato` in
+      `in_attesa_collega`/`in_attesa_caposala` prima di cancellare,
+      ritorna 409 invece di procedere; test in
+      `tests/test_turni.py::test_rimuovi_assegnazione_con_cambio_pendente_ritorna_409`.
+- [x] 🔴 Test suite triggera `Base.metadata.create_all` sull'engine di
       produzione (file `.db` reale su disco) ad ogni run, non solo su
       DB in-memory isolato (`main.py:33-35`, `core/database.py:7`,
-      `tests/conftest.py`).
+      `tests/conftest.py`). Fix: fixture `client` in `conftest.py`
+      pulisce `app.router.on_startup` prima di costruire il
+      `TestClient`, così l'handler di startup reale (create_all + seed
+      dev data sull'engine di produzione) non gira più durante i test —
+      verificato: mtime di `consegne_infermieristiche.db` invariato
+      prima/dopo l'intera suite.
 - [ ] 🟡 `StatoAssegnazione.cambiata` enum mai assegnato — flusso swap
       turno (`cambi_turno.py:157`) muta `infermiere_id` in place senza
       mai marcare `cambiata`.

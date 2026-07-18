@@ -59,14 +59,30 @@ app.include_router(reparti.router, prefix=API_V1_PREFIX)
 logger = logging.getLogger("uvicorn.error")
 
 
+def _check_jwt_secret() -> None:
+    """Rifiuta l'avvio in produzione se il JWT secret è ancora il default.
+
+    In ambienti non-production il default di sviluppo resta accettato,
+    con solo un warning: token forgeabili da chiunque conosca il codice
+    sorgente, ma non un rischio in locale/CI.
+    """
+    if settings.jwt_secret_key != "dev-secret-change-in-production":
+        return
+    if settings.environment == "production":
+        raise RuntimeError(
+            "JWT_SECRET_KEY non impostata in ambiente production: rifiuto "
+            "l'avvio. Impostare JWT_SECRET_KEY prima di qualunque deploy."
+        )
+    logger.warning(
+        "JWT_SECRET_KEY non impostata: uso il default di sviluppo. "
+        "Token firmati con questo secret sono forgeabili da chiunque conosca "
+        "il codice sorgente. Impostare JWT_SECRET_KEY prima di qualunque deploy."
+    )
+
+
 @app.on_event("startup")
 def on_startup() -> None:
-    if settings.jwt_secret_key == "dev-secret-change-in-production":
-        logger.warning(
-            "JWT_SECRET_KEY non impostata: uso il default di sviluppo. "
-            "Token firmati con questo secret sono forgeabili da chiunque conosca "
-            "il codice sorgente. Impostare JWT_SECRET_KEY prima di qualunque deploy."
-        )
+    _check_jwt_secret()
     Base.metadata.create_all(bind=engine)
     _seed_dev_data()
 

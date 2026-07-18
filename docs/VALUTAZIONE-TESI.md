@@ -11,17 +11,16 @@
 - Nucleo funzionale (mai tagliabile): ruoli infermiere/caposala scoping reparto,
   dashboard turni, consegne SBAR.
 - Attorno al nucleo: diario CEDEMA, valutazioni Norton/Conley, cambio turno a
-  doppia conferma, banca ore, ferie (WIP non committato, v. nota sotto).
-- 80 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
-  estensioni SBAR/cambi turno, tutte **non ancora committate** — solo working
-  tree). Zero test frontend. Nessuna CI, nessun lint configurato (né backend
-  né frontend, verificato di nuovo oggi).
-- Due bug 🔴 aperti, due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md` §3) —
-  stato invariato, nessun fix nel working tree attuale.
-- ⚠️ **~50 file modificati/aggiunti non committati** nel working tree
-  (feature ferie completa: modelli/router/schema/test backend + calendar
-  card/view frontend, oltre a modifiche sparse su sbar/cambi-turno/staff).
-  Rischio concreto di perdita lavoro finché resta non committato.
+  doppia conferma, banca ore, ferie.
+- 84 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
+  estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto).
+  Zero test frontend. Nessuna CI, nessun lint configurato (né backend né
+  frontend, verificato di nuovo oggi).
+- Zero bug 🔴 aperti (i due erano concreti e circoscritti, entrambi fixati
+  con test di regressione), due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md`
+  §3) — questi ultimi restano espliciti out-of-scope in attesa di una
+  decisione di design (semantica "turno attivo"/"cambiata").
+- Working tree pulito, feature ferie e i due fix 🔴 sopra committati.
 - Report di tesi (Parte Prima + Seconda), screenshot funzionali e video
   walkthrough: non ancora iniziati.
 
@@ -60,12 +59,15 @@
 > Giudizio qualitativo mio, non un voto ufficiale — non conosco la griglia
 > esatta del relatore/Pegaso.
 
-- **Backend: 28/30.** Test reali (80, passanti — ma per ora solo in working
-  tree, non committati) danno verifica empirica, non
-  solo dichiarata. Modello di dominio solido, invariante di isolamento
-  reparto applicata sistematicamente, audit trail storico dei fix di
-  sicurezza. I due 🔴 sono concreti ma circoscritti e già diagnosticati con
-  precisione (file/righe). Manca CI/lint per essere quasi ineccepibile.
+- **Backend: 29/30.** Test reali (84, passanti e committati) danno verifica
+  empirica, non solo dichiarata. Modello di dominio solido, invariante di
+  isolamento reparto applicata sistematicamente, audit trail storico dei fix
+  di sicurezza. I due bug 🔴 (crash su delete assegnazione con cambio turno
+  pendente, test suite che scriveva sul DB di produzione) sono stati
+  diagnosticati con precisione e poi fixati con test di regressione dedicati;
+  il check di startup JWT fail-fast in produzione è implementato. Restano i
+  due 🟡 (decisione di design rimandata) e manca CI/lint per essere
+  ineccepibile.
 - **Frontend: 25/30.** Architettura il punto più forte — moduli
   feature-based, composition roots leggeri, design tokens, accessibilità
   manuale (aria-label, focus, overflow tabelle) — sopra lo standard
@@ -81,20 +83,20 @@ verifica solo manuale/dichiarata.
 
 ### Backend
 
-1. Fix dei due 🔴:
-   - crash su `DELETE /turni/{id}/assegnazioni` (check richieste cambio
-     turno pendenti prima della cancellazione, o `ondelete` sulle FK +
-     `PRAGMA foreign_keys=ON`);
-   - isolamento reale del DB di test (engine dedicato in-memory in
-     `conftest.py`, non quello di produzione).
-2. Fix dei due 🟡:
+1. ~~Fix dei due 🔴~~ — fatto:
+   - crash su `DELETE /turni/{id}/assegnazioni` → check richieste cambio
+     turno pendenti prima della cancellazione, 409 invece di procedere;
+   - isolamento reale del DB di test → fixture `client` pulisce
+     `app.router.on_startup` prima del `TestClient`, engine di produzione
+     non più toccato durante i test.
+2. Fix dei due 🟡 (design ancora da decidere, esplicitamente out-of-scope):
    - assegnare `StatoAssegnazione.cambiata` nello swap turno;
    - decidere/implementare se il gate "turno attivo" va ristretto a "turno
      di oggi".
 3. Lint/format: Ruff (+ eventualmente mypy), da far girare in CI.
 4. CI: GitHub Action che esegue `PYTHONPATH=. uv run pytest` ad ogni
    push/PR.
-5. Hardening JWT/secret (dettaglio §5).
+5. ~~Hardening JWT/secret~~ — implementato (dettaglio §5).
 
 ### Frontend
 
@@ -122,11 +124,12 @@ Due questioni distinte:
 
 - **Secret di default** (`dev-secret-change-in-production` in
   `core/config.py`, citato anche in chiaro in `docs/SECURITY.md`): rischio
-  reale se il deploy dimentica di sovrascriverlo via env var. Fix a basso
-  costo: check a startup in `main.py`/`core/config.py` — se una variabile
-  tipo `environment=production` è impostata e il secret è ancora quello di
-  default, rifiutare l'avvio invece di partire silenziosamente insicuro.
-  Poche righe, alto segnale ("fail fast on insecure config").
+  reale se il deploy dimentica di sovrascriverlo via env var. **Implementato**:
+  nuovo campo `environment` in `Settings` (default `"development"`); a
+  startup, `main.py:_check_jwt_secret` rifiuta l'avvio con `RuntimeError` se
+  `environment == "production"` e il secret è ancora quello di default,
+  mantenendo solo il warning nei casi non-production. Test dedicato in
+  `tests/test_startup_config.py` (entrambi i rami, con/senza raise).
 - **Refresh token assente**: raccomandazione è **non implementarlo**.
   Aggiungerlo introduce storage/rotazione/revoca lato server e superficie
   di attacco in più, per un'app dove il turno tipico dura 6-8h e il token
@@ -135,8 +138,9 @@ Due questioni distinte:
   design coerente col dominio (fine sessione = fine turno, dispositivo
   condiviso di reparto), non una lacuna.
 
-Per il punto 5 backend: un piccolo check di startup da implementare, e una
-frase da scrivere nel report per l'altro — non serve altro codice.
+Per il punto 5 backend: il check di startup è implementato; resta solo la
+frase da scrivere nel report per l'altro punto (refresh token) — non serve
+altro codice.
 
 ### Frontend — audit di accessibilità automatico
 
@@ -161,9 +165,8 @@ punto 1 test coverage, ritorno doppio.
 
 ## 6. Prossimi passi possibili (da scegliere, non decisi)
 
-- **Committare il working tree ferie** (~50 file, 80 test già passanti) —
-  priorità sopra le altre, lavoro reale non al sicuro finché resta locale.
-- Implementare il check di startup JWT sul backend.
 - Scaffolding Playwright (e2e + axe) sul frontend.
-- Fix dei due bug 🔴.
+- Decidere/implementare i due 🟡 rimasti (enum `StatoAssegnazione.cambiata`,
+  scoping "turno attivo").
+- CI: GitHub Action che esegue la test suite backend ad ogni push/PR.
 - Scaletta del report (Parte Prima + Seconda).

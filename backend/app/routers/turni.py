@@ -3,7 +3,8 @@ from sqlalchemy import and_, exists
 from sqlalchemy.exc import IntegrityError
 
 from app.deps import CurrentUserDep, DbDep, require_roles
-from app.models.enums import RuoloUtente, StatoAssegnazione
+from app.models.cambio_turno import RichiestaCambioTurno
+from app.models.enums import RuoloUtente, StatoAssegnazione, StatoCambioTurno
 from app.models.turno import AssegnazioneTurno, Turno
 from app.models.utente import Utente
 from app.openapi_errors import CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
@@ -163,7 +164,7 @@ def assegna_turno(
     "/{turno_id}/assegnazioni",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(require_roles(RuoloUtente.caposala))],
-    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT),
 )
 def rimuovi_assegnazione(
     turno_id: int, assegnazione_id: int, current_user: CurrentUserDep, db: DbDep
@@ -176,6 +177,23 @@ def rimuovi_assegnazione(
     turno = db.get(Turno, turno_id)
     if turno is None or turno.reparto_id != current_user.reparto_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Turno di un altro reparto")
+
+    richiesta_pendente = (
+        db.query(RichiestaCambioTurno)
+        .filter(
+            RichiestaCambioTurno.assegnazione_turno_id == assegnazione_id,
+            RichiestaCambioTurno.stato.in_(
+                (StatoCambioTurno.in_attesa_collega, StatoCambioTurno.in_attesa_caposala)
+            ),
+        )
+        .first()
+    )
+    if richiesta_pendente is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Esiste una richiesta di cambio turno pendente su questa assegnazione",
+        )
+
     db.delete(assegnazione)
     db.commit()
 
