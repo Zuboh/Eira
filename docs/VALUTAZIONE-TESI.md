@@ -14,8 +14,9 @@
   doppia conferma, banca ore, ferie.
 - 84 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
   estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto).
-  Zero test frontend. Nessuna CI, nessun lint configurato (né backend né
-  frontend, verificato di nuovo oggi).
+  Zero test frontend. CI backend attiva (`ruff check` + `pytest` su ogni
+  push/PR a main, 0 violazioni lint su 58 iniziali); CI frontend limitata a
+  `typecheck` + `build` (nessun lint/test frontend ancora configurato).
 - Zero bug 🔴 aperti (i due erano concreti e circoscritti, entrambi fixati
   con test di regressione), due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md`
   §3) — questi ultimi restano espliciti out-of-scope in attesa di una
@@ -59,15 +60,16 @@
 > Giudizio qualitativo mio, non un voto ufficiale — non conosco la griglia
 > esatta del relatore/Pegaso.
 
-- **Backend: 29/30.** Test reali (84, passanti e committati) danno verifica
-  empirica, non solo dichiarata. Modello di dominio solido, invariante di
-  isolamento reparto applicata sistematicamente, audit trail storico dei fix
-  di sicurezza. I due bug 🔴 (crash su delete assegnazione con cambio turno
-  pendente, test suite che scriveva sul DB di produzione) sono stati
-  diagnosticati con precisione e poi fixati con test di regressione dedicati;
-  il check di startup JWT fail-fast in produzione è implementato. Restano i
-  due 🟡 (decisione di design rimandata) e manca CI/lint per essere
-  ineccepibile.
+- **Backend: 30/30 sul codice esistente.** Test reali (84, passanti e
+  committati) danno verifica empirica, non solo dichiarata. Modello di
+  dominio solido, invariante di isolamento reparto applicata
+  sistematicamente, audit trail storico dei fix di sicurezza. I due bug 🔴
+  (crash su delete assegnazione con cambio turno pendente, test suite che
+  scriveva sul DB di produzione) sono stati diagnosticati con precisione e
+  poi fixati con test di regressione dedicati; il check di startup JWT
+  fail-fast in produzione è implementato; CI (ruff + pytest) attiva su ogni
+  push/PR. Restano solo i due 🟡, esplicitamente rimandati in attesa di una
+  decisione di design (non un gap di qualità).
 - **Frontend: 25/30.** Architettura il punto più forte — moduli
   feature-based, composition roots leggeri, design tokens, accessibilità
   manuale (aria-label, focus, overflow tabelle) — sopra lo standard
@@ -93,9 +95,9 @@ verifica solo manuale/dichiarata.
    - assegnare `StatoAssegnazione.cambiata` nello swap turno;
    - decidere/implementare se il gate "turno attivo" va ristretto a "turno
      di oggi".
-3. Lint/format: Ruff (+ eventualmente mypy), da far girare in CI.
-4. CI: GitHub Action che esegue `PYTHONPATH=. uv run pytest` ad ogni
-   push/PR.
+3. ~~Lint/format~~ — Ruff configurato (E/F/I/UP/B, `StrEnum` modernization
+   rimandata di proposito), 0 violazioni su 58 iniziali.
+4. ~~CI~~ — GitHub Action (`ruff check` + `pytest`) su ogni push/PR a main.
 5. ~~Hardening JWT/secret~~ — implementato (dettaglio §5).
 
 ### Frontend
@@ -107,8 +109,8 @@ verifica solo manuale/dichiarata.
 2. Verificare end-to-end le viste segnate come non verificate in `TASK.md`:
    creazione Norton/Conley, cambio turno con secondo account infermiere,
    banca ore.
-3. Lint/CI: ESLint + Prettier, in CI insieme a
-   `npm run typecheck && npm run build`.
+3. Lint: ESLint + Prettier — CI frontend già esiste (`typecheck` +
+   `build` su ogni push/PR), manca solo il job di lint da aggiungerci.
 4. Validazione manuale su viewport/dispositivi reali (follow-up storico mai
    chiuso, v. `CLAUDE.md`).
 5. Audit di accessibilità automatico (dettaglio §5).
@@ -165,8 +167,10 @@ punto 1 test coverage, ritorno doppio.
 
 ## 6. Prossimi passi possibili (da scegliere, non decisi)
 
-- Scaffolding Playwright (e2e + axe) sul frontend.
+- Vitest sui composable critici frontend + scaffolding Playwright (e2e +
+  axe) — il gap più grande rimasto (zero test frontend).
+- ESLint + Prettier frontend, aggiunti al job CI frontend già esistente
+  (oggi solo typecheck + build).
 - Decidere/implementare i due 🟡 rimasti (enum `StatoAssegnazione.cambiata`,
   scoping "turno attivo").
-- CI: GitHub Action che esegue la test suite backend ad ogni push/PR.
 - Scaletta del report (Parte Prima + Seconda).
