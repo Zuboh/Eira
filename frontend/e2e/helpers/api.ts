@@ -44,11 +44,21 @@ export async function findUtente(
   return utente
 }
 
+// /auth/token is rate-limited to 5/minute keyed by IP (backend/app/routers/auth.py)
+// — a deliberate anti-bruteforce control, not something to relax for tests. All
+// specs run in one process (playwright.config.ts workers: 1), so caching tokens
+// by utente id here means each seed user is only ever actually logged in once
+// per suite run, no matter how many spec files reference them.
+const tokenCache = new Map<number, string>()
+
 export async function login(
   request: APIRequestContext,
   utenteId: number,
   password: string,
 ): Promise<string> {
+  const cached = tokenCache.get(utenteId)
+  if (cached) return cached
+
   const res = await request.post(`${API_BASE}/auth/token`, {
     form: { username: String(utenteId), password, scope: '' },
   })
@@ -58,6 +68,7 @@ export async function login(
     )
   }
   const { access_token } = (await res.json()) as { access_token: string }
+  tokenCache.set(utenteId, access_token)
   return access_token
 }
 

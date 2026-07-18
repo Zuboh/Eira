@@ -37,7 +37,8 @@
   --state-pending: #d97706;
   --state-pending-on-tint: #b45309;
   --state-attiva: #16a34a;
-  --state-attiva-on-tint: #15803d;
+  /* axe: 4.23:1 at green-700 (#15803d), still short of 4.5:1 — green-800. */
+  --state-attiva-on-tint: #166534;
   --state-chiusa: #71717a;
   /* StatusBadge .chiusa text-on-own-tint fails 4.5:1 (axe: 4.01:1). */
   --state-chiusa-on-tint: #52525b;
