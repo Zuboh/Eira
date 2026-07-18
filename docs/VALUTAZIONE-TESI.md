@@ -13,10 +13,12 @@
 - Attorno al nucleo: diario CEDEMA, valutazioni Norton/Conley, cambio turno a
   doppia conferma, banca ore, ferie.
 - 84 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
-  estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto). 23
-  test frontend (Vitest) sui 3 composable più critici (`useLoginFlow`,
-  `useCaposalaDashboard`, `usePatientChart`); restano 12 composable senza
-  test, stesso pattern da applicare. 4 test e2e (Playwright + axe-core,
+  estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto). 65
+  test frontend (Vitest) su 7 composable (`useLoginFlow`,
+  `useCaposalaDashboard`, `usePatientChart`, `useFerie`, `useBancaOre`,
+  `useCambiTurno`, `useConsegneSbar`); restano 8 composable senza test
+  diretto (3 esercitati indirettamente via `usePatientChart`), stesso
+  pattern da applicare. 4 test e2e (Playwright + axe-core,
   `npm run test:e2e`, solo locale — non in CI, v. §6): login reale,
   consegna SBAR, cambio turno round-trip multi-attore (richiedente →
   collega → caposala, 3 browser context separati), assegnazione turno
@@ -90,12 +92,12 @@
   manuale ora anche **verificata empiricamente** via axe-core (0
   violazioni sulle 4 pagine chiave testate) — sopra lo standard
   triennale. Lint/CI presenti (ESLint + Prettier, 0 violazioni, gate su
-  ogni push/PR); 23 test Vitest sui 3 composable più critici + 4 test
-  e2e sui flussi chiave, in CI (Vitest) e locale (e2e, v. §6). Cambio
-  turno con secondo account **ora verificato** (era esplicitamente non
-  testato). Restano: 12 composable senza unit test, e2e ancora locale
-  (non in CI), viste Norton/Conley/banca ore ancora solo da code
-  review.
+  ogni push/PR); 65 test Vitest su 7 composable + 4 test e2e sui flussi
+  chiave, in CI (Vitest) e locale (e2e, v. §6). Cambio turno con secondo
+  account **ora verificato** (era esplicitamente non testato). Restano:
+  8 composable senza unit test diretto, e2e ancora locale (non in CI),
+  viste Norton/Conley ancora solo da code review (banca ore ora coperta
+  da `useBancaOre.spec.ts`).
 
 Differenza chiave tra i due: il backend ha verifica empirica (test) a
 sostegno della qualità dichiarata, il frontend ha qualità architetturale ma
@@ -122,9 +124,12 @@ verifica solo manuale/dichiarata.
 
 ### Frontend
 
-1. ~~Unit test sui 3 composable critici~~ — fatto (`useLoginFlow`,
-   `useCaposalaDashboard`, `usePatientChart`, 23 test Vitest, in CI).
-   Restano gli altri 12 composable (stesso pattern).
+1. ~~Unit test sui composable~~ — 7/15 fatti (`useLoginFlow`,
+   `useCaposalaDashboard`, `usePatientChart`, `useFerie`, `useBancaOre`,
+   `useCambiTurno`, `useConsegneSbar`, 65 test Vitest, in CI). Restano 8
+   (`useStaffWorkflow`, `useDeviceReparto`, `useSbarCreateDialog`,
+   `useInfermiereDashboard`, e i 3 sotto-composable di `usePatientChart`
+   già esercitati indirettamente ma senza test dedicati) — stesso pattern.
 1b. ~~4 test e2e Playwright sui flussi chiave~~ — fatto (login, consegna
    SBAR, cambio turno round-trip multi-attore, assegnazione turno
    scoperto), axe-core incluso, solo locale (non in CI, v. §6).
@@ -206,7 +211,7 @@ indiscriminati.
 
 ## 6. Prossimi passi possibili (da scegliere, non decisi)
 
-- Vitest sui restanti 12 composable (stesso pattern dei 3 già coperti).
+- Vitest sui restanti 8 composable (stesso pattern dei 7 già coperti).
 - e2e in CI: oggi solo locale (`npm run test:e2e`) — serve un job CI che
   avvii backend+frontend insieme (stesso pattern webServer, DB throwaway
   dedicato), più complesso del job attuale ma non bloccante.
