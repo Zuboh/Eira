@@ -16,11 +16,22 @@
   estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto). 23
   test frontend (Vitest) sui 3 composable più critici (`useLoginFlow`,
   `useCaposalaDashboard`, `usePatientChart`); restano 12 composable senza
-  test, stesso pattern da applicare. Zero test e2e (Playwright, ancora da
-  progettare). CI attiva su entrambi: backend (`ruff check` + `pytest`, 0
+  test, stesso pattern da applicare. 4 test e2e (Playwright + axe-core,
+  `npm run test:e2e`, solo locale — non in CI, v. §6): login reale,
+  consegna SBAR, cambio turno round-trip multi-attore (richiedente →
+  collega → caposala, 3 browser context separati), assegnazione turno
+  scoperto. CI attiva su entrambi: backend (`ruff check` + `pytest`, 0
   violazioni su 58 iniziali), frontend (`eslint` + `prettier --check` +
   `vitest` + `typecheck` + `build`, 0 violazioni su 45 iniziali + 80 file
   riformattati).
+- L'e2e ha trovato e fixato 6 bug reali di accessibilità mai emersi da
+  lint/unit test (v. §5 per dettaglio): label PrimeVue `Password` non
+  associata (`inputId` mancante), 2 contrasti colore isolati (sidebar
+  attivo, badge `.chiusa`/`.attiva` — pattern text-on-own-tint, ora
+  centralizzato in token `--state-*-on-tint`), 7 `<th>` azioni vuoti
+  senza testo per screen reader. Tracciato ma non fixato: contrasto
+  bottone PrimeVue default (bianco su blu primary) su ~44 usi in tutta
+  l'app — decisione di palette colore, non un side-effect dei test.
 - Zero bug 🔴 aperti (i due erano concreti e circoscritti, entrambi fixati
   con test di regressione), due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md`
   §3) — questi ultimi restano espliciti out-of-scope in attesa di una
@@ -74,15 +85,17 @@
   fail-fast in produzione è implementato; CI (ruff + pytest) attiva su ogni
   push/PR. Restano solo i due 🟡, esplicitamente rimandati in attesa di una
   decisione di design (non un gap di qualità).
-- **Frontend: 28/30.** Architettura il punto più forte — moduli
+- **Frontend: 29/30.** Architettura il punto più forte — moduli
   feature-based, composition roots leggeri, design tokens, accessibilità
-  manuale (aria-label, focus, overflow tabelle) — sopra lo standard
+  manuale ora anche **verificata empiricamente** via axe-core (0
+  violazioni sulle 4 pagine chiave testate) — sopra lo standard
   triennale. Lint/CI presenti (ESLint + Prettier, 0 violazioni, gate su
-  ogni push/PR); primi 23 test Vitest sui 3 composable più critici, in
-  CI. Restano: 12 composable senza test, zero e2e Playwright, e alcune
-  viste esplicitamente **non verificate end-to-end**
-  (creazione Norton/Conley, cambio turno con secondo account, banca ore
-  solo da code review).
+  ogni push/PR); 23 test Vitest sui 3 composable più critici + 4 test
+  e2e sui flussi chiave, in CI (Vitest) e locale (e2e, v. §6). Cambio
+  turno con secondo account **ora verificato** (era esplicitamente non
+  testato). Restano: 12 composable senza unit test, e2e ancora locale
+  (non in CI), viste Norton/Conley/banca ore ancora solo da code
+  review.
 
 Differenza chiave tra i due: il backend ha verifica empirica (test) a
 sostegno della qualità dichiarata, il frontend ha qualità architetturale ma
@@ -111,12 +124,13 @@ verifica solo manuale/dichiarata.
 
 1. ~~Unit test sui 3 composable critici~~ — fatto (`useLoginFlow`,
    `useCaposalaDashboard`, `usePatientChart`, 23 test Vitest, in CI).
-   Restano: gli altri 12 composable (stesso pattern), e 3-4 test e2e
-   Playwright sui flussi chiave (login, consegna SBAR, cambio turno,
-   assegnazione turno scoperto).
-2. Verificare end-to-end le viste segnate come non verificate in `TASK.md`:
-   creazione Norton/Conley, cambio turno con secondo account infermiere,
-   banca ore.
+   Restano gli altri 12 composable (stesso pattern).
+1b. ~~4 test e2e Playwright sui flussi chiave~~ — fatto (login, consegna
+   SBAR, cambio turno round-trip multi-attore, assegnazione turno
+   scoperto), axe-core incluso, solo locale (non in CI, v. §6).
+2. Verificare end-to-end le viste ancora segnate come non verificate in
+   `TASK.md`: creazione Norton/Conley, banca ore (cambio turno con
+   secondo account infermiere **ora coperto** dal test e2e multi-attore).
 3. ~~Lint~~ — ESLint (flat config, typescript-eslint + eslint-plugin-vue
    recommended) + Prettier, entrambi in CI. `vue/attribute-hyphenation`
    disattivata di proposito (PrimeVue usa prop camelCase per API
@@ -157,30 +171,48 @@ altro codice.
 
 ### Frontend — audit di accessibilità automatico
 
-Due strade:
+**Implementato**: `@axe-core/playwright` dentro ai 4 test e2e (`e2e/helpers/a11y.ts`),
+zero violazioni su ogni pagina chiave testata (login, dashboard caposala,
+consegne SBAR, cambio turno). 6 bug reali trovati e fixati nel processo:
 
-- **`@axe-core/playwright`** agganciato agli stessi e2e già in programma
-  (punto 1): per ogni pagina chiave (login, dashboard, scheda paziente,
-  consegne SBAR) chiamare `AxeBuilder(page).analyze()` e asserire zero
-  violazioni. Costo basso se i test e2e esistono già (stesso setup
-  Playwright riusato). Dà un claim concreto e citabile nel report ("0
-  violazioni automatiche su N pagine chiave").
-- **Lighthouse CI** (categoria accessibility): più leggero da configurare,
-  ma dà un punteggio invece di un'asserzione pass/fail — meno rigoroso da
-  citare ma meno codice.
+- `PasswordStep.vue`: `<Password id="password">` impostava l'id del
+  wrapper, non dell'input nativo — il `<label for="password">` non era
+  mai davvero associato. Fix: prop `input-id` di PrimeVue.
+- Contrasto colore, sidebar (`AppShell.vue`): link attivo e bottone
+  "Esci" usavano il token semantico come colore testo direttamente sul
+  proprio tint chiaro (es. `--color-primary` su `color-mix(...
+  --color-primary 12%)`) — matematicamente non può mai arrivare a 4.5:1
+  se il testo è la stessa tinta dello sfondo. Fix: nuovi token
+  `--color-primary-on-tint` / `--state-*-on-tint` (varianti dark-mode
+  invariate, già abbastanza chiare).
+- Stesso pattern in `StatusBadge.vue` (tutti e 4 gli stati) — stessi
+  token riusati.
+- 7 file con `<th></th>` vuoti in colonne azioni, senza testo per
+  screen reader — nuova classe utility `.sr-only` in `style.css`,
+  applicata ovunque dopo aver trovato il primo caso e verificato che il
+  pattern fosse sistemico.
 
-Nota di rischio comune: PrimeVue a volte genera falsi positivi su contrasto
-colore nei suoi componenti interni — va messo in conto qualche
-`exclude`/tuning delle regole.
+**Non fixato, tracciato**: bottone PrimeVue small di default (bianco su
+blu primary, ~44 usi in tutta l'app) fallisce 4.5:1 (3.67:1 misurato) —
+decisione di palette colore che tocca l'identità visiva dell'app,
+esclusa deliberatamente dagli assert (`e2e/helpers/a11y.ts` esclude
+`.p-button`) invece di essere silenziosamente "risolta" come side
+effect dell'aggiunta di e2e.
 
-Raccomandazione: axe-core dentro ai Playwright e2e — stesso investimento del
-punto 1 test coverage, ritorno doppio.
+Nota di rischio prevista si è confermata: PrimeVue genera davvero falsi
+positivi/frizioni sui suoi componenti interni (qui: bottoni, prop
+`inputId` vs `id`) — gestiti con esclusioni mirate, non con fix
+indiscriminati.
 
 ## 6. Prossimi passi possibili (da scegliere, non decisi)
 
 - Vitest sui restanti 12 composable (stesso pattern dei 3 già coperti).
-- Scaffolding Playwright (e2e + axe) — il gap più grande rimasto
-  (nessuna verifica end-to-end automatica).
+- e2e in CI: oggi solo locale (`npm run test:e2e`) — serve un job CI che
+  avvii backend+frontend insieme (stesso pattern webServer, DB throwaway
+  dedicato), più complesso del job attuale ma non bloccante.
+- Decidere se/come affrontare il contrasto bottone PrimeVue (~44 usi,
+  tracciato non fixato — v. §5): richiede una decisione di palette,
+  non un fix meccanico.
 - Decidere/implementare i due 🟡 rimasti (enum `StatoAssegnazione.cambiata`,
   scoping "turno attivo").
 - Scaletta del report (Parte Prima + Seconda).
