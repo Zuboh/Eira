@@ -162,6 +162,92 @@ def test_collega_rifiuta_stops_flow(client, db_session, reparti):
     assert response.status_code == 409
 
 
+def test_richiedente_puo_annullare_richiesta_pendente(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")
+    infermiere_b = _infermiere(db_session, reparto_a.id, "nurse.b@example.com")
+    turno, assegnazione = _turno_con_assegnazione(db_session, reparto_a.id, infermiere_a.id)
+
+    headers_a = auth_headers(client, infermiere_a.email, "password123")
+    created = client.post(
+        "/api/v1/cambi-turno/",
+        headers=headers_a,
+        json={"assegnazione_turno_id": assegnazione.id, "collega_id": infermiere_b.id},
+    )
+    richiesta_id = created.json()["id"]
+
+    deleted = client.delete(f"/api/v1/cambi-turno/{richiesta_id}", headers=headers_a)
+    assert deleted.status_code == 204
+
+    listed = client.get("/api/v1/cambi-turno/", headers=headers_a)
+    assert listed.json() == []
+
+
+def test_collega_non_puo_annullare_richiesta_altrui(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")
+    infermiere_b = _infermiere(db_session, reparto_a.id, "nurse.b@example.com")
+    turno, assegnazione = _turno_con_assegnazione(db_session, reparto_a.id, infermiere_a.id)
+
+    headers_a = auth_headers(client, infermiere_a.email, "password123")
+    created = client.post(
+        "/api/v1/cambi-turno/",
+        headers=headers_a,
+        json={"assegnazione_turno_id": assegnazione.id, "collega_id": infermiere_b.id},
+    )
+    richiesta_id = created.json()["id"]
+
+    headers_b = auth_headers(client, infermiere_b.email, "password123")
+    response = client.delete(f"/api/v1/cambi-turno/{richiesta_id}", headers=headers_b)
+    assert response.status_code == 403
+
+
+def test_annullamento_richiesta_gia_approvata_vietato(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")
+    infermiere_b = _infermiere(db_session, reparto_a.id, "nurse.b@example.com")
+    from app.core.security import hash_password
+    from app.models.enums import RuoloUtente
+    from app.models.utente import Utente
+
+    caposala = Utente(
+        email="caposala.a@example.com",
+        password_hash=hash_password("password123"),
+        nome="Anna",
+        cognome="Rossi",
+        ruolo=RuoloUtente.caposala,
+        reparto_id=reparto_a.id,
+    )
+    db_session.add(caposala)
+    db_session.commit()
+
+    turno, assegnazione = _turno_con_assegnazione(db_session, reparto_a.id, infermiere_a.id)
+
+    headers_a = auth_headers(client, infermiere_a.email, "password123")
+    created = client.post(
+        "/api/v1/cambi-turno/",
+        headers=headers_a,
+        json={"assegnazione_turno_id": assegnazione.id, "collega_id": infermiere_b.id},
+    )
+    richiesta_id = created.json()["id"]
+
+    headers_b = auth_headers(client, infermiere_b.email, "password123")
+    client.post(
+        f"/api/v1/cambi-turno/{richiesta_id}/risposta-collega",
+        headers=headers_b,
+        json={"accetta": True},
+    )
+    headers_caposala = auth_headers(client, "caposala.a@example.com", "password123")
+    client.post(
+        f"/api/v1/cambi-turno/{richiesta_id}/risposta-caposala",
+        headers=headers_caposala,
+        json={"accetta": True},
+    )
+
+    response = client.delete(f"/api/v1/cambi-turno/{richiesta_id}", headers=headers_a)
+    assert response.status_code == 409
+
+
 def test_caposala_rejects_doppio_turno_on_approval(client, db_session, reparti):
     reparto_a, _ = reparti
     infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")

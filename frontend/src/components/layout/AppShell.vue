@@ -56,10 +56,14 @@ function logout() {
 }
 
 .sidebar {
+  position: sticky;
+  top: 0;
   width: 13.75rem;
+  height: 100dvh;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   border-right: 1px solid var(--border);
   background: var(--surface);
   padding: var(--space-5) var(--space-3);
@@ -108,16 +112,16 @@ function logout() {
   padding: 0 var(--space-3);
   border: none;
   border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--steel);
+  background: color-mix(in srgb, var(--state-urgente) 10%, transparent);
+  color: var(--state-urgente);
   font-size: 0.875rem;
+  font-weight: 600;
   text-align: left;
   cursor: pointer;
 }
 
 .logout:hover {
-  background: var(--canvas);
-  color: var(--state-urgente);
+  background: color-mix(in srgb, var(--state-urgente) 18%, transparent);
 }
 
 .logout:active {
@@ -139,9 +143,11 @@ function logout() {
     top: 0;
     z-index: 10;
     width: 100%;
+    height: auto;
     flex-direction: row;
     align-items: center;
     gap: var(--space-2);
+    overflow-y: visible;
     border-right: 0;
     border-bottom: 1px solid var(--border);
     padding: var(--space-2);

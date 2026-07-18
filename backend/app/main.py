@@ -21,6 +21,7 @@ from app.routers import (
     consegne_sbar,
     dashboard,
     diario_cedema,
+    ferie,
     pazienti,
     reparti,
     turni,
@@ -47,6 +48,7 @@ app.include_router(utenti.router, prefix=API_V1_PREFIX)
 app.include_router(pazienti.router, prefix=API_V1_PREFIX)
 app.include_router(turni.router, prefix=API_V1_PREFIX)
 app.include_router(cambi_turno.router, prefix=API_V1_PREFIX)
+app.include_router(ferie.router, prefix=API_V1_PREFIX)
 app.include_router(consegne_sbar.router, prefix=API_V1_PREFIX)
 app.include_router(diario_cedema.router, prefix=API_V1_PREFIX)
 app.include_router(valutazioni.router, prefix=API_V1_PREFIX)

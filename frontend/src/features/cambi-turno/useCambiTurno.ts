@@ -2,6 +2,7 @@ import { computed, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import {
   createRichiestaCambioTurno,
+  deleteCambioTurno,
   listCambiTurno,
   rispondiCaposala,
   rispondiCollega,
@@ -67,7 +68,8 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
         const a = await getMieAssegnazioni()
         assegnazioni.value = a.data
       }
-    } catch {
+    } catch (err) {
+      console.error('Impossibile caricare le richieste di cambio turno.', err)
       error.value = 'Impossibile caricare le richieste di cambio turno.'
     } finally {
       loading.value = false
@@ -131,6 +133,16 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
     }
   }
 
+  async function cancella(r: RichiestaCambioTurno) {
+    error.value = ''
+    try {
+      await deleteCambioTurno(r.id)
+      await refreshAfterMutation()
+    } catch {
+      error.value = 'Impossibile annullare la richiesta.'
+    }
+  }
+
   async function confermaRifiuto() {
     if (!rifiutoTarget.value) return
     error.value = ''
@@ -171,6 +183,7 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
     rispondiComeCollega,
     apriRifiuto,
     approvaCaposala,
+    cancella,
     confermaRifiuto,
   }
 }

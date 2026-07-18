@@ -1,4 +1,4 @@
-import type { StatoUtente, Utente } from '@/api/utenti'
+import type { RuoloUtente, StatoUtente, Utente } from '@/api/utenti'
 
 export type StaffFilterOption = {
   value: StatoUtente
@@ -25,4 +25,20 @@ export type TemporaryPasswordNoticeProps = {
 
 export type TemporaryPasswordNoticeEmits = {
   copy: []
+}
+
+export type NewStaffForm = {
+  nome: string
+  cognome: string
+  email: string
+  password: string
+  ruolo: RuoloUtente
+}
+
+export type NewStaffDialogProps = {
+  saving: boolean
+}
+
+export type StaffDialogEmits = {
+  save: []
 }

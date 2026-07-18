@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import Button from 'primevue/button'
 import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
+import NewStaffDialog from '@/features/staff/components/NewStaffDialog.vue'
 import StaffFilters from '@/features/staff/components/StaffFilters.vue'
 import StaffTable from '@/features/staff/components/StaffTable.vue'
 import TemporaryPasswordNotice from '@/features/staff/TemporaryPasswordNotice.vue'
@@ -13,9 +15,14 @@ const {
   resetLoadingId,
   error,
   temporaryPassword,
+  newDialogOpen,
+  newSaving,
+  newForm,
   filtri,
   filtrati,
   load,
+  apriNuovo,
+  salvaNuovo,
   approva,
   reimpostaPassword,
   copiaPassword,
@@ -26,7 +33,11 @@ onMounted(load)
 
 <template>
   <div class="staff-view">
-    <PageHeader title="Personale" />
+    <PageHeader title="Personale">
+      <template #actions>
+        <Button label="Aggiungi utente" size="small" @click="apriNuovo" />
+      </template>
+    </PageHeader>
 
     <StaffFilters v-model="filtro" :options="filtri" />
 
@@ -44,6 +55,13 @@ onMounted(load)
       v-if="temporaryPassword"
       :password="temporaryPassword"
       @copy="copiaPassword"
+    />
+
+    <NewStaffDialog
+      v-model:visible="newDialogOpen"
+      v-model:form="newForm"
+      :saving="newSaving"
+      @save="salvaNuovo"
     />
   </div>
 </template>

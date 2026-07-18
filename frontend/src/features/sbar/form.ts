@@ -4,6 +4,7 @@ import type {
   ConsegnaSbarForm,
   ConsegnaSbarUpdatePayload,
   PrioritaOption,
+  SbarFormErrors,
 } from '@/features/sbar/types'
 
 export const prioritaOptions: PrioritaOption[] = [
@@ -63,4 +64,23 @@ export function toUpdateConsegnaPayload(form: ConsegnaSbarForm): ConsegnaSbarUpd
     recommendation: form.recommendation,
     priorita: form.priorita,
   }
+}
+
+export function validateSbarForm(
+  form: ConsegnaSbarForm,
+  options: { checkPazienteTurno: boolean },
+): SbarFormErrors {
+  const errors: SbarFormErrors = {}
+
+  if (options.checkPazienteTurno) {
+    if (form.paziente_id === null) errors.paziente_id = 'Campo obbligatorio'
+    if (form.turno_id === null) errors.turno_id = 'Campo obbligatorio'
+  }
+
+  if (!form.situation.trim()) errors.situation = 'Campo obbligatorio'
+  if (!form.background.trim()) errors.background = 'Campo obbligatorio'
+  if (!form.assessment.trim()) errors.assessment = 'Campo obbligatorio'
+  if (!form.recommendation.trim()) errors.recommendation = 'Campo obbligatorio'
+
+  return errors
 }

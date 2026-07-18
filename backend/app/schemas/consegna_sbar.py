@@ -36,3 +36,8 @@ class ConsegnaSbarRead(BaseModel):
     creata_il: datetime.datetime
 
     model_config = {"from_attributes": True}
+
+
+class ConsegneSbarPage(BaseModel):
+    items: list[ConsegnaSbarRead]
+    total: int

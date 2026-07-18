@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
 import StatusBadge from '@/components/StatusBadge.vue'
 import EiraTable from '@/components/ui/EiraTable.vue'
 import type { PatientsTableProps } from '@/features/patients/types'
 
 defineProps<PatientsTableProps>()
+
+const router = useRouter()
+
+function goToPaziente(id: number) {
+  router.push({ name: 'paziente-scheda', params: { id } })
+}
 </script>
 
 <template>
@@ -22,12 +28,17 @@ defineProps<PatientsTableProps>()
         </tr>
       </thead>
       <tbody>
-        <tr v-for="patient in patients" :key="patient.id" class="row">
-          <td>
-            <RouterLink class="patient-link" :to="{ name: 'paziente-scheda', params: { id: patient.id } }">
-              {{ patient.cognome }}
-            </RouterLink>
-          </td>
+        <tr
+          v-for="patient in patients"
+          :key="patient.id"
+          class="row"
+          role="link"
+          tabindex="0"
+          @click="goToPaziente(patient.id)"
+          @keydown.enter="goToPaziente(patient.id)"
+          @keydown.space.prevent="goToPaziente(patient.id)"
+        >
+          <td class="cognome">{{ patient.cognome }}</td>
           <td>{{ patient.nome }}</td>
           <td class="mono">{{ patient.eta }}</td>
           <td class="mono">{{ patient.letto }}</td>
@@ -53,6 +64,7 @@ defineProps<PatientsTableProps>()
 }
 
 .row {
+  cursor: pointer;
   transition: background 150ms ease-out;
 }
 
@@ -60,15 +72,13 @@ defineProps<PatientsTableProps>()
   background: var(--canvas);
 }
 
-.patient-link {
-  color: inherit;
-  font-weight: 600;
-  text-decoration: none;
+.row:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
-.patient-link:hover {
-  color: var(--color-primary);
-  text-decoration: underline;
+.cognome {
+  font-weight: 600;
 }
 
 .mono {

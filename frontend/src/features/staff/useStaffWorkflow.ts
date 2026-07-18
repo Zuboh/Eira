@@ -1,12 +1,14 @@
 import { computed, ref } from 'vue'
 import {
   createTemporaryPassword,
+  createUtente,
   listUtenti,
   updateUtente,
   type StatoUtente,
   type Utente,
 } from '@/api/utenti'
-import type { StaffFilterOption } from '@/features/staff/types'
+import { useAuthStore } from '@/stores/auth'
+import type { NewStaffForm, StaffFilterOption } from '@/features/staff/types'
 
 export const staffFilters: StaffFilterOption[] = [
   { value: 'in_attesa', label: 'In attesa' },
@@ -14,13 +16,27 @@ export const staffFilters: StaffFilterOption[] = [
   { value: 'disattivato', label: 'Disattivati' },
 ]
 
+function createEmptyNewStaffForm(): NewStaffForm {
+  return {
+    nome: '',
+    cognome: '',
+    email: '',
+    password: '',
+    ruolo: 'infermiere',
+  }
+}
+
 export function useStaffWorkflow() {
+  const auth = useAuthStore()
   const utenti = ref<Utente[]>([])
   const filtro = ref<StatoUtente>('in_attesa')
   const loading = ref(false)
   const resetLoadingId = ref<number | null>(null)
   const error = ref('')
   const temporaryPassword = ref<string | null>(null)
+  const newDialogOpen = ref(false)
+  const newSaving = ref(false)
+  const newForm = ref<NewStaffForm>(createEmptyNewStaffForm())
 
   const filtrati = computed(() => utenti.value.filter((u) => u.stato === filtro.value))
 
@@ -34,6 +50,33 @@ export function useStaffWorkflow() {
       error.value = 'Impossibile caricare il personale.'
     } finally {
       loading.value = false
+    }
+  }
+
+  function apriNuovo() {
+    newForm.value = createEmptyNewStaffForm()
+    newDialogOpen.value = true
+    temporaryPassword.value = null
+    error.value = ''
+  }
+
+  async function salvaNuovo() {
+    if (auth.user === null) return
+
+    error.value = ''
+    newSaving.value = true
+    try {
+      await createUtente({
+        ...newForm.value,
+        reparto_id: auth.user.reparto_id,
+      })
+      newDialogOpen.value = false
+      filtro.value = 'attivo'
+      await load()
+    } catch {
+      error.value = 'Impossibile creare l\'utente.'
+    } finally {
+      newSaving.value = false
     }
   }
 
@@ -76,9 +119,14 @@ export function useStaffWorkflow() {
     resetLoadingId,
     error,
     temporaryPassword,
+    newDialogOpen,
+    newSaving,
+    newForm,
     filtri: staffFilters,
     filtrati,
     load,
+    apriNuovo,
+    salvaNuovo,
     approva,
     reimpostaPassword,
     copiaPassword,

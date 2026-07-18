@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import and_
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import and_, func
 from sqlalchemy.exc import IntegrityError
 
 from app.deps import CurrentUserDep, DbDep, require_roles
@@ -8,7 +8,12 @@ from app.models.enums import RuoloUtente, StatoAssegnazione
 from app.models.paziente import Paziente
 from app.models.turno import AssegnazioneTurno, Turno
 from app.openapi_errors import CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
-from app.schemas.consegna_sbar import ConsegnaSbarCreate, ConsegnaSbarRead, ConsegnaSbarUpdate
+from app.schemas.consegna_sbar import (
+    ConsegnaSbarCreate,
+    ConsegnaSbarRead,
+    ConsegnaSbarUpdate,
+    ConsegneSbarPage,
+)
 
 router = APIRouter(prefix="/consegne-sbar", tags=["consegne-sbar"])
 
@@ -65,30 +70,34 @@ def create_consegna(
 
 
 @router.get("/", responses=errors(UNAUTHORIZED))
-def list_consegne(current_user: CurrentUserDep, db: DbDep) -> list[ConsegnaSbarRead]:
+def list_consegne(
+    current_user: CurrentUserDep,
+    db: DbDep,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(25, ge=1, le=200),
+) -> ConsegneSbarPage:
     if current_user.ruolo == RuoloUtente.caposala:
-        consegne = (
+        query = (
             db.query(ConsegnaSbar)
             .join(Turno, ConsegnaSbar.turno_id == Turno.id)
             .filter(Turno.reparto_id == current_user.reparto_id)
-            .order_by(ConsegnaSbar.creata_il.desc())
-            .all()
         )
     else:
-        consegne = (
-            db.query(ConsegnaSbar)
-            .join(
-                AssegnazioneTurno,
-                and_(
-                    AssegnazioneTurno.turno_id == ConsegnaSbar.turno_id,
-                    AssegnazioneTurno.infermiere_id == current_user.id,
-                    AssegnazioneTurno.stato == StatoAssegnazione.attiva,
-                ),
-            )
-            .order_by(ConsegnaSbar.creata_il.desc())
-            .all()
+        query = db.query(ConsegnaSbar).join(
+            AssegnazioneTurno,
+            and_(
+                AssegnazioneTurno.turno_id == ConsegnaSbar.turno_id,
+                AssegnazioneTurno.infermiere_id == current_user.id,
+                AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+            ),
         )
-    return [ConsegnaSbarRead.model_validate(consegna) for consegna in consegne]
+
+    total = query.with_entities(func.count()).scalar() or 0
+    consegne = query.order_by(ConsegnaSbar.creata_il.desc()).offset(skip).limit(limit).all()
+    return ConsegneSbarPage(
+        items=[ConsegnaSbarRead.model_validate(consegna) for consegna in consegne],
+        total=total,
+    )
 
 
 @router.patch(

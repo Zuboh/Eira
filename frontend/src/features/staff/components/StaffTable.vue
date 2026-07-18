@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import EiraTable from '@/components/ui/EiraTable.vue'
+import { RUOLO_LABEL } from '@/features/staff/constants'
 import type { StaffTableEmits, StaffTableProps } from '@/features/staff/types'
 
 defineProps<StaffTableProps>()
@@ -25,7 +26,7 @@ const emit = defineEmits<StaffTableEmits>()
           <td>{{ utente.nome }}</td>
           <td>{{ utente.cognome }}</td>
           <td>{{ utente.email }}</td>
-          <td>{{ utente.ruolo }}</td>
+          <td>{{ RUOLO_LABEL[utente.ruolo] }}</td>
           <td>
             <Button
               v-if="utente.stato === 'in_attesa'"

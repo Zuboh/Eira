@@ -10,8 +10,8 @@ defineProps<PazientiAttiviCardProps>()
 
 <template>
   <EiraCard class="dashboard-card">
-    <DashboardSectionHeader title="I miei pazienti" route-name="pazienti" link-label="Vedi tutti" />
-    <EiraTable v-if="!loading" :empty="pazienti.length === 0" empty-message="Nessun paziente in carico.">
+    <DashboardSectionHeader title="Pazienti in reparto" route-name="pazienti" link-label="Vedi tutti" />
+    <EiraTable v-if="!loading" :empty="pazienti.length === 0" empty-message="Nessun paziente in reparto.">
       <table>
         <thead>
           <tr><th>Paziente</th><th>Letto</th><th>Diagnosi</th></tr>
@@ -33,10 +33,6 @@ defineProps<PazientiAttiviCardProps>()
 </template>
 
 <style scoped>
-.dashboard-card {
-  margin-top: 24px;
-}
-
 .dashboard-card :deep(td a) {
   color: inherit;
   font-weight: 600;

@@ -20,6 +20,13 @@ function canAnswerAsColleague(richiesta: CambiTurnoTableProps['richieste'][numbe
 function canAnswerAsCaposala(richiesta: CambiTurnoTableProps['richieste'][number]) {
   return props.currentRole === 'caposala' && richiesta.stato === 'in_attesa_caposala'
 }
+
+function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
+  return (
+    richiesta.richiedente_id === props.currentUserId &&
+    (richiesta.stato === 'in_attesa_collega' || richiesta.stato === 'in_attesa_caposala')
+  )
+}
 </script>
 
 <template>
@@ -43,6 +50,14 @@ function canAnswerAsCaposala(richiesta: CambiTurnoTableProps['richieste'][number
               <Button label="Approva" size="small" @click="emit('approve', richiesta)" />
               <Button label="Rifiuta" size="small" severity="secondary" @click="emit('reject', richiesta)" />
             </template>
+            <Button
+              v-if="canCancel(richiesta)"
+              label="Annulla"
+              size="small"
+              severity="danger"
+              text
+              @click="emit('cancel', richiesta)"
+            />
           </td>
         </tr>
       </tbody>

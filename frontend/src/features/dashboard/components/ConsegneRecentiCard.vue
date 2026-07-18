@@ -34,10 +34,6 @@ defineProps<ConsegneRecentiCardProps>()
 </template>
 
 <style scoped>
-.dashboard-card {
-  margin-top: 24px;
-}
-
 .dashboard-card :deep(td a) {
   color: inherit;
   font-weight: 600;

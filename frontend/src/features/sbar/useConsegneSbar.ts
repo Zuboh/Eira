@@ -13,6 +13,8 @@ import {
 } from '@/features/sbar/form'
 import type { AssegnazioneTurno, ConsegnaSbar, Paziente } from '@/features/sbar/types'
 
+const PAGE_SIZE = 25
+
 export function useConsegneSbar() {
   const auth = useAuthStore()
 
@@ -21,6 +23,10 @@ export function useConsegneSbar() {
   const assegnazioni = ref<AssegnazioneTurno[]>([])
   const loading = ref(false)
   const error = ref('')
+
+  const page = ref(1)
+  const total = ref(0)
+  const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)))
 
   const dialogOpen = ref(false)
   const editingId = ref<number | null>(null)
@@ -51,14 +57,23 @@ export function useConsegneSbar() {
     error.value = ''
     loading.value = true
     try {
-      const [c, p] = await Promise.all([listConsegneSbar(), listPazienti()])
-      consegne.value = c.data
+      const [c, p] = await Promise.all([
+        listConsegneSbar({ skip: (page.value - 1) * PAGE_SIZE, limit: PAGE_SIZE }),
+        listPazienti(),
+      ])
+      consegne.value = c.data.items
+      total.value = c.data.total
       pazienti.value = p.data
     } catch {
       error.value = 'Impossibile caricare le consegne SBAR.'
     } finally {
       loading.value = false
     }
+  }
+
+  async function goToPage(next: number) {
+    page.value = Math.min(Math.max(1, next), pageCount.value)
+    await load()
   }
 
   async function apriNuova() {
@@ -108,12 +123,16 @@ export function useConsegneSbar() {
     isEditing,
     saving,
     form,
+    page,
+    total,
+    pageCount,
     prioritaOptions,
     canCreateConsegna,
     nomePaziente,
     canEditConsegna,
     loadAssegnazioniIfNeeded,
     load,
+    goToPage,
     apriNuova,
     apriEdit,
     salva,

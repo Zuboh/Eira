@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth'
 import { usePatientChartDialogs } from '@/features/patient-chart/usePatientChartDialogs'
 import { usePatientChartQueries } from '@/features/patient-chart/usePatientChartQueries'
 import { usePatientChartSbar } from '@/features/patient-chart/usePatientChartSbar'
+import { useSbarCreateDialog } from '@/features/sbar/useSbarCreateDialog'
 
 export function usePatientChart(pazienteId: MaybeRef<number>) {
   const auth = useAuthStore()
@@ -11,6 +12,10 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
 
   const chart = usePatientChartQueries(currentPazienteId, ruolo)
   const sbar = usePatientChartSbar(currentPazienteId)
+  const sbarCreateDialog = useSbarCreateDialog({
+    pazienteId: currentPazienteId,
+    onCreated: () => sbar.loadConsegneSbar(true),
+  })
   const dialogs = usePatientChartDialogs({
     pazienteId: currentPazienteId,
     paziente: chart.paziente,
@@ -22,9 +27,9 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
   const canEditPatient = computed(() => ruolo.value === 'caposala')
   const canCreateClinicalEntries = computed(() => ruolo.value === 'infermiere')
 
-  async function loadConsegneSbar() {
+  async function loadConsegneSbar(force = false) {
     try {
-      await sbar.loadConsegneSbar()
+      await sbar.loadConsegneSbar(force)
     } catch {
       chart.error.value = 'Impossibile caricare lo storico SBAR.'
       throw new Error(chart.error.value)
@@ -52,6 +57,11 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     conleyDialog: dialogs.conleyDialog,
     conleySaving: dialogs.conleySaving,
     conleyForm: dialogs.conleyForm,
+    sbarDialog: sbarCreateDialog.dialogOpen,
+    sbarSaving: sbarCreateDialog.saving,
+    sbarForm: sbarCreateDialog.form,
+    sbarAssegnazioni: sbarCreateDialog.assegnazioni,
+    sbarCreateError: sbarCreateDialog.error,
     canEditPatient,
     canCreateClinicalEntries,
     load: chart.load,
@@ -64,5 +74,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     salvaNorton: dialogs.salvaNorton,
     apriConley: dialogs.apriConley,
     salvaConley: dialogs.salvaConley,
+    apriSbar: sbarCreateDialog.apri,
+    salvaSbar: sbarCreateDialog.salva,
   }
 }

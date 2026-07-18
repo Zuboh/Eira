@@ -5,6 +5,7 @@ import EiraCard from '@/components/ui/EiraCard.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import type { BancaOreSectionEmits, BancaOreSectionProps } from '@/features/banca-ore/types'
+import { formatMeseIt } from '@/utils/dateFormat'
 
 const props = withDefaults(defineProps<BancaOreSectionProps>(), {
   loading: false,
@@ -27,7 +28,7 @@ function saldoLabel() {
     <div class="section-header">
       <div>
         <h2>Banca ore</h2>
-        <p>Saldo mensile tra ore pianificate e ore contrattuali.</p>
+        <p>Saldo mensile tra ore effettuate e ore contrattuali.</p>
       </div>
       <div class="controls">
         <Select
@@ -41,7 +42,7 @@ function saldoLabel() {
         />
         <div class="mese-picker">
           <Button icon="pi pi-chevron-left" text aria-label="Mese precedente" @click="emit('previousMonth')" />
-          <span class="mono">{{ mese }}</span>
+          <span>{{ formatMeseIt(mese) }}</span>
           <Button icon="pi pi-chevron-right" text aria-label="Mese successivo" @click="emit('nextMonth')" />
         </div>
       </div>
@@ -51,8 +52,8 @@ function saldoLabel() {
 
     <div v-if="bancaOre" class="tiles">
       <EiraCard class="tile">
-        <span class="tile-label">Ore pianificate</span>
-        <span class="tile-value mono">{{ bancaOre.ore_pianificate }}</span>
+        <span class="tile-label">Ore effettuate</span>
+        <span class="tile-value mono">{{ bancaOre.ore_effettuate }}</span>
       </EiraCard>
       <EiraCard class="tile">
         <span class="tile-label">Ore contrattuali</span>
@@ -80,7 +81,7 @@ function saldoLabel() {
 
 .section-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
@@ -110,13 +111,23 @@ function saldoLabel() {
   gap: 8px;
 }
 
+.mese-picker span {
+  min-width: 8rem;
+  text-align: center;
+}
+
+.banca-ore-section {
+  container-type: inline-size;
+}
+
 .tiles {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
 }
 
 .tile {
+  flex: 1 1 12rem;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -153,10 +164,6 @@ function saldoLabel() {
 
   .controls {
     justify-content: flex-start;
-  }
-
-  .tiles {
-    grid-template-columns: 1fr;
   }
 }
 </style>

@@ -3,7 +3,7 @@ import datetime
 from fastapi import APIRouter, HTTPException, status
 
 from app.deps import CurrentUserDep, DbDep
-from app.models.enums import RuoloUtente, StatoAssegnazione
+from app.models.enums import RuoloUtente, StatoAssegnazione, TipoTurno
 from app.models.profilo_infermiere import ProfiloInfermiere
 from app.models.turno import AssegnazioneTurno, Turno
 from app.models.utente import Utente
@@ -14,6 +14,8 @@ router = APIRouter(prefix="/banca-ore", tags=["banca-ore"])
 
 
 def _ore_turno(turno: Turno) -> float:
+    if turno.tipo == TipoTurno.riposo:
+        return 0.0
     inizio = datetime.datetime.combine(turno.data, turno.ora_inizio)
     fine = datetime.datetime.combine(turno.data, turno.ora_fine)
     if fine <= inizio:
@@ -27,7 +29,8 @@ def _ore_turno(turno: Turno) -> float:
 def get_banca_ore(
     infermiere_id: int, mese: str, current_user: CurrentUserDep, db: DbDep
 ) -> BancaOreRead:
-    """Saldo ore mensile: ore pianificate (da turni assegnati attivi nel mese) meno ore contrattuali.
+    """Saldo ore mensile: ore effettuate (da turni assegnati attivi, dall'inizio del
+    mese fino a oggi incluso) meno ore contrattuali.
 
     L'infermiere può consultare solo la propria banca ore; la caposala solo
     quella degli infermieri del proprio reparto. `mese` nel formato `YYYY-MM`.
@@ -58,6 +61,10 @@ def get_banca_ore(
             status_code=status.HTTP_404_NOT_FOUND, detail="Profilo infermiere non trovato"
         )
 
+    oggi = datetime.date.today()
+    fine_mese = (datetime.date(anno, mese_num, 1) + datetime.timedelta(days=31)).replace(day=1)
+    fine_periodo = min(oggi + datetime.timedelta(days=1), fine_mese)
+
     turni_mese = (
         db.query(Turno)
         .join(AssegnazioneTurno, AssegnazioneTurno.turno_id == Turno.id)
@@ -65,17 +72,17 @@ def get_banca_ore(
             AssegnazioneTurno.infermiere_id == infermiere_id,
             AssegnazioneTurno.stato == StatoAssegnazione.attiva,
             Turno.data >= datetime.date(anno, mese_num, 1),
-            Turno.data < (datetime.date(anno, mese_num, 1) + datetime.timedelta(days=31)).replace(day=1),
+            Turno.data < fine_periodo,
         )
         .all()
     )
-    ore_pianificate = sum(_ore_turno(turno) for turno in turni_mese)
+    ore_effettuate = sum(_ore_turno(turno) for turno in turni_mese)
     ore_contrattuali = profilo.ore_contrattuali_mensili
 
     return BancaOreRead(
         infermiere_id=infermiere_id,
         mese=mese,
-        ore_pianificate=ore_pianificate,
+        ore_effettuate=ore_effettuate,
         ore_contrattuali=ore_contrattuali,
-        saldo=ore_pianificate - ore_contrattuali,
+        saldo=ore_effettuate - ore_contrattuali,
     )

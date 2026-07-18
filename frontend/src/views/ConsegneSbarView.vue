@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import Button from 'primevue/button'
-import Dialog from 'primevue/dialog'
-import Select from 'primevue/select'
-import Textarea from 'primevue/textarea'
-import { dialogStyle } from '@/components/ui/dialogStyles'
+import Paginator from 'primevue/paginator'
 import EiraTable from '@/components/ui/EiraTable.vue'
-import FormField from '@/components/ui/FormField.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
+import SbarDialog from '@/features/sbar/components/SbarDialog.vue'
 import { useConsegneSbar } from '@/features/sbar/useConsegneSbar'
 import { formatDateTimeCompactIt } from '@/utils/dateFormat'
+
+const PAGE_SIZE = 25
 
 const {
   consegne,
@@ -23,17 +22,23 @@ const {
   isEditing,
   saving,
   form,
-  prioritaOptions,
+  page,
+  total,
   canCreateConsegna,
   nomePaziente,
   canEditConsegna,
   load,
+  goToPage,
   apriNuova,
   apriEdit,
   salva,
 } = useConsegneSbar()
 
 onMounted(load)
+
+function onPageChange(event: { page: number }) {
+  goToPage(event.page + 1)
+}
 </script>
 
 <template>
@@ -71,34 +76,23 @@ onMounted(load)
       </table>
     </EiraTable>
 
-    <Dialog v-model:visible="dialogOpen" :header="isEditing ? 'Modifica consegna' : 'Nuova consegna'" modal :style="dialogStyle.lg">
-      <form class="form" @submit.prevent="salva">
-        <template v-if="!isEditing">
-          <FormField label="Paziente" required>
-            <Select v-model="form.paziente_id" :options="pazienti" optionLabel="cognome" optionValue="id" placeholder="Seleziona paziente" required />
-          </FormField>
-          <FormField label="Turno" required>
-            <Select v-model="form.turno_id" :options="assegnazioni" optionLabel="turno_id" optionValue="turno_id" placeholder="Seleziona turno" required />
-          </FormField>
-        </template>
-        <FormField label="Priorità">
-          <Select v-model="form.priorita" :options="prioritaOptions" optionLabel="label" optionValue="value" />
-        </FormField>
-        <FormField label="Situation" required>
-          <Textarea v-model="form.situation" rows="2" required />
-        </FormField>
-        <FormField label="Background" required>
-          <Textarea v-model="form.background" rows="2" required />
-        </FormField>
-        <FormField label="Assessment" required>
-          <Textarea v-model="form.assessment" rows="2" required />
-        </FormField>
-        <FormField label="Recommendation" required>
-          <Textarea v-model="form.recommendation" rows="2" required />
-        </FormField>
-        <Button type="submit" label="Salva" :loading="saving" />
-      </form>
-    </Dialog>
+    <Paginator
+      v-if="!loading && total > PAGE_SIZE"
+      :rows="PAGE_SIZE"
+      :total-records="total"
+      :first="(page - 1) * PAGE_SIZE"
+      @page="onPageChange"
+    />
+
+    <SbarDialog
+      v-model:visible="dialogOpen"
+      v-model:form="form"
+      :is-editing="isEditing"
+      :saving="saving"
+      :assegnazioni="assegnazioni"
+      :pazienti="pazienti"
+      @save="salva"
+    />
   </div>
 </template>
 
@@ -107,11 +101,5 @@ onMounted(load)
   padding: var(--page-padding);
   max-width: var(--page-lg);
   margin: 0 auto;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 </style>

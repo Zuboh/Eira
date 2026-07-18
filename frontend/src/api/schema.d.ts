@@ -273,6 +273,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/cambi-turno/{richiesta_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Richiesta
+         * @description Il richiedente annulla una richiesta ancora pendente (non ancora
+         *     approvata/rifiutata).
+         */
+        delete: operations["delete_richiesta_api_v1_cambi_turno__richiesta_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/cambi-turno/{richiesta_id}/risposta-collega": {
         parameters: {
             query?: never;
@@ -314,6 +335,88 @@ export interface paths {
          *     stessa data); rifiutando, la richiesta diventa `rifiutata_caposala`.
          */
         post: operations["risposta_caposala_api_v1_cambi_turno__richiesta_id__risposta_caposala_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ferie/slot-disponibili": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Slot Disponibili */
+        get: operations["list_slot_disponibili_api_v1_ferie_slot_disponibili_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ferie/richieste": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Richieste */
+        get: operations["list_richieste_api_v1_ferie_richieste_get"];
+        put?: never;
+        /**
+         * Create Richiesta
+         * @description Apre una richiesta con fino a 3 preferenze ordinate sui blocchi fissi
+         *     di 2 settimane della stagione. Stato iniziale `in_attesa`, in attesa di
+         *     approvazione della caposala. Un infermiere può avere una sola richiesta
+         *     attiva (in_attesa o approvata) alla volta.
+         */
+        post: operations["create_richiesta_api_v1_ferie_richieste_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ferie/richieste/{richiesta_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Richiesta
+         * @description Annulla una richiesta ancora in_attesa.
+         */
+        delete: operations["delete_richiesta_api_v1_ferie_richieste__richiesta_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Richiesta
+         * @description Sostituisce le preferenze di una richiesta ancora in_attesa.
+         */
+        patch: operations["update_richiesta_api_v1_ferie_richieste__richiesta_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/ferie/richieste/{richiesta_id}/rispondi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rispondi Richiesta */
+        post: operations["rispondi_richiesta_api_v1_ferie_richieste__richiesta_id__rispondi_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -435,7 +538,8 @@ export interface paths {
         };
         /**
          * Get Banca Ore
-         * @description Saldo ore mensile: ore pianificate (da turni assegnati attivi nel mese) meno ore contrattuali.
+         * @description Saldo ore mensile: ore effettuate (da turni assegnati attivi, dall'inizio del
+         *     mese fino a oggi incluso) meno ore contrattuali.
          *
          *     L'infermiere può consultare solo la propria banca ore; la caposala solo
          *     quella degli infermieri del proprio reparto. `mese` nel formato `YYYY-MM`.
@@ -542,8 +646,8 @@ export interface components {
             infermiere_id: number;
             /** Mese */
             mese: string;
-            /** Ore Pianificate */
-            ore_pianificate: number;
+            /** Ore Effettuate */
+            ore_effettuate: number;
             /** Ore Contrattuali */
             ore_contrattuali: number;
             /** Saldo */
@@ -627,6 +731,13 @@ export interface components {
             recommendation?: string | null;
             priorita?: components["schemas"]["PrioritaConsegna"] | null;
         };
+        /** ConsegneSbarPage */
+        ConsegneSbarPage: {
+            /** Items */
+            items: components["schemas"]["ConsegnaSbarRead"][];
+            /** Total */
+            total: number;
+        };
         /** DashboardCaposala */
         DashboardCaposala: {
             /** Turni Scoperti */
@@ -696,6 +807,21 @@ export interface components {
             /** Dimesso */
             dimesso?: boolean | null;
         };
+        /** PreferenzaFerieRead */
+        PreferenzaFerieRead: {
+            /** Rank */
+            rank: number;
+            /**
+             * Data Inizio
+             * Format: date
+             */
+            data_inizio: string;
+            /**
+             * Data Fine
+             * Format: date
+             */
+            data_fine: string;
+        };
         /**
          * PrioritaConsegna
          * @enum {string}
@@ -740,6 +866,39 @@ export interface components {
             /** Motivo Rifiuto */
             motivo_rifiuto?: string | null;
         };
+        /** RichiestaFerieCreate */
+        RichiestaFerieCreate: {
+            /** Preferenze */
+            preferenze: string[];
+        };
+        /** RichiestaFerieRead */
+        RichiestaFerieRead: {
+            /** Id */
+            id: number;
+            /** Infermiere Id */
+            infermiere_id: number;
+            /** Data Inizio */
+            data_inizio?: string | null;
+            /** Data Fine */
+            data_fine?: string | null;
+            /**
+             * Preferenze
+             * @default []
+             */
+            preferenze: components["schemas"]["PreferenzaFerieRead"][];
+            stato: components["schemas"]["StatoRichiestaFerie"];
+            /**
+             * Creata Il
+             * Format: date-time
+             */
+            creata_il: string;
+            /** Risposta Caposala Id */
+            risposta_caposala_id?: number | null;
+            /** Risposta Caposala Il */
+            risposta_caposala_il?: string | null;
+            /** Motivo Rifiuto */
+            motivo_rifiuto?: string | null;
+        };
         /** RispostaCaposalaRequest */
         RispostaCaposalaRequest: {
             /** Accetta */
@@ -751,6 +910,15 @@ export interface components {
         RispostaCollegaRequest: {
             /** Accetta */
             accetta: boolean;
+        };
+        /** RispostaFerieRequest */
+        RispostaFerieRequest: {
+            /** Accetta */
+            accetta: boolean;
+            /** Preferenza Rank */
+            preferenza_rank?: number | null;
+            /** Motivo Rifiuto */
+            motivo_rifiuto?: string | null;
         };
         /**
          * RuoloUtente
@@ -767,6 +935,11 @@ export interface components {
          * @enum {string}
          */
         StatoCambioTurno: "in_attesa_collega" | "rifiutata_collega" | "in_attesa_caposala" | "rifiutata_caposala" | "approvata";
+        /**
+         * StatoRichiestaFerie
+         * @enum {string}
+         */
+        StatoRichiestaFerie: "in_attesa" | "approvata" | "rifiutata";
         /**
          * StatoUtente
          * @enum {string}
@@ -790,7 +963,7 @@ export interface components {
          * TipoTurno
          * @enum {string}
          */
-        TipoTurno: "mattina" | "pomeriggio" | "notte";
+        TipoTurno: "mattina" | "pomeriggio" | "notte" | "riposo" | "ferie" | "ferie_estive";
         /** Token */
         Token: {
             /** Access Token */
@@ -2066,6 +2239,63 @@ export interface operations {
             };
         };
     };
+    delete_richiesta_api_v1_cambi_turno__richiesta_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     risposta_collega_api_v1_cambi_turno__richiesta_id__risposta_collega_post: {
         parameters: {
             query?: never;
@@ -2192,7 +2422,7 @@ export interface operations {
             };
         };
     };
-    list_consegne_api_v1_consegne_sbar__get: {
+    list_slot_disponibili_api_v1_ferie_slot_disponibili_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2207,7 +2437,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ConsegnaSbarRead"][];
+                    "application/json": string[];
                 };
             };
             /** @description Token mancante o non valido */
@@ -2216,6 +2446,330 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    list_richieste_api_v1_ferie_richieste_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaFerieRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_richiesta_api_v1_ferie_richieste_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RichiestaFerieCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaFerieRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_richiesta_api_v1_ferie_richieste__richiesta_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_richiesta_api_v1_ferie_richieste__richiesta_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RichiestaFerieCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaFerieRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rispondi_richiesta_api_v1_ferie_richieste__richiesta_id__rispondi_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RispostaFerieRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaFerieRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_consegne_api_v1_consegne_sbar__get: {
+        parameters: {
+            query?: {
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsegneSbarPage"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };

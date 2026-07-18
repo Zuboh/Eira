@@ -3,6 +3,8 @@ import type { components } from '@/api/schema'
 
 export type StatoUtente = components['schemas']['StatoUtente']
 export type Utente = components['schemas']['UtenteRead']
+export type RuoloUtente = components['schemas']['RuoloUtente']
+export type UtenteCreatePayload = components['schemas']['UtenteCreate']
 
 type TemporaryPasswordResponse = components['schemas']['TemporaryPasswordResponse']
 type UpdateUtentePayload = Partial<Pick<Utente, 'stato'>>
@@ -47,6 +49,15 @@ function unwrapData<TData, TError>(
   }
 
   return { data: result.data }
+}
+
+
+export async function createUtente(payload: UtenteCreatePayload): ApiResponse<Utente> {
+  const result = await eiraClient.POST('/api/v1/utenti/', {
+    body: payload,
+  })
+
+  return unwrapData(result, 'createUtente')
 }
 
 export async function listUtenti(): ApiResponse<Utente[]> {

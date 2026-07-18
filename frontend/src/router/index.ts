@@ -44,12 +44,6 @@ const router = createRouter({
       meta: { public: true },
     },
     {
-      path: '/register',
-      name: 'register',
-      component: () => import('@/views/RegisterView.vue'),
-      meta: { public: true },
-    },
-    {
       path: '/infermiere',
       name: 'infermiere-dashboard',
       component: () => import('@/views/infermiere/DashboardView.vue'),
@@ -91,6 +85,12 @@ const router = createRouter({
       name: 'cambio-turno',
       component: () => import('@/views/CambioTurnoView.vue'),
       meta: { roles: ALL_ROLES, nav: { label: 'Cambio Turno', order: 40 } },
+    },
+    {
+      path: '/ferie',
+      name: 'ferie',
+      component: () => import('@/views/FerieView.vue'),
+      meta: { roles: ALL_ROLES, nav: { label: 'Ferie', order: 45 } },
     },
     {
       path: '/banca-ore',

@@ -20,6 +20,7 @@ export type CambiTurnoTableEmits = {
   colleagueResponse: [richiesta: RichiestaCambioTurno, accetta: boolean]
   approve: [richiesta: RichiestaCambioTurno]
   reject: [richiesta: RichiestaCambioTurno]
+  cancel: [richiesta: RichiestaCambioTurno]
 }
 
 export type NewCambioTurnoDialogProps = {

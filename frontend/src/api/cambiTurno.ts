@@ -129,3 +129,13 @@ export async function rispondiCaposala(
 
   return wrapRichiestaCambioTurno(data)
 }
+
+export async function deleteCambioTurno(id: number): Promise<void> {
+  const { error } = await eiraClient.DELETE('/api/v1/cambi-turno/{richiesta_id}', {
+    params: { path: { richiesta_id: id } },
+  })
+
+  if (error !== undefined) {
+    throw new Error(`deleteCambioTurno failed: ${formatApiError(error)}`)
+  }
+}

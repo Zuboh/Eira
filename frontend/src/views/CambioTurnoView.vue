@@ -29,6 +29,7 @@ const {
   rispondiComeCollega,
   apriRifiuto,
   approvaCaposala,
+  cancella,
   confermaRifiuto,
 } = useCambiTurno()
 
@@ -54,6 +55,7 @@ onMounted(load)
       @colleague-response="rispondiComeCollega"
       @approve="approvaCaposala"
       @reject="apriRifiuto"
+      @cancel="cancella"
     />
 
     <NewCambioTurnoDialog

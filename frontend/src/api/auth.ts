@@ -3,7 +3,6 @@ import type { components } from '@/api/schema'
 
 type TokenSchema = components['schemas']['Token']
 type UtenteReadSchema = components['schemas']['UtenteRead']
-type UtenteRegisterSchema = components['schemas']['UtenteRegister']
 type TemporaryPasswordChangeSchema = components['schemas']['TemporaryPasswordChange']
 
 export interface TokenResponse {
@@ -18,24 +17,6 @@ export interface MeResponse {
   cognome: UtenteReadSchema['cognome']
   ruolo: UtenteReadSchema['ruolo']
   reparto_id: UtenteReadSchema['reparto_id']
-}
-
-export interface RegisterPayload {
-  email: UtenteRegisterSchema['email']
-  password: UtenteRegisterSchema['password']
-  nome: UtenteRegisterSchema['nome']
-  cognome: UtenteRegisterSchema['cognome']
-  reparto_id: UtenteRegisterSchema['reparto_id']
-}
-
-export interface RegisterResponse {
-  id: UtenteReadSchema['id']
-  email: UtenteReadSchema['email']
-  nome: UtenteReadSchema['nome']
-  cognome: UtenteReadSchema['cognome']
-  ruolo: UtenteReadSchema['ruolo']
-  reparto_id: UtenteReadSchema['reparto_id']
-  stato: UtenteReadSchema['stato']
 }
 
 export interface ChangeTemporaryPasswordPayload {
@@ -98,14 +79,6 @@ export async function login(utenteId: number, password: string): ApiResponse<Tok
   })
 
   return unwrapData(result, 'login')
-}
-
-export async function register(payload: RegisterPayload): ApiResponse<RegisterResponse> {
-  const result = await eiraClient.POST('/api/v1/auth/register', {
-    body: payload,
-  })
-
-  return unwrapData(result, 'register')
 }
 
 export async function changeTemporaryPassword(

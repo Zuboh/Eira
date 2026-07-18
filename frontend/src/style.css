@@ -33,6 +33,13 @@
   --state-attiva: #16a34a;
   --state-chiusa: #71717a;
 
+  --turno-mattina: #d97706;
+  --turno-pomeriggio: #2563eb;
+  --turno-notte: #4f46e5;
+  --turno-riposo: #0d9488;
+  --turno-ferie: #71717a;
+  --turno-ferie-estive: #16a34a;
+
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   --radius: 0.625rem;
   --radius-sm: 0.5rem;
@@ -82,6 +89,13 @@
     --state-pending: #fbbf24;
     --state-attiva: #4ade80;
     --state-chiusa: #a1a1aa;
+
+    --turno-mattina: #f59e0b;
+    --turno-pomeriggio: #60a5fa;
+    --turno-notte: #818cf8;
+    --turno-riposo: #2dd4bf;
+    --turno-ferie: #a1a1aa;
+    --turno-ferie-estive: #4ade80;
   }
 }
 

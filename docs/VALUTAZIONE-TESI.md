@@ -11,10 +11,17 @@
 - Nucleo funzionale (mai tagliabile): ruoli infermiere/caposala scoping reparto,
   dashboard turni, consegne SBAR.
 - Attorno al nucleo: diario CEDEMA, valutazioni Norton/Conley, cambio turno a
-  doppia conferma, banca ore.
-- 33 test backend passanti. Zero test frontend. Nessuna CI, nessun lint
-  configurato (né backend né frontend).
-- Due bug 🔴 aperti, due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md` §3).
+  doppia conferma, banca ore, ferie (WIP non committato, v. nota sotto).
+- 80 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
+  estensioni SBAR/cambi turno, tutte **non ancora committate** — solo working
+  tree). Zero test frontend. Nessuna CI, nessun lint configurato (né backend
+  né frontend, verificato di nuovo oggi).
+- Due bug 🔴 aperti, due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md` §3) —
+  stato invariato, nessun fix nel working tree attuale.
+- ⚠️ **~50 file modificati/aggiunti non committati** nel working tree
+  (feature ferie completa: modelli/router/schema/test backend + calendar
+  card/view frontend, oltre a modifiche sparse su sbar/cambi-turno/staff).
+  Rischio concreto di perdita lavoro finché resta non committato.
 - Report di tesi (Parte Prima + Seconda), screenshot funzionali e video
   walkthrough: non ancora iniziati.
 
@@ -53,7 +60,8 @@
 > Giudizio qualitativo mio, non un voto ufficiale — non conosco la griglia
 > esatta del relatore/Pegaso.
 
-- **Backend: 28/30.** Test reali (33, passanti) danno verifica empirica, non
+- **Backend: 28/30.** Test reali (80, passanti — ma per ora solo in working
+  tree, non committati) danno verifica empirica, non
   solo dichiarata. Modello di dominio solido, invariante di isolamento
   reparto applicata sistematicamente, audit trail storico dei fix di
   sicurezza. I due 🔴 sono concreti ma circoscritti e già diagnosticati con
@@ -153,6 +161,8 @@ punto 1 test coverage, ritorno doppio.
 
 ## 6. Prossimi passi possibili (da scegliere, non decisi)
 
+- **Committare il working tree ferie** (~50 file, 80 test già passanti) —
+  priorità sopra le altre, lavoro reale non al sicuro finché resta locale.
 - Implementare il check di startup JWT sul backend.
 - Scaffolding Playwright (e2e + axe) sul frontend.
 - Fix dei due bug 🔴.

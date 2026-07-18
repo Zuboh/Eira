@@ -16,6 +16,9 @@ class TipoTurno(str, enum.Enum):
     mattina = "mattina"
     pomeriggio = "pomeriggio"
     notte = "notte"
+    riposo = "riposo"
+    ferie = "ferie"
+    ferie_estive = "ferie_estive"
 
 
 class StatoAssegnazione(str, enum.Enum):
@@ -34,3 +37,9 @@ class StatoCambioTurno(str, enum.Enum):
     in_attesa_caposala = "in_attesa_caposala"
     rifiutata_caposala = "rifiutata_caposala"
     approvata = "approvata"
+
+
+class StatoRichiestaFerie(str, enum.Enum):
+    in_attesa = "in_attesa"
+    approvata = "approvata"
+    rifiutata = "rifiutata"

@@ -47,7 +47,7 @@ def create_utente(payload: UtenteCreate, current_user: CurrentUserDep, db: DbDep
 
 @router.get(
     "/",
-    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    dependencies=[Depends(require_roles(RuoloUtente.caposala, RuoloUtente.infermiere))],
     responses=errors(UNAUTHORIZED, FORBIDDEN),
 )
 def list_utenti(current_user: CurrentUserDep, db: DbDep) -> list[UtenteRead]:

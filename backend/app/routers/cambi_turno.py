@@ -71,6 +71,33 @@ def create_richiesta(
     return RichiestaCambioTurnoRead.model_validate(richiesta)
 
 
+@router.delete(
+    "/{richiesta_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_roles(RuoloUtente.infermiere))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT),
+)
+def delete_richiesta(richiesta_id: int, current_user: CurrentUserDep, db: DbDep) -> None:
+    """Il richiedente annulla una richiesta ancora pendente (non ancora
+    approvata/rifiutata)."""
+    richiesta = db.get(RichiestaCambioTurno, richiesta_id)
+    if richiesta is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Richiesta non trovata")
+    if richiesta.richiedente_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Puoi annullare solo le tue richieste"
+        )
+    if richiesta.stato not in (
+        StatoCambioTurno.in_attesa_collega,
+        StatoCambioTurno.in_attesa_caposala,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Richiesta non più annullabile"
+        )
+    db.delete(richiesta)
+    db.commit()
+
+
 @router.get("/", responses=errors(UNAUTHORIZED))
 def list_richieste(current_user: CurrentUserDep, db: DbDep) -> list[RichiestaCambioTurnoRead]:
     if current_user.ruolo == RuoloUtente.caposala:

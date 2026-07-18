@@ -2,6 +2,7 @@ import { computed, ref } from 'vue'
 import { listConsegneSbar, type ConsegnaSbar } from '@/api/consegneSbar'
 import { listPazienti, type Paziente } from '@/api/pazienti'
 import { getMieAssegnazioni, listTurni, type AssegnazioneTurno, type Turno } from '@/api/turni'
+import { buildTurniEvents } from '@/features/dashboard/infermiereCalendarViewModel'
 
 const oggi = new Date().toISOString().slice(0, 10)
 
@@ -22,7 +23,10 @@ export function useInfermiereDashboard() {
       .map((assegnazione) => turniById.value.get(assegnazione.turno_id))
       .filter((turno): turno is Turno => turno !== undefined && turno.data >= oggi)
       .sort((turnoA, turnoB) => turnoA.data.localeCompare(turnoB.data))
+      .slice(0, 4)
   })
+
+  const calendarEvents = computed(() => buildTurniEvents(assegnazioni.value, turni.value))
 
   const consegneRecenti = computed(() => consegne.value)
   const pazientiAttivi = computed(() => pazienti.value)
@@ -44,7 +48,7 @@ export function useInfermiereDashboard() {
       ])
       assegnazioni.value = assegnazioniResponse.data
       turni.value = turniResponse.data
-      consegne.value = consegneResponse.data.slice(0, 5)
+      consegne.value = consegneResponse.data.items.slice(0, 5)
       pazienti.value = pazientiResponse.data.filter((paziente) => !paziente.dimesso)
     } catch {
       error.value = 'Impossibile caricare la dashboard.'
@@ -57,6 +61,7 @@ export function useInfermiereDashboard() {
     loading,
     error,
     mieiTurni,
+    calendarEvents,
     consegneRecenti,
     pazientiAttivi,
     nomePaziente,

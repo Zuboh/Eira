@@ -16,6 +16,7 @@ import NortonDialog from '@/features/patient-chart/components/NortonDialog.vue'
 import PatientEditDialog from '@/features/patient-chart/components/PatientEditDialog.vue'
 import ValutazioniTab from '@/features/patient-chart/components/ValutazioniTab.vue'
 import StoricoSbarTab from '@/features/patient-chart/components/StoricoSbarTab.vue'
+import SbarDialog from '@/features/sbar/components/SbarDialog.vue'
 import { usePatientChart } from '@/features/patient-chart/usePatientChart'
 
 const route = useRoute()
@@ -41,6 +42,11 @@ const {
   conleyDialog,
   conleySaving,
   conleyForm,
+  sbarDialog,
+  sbarSaving,
+  sbarForm,
+  sbarAssegnazioni,
+  sbarCreateError,
   canEditPatient,
   canCreateClinicalEntries,
   load,
@@ -53,6 +59,8 @@ const {
   salvaNorton,
   apriConley,
   salvaConley,
+  apriSbar,
+  salvaSbar,
 } = usePatientChart(pazienteId)
 
 const activeTab = ref('cedema')
@@ -68,12 +76,18 @@ watch(activeTab, async (tab) => {
   }
 })
 
+async function apriNuovaSbar() {
+  activeTab.value = 'sbar'
+  await apriSbar()
+}
+
 onMounted(load)
 </script>
 
 <template>
   <div class="scheda-view">
     <InlineError :message="error" />
+    <InlineError :message="sbarCreateError" />
 
     <template v-if="paziente">
       <div class="header">
@@ -86,6 +100,13 @@ onMounted(load)
         </div>
         <div class="header-actions">
           <StatusBadge :status="paziente.dimesso ? 'dimesso' : 'attivo'" :label="paziente.dimesso ? 'Dimesso' : 'Attivo'" />
+          <Button
+            v-if="canCreateClinicalEntries"
+            label="Nuova SBAR"
+            size="small"
+            severity="secondary"
+            @click="apriNuovaSbar"
+          />
           <Button v-if="canEditPatient" label="Modifica" size="small" severity="secondary" @click="apriEdit" />
         </div>
       </div>
@@ -131,6 +152,16 @@ onMounted(load)
     <NortonDialog v-model:visible="nortonDialog" v-model:form="nortonForm" :saving="nortonSaving" @save="salvaNorton" />
 
     <ConleyDialog v-model:visible="conleyDialog" v-model:form="conleyForm" :saving="conleySaving" @save="salvaConley" />
+
+    <SbarDialog
+      v-model:visible="sbarDialog"
+      v-model:form="sbarForm"
+      :is-editing="false"
+      :saving="sbarSaving"
+      :assegnazioni="sbarAssegnazioni"
+      hide-paziente
+      @save="salvaSbar"
+    />
   </div>
 </template>
 

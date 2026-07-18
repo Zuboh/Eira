@@ -104,7 +104,8 @@ def test_create_and_get_own_consegna(client, db_session, reparti):
 
     listed = client.get("/api/v1/consegne-sbar/", headers=headers)
     assert listed.status_code == 200
-    assert len(listed.json()) == 1
+    assert listed.json()["total"] == 1
+    assert len(listed.json()["items"]) == 1
 
 
 def test_infermiere_not_assigned_does_not_see_others_consegna(client, db_session, reparti):
@@ -132,7 +133,7 @@ def test_infermiere_not_assigned_does_not_see_others_consegna(client, db_session
     headers_b = auth_headers(client, infermiere_b.email, "password123")
     listed = client.get("/api/v1/consegne-sbar/", headers=headers_b)
     assert listed.status_code == 200
-    assert listed.json() == []
+    assert listed.json() == {"items": [], "total": 0}
 
 
 def test_update_consegna_only_by_author(client, db_session, reparti):
@@ -178,3 +179,65 @@ def test_update_consegna_only_by_author(client, db_session, reparti):
     )
     assert ok.status_code == 200
     assert ok.json()["situation"] == "updated"
+
+
+def test_list_consegne_paginated(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    headers = auth_headers(client, infermiere.email, "password123")
+
+    from app.models.enums import StatoAssegnazione, TipoTurno
+    from app.models.turno import AssegnazioneTurno, Turno
+
+    turno0, paziente = _setup_turno_paziente_assegnazione(db_session, reparto_a.id, infermiere.id)
+    client.post(
+        "/api/v1/consegne-sbar/",
+        headers=headers,
+        json={
+            "paziente_id": paziente.id,
+            "turno_id": turno0.id,
+            "situation": "s",
+            "background": "b",
+            "assessment": "a",
+            "recommendation": "r",
+        },
+    )
+
+    for offset in range(1, 3):
+        turno = Turno(
+            data=datetime.date.today() + datetime.timedelta(days=offset),
+            tipo=TipoTurno.mattina,
+            reparto_id=reparto_a.id,
+            ora_inizio=datetime.time(7, 0),
+            ora_fine=datetime.time(14, 0),
+        )
+        db_session.add(turno)
+        db_session.commit()
+        db_session.refresh(turno)
+        db_session.add(
+            AssegnazioneTurno(
+                turno_id=turno.id, infermiere_id=infermiere.id, stato=StatoAssegnazione.attiva
+            )
+        )
+        db_session.commit()
+        client.post(
+            "/api/v1/consegne-sbar/",
+            headers=headers,
+            json={
+                "paziente_id": paziente.id,
+                "turno_id": turno.id,
+                "situation": "s",
+                "background": "b",
+                "assessment": "a",
+                "recommendation": "r",
+            },
+        )
+
+    first_page = client.get("/api/v1/consegne-sbar/?limit=2", headers=headers)
+    assert first_page.status_code == 200
+    assert first_page.json()["total"] == 3
+    assert len(first_page.json()["items"]) == 2
+
+    second_page = client.get("/api/v1/consegne-sbar/?limit=2&skip=2", headers=headers)
+    assert second_page.status_code == 200
+    assert len(second_page.json()["items"]) == 1
