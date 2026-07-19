@@ -16,5 +16,5 @@ class Paziente(Base):
     letto: Mapped[str] = mapped_column(sa.String(16))
     data_ricovero: Mapped[datetime.date]
     diagnosi_ingresso: Mapped[str] = mapped_column(sa.String(512))
-    reparto_id: Mapped[int] = mapped_column(sa.ForeignKey("reparto.id"))
+    reparto_id: Mapped[int] = mapped_column(sa.ForeignKey("reparto.id"), index=True)
     dimesso: Mapped[bool] = mapped_column(default=False)

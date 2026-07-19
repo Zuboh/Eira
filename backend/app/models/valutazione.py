@@ -10,7 +10,7 @@ class ValutazioneNorton(Base):
     __tablename__ = "valutazione_norton"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    paziente_id: Mapped[int] = mapped_column(sa.ForeignKey("paziente.id"))
+    paziente_id: Mapped[int] = mapped_column(sa.ForeignKey("paziente.id"), index=True)
     autore_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
     data_valutazione: Mapped[datetime.date]
     condizioni_generali: Mapped[int]
@@ -25,7 +25,7 @@ class ValutazioneConley(Base):
     __tablename__ = "valutazione_conley"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    paziente_id: Mapped[int] = mapped_column(sa.ForeignKey("paziente.id"))
+    paziente_id: Mapped[int] = mapped_column(sa.ForeignKey("paziente.id"), index=True)
     autore_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
     data_valutazione: Mapped[datetime.date]
     storia_cadute: Mapped[int]

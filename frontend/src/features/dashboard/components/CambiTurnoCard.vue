@@ -26,7 +26,7 @@ const emit = defineEmits<{
       link-label="Vedi tutti"
     />
     <EiraTable
-      v-if="!loading"
+      :loading="loading"
       :empty="richieste.length === 0"
       empty-message="Nessun cambio turno in attesa."
     >

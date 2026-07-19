@@ -10,6 +10,7 @@ defineProps<StoricoSbarTabProps>()
 <template>
   <EiraTable
     class="clinical-table"
+    :loading="loading"
     :empty="consegne.length === 0"
     empty-message="Nessuna consegna SBAR per questo paziente."
   >

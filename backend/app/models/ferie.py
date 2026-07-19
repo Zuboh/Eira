@@ -11,11 +11,13 @@ class RichiestaFerie(Base):
     __tablename__ = "richiesta_ferie"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    infermiere_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
+    infermiere_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"), index=True)
     data_inizio: Mapped[datetime.date | None] = mapped_column(default=None)
     data_fine: Mapped[datetime.date | None] = mapped_column(default=None)
     stato: Mapped[StatoRichiestaFerie] = mapped_column(
-        sa.Enum(StatoRichiestaFerie), default=StatoRichiestaFerie.in_attesa
+        sa.Enum(StatoRichiestaFerie),
+        default=StatoRichiestaFerie.in_attesa,
+        index=True,
     )
     creata_il: Mapped[datetime.datetime] = mapped_column(
         default=lambda: datetime.datetime.now(datetime.UTC)

@@ -54,4 +54,5 @@ export type ValutazioniTabEmits = {
 
 export type StoricoSbarTabProps = {
   consegne: ConsegnaSbar[]
+  loading: boolean
 }

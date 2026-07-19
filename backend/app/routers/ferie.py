@@ -35,6 +35,32 @@ def _to_read(db: DbDep, richiesta: RichiestaFerie) -> RichiestaFerieRead:
     return read
 
 
+def _to_read_batch(
+    db: DbDep, richieste: list[RichiestaFerie]
+) -> list[RichiestaFerieRead]:
+    """Come _to_read ma con un'unica query per le preferenze di tutte le richieste (niente N+1)."""
+    richiesta_ids = [r.id for r in richieste]
+    preferenze = (
+        db.query(RichiestaFeriePreferenza)
+        .filter(RichiestaFeriePreferenza.richiesta_id.in_(richiesta_ids))
+        .order_by(RichiestaFeriePreferenza.rank)
+        .all()
+    )
+    preferenze_per_richiesta: dict[int, list[RichiestaFeriePreferenza]] = {}
+    for p in preferenze:
+        preferenze_per_richiesta.setdefault(p.richiesta_id, []).append(p)
+
+    result = []
+    for r in richieste:
+        read = RichiestaFerieRead.model_validate(r)
+        read.preferenze = [
+            PreferenzaFerieRead.model_validate(p)
+            for p in preferenze_per_richiesta.get(r.id, [])
+        ]
+        result.append(read)
+    return result
+
+
 def _valida_preferenze(preferenze: list[datetime.date]) -> None:
     if not 1 <= len(preferenze) <= MAX_PREFERENZE:
         raise HTTPException(
@@ -187,7 +213,7 @@ def list_richieste(current_user: CurrentUserDep, db: DbDep) -> list[RichiestaFer
             .order_by(RichiestaFerie.creata_il.desc())
             .all()
         )
-    return [_to_read(db, r) for r in richieste]
+    return _to_read_batch(db, richieste)
 
 
 @router.post(

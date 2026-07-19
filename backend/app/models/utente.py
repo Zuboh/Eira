@@ -14,7 +14,7 @@ class Utente(Base):
     nome: Mapped[str] = mapped_column(sa.String(64))
     cognome: Mapped[str] = mapped_column(sa.String(64))
     ruolo: Mapped[RuoloUtente] = mapped_column(sa.Enum(RuoloUtente))
-    reparto_id: Mapped[int] = mapped_column(sa.ForeignKey("reparto.id"))
+    reparto_id: Mapped[int] = mapped_column(sa.ForeignKey("reparto.id"), index=True)
     stato: Mapped[StatoUtente] = mapped_column(
         sa.Enum(StatoUtente), default=StatoUtente.attivo
     )

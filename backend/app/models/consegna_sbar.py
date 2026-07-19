@@ -13,7 +13,7 @@ class ConsegnaSbar(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     paziente_id: Mapped[int] = mapped_column(sa.ForeignKey("paziente.id"))
-    turno_id: Mapped[int] = mapped_column(sa.ForeignKey("turno.id"))
+    turno_id: Mapped[int] = mapped_column(sa.ForeignKey("turno.id"), index=True)
     autore_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
     situation: Mapped[str] = mapped_column(sa.Text)
     background: Mapped[str] = mapped_column(sa.Text)

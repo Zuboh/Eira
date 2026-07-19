@@ -89,6 +89,7 @@ design su semantica "turno attivo").
 
 ## Frontend
 
+- [x] Performance audit (frontend + backend) — Lighthouse su build produzione + `EXPLAIN QUERY PLAN` su indici mancanti; batch 🟡 fixato stesso giorno (lazy-load FullCalendar dashboard infermiere, indici FK mancanti, N+1 in `ferie.py`, over-fetch consegne SBAR), batch 🟢 resta backlog. Dettaglio in `docs/PERFORMANCE-AUDIT.md`.
 - [x] Route guard (`router/index.ts`) — reale: redirect non-autenticati a `/login`, `fetchMe` con fallback logout, redirect per ruolo
 - [x] `LoginView` → collegato a `POST /auth/token` reale via `stores/auth.ts` + `api/auth.ts` (bug hash sopra fixato)
 - [x] Dashboard infermiere — collegare a dati reali (turni via `mie-assegnazioni`, consegne SBAR, pazienti in carico) — `DashboardView.vue`, verificata end-to-end. CEDEMA non aggregato: nessun endpoint cross-paziente, resta accessibile per singolo paziente da `SchedaPazienteView`

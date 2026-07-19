@@ -57,7 +57,7 @@ function onPageChange(event: { page: number }) {
     <InlineError :message="error" />
 
     <EiraTable
-      v-if="!loading"
+      :loading="loading"
       :empty="consegne.length === 0"
       empty-message="Nessuna consegna SBAR."
     >

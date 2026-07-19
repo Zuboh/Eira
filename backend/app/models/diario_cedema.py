@@ -10,7 +10,7 @@ class VoceDiarioCedema(Base):
     __tablename__ = "voce_diario_cedema"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    paziente_id: Mapped[int] = mapped_column(sa.ForeignKey("paziente.id"))
+    paziente_id: Mapped[int] = mapped_column(sa.ForeignKey("paziente.id"), index=True)
     autore_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
     turno_id: Mapped[int | None] = mapped_column(sa.ForeignKey("turno.id"), default=None)
     timestamp: Mapped[datetime.datetime] = mapped_column(

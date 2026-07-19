@@ -45,6 +45,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     conley: chart.conley,
     consegne: sbar.consegne,
     consegneLoaded: sbar.consegneLoaded,
+    sbarLoading: sbar.loading,
     assegnazioni: chart.assegnazioni,
     editing: dialogs.editing,
     editForm: dialogs.editForm,

@@ -10,6 +10,7 @@ export type NewPatientForm = Omit<
 
 export type PatientsTableProps = {
   patients: Paziente[]
+  loading: boolean
 }
 
 export type NewPatientDialogProps = {

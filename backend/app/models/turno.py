@@ -14,7 +14,7 @@ class Turno(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     data: Mapped[datetime.date]
     tipo: Mapped[TipoTurno] = mapped_column(sa.Enum(TipoTurno))
-    reparto_id: Mapped[int] = mapped_column(sa.ForeignKey("reparto.id"))
+    reparto_id: Mapped[int] = mapped_column(sa.ForeignKey("reparto.id"), index=True)
     ora_inizio: Mapped[datetime.time]
     ora_fine: Mapped[datetime.time]
 
@@ -25,7 +25,9 @@ class AssegnazioneTurno(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     turno_id: Mapped[int] = mapped_column(sa.ForeignKey("turno.id"))
-    infermiere_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
+    infermiere_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("utente.id"), index=True
+    )
     stato: Mapped[StatoAssegnazione] = mapped_column(
-        sa.Enum(StatoAssegnazione), default=StatoAssegnazione.attiva
+        sa.Enum(StatoAssegnazione), default=StatoAssegnazione.attiva, index=True
     )

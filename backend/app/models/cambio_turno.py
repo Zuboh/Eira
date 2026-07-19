@@ -11,11 +11,15 @@ class RichiestaCambioTurno(Base):
     __tablename__ = "richiesta_cambio_turno"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    assegnazione_turno_id: Mapped[int] = mapped_column(sa.ForeignKey("assegnazione_turno.id"))
-    richiedente_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
-    collega_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"))
+    assegnazione_turno_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("assegnazione_turno.id"), index=True
+    )
+    richiedente_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"), index=True)
+    collega_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"), index=True)
     stato: Mapped[StatoCambioTurno] = mapped_column(
-        sa.Enum(StatoCambioTurno), default=StatoCambioTurno.in_attesa_collega
+        sa.Enum(StatoCambioTurno),
+        default=StatoCambioTurno.in_attesa_collega,
+        index=True,
     )
     creata_il: Mapped[datetime.datetime] = mapped_column(
         default=lambda: datetime.datetime.now(datetime.UTC)

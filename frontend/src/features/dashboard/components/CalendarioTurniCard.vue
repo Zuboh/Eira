@@ -14,7 +14,7 @@ defineProps<{
 <template>
   <EiraCard title="Calendario turni" class="dashboard-card">
     <EiraTable
-      v-if="!loading"
+      :loading="loading"
       :empty="rows.length === 0"
       empty-message="Nessun turno pianificato."
     >

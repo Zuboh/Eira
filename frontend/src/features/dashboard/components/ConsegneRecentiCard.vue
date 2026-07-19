@@ -17,7 +17,7 @@ defineProps<ConsegneRecentiCardProps>()
       link-label="Vedi tutte"
     />
     <EiraTable
-      v-if="!loading"
+      :loading="loading"
       :empty="consegne.length === 0"
       empty-message="Nessuna consegna registrata."
     >

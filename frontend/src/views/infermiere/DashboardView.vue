@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { defineAsyncComponent, onMounted } from 'vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import BancaOreSection from '@/features/banca-ore/components/BancaOreSection.vue'
@@ -7,8 +7,14 @@ import { useBancaOre } from '@/features/banca-ore/useBancaOre'
 import ConsegneRecentiCard from '@/features/dashboard/components/ConsegneRecentiCard.vue'
 import PazientiAttiviCard from '@/features/dashboard/components/PazientiAttiviCard.vue'
 import ProssimiTurniCard from '@/features/dashboard/components/ProssimiTurniCard.vue'
-import TurniCalendarCard from '@/features/dashboard/components/TurniCalendarCard.vue'
+import TurniCalendarCardSkeleton from '@/features/dashboard/components/TurniCalendarCardSkeleton.vue'
 import { useInfermiereDashboard } from '@/features/dashboard/useInfermiereDashboard'
+
+const TurniCalendarCard = defineAsyncComponent({
+  loader: () => import('@/features/dashboard/components/TurniCalendarCard.vue'),
+  loadingComponent: TurniCalendarCardSkeleton,
+  delay: 200,
+})
 
 const {
   loading,

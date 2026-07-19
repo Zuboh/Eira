@@ -61,12 +61,12 @@ export function useInfermiereDashboard() {
       ] = await Promise.all([
         getMieAssegnazioni(),
         listTurni(),
-        listConsegneSbar(),
+        listConsegneSbar({ limit: 5 }),
         listPazienti(),
       ])
       assegnazioni.value = assegnazioniResponse.data
       turni.value = turniResponse.data
-      consegne.value = consegneResponse.data.items.slice(0, 5)
+      consegne.value = consegneResponse.data.items
       pazienti.value = pazientiResponse.data.filter(
         (paziente) => !paziente.dimesso,
       )

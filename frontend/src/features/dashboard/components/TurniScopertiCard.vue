@@ -20,7 +20,7 @@ const emit = defineEmits<{
 <template>
   <EiraCard title="Turni scoperti" class="dashboard-card">
     <EiraTable
-      v-if="!loading"
+      :loading="loading"
       :empty="turni.length === 0"
       empty-message="Nessun turno scoperto."
     >

@@ -45,4 +45,21 @@ describe('usePatientChartSbar — loadConsegneSbar', () => {
 
     expect(consegneSbarApi.listConsegneSbar).toHaveBeenCalledTimes(2)
   })
+
+  it('exposes loading while the request is in flight', async () => {
+    let resolve!: (v: unknown) => void
+    vi.mocked(consegneSbarApi.listConsegneSbar).mockReturnValue(
+      new Promise((r) => {
+        resolve = r
+      }) as never,
+    )
+    const sbar = usePatientChartSbar(1)
+
+    const promise = sbar.loadConsegneSbar()
+    expect(sbar.loading.value).toBe(true)
+    resolve({ data: { items: [], total: 0 } })
+    await promise
+
+    expect(sbar.loading.value).toBe(false)
+  })
 })

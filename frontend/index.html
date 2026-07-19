@@ -5,9 +5,46 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eira</title>
+    <style>
+      #app-loading {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        background: var(--canvas, #f9fafb);
+        color: var(--ink, #18181b);
+        font-family: system-ui, sans-serif;
+      }
+      #app-loading__brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      #app-loading__hint {
+        font-size: 0.875rem;
+        color: var(--steel, #71717a);
+      }
+      @media (prefers-color-scheme: dark) {
+        #app-loading {
+          background: var(--canvas, #18181b);
+          color: var(--ink, #f4f4f5);
+        }
+        #app-loading__hint {
+          color: var(--steel, #a1a1aa);
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div id="app-loading" role="status" aria-live="polite">
+        <span id="app-loading__brand">Eira</span>
+        <span id="app-loading__hint">Caricamento…</span>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

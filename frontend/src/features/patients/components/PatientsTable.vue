@@ -14,7 +14,7 @@ function goToPaziente(id: number) {
 </script>
 
 <template>
-  <EiraTable>
+  <EiraTable :loading="loading">
     <table class="pazienti-table">
       <thead>
         <tr>

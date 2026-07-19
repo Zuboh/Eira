@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import EiraCard from '@/components/ui/EiraCard.vue'
+import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
 import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
 import { formatDateShortIt } from '@/utils/dateFormat'
 import type { ProssimiTurniCardProps } from '@/features/dashboard/types'
@@ -9,7 +10,7 @@ defineProps<ProssimiTurniCardProps>()
 
 <template>
   <EiraCard title="Prossimi turni" class="dashboard-card">
-    <p v-if="loading" class="muted">Caricamento turni…</p>
+    <SkeletonBlock v-if="loading" :lines="4" />
     <p v-else-if="turni.length === 0" class="muted">Nessun turno assegnato.</p>
     <ul v-else class="turni-list">
       <li v-for="turno in turni" :key="turno.id">

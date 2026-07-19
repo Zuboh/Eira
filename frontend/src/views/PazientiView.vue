@@ -39,8 +39,9 @@ onMounted(load)
     <InlineError :message="error" />
 
     <PatientsTable
-      v-if="!loading && pazienti.length > 0"
+      v-if="loading || pazienti.length > 0"
       :patients="pazienti"
+      :loading="loading"
     />
 
     <EmptyState

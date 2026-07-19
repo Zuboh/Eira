@@ -8,6 +8,7 @@ import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import InlineError from '@/components/ui/InlineError.vue'
+import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import CedemaDialog from '@/features/patient-chart/components/CedemaDialog.vue'
 import CedemaTab from '@/features/patient-chart/components/CedemaTab.vue'
@@ -24,12 +25,14 @@ const pazienteId = computed(() => Number(route.params.id))
 
 const {
   paziente,
+  loading,
   error,
   cedema,
   norton,
   conley,
   consegne,
   consegneLoaded,
+  sbarLoading,
   assegnazioni,
   editing,
   editForm,
@@ -89,6 +92,10 @@ onMounted(load)
     <InlineError :message="error" />
     <InlineError :message="sbarCreateError" />
 
+    <div v-if="loading && !paziente" class="header-skeleton">
+      <SkeletonBlock :lines="3" style="max-width: 22rem" />
+    </div>
+
     <template v-if="paziente">
       <div class="header">
         <div>
@@ -147,7 +154,7 @@ onMounted(load)
           </TabPanel>
 
           <TabPanel value="sbar">
-            <StoricoSbarTab :consegne="consegne" />
+            <StoricoSbarTab :consegne="consegne" :loading="sbarLoading" />
           </TabPanel>
         </TabPanels>
       </Tabs>

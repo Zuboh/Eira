@@ -3,10 +3,14 @@ withDefaults(
   defineProps<{
     empty?: boolean
     emptyMessage?: string
+    loading?: boolean
+    loadingRows?: number
   }>(),
   {
     empty: false,
     emptyMessage: 'Nessun dato da mostrare',
+    loading: false,
+    loadingRows: 4,
   },
 )
 </script>
@@ -17,7 +21,21 @@ withDefaults(
       <slot name="actions" />
     </div>
 
-    <div v-if="empty" class="eira-table__empty" role="status">
+    <div
+      v-if="loading"
+      class="eira-table__skeleton"
+      role="status"
+      aria-live="polite"
+      aria-label="Caricamento dati"
+    >
+      <div v-for="n in loadingRows" :key="n" class="skeleton-row">
+        <span class="skeleton-bar skeleton-bar--lg" />
+        <span class="skeleton-bar skeleton-bar--md" />
+        <span class="skeleton-bar skeleton-bar--sm" />
+      </div>
+    </div>
+
+    <div v-else-if="empty" class="eira-table__empty" role="status">
       <slot name="empty">
         <p>{{ emptyMessage }}</p>
       </slot>
@@ -95,5 +113,42 @@ withDefaults(
 
 .eira-table__empty :deep(p) {
   margin: 0;
+}
+
+.eira-table__skeleton {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.skeleton-row {
+  display: flex;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.skeleton-row:last-child {
+  border-bottom: 0;
+}
+
+.skeleton-bar {
+  height: 0.875rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--steel) 16%, var(--surface));
+}
+
+.skeleton-bar--lg {
+  flex: 0 0 30%;
+}
+
+.skeleton-bar--md {
+  flex: 0 0 45%;
+}
+
+.skeleton-bar--sm {
+  flex: 0 0 15%;
 }
 </style>
