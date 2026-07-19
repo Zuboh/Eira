@@ -1,8 +1,8 @@
 <script setup lang="ts">
-withDefaults(
-  defineProps<{ lines?: number; ariaLabel?: string }>(),
-  { lines: 3, ariaLabel: 'Caricamento in corso' },
-)
+withDefaults(defineProps<{ lines?: number; ariaLabel?: string }>(), {
+  lines: 3,
+  ariaLabel: 'Caricamento in corso',
+})
 </script>
 
 <template>

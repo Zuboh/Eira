@@ -58,7 +58,10 @@ describe('usePatientChartDialogs — edit', () => {
 
     await dialogs.salvaEdit()
 
-    expect(pazientiApi.updatePaziente).toHaveBeenCalledWith(1, dialogs.editForm.value)
+    expect(pazientiApi.updatePaziente).toHaveBeenCalledWith(
+      1,
+      dialogs.editForm.value,
+    )
     expect(dialogs.editing.value).toBe(false)
   })
 })
@@ -95,7 +98,9 @@ describe('usePatientChartDialogs — cedema', () => {
 
 describe('usePatientChartDialogs — norton', () => {
   it('salvaNorton saves, closes the dialog, and reloads valutazioni on success', async () => {
-    vi.mocked(valutazioniApi.createNorton).mockResolvedValue({ data: {} as never })
+    vi.mocked(valutazioniApi.createNorton).mockResolvedValue({
+      data: {} as never,
+    })
     const { dialogs, reloadValutazioni } = makeDialogs()
     dialogs.apriNorton()
 
@@ -118,7 +123,9 @@ describe('usePatientChartDialogs — norton', () => {
 
 describe('usePatientChartDialogs — conley', () => {
   it('salvaConley saves, closes the dialog, and reloads valutazioni on success', async () => {
-    vi.mocked(valutazioniApi.createConley).mockResolvedValue({ data: {} as never })
+    vi.mocked(valutazioniApi.createConley).mockResolvedValue({
+      data: {} as never,
+    })
     const { dialogs, reloadValutazioni } = makeDialogs()
     dialogs.apriConley()
 
