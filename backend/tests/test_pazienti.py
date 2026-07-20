@@ -176,3 +176,37 @@ def test_list_pazienti_infermiere_con_turno_attivo_vede_reparto(client, db_sessi
 
     assert response.status_code == 200
     assert len(response.json()) == 1
+
+
+def test_list_pazienti_infermiere_con_turno_passato_vede_lista_vuota(
+    client, db_session, reparti
+):
+    from app.models.enums import StatoAssegnazione, TipoTurno
+    from app.models.paziente import Paziente
+    from app.models.turno import AssegnazioneTurno, Turno
+
+    reparto_a, _ = reparti
+    paziente_a = Paziente(**{**_payload(reparto_a.id), "data_ricovero": datetime.date.today()})
+    db_session.add(paziente_a)
+    infermiere = _infermiere(db_session, reparto_a.id, email="nurse.past@example.com")
+    turno_passato = Turno(
+        data=datetime.date.today() - datetime.timedelta(days=1),
+        tipo=TipoTurno.mattina,
+        reparto_id=reparto_a.id,
+        ora_inizio=datetime.time(7, 0),
+        ora_fine=datetime.time(14, 0),
+    )
+    db_session.add(turno_passato)
+    db_session.commit()
+    db_session.add(
+        AssegnazioneTurno(
+            turno_id=turno_passato.id, infermiere_id=infermiere.id, stato=StatoAssegnazione.attiva
+        )
+    )
+    db_session.commit()
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.get("/api/v1/pazienti/", headers=headers)
+
+    assert response.status_code == 200
+    assert response.json() == []

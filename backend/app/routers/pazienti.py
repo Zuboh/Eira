@@ -1,9 +1,11 @@
+import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente, StatoAssegnazione
 from app.models.paziente import Paziente
-from app.models.turno import AssegnazioneTurno
+from app.models.turno import AssegnazioneTurno, Turno
 from app.openapi_errors import FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.paziente import PazienteCreate, PazienteRead, PazienteUpdate
 
@@ -13,9 +15,11 @@ router = APIRouter(prefix="/pazienti", tags=["pazienti"])
 def _infermiere_ha_turno_attivo(current_user, db) -> bool:
     return (
         db.query(AssegnazioneTurno)
+        .join(Turno, AssegnazioneTurno.turno_id == Turno.id)
         .filter(
             AssegnazioneTurno.infermiere_id == current_user.id,
             AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+            Turno.data == datetime.date.today(),
         )
         .first()
         is not None
