@@ -1,12 +1,17 @@
 import { ref, unref, type MaybeRef } from 'vue'
 import { createConsegnaSbar } from '@/api/consegneSbar'
-import { getMieAssegnazioni } from '@/api/turni'
+import { getMieAssegnazioni, listTurni } from '@/api/turni'
 import {
   canCreateConsegnaPayload,
   createEmptyConsegnaSbarForm,
   toCreateConsegnaPayload,
 } from '@/features/sbar/form'
-import type { AssegnazioneTurno, ConsegnaSbarForm } from '@/features/sbar/types'
+import {
+  buildAssegnazioneTurnoOptions,
+  turnoIdForDate,
+  type AssegnazioneTurnoOption,
+} from '@/features/sbar/turnoOptions'
+import type { ConsegnaSbarForm } from '@/features/sbar/types'
 
 export function useSbarCreateDialog(options: {
   pazienteId: MaybeRef<number>
@@ -15,14 +20,20 @@ export function useSbarCreateDialog(options: {
   const dialogOpen = ref(false)
   const saving = ref(false)
   const error = ref('')
-  const assegnazioni = ref<AssegnazioneTurno[]>([])
+  const assegnazioni = ref<AssegnazioneTurnoOption[]>([])
   const form = ref<ConsegnaSbarForm>(createEmptyConsegnaSbarForm())
 
   async function loadAssegnazioniIfNeeded() {
     if (assegnazioni.value.length > 0) return
 
-    const { data } = await getMieAssegnazioni()
-    assegnazioni.value = data
+    const [assegnazioniResponse, turniResponse] = await Promise.all([
+      getMieAssegnazioni(),
+      listTurni(),
+    ])
+    assegnazioni.value = buildAssegnazioneTurnoOptions(
+      assegnazioniResponse.data,
+      turniResponse.data,
+    )
   }
 
   async function apri() {
@@ -34,6 +45,7 @@ export function useSbarCreateDialog(options: {
     dialogOpen.value = true
     try {
       await loadAssegnazioniIfNeeded()
+      form.value.turno_id = turnoIdForDate(assegnazioni.value, form.value.data)
     } catch {
       error.value = 'Impossibile caricare i turni assegnati.'
     }

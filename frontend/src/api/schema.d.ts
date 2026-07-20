@@ -213,6 +213,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/turni/miei-prossimi-turni": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Miei Prossimi Turni */
+        get: operations["list_miei_prossimi_turni_api_v1_turni_miei_prossimi_turni_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/turni/{turno_id}/assegnazioni": {
         parameters: {
             query?: never;
@@ -1028,6 +1045,12 @@ export interface components {
          * @enum {string}
          */
         PrioritaConsegna: "normale" | "urgente";
+        /** ProssimoTurnoConColleghiRead */
+        ProssimoTurnoConColleghiRead: {
+            turno: components["schemas"]["TurnoRead"];
+            /** Colleghi */
+            colleghi: components["schemas"]["UtenteTile"][];
+        };
         /** RepartoRead */
         RepartoRead: {
             /** Id */
@@ -2198,6 +2221,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    list_miei_prossimi_turni_api_v1_turni_miei_prossimi_turni_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProssimoTurnoConColleghiRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };

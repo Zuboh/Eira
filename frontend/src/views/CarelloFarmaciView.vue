@@ -10,7 +10,7 @@ import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import { useCarelloFarmaci } from '@/features/carello-farmaci/useCarelloFarmaci'
-import { formatDateShortIt, formatDateTimeCompactIt } from '@/utils/dateFormat'
+import { formatDateTimeCompactIt } from '@/utils/dateFormat'
 
 const activeTab = ref<'stock' | 'movimenti'>('stock')
 
@@ -26,8 +26,6 @@ const {
   error,
   movimentiError,
   isSottoSoglia,
-  isInScadenza,
-  expiryLabel,
   load,
   loadMovimenti,
   adjust,
@@ -66,7 +64,11 @@ onMounted(async () => {
     <EiraCard v-if="activeTab === 'stock'">
       <div class="filters">
         <FormField label="Cerca farmaco" for-id="farmaco-search">
-          <InputText id="farmaco-search" v-model="search" placeholder="Nome farmaco" />
+          <InputText
+            id="farmaco-search"
+            v-model="search"
+            placeholder="Nome farmaco"
+          />
         </FormField>
         <FormField label="Categoria" for-id="farmaco-categoria">
           <Select
@@ -91,7 +93,6 @@ onMounted(async () => {
               <th>Categoria</th>
               <th>Quantità</th>
               <th>Soglia</th>
-              <th>Scadenza</th>
               <th><span class="sr-only">Azioni</span></th>
             </tr>
           </thead>
@@ -111,17 +112,6 @@ onMounted(async () => {
                 />
               </td>
               <td>{{ riga.soglia_minima }}</td>
-              <td>
-                <span v-if="riga.prossima_scadenza">
-                  {{ formatDateShortIt(riga.prossima_scadenza) }}
-                </span>
-                <span v-else>—</span>
-                <StatusBadge
-                  v-if="isInScadenza(riga)"
-                  status="pending"
-                  :label="expiryLabel(riga)"
-                />
-              </td>
               <td>
                 <div class="stepper" aria-label="Modifica quantità">
                   <Button
@@ -165,9 +155,13 @@ onMounted(async () => {
           </thead>
           <tbody>
             <tr v-for="movimento in movimenti" :key="movimento.id">
-              <td class="mono">{{ formatDateTimeCompactIt(movimento.timestamp) }}</td>
+              <td class="mono">
+                {{ formatDateTimeCompactIt(movimento.timestamp) }}
+              </td>
               <td>{{ movimento.farmaco_nome }}</td>
-              <td class="mono">{{ movimento.delta > 0 ? '+' : '' }}{{ movimento.delta }}</td>
+              <td class="mono">
+                {{ movimento.delta > 0 ? '+' : '' }}{{ movimento.delta }}
+              </td>
               <td>{{ movimento.quantita_dopo }}</td>
               <td>#{{ movimento.autore_id }}</td>
             </tr>

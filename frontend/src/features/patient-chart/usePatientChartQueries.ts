@@ -1,6 +1,6 @@
 import { ref, unref, type MaybeRef } from 'vue'
 import { getPaziente, type Paziente } from '@/api/pazienti'
-import { getMieAssegnazioni, type AssegnazioneTurno } from '@/api/turni'
+import { getMieAssegnazioni, listTurni } from '@/api/turni'
 import { listDiarioCedema, type VoceDiarioCedema } from '@/api/diarioCedema'
 import {
   listParametriVitali,
@@ -15,6 +15,10 @@ import {
   listConsegneSbarByPaziente,
   type ConsegnaSbar,
 } from '@/api/consegneSbar'
+import {
+  buildAssegnazioneTurnoOptions,
+  type AssegnazioneTurnoOption,
+} from '@/features/sbar/turnoOptions'
 
 export function usePatientChartQueries(
   pazienteId: MaybeRef<number>,
@@ -29,7 +33,7 @@ export function usePatientChartQueries(
   const norton = ref<ValutazioneNorton[]>([])
   const conley = ref<ValutazioneConley[]>([])
   const parametriVitali = ref<ParametriVitali[]>([])
-  const assegnazioni = ref<AssegnazioneTurno[]>([])
+  const assegnazioni = ref<AssegnazioneTurnoOption[]>([])
 
   async function reloadTimeline() {
     const [cedemaResponse, sbarResponse] = await Promise.all([
@@ -71,8 +75,14 @@ export function usePatientChartQueries(
       conley.value = v.data.conley
       parametriVitali.value = pv.data
       if (unref(ruolo) === 'infermiere') {
-        const a = await getMieAssegnazioni()
-        assegnazioni.value = a.data
+        const [assegnazioniResponse, turniResponse] = await Promise.all([
+          getMieAssegnazioni(),
+          listTurni(),
+        ])
+        assegnazioni.value = buildAssegnazioneTurnoOptions(
+          assegnazioniResponse.data,
+          turniResponse.data,
+        )
       }
     } catch {
       error.value = 'Impossibile caricare la scheda paziente.'

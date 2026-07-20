@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import EiraCard from '@/components/ui/EiraCard.vue'
@@ -22,6 +23,9 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
       size="small"
       @click="emit('newEntry')"
     />
+    <RouterLink :to="{ name: 'consegne-sbar' }" class="diario-link">
+      Vedi tutte le consegne
+    </RouterLink>
   </div>
 
   <EmptyState
@@ -56,8 +60,26 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
 <style scoped>
 .panel-header {
   display: flex;
+  align-items: center;
   gap: 8px;
   margin: 12px 0;
+}
+
+.diario-link {
+  min-height: var(--size-touch);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.diario-link:hover {
+  background: var(--surface-muted);
 }
 
 .timeline {

@@ -56,6 +56,7 @@ beforeEach(() => {
     data: [],
   })
   vi.mocked(turniApi.getMieAssegnazioni).mockResolvedValue({ data: [] })
+  vi.mocked(turniApi.listTurni).mockResolvedValue({ data: [] })
 })
 
 describe('usePatientChartQueries — load', () => {
@@ -78,6 +79,7 @@ describe('usePatientChartQueries — load', () => {
     await queries.load()
 
     expect(turniApi.getMieAssegnazioni).toHaveBeenCalledOnce()
+    expect(turniApi.listTurni).toHaveBeenCalledOnce()
   })
 
   it('sets an error message on failure', async () => {

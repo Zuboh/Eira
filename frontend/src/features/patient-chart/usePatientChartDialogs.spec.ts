@@ -33,6 +33,7 @@ function makeDialogs() {
     pazienteId: 1,
     paziente: ref(paziente),
     error: ref(''),
+    assegnazioni: ref([]),
     reloadTimeline,
     reloadValutazioni,
     reloadParametriVitali,

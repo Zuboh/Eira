@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import Button from 'primevue/button'
+import DatePicker from 'primevue/datepicker'
 import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import { dialogStyle } from '@/components/ui/dialogStyles'
 import FormField from '@/components/ui/FormField.vue'
 import { prioritaOptions, validateSbarForm } from '@/features/sbar/form'
+import {
+  dateFromIsoDate,
+  isoDateFromDate,
+  turnoIdForDate,
+  turnoLabelForDate,
+  type AssegnazioneTurnoOption,
+} from '@/features/sbar/turnoOptions'
 import type {
-  AssegnazioneTurno,
   ConsegnaSbarForm,
   Paziente,
   SbarFormErrors,
@@ -21,7 +28,7 @@ const props = withDefaults(
   defineProps<{
     isEditing: boolean
     saving: boolean
-    assegnazioni: AssegnazioneTurno[]
+    assegnazioni: AssegnazioneTurnoOption[]
     pazienti?: Paziente[]
     hidePaziente?: boolean
   }>(),
@@ -38,6 +45,24 @@ const emit = defineEmits<{
 const errors = ref<SbarFormErrors>({})
 const showPaziente = computed(() => !props.isEditing && !props.hidePaziente)
 const showTurno = computed(() => !props.isEditing)
+const selectedDate = computed({
+  get: () => dateFromIsoDate(form.value.data),
+  set: (value: Date | null | undefined) => {
+    form.value.data = isoDateFromDate(value)
+  },
+})
+const selectedTurnoLabel = computed(() =>
+  turnoLabelForDate(props.assegnazioni, form.value.data),
+)
+
+watch(
+  () => [form.value.data, props.assegnazioni] as const,
+  () => {
+    if (!showTurno.value) return
+    form.value.turno_id = turnoIdForDate(props.assegnazioni, form.value.data)
+  },
+  { immediate: true },
+)
 
 watch(visible, (isVisible) => {
   if (!isVisible) errors.value = {}
@@ -77,17 +102,24 @@ function submit() {
       </FormField>
       <FormField
         v-if="showTurno"
-        label="Turno"
+        label="Data turno"
+        forId="consegna-data-turno"
         required
-        :error="errors.turno_id"
+        :error="errors.data"
       >
-        <Select
-          v-model="form.turno_id"
-          :options="assegnazioni"
-          optionLabel="turno_id"
-          optionValue="turno_id"
-          placeholder="Seleziona turno"
+        <DatePicker
+          v-model="selectedDate"
+          inputId="consegna-data-turno"
+          dateFormat="yy-mm-dd"
+          placeholder="Seleziona data"
+          required
         />
+        <p v-if="selectedTurnoLabel" class="field-hint">
+          Turno rilevato: {{ selectedTurnoLabel }}
+        </p>
+        <p v-else-if="form.data" class="field-hint field-hint--warning">
+          Nessun turno assegnato in questa data.
+        </p>
       </FormField>
       <FormField label="Priorità">
         <Select
@@ -119,5 +151,15 @@ function submit() {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.field-hint {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.field-hint--warning {
+  color: var(--danger);
 }
 </style>

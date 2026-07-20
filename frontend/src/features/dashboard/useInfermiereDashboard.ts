@@ -3,59 +3,35 @@ import { listCarelloFarmaci, type CarelloFarmaco } from '@/api/carelloFarmaci'
 import { listConsegneSbar, type ConsegnaSbar } from '@/api/consegneSbar'
 import { listPazienti, type Paziente } from '@/api/pazienti'
 import {
-  getMieAssegnazioni,
-  listTurni,
-  type AssegnazioneTurno,
-  type Turno,
+  getMieiProssimiTurni,
+  type ProssimoTurnoConColleghi,
 } from '@/api/turni'
 import { buildTurniEvents } from '@/features/dashboard/infermiereCalendarViewModel'
 
-const oggi = new Date().toISOString().slice(0, 10)
-
 export function useInfermiereDashboard() {
-  const assegnazioni = ref<AssegnazioneTurno[]>([])
-  const turni = ref<Turno[]>([])
+  const turniConColleghi = ref<ProssimoTurnoConColleghi[]>([])
   const consegne = ref<ConsegnaSbar[]>([])
   const farmaci = ref<CarelloFarmaco[]>([])
   const pazienti = ref<Paziente[]>([])
   const loading = ref(false)
   const error = ref('')
 
-  const turniById = computed(
-    () => new Map(turni.value.map((turno) => [turno.id, turno])),
-  )
   const pazientiById = computed(
     () => new Map(pazienti.value.map((paziente) => [paziente.id, paziente])),
   )
 
-  const mieiTurni = computed(() => {
-    return assegnazioni.value
-      .filter((assegnazione) => assegnazione.stato === 'attiva')
-      .map((assegnazione) => turniById.value.get(assegnazione.turno_id))
-      .filter(
-        (turno): turno is Turno => turno !== undefined && turno.data >= oggi,
-      )
-      .sort((turnoA, turnoB) => turnoA.data.localeCompare(turnoB.data))
-      .slice(0, 4)
-  })
+  const prossimiTurniConColleghi = computed(() =>
+    turniConColleghi.value.slice(0, 4),
+  )
 
   const calendarEvents = computed(() =>
-    buildTurniEvents(assegnazioni.value, turni.value),
+    buildTurniEvents(turniConColleghi.value),
   )
 
   const consegneRecenti = computed(() => consegne.value)
   const pazientiAttivi = computed(() => pazienti.value)
   const farmaciCritici = computed(() =>
-    farmaci.value.filter((riga) => {
-      const giorni = riga.prossima_scadenza
-        ? Math.ceil(
-            (new Date(`${riga.prossima_scadenza}T00:00:00`).getTime() -
-              new Date(oggi).getTime()) /
-              86_400_000,
-          )
-        : null
-      return riga.quantita < riga.soglia_minima || (giorni !== null && giorni <= 30)
-    }),
+    farmaci.value.filter((riga) => riga.quantita < riga.soglia_minima),
   )
 
   function nomePaziente(pazienteId: number) {
@@ -68,20 +44,17 @@ export function useInfermiereDashboard() {
     loading.value = true
     try {
       const [
-        assegnazioniResponse,
-        turniResponse,
+        prossimiTurniResponse,
         consegneResponse,
         pazientiResponse,
         farmaciResponse,
       ] = await Promise.all([
-        getMieAssegnazioni(),
-        listTurni(),
+        getMieiProssimiTurni({ limit: 60 }),
         listConsegneSbar({ limit: 5 }),
         listPazienti(),
         listCarelloFarmaci(),
       ])
-      assegnazioni.value = assegnazioniResponse.data
-      turni.value = turniResponse.data
+      turniConColleghi.value = prossimiTurniResponse.data
       consegne.value = consegneResponse.data.items
       pazienti.value = pazientiResponse.data.filter(
         (paziente) => !paziente.dimesso,
@@ -97,7 +70,7 @@ export function useInfermiereDashboard() {
   return {
     loading,
     error,
-    mieiTurni,
+    prossimiTurniConColleghi,
     calendarEvents,
     consegneRecenti,
     pazientiAttivi,

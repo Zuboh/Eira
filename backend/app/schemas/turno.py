@@ -3,6 +3,7 @@ import datetime
 from pydantic import BaseModel
 
 from app.models.enums import StatoAssegnazione, TipoTurno
+from app.schemas.utente import UtenteTile
 
 
 class TurnoBase(BaseModel):
@@ -39,5 +40,12 @@ class AssegnazioneTurnoRead(BaseModel):
 class TurnoCalendarioRead(TurnoBase):
     id: int
     assegnazioni: list[AssegnazioneTurnoRead]
+
+    model_config = {"from_attributes": True}
+
+
+class ProssimoTurnoConColleghiRead(BaseModel):
+    turno: TurnoRead
+    colleghi: list[UtenteTile]
 
     model_config = {"from_attributes": True}

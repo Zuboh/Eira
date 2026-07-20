@@ -6,6 +6,7 @@ import EiraTable from '@/components/ui/EiraTable.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
+import GenericConsegnaDialog from '@/features/patient-chart/components/GenericConsegnaDialog.vue'
 import SbarDialog from '@/features/sbar/components/SbarDialog.vue'
 import { useConsegneSbar } from '@/features/sbar/useConsegneSbar'
 import { formatDateTimeCompactIt } from '@/utils/dateFormat'
@@ -19,9 +20,12 @@ const {
   loading,
   error,
   dialogOpen,
+  nuovaDialogOpen,
   isEditing,
   saving,
   form,
+  nuovaForm,
+  nuovaInsight,
   page,
   total,
   canCreateConsegna,
@@ -32,6 +36,7 @@ const {
   apriNuova,
   apriEdit,
   salva,
+  salvaNuova,
 } = useConsegneSbar()
 
 onMounted(load)
@@ -99,6 +104,16 @@ function onPageChange(event: { page: number }) {
       :total-records="total"
       :first="(page - 1) * PAGE_SIZE"
       @page="onPageChange"
+    />
+
+    <GenericConsegnaDialog
+      v-model:visible="nuovaDialogOpen"
+      v-model:form="nuovaForm"
+      :assegnazioni="assegnazioni"
+      :pazienti="pazienti"
+      :saving="saving"
+      :insight="nuovaInsight"
+      @save="salvaNuova"
     />
 
     <SbarDialog

@@ -44,8 +44,24 @@ describe('useCarelloFarmaci — load and filtrati', () => {
   it('filtrati narrows by search (case-insensitive substring on nome)', async () => {
     vi.mocked(api.listCarelloFarmaci).mockResolvedValue({
       data: [
-        riga({ id: 1, farmaco: { id: 10, nome: 'Paracetamolo', unita_misura: 'compresse', categoria: 'Analgesici' } }),
-        riga({ id: 2, farmaco: { id: 11, nome: 'Ibuprofene', unita_misura: 'compresse', categoria: 'Antinfiammatori' } }),
+        riga({
+          id: 1,
+          farmaco: {
+            id: 10,
+            nome: 'Paracetamolo',
+            unita_misura: 'compresse',
+            categoria: 'Analgesici',
+          },
+        }),
+        riga({
+          id: 2,
+          farmaco: {
+            id: 11,
+            nome: 'Ibuprofene',
+            unita_misura: 'compresse',
+            categoria: 'Antinfiammatori',
+          },
+        }),
       ],
     })
     const hook = useCarelloFarmaci()
@@ -59,8 +75,24 @@ describe('useCarelloFarmaci — load and filtrati', () => {
   it('filtrati narrows by categoria (exact match)', async () => {
     vi.mocked(api.listCarelloFarmaci).mockResolvedValue({
       data: [
-        riga({ id: 1, farmaco: { id: 10, nome: 'Paracetamolo', unita_misura: 'compresse', categoria: 'Analgesici' } }),
-        riga({ id: 2, farmaco: { id: 11, nome: 'Ibuprofene', unita_misura: 'compresse', categoria: 'Antinfiammatori' } }),
+        riga({
+          id: 1,
+          farmaco: {
+            id: 10,
+            nome: 'Paracetamolo',
+            unita_misura: 'compresse',
+            categoria: 'Analgesici',
+          },
+        }),
+        riga({
+          id: 2,
+          farmaco: {
+            id: 11,
+            nome: 'Ibuprofene',
+            unita_misura: 'compresse',
+            categoria: 'Antinfiammatori',
+          },
+        }),
       ],
     })
     const hook = useCarelloFarmaci()
@@ -74,8 +106,24 @@ describe('useCarelloFarmaci — load and filtrati', () => {
   it('filtrati combines search and categoria', async () => {
     vi.mocked(api.listCarelloFarmaci).mockResolvedValue({
       data: [
-        riga({ id: 1, farmaco: { id: 10, nome: 'Paracetamolo', unita_misura: 'compresse', categoria: 'Analgesici' } }),
-        riga({ id: 2, farmaco: { id: 12, nome: 'Paratormone', unita_misura: 'fiale', categoria: 'Ormoni' } }),
+        riga({
+          id: 1,
+          farmaco: {
+            id: 10,
+            nome: 'Paracetamolo',
+            unita_misura: 'compresse',
+            categoria: 'Analgesici',
+          },
+        }),
+        riga({
+          id: 2,
+          farmaco: {
+            id: 12,
+            nome: 'Paratormone',
+            unita_misura: 'fiale',
+            categoria: 'Ormoni',
+          },
+        }),
       ],
     })
     const hook = useCarelloFarmaci()
@@ -85,6 +133,25 @@ describe('useCarelloFarmaci — load and filtrati', () => {
     hook.categoria.value = 'Ormoni'
 
     expect(hook.farmaciFiltrati.value.map((r) => r.id)).toEqual([2])
+  })
+
+  it('alertFarmaci segnala solo farmaci sotto soglia, non quelli solo in scadenza', async () => {
+    vi.mocked(api.listCarelloFarmaci).mockResolvedValue({
+      data: [
+        riga({ id: 1, quantita: 4, soglia_minima: 5, prossima_scadenza: null }),
+        riga({
+          id: 2,
+          quantita: 8,
+          soglia_minima: 5,
+          prossima_scadenza: '2020-01-01',
+        }),
+      ],
+    })
+    const hook = useCarelloFarmaci()
+
+    await hook.load()
+
+    expect(hook.alertFarmaci.value.map((farmaco) => farmaco.id)).toEqual([1])
   })
 
   it('optimistically adjusts quantity and replaces with server row', async () => {

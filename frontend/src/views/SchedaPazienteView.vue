@@ -12,7 +12,7 @@ import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import ClinicalTimelineTab from '@/features/patient-chart/components/ClinicalTimelineTab.vue'
 import ConleyDialog from '@/features/patient-chart/components/ConleyDialog.vue'
-import GenericConsegnaDrawer from '@/features/patient-chart/components/GenericConsegnaDrawer.vue'
+import GenericConsegnaDialog from '@/features/patient-chart/components/GenericConsegnaDialog.vue'
 import NortonDialog from '@/features/patient-chart/components/NortonDialog.vue'
 import ParametriVitaliDialog from '@/features/patient-chart/components/ParametriVitaliDialog.vue'
 import ParametriVitaliTab from '@/features/patient-chart/components/ParametriVitaliTab.vue'
@@ -139,12 +139,13 @@ onMounted(load)
       @save="salvaEdit"
     />
 
-    <GenericConsegnaDrawer
+    <GenericConsegnaDialog
       v-model:visible="consegnaDrawer"
       v-model:form="consegnaForm"
       :assegnazioni="assegnazioni"
       :saving="consegnaSaving"
       :insight="consegnaInsight"
+      hide-paziente
       @save="salvaConsegna"
     />
 

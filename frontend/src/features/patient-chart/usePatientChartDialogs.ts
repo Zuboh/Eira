@@ -4,6 +4,8 @@ import { createVoceDiarioCedema } from '@/api/diarioCedema'
 import { createConsegnaSbar } from '@/api/consegneSbar'
 import { createParametriVitali } from '@/api/parametriVitali'
 import { createConley, createNorton } from '@/api/valutazioni'
+import { turnoIdForDate } from '@/features/sbar/turnoOptions'
+import type { AssegnazioneTurnoOption } from '@/features/sbar/turnoOptions'
 import {
   buildClinicalInsight,
   createEmptyConleyForm,
@@ -26,6 +28,7 @@ type PatientChartDialogOptions = {
   pazienteId: MaybeRef<number>
   paziente: Ref<Paziente | null>
   error: Ref<string>
+  assegnazioni: Ref<AssegnazioneTurnoOption[]>
   reloadTimeline: () => Promise<void>
   reloadValutazioni: () => Promise<void>
   reloadParametriVitali: () => Promise<void>
@@ -35,6 +38,7 @@ export function usePatientChartDialogs({
   pazienteId,
   paziente,
   error,
+  assegnazioni,
   reloadTimeline,
   reloadValutazioni,
   reloadParametriVitali,
@@ -83,7 +87,12 @@ export function usePatientChartDialogs({
   }
 
   function apriConsegna() {
-    consegnaForm.value = createEmptyGenericConsegnaForm()
+    const emptyForm = createEmptyGenericConsegnaForm()
+    consegnaForm.value = {
+      ...emptyForm,
+      paziente_id: unref(pazienteId),
+      turno_id: turnoIdForDate(assegnazioni.value, emptyForm.data),
+    }
     consegnaDrawer.value = true
   }
 
@@ -97,11 +106,13 @@ export function usePatientChartDialogs({
       consegnaForm.value.tipo === 'sbar' &&
       consegnaForm.value.turno_id === null
     ) {
-      error.value = 'Seleziona il turno per una consegna SBAR.'
+      error.value =
+        'Seleziona una data con turno assegnato per una consegna SBAR.'
       return
     }
 
     consegnaSaving.value = true
+    error.value = ''
     try {
       if (
         consegnaForm.value.tipo === 'sbar' &&

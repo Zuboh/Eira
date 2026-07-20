@@ -1,25 +1,32 @@
 import { computed, ref } from 'vue'
+import { createVoceDiarioCedema } from '@/api/diarioCedema'
 import {
   createConsegnaSbar,
   listConsegneSbar,
   updateConsegnaSbar,
 } from '@/api/consegneSbar'
 import { listPazienti } from '@/api/pazienti'
-import { getMieAssegnazioni } from '@/api/turni'
+import { getMieAssegnazioni, listTurni } from '@/api/turni'
 import { useAuthStore } from '@/stores/auth'
 import {
-  canCreateConsegnaPayload,
   createEmptyConsegnaSbarForm,
   createFormFromConsegna,
   prioritaOptions,
-  toCreateConsegnaPayload,
   toUpdateConsegnaPayload,
 } from '@/features/sbar/form'
-import type {
-  AssegnazioneTurno,
-  ConsegnaSbar,
-  Paziente,
-} from '@/features/sbar/types'
+import {
+  buildClinicalInsight,
+  createEmptyGenericConsegnaForm,
+  toCedemaPayload,
+  toSbarPayload,
+} from '@/features/patient-chart/form'
+import {
+  buildAssegnazioneTurnoOptions,
+  turnoIdForDate,
+  type AssegnazioneTurnoOption,
+} from '@/features/sbar/turnoOptions'
+import type { GenericConsegnaForm } from '@/features/patient-chart/types'
+import type { ConsegnaSbar, Paziente } from '@/features/sbar/types'
 
 const PAGE_SIZE = 25
 
@@ -28,7 +35,7 @@ export function useConsegneSbar() {
 
   const consegne = ref<ConsegnaSbar[]>([])
   const pazienti = ref<Paziente[]>([])
-  const assegnazioni = ref<AssegnazioneTurno[]>([])
+  const assegnazioni = ref<AssegnazioneTurnoOption[]>([])
   const loading = ref(false)
   const error = ref('')
 
@@ -39,9 +46,14 @@ export function useConsegneSbar() {
   )
 
   const dialogOpen = ref(false)
+  const nuovaDialogOpen = ref(false)
   const editingId = ref<number | null>(null)
   const saving = ref(false)
   const form = ref(createEmptyConsegnaSbarForm())
+  const nuovaForm = ref<GenericConsegnaForm>(createEmptyGenericConsegnaForm())
+  const nuovaInsight = computed(() =>
+    buildClinicalInsight(nuovaForm.value.testo, nuovaForm.value.tipo),
+  )
 
   const pazientiById = computed(
     () => new Map(pazienti.value.map((p) => [p.id, p])),
@@ -61,8 +73,14 @@ export function useConsegneSbar() {
   async function loadAssegnazioniIfNeeded() {
     if (auth.ruolo !== 'infermiere' || assegnazioni.value.length > 0) return
 
-    const { data } = await getMieAssegnazioni()
-    assegnazioni.value = data
+    const [assegnazioniResponse, turniResponse] = await Promise.all([
+      getMieAssegnazioni(),
+      listTurni(),
+    ])
+    assegnazioni.value = buildAssegnazioneTurnoOptions(
+      assegnazioniResponse.data,
+      turniResponse.data,
+    )
   }
 
   async function load() {
@@ -93,10 +111,14 @@ export function useConsegneSbar() {
 
   async function apriNuova() {
     editingId.value = null
-    form.value = createEmptyConsegnaSbarForm()
-    dialogOpen.value = true
+    nuovaForm.value = createEmptyGenericConsegnaForm()
+    nuovaDialogOpen.value = true
     try {
       await loadAssegnazioniIfNeeded()
+      nuovaForm.value.turno_id = turnoIdForDate(
+        assegnazioni.value,
+        nuovaForm.value.data,
+      )
     } catch {
       error.value = 'Impossibile caricare i turni assegnati.'
     }
@@ -109,19 +131,51 @@ export function useConsegneSbar() {
   }
 
   async function salva() {
+    if (editingId.value === null) return
+
     saving.value = true
     error.value = ''
     try {
-      if (editingId.value !== null) {
-        await updateConsegnaSbar(
-          editingId.value,
-          toUpdateConsegnaPayload(form.value),
+      await updateConsegnaSbar(
+        editingId.value,
+        toUpdateConsegnaPayload(form.value),
+      )
+      dialogOpen.value = false
+      await load()
+    } catch {
+      error.value = 'Impossibile salvare la consegna.'
+    } finally {
+      saving.value = false
+    }
+  }
+
+  async function salvaNuova() {
+    const pazienteId = nuovaForm.value.paziente_id
+    const testo = nuovaForm.value.testo.trim()
+    if (pazienteId === null || !testo) return
+    if (nuovaForm.value.tipo === 'sbar' && nuovaForm.value.turno_id === null)
+      return
+
+    saving.value = true
+    error.value = ''
+    try {
+      if (
+        nuovaForm.value.tipo === 'sbar' &&
+        nuovaForm.value.turno_id !== null
+      ) {
+        await createConsegnaSbar(
+          toSbarPayload(pazienteId, {
+            ...nuovaForm.value,
+            turno_id: nuovaForm.value.turno_id,
+          }),
         )
       } else {
-        if (!canCreateConsegnaPayload(form.value)) return
-        await createConsegnaSbar(toCreateConsegnaPayload(form.value))
+        await createVoceDiarioCedema(
+          pazienteId,
+          toCedemaPayload(nuovaForm.value),
+        )
       }
-      dialogOpen.value = false
+      nuovaDialogOpen.value = false
       await load()
     } catch {
       error.value = 'Impossibile salvare la consegna.'
@@ -137,10 +191,13 @@ export function useConsegneSbar() {
     loading,
     error,
     dialogOpen,
+    nuovaDialogOpen,
     editingId,
     isEditing,
     saving,
     form,
+    nuovaForm,
+    nuovaInsight,
     page,
     total,
     pageCount,
@@ -154,5 +211,6 @@ export function useConsegneSbar() {
     apriNuova,
     apriEdit,
     salva,
+    salvaNuova,
   }
 }

@@ -1,12 +1,18 @@
 import type { CarelloFarmaco } from '@/api/carelloFarmaci'
 import type { ConsegnaSbar } from '@/api/consegneSbar'
 import type { Paziente } from '@/api/pazienti'
-import type { Turno, TurnoCalendario } from '@/api/turni'
+import type {
+  ProssimoTurnoConColleghi,
+  Turno,
+  TurnoCalendario,
+} from '@/api/turni'
 
 export type CalendarioCella = {
   tipo: Turno['tipo']
   turno: TurnoCalendario | null
   assegnati: string
+  assegnatiCount: number
+  sottoCopertura: boolean
 }
 
 export type CalendarioRiga = {
@@ -20,7 +26,7 @@ export type DashboardInfermiereQuickLink = {
 }
 
 export type ProssimiTurniCardProps = {
-  turni: Turno[]
+  turni: ProssimoTurnoConColleghi[]
   loading: boolean
 }
 

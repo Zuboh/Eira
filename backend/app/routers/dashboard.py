@@ -1,28 +1,41 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy import and_, exists, or_
+from sqlalchemy import and_, func, or_
 
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.enums import RuoloUtente, StatoAssegnazione, StatoCambioTurno
 from app.models.turno import AssegnazioneTurno, Turno
+from app.models.utente import Utente
 from app.schemas.cambio_turno import RichiestaCambioTurnoRead
 from app.schemas.dashboard import DashboardCaposala
 from app.schemas.turno import TurnoRead
+
+COPERTURA_MINIMA_TURNO = 2
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 @router.get("/caposala", dependencies=[Depends(require_roles(RuoloUtente.caposala))])
 def dashboard_caposala(current_user: CurrentUserDep, db: DbDep) -> DashboardCaposala:
-    coperto = exists().where(
-        and_(
-            AssegnazioneTurno.turno_id == Turno.id,
-            AssegnazioneTurno.stato == StatoAssegnazione.attiva,
-        )
-    )
     turni_scoperti = (
         db.query(Turno)
-        .filter(Turno.reparto_id == current_user.reparto_id, ~coperto)
+        .outerjoin(
+            AssegnazioneTurno,
+            and_(
+                AssegnazioneTurno.turno_id == Turno.id,
+                AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+            ),
+        )
+        .outerjoin(
+            Utente,
+            and_(
+                Utente.id == AssegnazioneTurno.infermiere_id,
+                Utente.ruolo == RuoloUtente.infermiere,
+            ),
+        )
+        .filter(Turno.reparto_id == current_user.reparto_id)
+        .group_by(Turno.id)
+        .having(func.count(Utente.id) < COPERTURA_MINIMA_TURNO)
         .order_by(Turno.data)
         .all()
     )

@@ -19,38 +19,8 @@ const summary = computed(() =>
     : `${alertRows.value.length} attenzioni`,
 )
 
-function giorniAllaScadenza(riga: CarelloFarmaco) {
-  if (!riga.prossima_scadenza) return null
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const expiry = new Date(`${riga.prossima_scadenza}T00:00:00`)
-  return Math.ceil((expiry.getTime() - today.getTime()) / 86_400_000)
-}
-
 function isLowStock(riga: CarelloFarmaco) {
   return riga.quantita < riga.soglia_minima
-}
-
-function isExpiring(riga: CarelloFarmaco) {
-  const giorni = giorniAllaScadenza(riga)
-  return giorni !== null && giorni <= 30
-}
-
-function expiryStatus(riga: CarelloFarmaco) {
-  const giorni = giorniAllaScadenza(riga)
-  return giorni !== null && giorni < 0 ? 'urgente' : 'pending'
-}
-
-function expiryLabel(riga: CarelloFarmaco) {
-  const giorni = giorniAllaScadenza(riga)
-  if (giorni === null) return ''
-  if (giorni < 0) return 'Scaduto'
-  if (giorni === 0) return 'Scade oggi'
-  return `Scade tra ${giorni} gg`
-}
-
-function formatScadenza(value: string | null | undefined) {
-  return value ? new Date(`${value}T00:00:00`).toLocaleDateString('it-IT') : '—'
 }
 </script>
 
@@ -65,14 +35,13 @@ function formatScadenza(value: string | null | undefined) {
     <EiraTable
       :loading="loading"
       :empty="alertRows.length === 0"
-      empty-message="Nessuna criticità farmaci."
+      empty-message="Nessun farmaco sotto soglia."
     >
       <table>
         <thead>
           <tr>
             <th>Farmaco</th>
             <th>Q.tà</th>
-            <th>Scadenza</th>
           </tr>
         </thead>
         <tbody>
@@ -87,14 +56,10 @@ function formatScadenza(value: string | null | undefined) {
             </td>
             <td>
               {{ riga.quantita }}/{{ riga.soglia_minima }}
-              <StatusBadge v-if="isLowStock(riga)" status="urgente" label="Basso" />
-            </td>
-            <td>
-              {{ formatScadenza(riga.prossima_scadenza) }}
               <StatusBadge
-                v-if="isExpiring(riga)"
-                :status="expiryStatus(riga)"
-                :label="expiryLabel(riga)"
+                v-if="isLowStock(riga)"
+                status="urgente"
+                label="Basso"
               />
             </td>
           </tr>

@@ -1,6 +1,7 @@
 import type { PazienteUpdatePayload } from '@/api/pazienti'
-import type { AssegnazioneTurno } from '@/api/turni'
 import type { ConsegnaSbar, PrioritaConsegna } from '@/api/consegneSbar'
+import type { Paziente } from '@/api/pazienti'
+import type { AssegnazioneTurnoOption } from '@/features/sbar/turnoOptions'
 import type { VoceDiarioCedema } from '@/api/diarioCedema'
 import type {
   ParametriVitali,
@@ -24,8 +25,9 @@ export type PatientEditForm = Required<
 export type GenericConsegnaKind = 'sbar' | 'cedema'
 
 export type GenericConsegnaForm = {
+  paziente_id: number | null
   tipo: GenericConsegnaKind
-  data: string
+  data: string | null
   turno_id: number | null
   priorita: PrioritaConsegna
   testo: string
@@ -60,8 +62,10 @@ export type ClinicalTimelineTabEmits = {
   newEntry: []
 }
 
-export type GenericConsegnaDrawerProps = {
-  assegnazioni: AssegnazioneTurno[]
+export type GenericConsegnaDialogProps = {
+  assegnazioni: AssegnazioneTurnoOption[]
+  pazienti?: Paziente[]
+  hidePaziente?: boolean
   saving: boolean
   insight: ClinicalInsight | null
 }

@@ -14,6 +14,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     pazienteId: currentPazienteId,
     paziente: chart.paziente,
     error: chart.error,
+    assegnazioni: chart.assegnazioni,
     reloadTimeline: chart.reloadTimeline,
     reloadValutazioni: chart.reloadValutazioni,
     reloadParametriVitali: chart.reloadParametriVitali,

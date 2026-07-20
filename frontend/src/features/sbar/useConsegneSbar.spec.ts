@@ -3,11 +3,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useConsegneSbar } from '@/features/sbar/useConsegneSbar'
 import { useAuthStore } from '@/stores/auth'
 import * as consegneSbarApi from '@/api/consegneSbar'
+import * as diarioCedemaApi from '@/api/diarioCedema'
 import * as pazientiApi from '@/api/pazienti'
 import * as turniApi from '@/api/turni'
 import type { ConsegnaSbar } from '@/api/consegneSbar'
 
 vi.mock('@/api/consegneSbar')
+vi.mock('@/api/diarioCedema')
 vi.mock('@/api/pazienti')
 vi.mock('@/api/turni')
 
@@ -54,6 +56,7 @@ beforeEach(() => {
   })
   vi.mocked(pazientiApi.listPazienti).mockResolvedValue({ data: [paziente] })
   vi.mocked(turniApi.getMieAssegnazioni).mockResolvedValue({ data: [] })
+  vi.mocked(turniApi.listTurni).mockResolvedValue({ data: [] })
 })
 
 describe('useConsegneSbar — load', () => {
@@ -106,11 +109,24 @@ describe('useConsegneSbar — apriNuova', () => {
     vi.mocked(turniApi.getMieAssegnazioni).mockResolvedValue({
       data: [{ id: 1, turno_id: 5, infermiere_id: 9, stato: 'attiva' }],
     })
+    vi.mocked(turniApi.listTurni).mockResolvedValue({
+      data: [
+        {
+          id: 5,
+          data: '2026-07-18',
+          tipo: 'mattina',
+          reparto_id: 1,
+          ora_inizio: '07:00:00',
+          ora_fine: '14:00:00',
+        },
+      ],
+    })
     const hook = useConsegneSbar()
 
     await hook.apriNuova()
-    expect(hook.dialogOpen.value).toBe(true)
+    expect(hook.nuovaDialogOpen.value).toBe(true)
     expect(hook.assegnazioni.value).toHaveLength(1)
+    expect(hook.assegnazioni.value[0].label).toContain('18/07/2026')
 
     vi.mocked(turniApi.getMieAssegnazioni).mockClear()
     await hook.apriNuova()
@@ -119,40 +135,57 @@ describe('useConsegneSbar — apriNuova', () => {
 })
 
 describe('useConsegneSbar — salva', () => {
-  it('creates a new consegna when not editing, then reloads', async () => {
+  it('creates a new SBAR consegna from the generic dialog, then reloads', async () => {
     vi.mocked(consegneSbarApi.createConsegnaSbar).mockResolvedValue({
       data: consegna(),
     })
     const hook = useConsegneSbar()
-    hook.form.value = {
+    hook.nuovaForm.value = {
       paziente_id: 1,
+      tipo: 'sbar',
+      data: '2026-07-18',
       turno_id: 5,
-      situation: 'S',
-      background: 'B',
-      assessment: 'A',
-      recommendation: 'R',
       priorita: 'normale',
+      testo: 'Situation: S\nBackground: B\nAssessment: A\nRecommendation: R',
     }
 
-    await hook.salva()
+    await hook.salvaNuova()
 
     expect(consegneSbarApi.createConsegnaSbar).toHaveBeenCalledOnce()
-    expect(hook.dialogOpen.value).toBe(false)
+    expect(hook.nuovaDialogOpen.value).toBe(false)
+  })
+
+  it('creates a CEDEMA consegna from the generic dialog, then reloads', async () => {
+    vi.mocked(diarioCedemaApi.createVoceDiarioCedema).mockResolvedValue({
+      data: {} as never,
+    })
+    const hook = useConsegneSbar()
+    hook.nuovaForm.value = {
+      paziente_id: 1,
+      tipo: 'cedema',
+      data: '2026-07-18',
+      turno_id: null,
+      priorita: 'normale',
+      testo: 'Paziente tranquillo.',
+    }
+
+    await hook.salvaNuova()
+
+    expect(diarioCedemaApi.createVoceDiarioCedema).toHaveBeenCalledOnce()
   })
 
   it('is a no-op creating without paziente_id/turno_id', async () => {
     const hook = useConsegneSbar()
-    hook.form.value = {
+    hook.nuovaForm.value = {
       paziente_id: null,
+      tipo: 'sbar',
+      data: null,
       turno_id: null,
-      situation: 'S',
-      background: 'B',
-      assessment: 'A',
-      recommendation: 'R',
       priorita: 'normale',
+      testo: 'S',
     }
 
-    await hook.salva()
+    await hook.salvaNuova()
 
     expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
   })
@@ -179,17 +212,16 @@ describe('useConsegneSbar — salva', () => {
       new Error('down'),
     )
     const hook = useConsegneSbar()
-    hook.form.value = {
+    hook.nuovaForm.value = {
       paziente_id: 1,
+      tipo: 'sbar',
+      data: '2026-07-18',
       turno_id: 5,
-      situation: 'S',
-      background: 'B',
-      assessment: 'A',
-      recommendation: 'R',
       priorita: 'normale',
+      testo: 'Situation: S',
     }
 
-    await hook.salva()
+    await hook.salvaNuova()
 
     expect(hook.error.value).toBe('Impossibile salvare la consegna.')
   })

@@ -1,3 +1,4 @@
+import { todayIsoDate } from '@/features/sbar/turnoOptions'
 import type {
   ConsegnaSbar,
   ConsegnaSbarCreatePayload,
@@ -15,6 +16,7 @@ export const prioritaOptions: PrioritaOption[] = [
 export function createEmptyConsegnaSbarForm(): ConsegnaSbarForm {
   return {
     paziente_id: null,
+    data: todayIsoDate(),
     turno_id: null,
     situation: '',
     background: '',
@@ -29,6 +31,7 @@ export function createFormFromConsegna(
 ): ConsegnaSbarForm {
   return {
     paziente_id: consegna.paziente_id,
+    data: null,
     turno_id: consegna.turno_id,
     situation: consegna.situation,
     background: consegna.background,
@@ -78,7 +81,9 @@ export function validateSbarForm(
 
   if (options.checkPazienteTurno) {
     if (form.paziente_id === null) errors.paziente_id = 'Campo obbligatorio'
-    if (form.turno_id === null) errors.turno_id = 'Campo obbligatorio'
+    if (form.data === null) errors.data = 'Campo obbligatorio'
+    else if (form.turno_id === null)
+      errors.data = 'Nessun turno assegnato in questa data'
   }
 
   if (!form.situation.trim()) errors.situation = 'Campo obbligatorio'

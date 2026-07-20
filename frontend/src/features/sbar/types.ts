@@ -18,6 +18,7 @@ export type {
 
 export type ConsegnaSbarForm = {
   paziente_id: number | null
+  data: string | null
   turno_id: number | null
   situation: string
   background: string

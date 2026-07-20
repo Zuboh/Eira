@@ -1,5 +1,6 @@
 import type { Paziente } from '@/api/pazienti'
 import { prioritaOptions } from '@/features/sbar/form'
+import { todayIsoDate } from '@/features/sbar/turnoOptions'
 import type {
   CedemaNarrativeSource,
   ClinicalInsight,
@@ -13,10 +14,6 @@ import type {
   StatoCoscienzaOption,
 } from '@/features/patient-chart/types'
 
-export function todayIsoDate(): string {
-  return new Date().toISOString().slice(0, 10)
-}
-
 export const statoCoscienzaOptions: StatoCoscienzaOption[] = [
   { value: 'vigile', label: 'Vigile' },
   { value: 'verbale', label: 'Risponde alla voce' },
@@ -28,6 +25,7 @@ export { prioritaOptions }
 
 export function createEmptyGenericConsegnaForm(): GenericConsegnaForm {
   return {
+    paziente_id: null,
     tipo: 'sbar',
     data: todayIsoDate(),
     turno_id: null,

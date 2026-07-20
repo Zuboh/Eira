@@ -10,12 +10,7 @@ vi.mock('@/api/consegneSbar')
 vi.mock('@/api/pazienti')
 vi.mock('@/api/turni')
 
-const PASSATO = '2020-01-01'
 const FUTURO_1 = '2030-01-01'
-const FUTURO_2 = '2030-01-02'
-const FUTURO_3 = '2030-01-03'
-const FUTURO_4 = '2030-01-04'
-const FUTURO_5 = '2030-01-05'
 
 function turno(
   id: number,
@@ -32,10 +27,6 @@ function turno(
   }
 }
 
-function assegnazione(id: number, turnoId: number, stato: string = 'attiva') {
-  return { id, turno_id: turnoId, infermiere_id: 9, stato: stato as 'attiva' }
-}
-
 beforeEach(() => {
   vi.mocked(carelloFarmaciApi.listCarelloFarmaci).mockResolvedValue({
     data: [],
@@ -44,46 +35,56 @@ beforeEach(() => {
     data: { items: [], total: 0 },
   })
   vi.mocked(pazientiApi.listPazienti).mockResolvedValue({ data: [] })
-  vi.mocked(turniApi.getMieAssegnazioni).mockResolvedValue({ data: [] })
-  vi.mocked(turniApi.listTurni).mockResolvedValue({ data: [] })
+  vi.mocked(turniApi.getMieiProssimiTurni).mockResolvedValue({ data: [] })
 })
 
-describe('useInfermiereDashboard — mieiTurni', () => {
-  it('excludes past turni, non-attiva assegnazioni, sorts by date, and caps at 4', async () => {
-    vi.mocked(turniApi.listTurni).mockResolvedValue({
+describe('useInfermiereDashboard — prossimiTurniConColleghi', () => {
+  it('loads prossimi turni con colleghi from the dedicated API', async () => {
+    const turnoFuturo = turno(3, FUTURO_1)
+    vi.mocked(turniApi.getMieiProssimiTurni).mockResolvedValue({
       data: [
-        turno(1, PASSATO),
-        turno(2, FUTURO_3),
-        turno(3, FUTURO_1),
-        turno(4, FUTURO_5),
-        turno(5, FUTURO_2),
-        turno(6, FUTURO_4),
-      ],
-    })
-    vi.mocked(turniApi.getMieAssegnazioni).mockResolvedValue({
-      data: [
-        assegnazione(1, 1),
-        assegnazione(2, 2),
-        assegnazione(3, 3),
-        assegnazione(4, 4),
-        assegnazione(5, 5),
-        assegnazione(6, 6, 'cambiata'),
+        {
+          turno: turnoFuturo,
+          colleghi: [
+            { id: 2, nome: 'Anna', cognome: 'Rossi', ruolo: 'infermiere' },
+          ],
+        },
       ],
     })
     const dash = useInfermiereDashboard()
 
     await dash.load()
 
-    expect(dash.mieiTurni.value.map((t) => t.data)).toEqual([
-      FUTURO_1,
-      FUTURO_2,
-      FUTURO_3,
-      FUTURO_5,
+    expect(turniApi.getMieiProssimiTurni).toHaveBeenCalledWith({ limit: 60 })
+    expect(dash.prossimiTurniConColleghi.value).toEqual([
+      {
+        turno: turnoFuturo,
+        colleghi: [
+          { id: 2, nome: 'Anna', cognome: 'Rossi', ruolo: 'infermiere' },
+        ],
+      },
     ])
   })
 
+  it('uses the full response for calendar events and first four rows for prossimi turni', async () => {
+    vi.mocked(turniApi.getMieiProssimiTurni).mockResolvedValue({
+      data: Array.from({ length: 5 }, (_, index) => ({
+        turno: turno(index + 1, `2030-01-0${index + 1}`),
+        colleghi: [],
+      })),
+    })
+    const dash = useInfermiereDashboard()
+
+    await dash.load()
+
+    expect(dash.prossimiTurniConColleghi.value).toHaveLength(4)
+    expect(dash.calendarEvents.value).toHaveLength(5)
+  })
+
   it('sets an error message when loading fails', async () => {
-    vi.mocked(turniApi.listTurni).mockRejectedValue(new Error('down'))
+    vi.mocked(turniApi.getMieiProssimiTurni).mockRejectedValue(
+      new Error('down'),
+    )
     const dash = useInfermiereDashboard()
 
     await dash.load()
@@ -95,9 +96,9 @@ describe('useInfermiereDashboard — mieiTurni', () => {
 describe('useInfermiereDashboard — consegneRecenti / pazientiAttivi', () => {
   it('caps consegne at 5 (already sliced by the API layer) and filters out dimessi pazienti', async () => {
     vi.mocked(carelloFarmaciApi.listCarelloFarmaci).mockResolvedValue({
-    data: [],
-  })
-  vi.mocked(consegneSbarApi.listConsegneSbar).mockResolvedValue({
+      data: [],
+    })
+    vi.mocked(consegneSbarApi.listConsegneSbar).mockResolvedValue({
       data: {
         items: [
           {
@@ -173,5 +174,47 @@ describe('useInfermiereDashboard — nomePaziente', () => {
 
     expect(dash.nomePaziente(1)).toBe('Bianchi Mario')
     expect(dash.nomePaziente(99)).toBe('#99')
+  })
+})
+
+describe('useInfermiereDashboard — farmaciCritici', () => {
+  it('include solo farmaci sotto soglia e ignora la scadenza singola del farmaco', async () => {
+    vi.mocked(carelloFarmaciApi.listCarelloFarmaci).mockResolvedValue({
+      data: [
+        {
+          id: 1,
+          farmaco_id: 10,
+          reparto_id: 1,
+          quantita: 4,
+          soglia_minima: 5,
+          prossima_scadenza: null,
+          farmaco: {
+            id: 10,
+            nome: 'Paracetamolo',
+            unita_misura: 'compresse',
+            categoria: 'Analgesici',
+          },
+        },
+        {
+          id: 2,
+          farmaco_id: 11,
+          reparto_id: 1,
+          quantita: 8,
+          soglia_minima: 5,
+          prossima_scadenza: '2020-01-01',
+          farmaco: {
+            id: 11,
+            nome: 'Ibuprofene',
+            unita_misura: 'compresse',
+            categoria: 'Antinfiammatori',
+          },
+        },
+      ],
+    })
+    const dash = useInfermiereDashboard()
+
+    await dash.load()
+
+    expect(dash.farmaciCritici.value.map((farmaco) => farmaco.id)).toEqual([1])
   })
 })

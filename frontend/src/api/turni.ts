@@ -6,6 +6,8 @@ export type StatoAssegnazione = components['schemas']['StatoAssegnazione']
 export type Turno = components['schemas']['TurnoRead']
 export type AssegnazioneTurno = components['schemas']['AssegnazioneTurnoRead']
 export type TurnoCalendario = components['schemas']['TurnoCalendarioRead']
+export type ProssimoTurnoConColleghi =
+  components['schemas']['ProssimoTurnoConColleghiRead']
 
 type ApiDataResponse<T> = Promise<{ data: T }>
 
@@ -55,6 +57,16 @@ export async function getMieAssegnazioni(): ApiDataResponse<
   const result = await eiraClient.GET('/api/v1/turni/mie-assegnazioni')
 
   return unwrapData(result, 'getMieAssegnazioni')
+}
+
+export async function getMieiProssimiTurni(
+  params: { limit?: number } = {},
+): ApiDataResponse<ProssimoTurnoConColleghi[]> {
+  const result = await eiraClient.GET('/api/v1/turni/miei-prossimi-turni', {
+    params: { query: params },
+  })
+
+  return unwrapData(result, 'getMieiProssimiTurni')
 }
 
 export async function listTurni(): ApiDataResponse<Turno[]> {

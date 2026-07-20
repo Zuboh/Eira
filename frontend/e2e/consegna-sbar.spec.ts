@@ -87,8 +87,9 @@ test('infermiere creates a SBAR handoff for a patient on their assigned turno', 
   await field(page, 'Paziente').getByRole('combobox').click()
   await page.getByRole('option', { name: paziente.cognome }).click()
 
-  await field(page, 'Turno').getByRole('combobox').click()
-  await page.getByRole('option', { name: String(turno.id) }).click()
+  await expect(
+    field(page, 'Data turno').getByText(/Turno rilevato:.*Mattina/),
+  ).toBeVisible()
 
   await field(page, 'Situation')
     .locator('textarea')

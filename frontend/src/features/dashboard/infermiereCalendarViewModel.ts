@@ -1,24 +1,41 @@
 import type { EventInput } from '@fullcalendar/core'
-import type { AssegnazioneTurno, Turno } from '@/api/turni'
+import type { ProssimoTurnoConColleghi } from '@/api/turni'
 import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
 
-export function buildTurniEvents(
-  assegnazioni: AssegnazioneTurno[],
-  turni: Turno[],
-): EventInput[] {
-  const turniById = new Map(turni.map((turno) => [turno.id, turno]))
+export type TurnoCalendarEventProps = {
+  data: string
+  tipoLabel: string
+  orario: string
+  colleghi: string[]
+  isLavorativo: boolean
+}
 
-  return assegnazioni
-    .filter((assegnazione) => assegnazione.stato === 'attiva')
-    .map((assegnazione) => turniById.get(assegnazione.turno_id))
-    .filter((turno): turno is Turno => turno !== undefined)
-    .map((turno) => {
-      const classeTipo = turno.tipo === 'ferie_estive' ? 'ferie' : turno.tipo
-      return {
-        id: String(turno.id),
-        title: TIPO_TURNO_LABEL[turno.tipo],
-        start: turno.data,
-        classNames: [`turno-${classeTipo}`],
-      }
-    })
+const TIPI_NON_LAVORATIVI = new Set(['riposo', 'ferie', 'ferie_estive'])
+
+function nomeCollega(collega: ProssimoTurnoConColleghi['colleghi'][number]) {
+  return `${collega.cognome} ${collega.nome}`
+}
+
+export function buildTurniEvents(
+  turniConColleghi: ProssimoTurnoConColleghi[],
+): EventInput[] {
+  return turniConColleghi.map((entry) => {
+    const turno = entry.turno
+    const classeTipo = turno.tipo === 'ferie_estive' ? 'ferie' : turno.tipo
+    const tipoLabel = TIPO_TURNO_LABEL[turno.tipo]
+
+    return {
+      id: String(turno.id),
+      title: tipoLabel,
+      start: turno.data,
+      classNames: [`turno-${classeTipo}`],
+      extendedProps: {
+        data: turno.data,
+        tipoLabel,
+        orario: `${turno.ora_inizio.slice(0, 5)}–${turno.ora_fine.slice(0, 5)}`,
+        colleghi: entry.colleghi.map(nomeCollega),
+        isLavorativo: !TIPI_NON_LAVORATIVI.has(turno.tipo),
+      } satisfies TurnoCalendarEventProps,
+    }
+  })
 }

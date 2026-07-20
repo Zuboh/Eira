@@ -53,7 +53,7 @@ def _turno_con_assegnazione(db_session, reparto_id, infermiere_id, data=None, ti
     return turno, assegnazione
 
 
-def test_dashboard_caposala_conta_turni_scoperti_e_cambi_in_attesa(
+def test_dashboard_caposala_conta_turni_con_meno_di_due_infermieri_e_cambi_in_attesa(
     client, db_session, caposala_a, reparti
 ):
     from app.models.cambio_turno import RichiestaCambioTurno
@@ -66,6 +66,19 @@ def test_dashboard_caposala_conta_turni_scoperti_e_cambi_in_attesa(
     _turno(db_session, reparto_a.id, tipo=None)  # turno scoperto (nessuna assegnazione)
     _, assegnazione = _turno_con_assegnazione(
         db_session, reparto_a.id, infermiere_a.id, data=datetime.date.today() + datetime.timedelta(days=1)
+    )
+    turno_coperto, _ = _turno_con_assegnazione(
+        db_session, reparto_a.id, infermiere_a.id, data=datetime.date.today() + datetime.timedelta(days=2)
+    )
+    from app.models.enums import StatoAssegnazione
+    from app.models.turno import AssegnazioneTurno
+
+    db_session.add(
+        AssegnazioneTurno(
+            turno_id=turno_coperto.id,
+            infermiere_id=infermiere_b.id,
+            stato=StatoAssegnazione.attiva,
+        )
     )
     richiesta = RichiestaCambioTurno(
         assegnazione_turno_id=assegnazione.id,
@@ -81,7 +94,7 @@ def test_dashboard_caposala_conta_turni_scoperti_e_cambi_in_attesa(
 
     assert response.status_code == 200, response.text
     body = response.json()
-    assert body["turni_scoperti_count"] == 1
+    assert body["turni_scoperti_count"] == 2
     assert body["cambi_turno_in_attesa_count"] == 1
 
 

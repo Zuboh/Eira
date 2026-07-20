@@ -20,7 +20,7 @@ const TurniCalendarCard = defineAsyncComponent({
 const {
   loading,
   error,
-  mieiTurni,
+  prossimiTurniConColleghi,
   calendarEvents,
   consegneRecenti,
   pazientiAttivi,
@@ -50,7 +50,10 @@ onMounted(load)
       <TurniCalendarCard class="calendar-column" :events="calendarEvents" />
 
       <div class="side-column">
-        <ProssimiTurniCard :turni="mieiTurni" :loading="loading" />
+        <ProssimiTurniCard
+          :turni="prossimiTurniConColleghi"
+          :loading="loading"
+        />
 
         <BancaOreSection
           :banca-ore="bancaOre"

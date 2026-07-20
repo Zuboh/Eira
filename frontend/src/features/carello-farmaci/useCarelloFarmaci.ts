@@ -23,41 +23,22 @@ export function useCarelloFarmaci() {
   )
 
   const alertFarmaci = computed(() =>
-    farmaci.value.filter((riga) => isSottoSoglia(riga) || isInScadenza(riga)),
+    farmaci.value.filter((riga) => isSottoSoglia(riga)),
   )
 
   const farmaciFiltrati = computed(() => {
     const term = search.value.trim().toLowerCase()
     return farmaci.value.filter((riga) => {
-      const matchesSearch = !term || riga.farmaco.nome.toLowerCase().includes(term)
-      const matchesCategoria = !categoria.value || riga.farmaco.categoria === categoria.value
+      const matchesSearch =
+        !term || riga.farmaco.nome.toLowerCase().includes(term)
+      const matchesCategoria =
+        !categoria.value || riga.farmaco.categoria === categoria.value
       return matchesSearch && matchesCategoria
     })
   })
 
   function isSottoSoglia(riga: CarelloFarmaco) {
     return riga.quantita < riga.soglia_minima
-  }
-
-  function giorniAllaScadenza(riga: CarelloFarmaco) {
-    if (!riga.prossima_scadenza) return null
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const expiry = new Date(`${riga.prossima_scadenza}T00:00:00`)
-    return Math.ceil((expiry.getTime() - today.getTime()) / 86_400_000)
-  }
-
-  function isInScadenza(riga: CarelloFarmaco) {
-    const giorni = giorniAllaScadenza(riga)
-    return giorni !== null && giorni <= 30
-  }
-
-  function expiryLabel(riga: CarelloFarmaco) {
-    const giorni = giorniAllaScadenza(riga)
-    if (giorni === null) return ''
-    if (giorni < 0) return 'Scaduto'
-    if (giorni === 0) return 'Scade oggi'
-    return `Scade tra ${giorni} gg`
   }
 
   async function load() {
@@ -122,8 +103,6 @@ export function useCarelloFarmaci() {
     error,
     movimentiError,
     isSottoSoglia,
-    isInScadenza,
-    expiryLabel,
     load,
     loadMovimenti,
     adjust,
