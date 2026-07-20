@@ -79,6 +79,20 @@ const legendItems = [
   box-shadow: none;
 }
 
+/* FullCalendar ships its own unthemed dark focus ring
+   (.fc-button:focus box-shadow rgba(44,62,80,.25)) — killed, clean focus */
+.turni-calendar-card :deep(.fc-button:focus) {
+  outline: none;
+  box-shadow: none;
+}
+
+/* same unthemed dark ring, active/pressed+focus variant
+   (.fc-button-primary.fc-button-active:focus / :active:focus) */
+.turni-calendar-card :deep(.fc-button-primary:not(:disabled).fc-button-active:focus),
+.turni-calendar-card :deep(.fc-button-primary:not(:disabled):active:focus) {
+  box-shadow: none;
+}
+
 .turni-calendar-card :deep(.fc-col-header-cell-cushion),
 .turni-calendar-card :deep(.fc-daygrid-day-number) {
   color: var(--steel);

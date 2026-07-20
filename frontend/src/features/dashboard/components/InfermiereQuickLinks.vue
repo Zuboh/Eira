@@ -4,7 +4,7 @@ import type { DashboardInfermiereQuickLink } from '@/features/dashboard/types'
 
 const links: DashboardInfermiereQuickLink[] = [
   { label: 'Pazienti', routeName: 'pazienti' },
-  { label: 'Consegne SBAR', routeName: 'consegne-sbar' },
+  { label: 'Diario Clinico', routeName: 'consegne-sbar' },
   { label: 'Cambio turno', routeName: 'cambio-turno' },
 ]
 </script>

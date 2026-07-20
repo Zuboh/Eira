@@ -2,7 +2,7 @@
 
 Esegue un wipe completo delle tabelle e le ripopola con reparti, personale,
 pazienti, turni, assegnazioni, richieste di cambio turno, consegne SBAR,
-diario CEDEMA e valutazioni Norton/Conley.
+diario CEDEMA, valutazioni Norton/Conley e carello farmaci.
 
 Uso: da backend/  ->  uv run python scripts/seed_mock_data.py
 """
@@ -20,6 +20,7 @@ from app.core.security import hash_password
 from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.consegna_sbar import ConsegnaSbar
 from app.models.diario_cedema import VoceDiarioCedema
+from app.models.farmaco import CarelloFarmaco, Farmaco
 from app.models.enums import (
     PrioritaConsegna,
     RuoloUtente,
@@ -504,6 +505,45 @@ def crea_valutazioni(db, pazienti: list[Paziente], infermieri: list[Utente]) -> 
     db.flush()
 
 
+FARMACI_CATALOGO = [
+    ("Paracetamolo", "compresse", "Analgesici"),
+    ("Ibuprofene", "compresse", "Antinfiammatori"),
+    ("Amoxicillina", "capsule", "Antibiotici"),
+    ("Furosemide", "fiale", "Diuretici"),
+    ("Omeprazolo", "capsule", "Gastroprotettori"),
+    ("Enoxaparina", "siringhe", "Anticoagulanti"),
+]
+
+
+def crea_carello_farmaci(db, reparti: list[Reparto]) -> None:
+    farmaci = [
+        Farmaco(nome=nome, unita_misura=unita_misura, categoria=categoria)
+        for nome, unita_misura, categoria in FARMACI_CATALOGO
+    ]
+    db.add_all(farmaci)
+    db.flush()
+
+    carello = []
+    for reparto_index, reparto in enumerate(reparti):
+        for farmaco_index, farmaco in enumerate(farmaci):
+            soglia = random.randint(4, 12)
+            if farmaco_index % 3 == 0:
+                quantita = max(0, soglia - random.randint(1, 3))
+            else:
+                quantita = soglia + random.randint(2, 25)
+            carello.append(
+                CarelloFarmaco(
+                    farmaco_id=farmaco.id,
+                    reparto_id=reparto.id,
+                    quantita=quantita,
+                    soglia_minima=soglia,
+                    prossima_scadenza=OGGI + datetime.timedelta(days=7 + reparto_index * 5 + farmaco_index * 9),
+                )
+            )
+    db.add_all(carello)
+    db.flush()
+
+
 def main() -> None:
     wipe_and_create_schema()
     db = SessionLocal()
@@ -518,6 +558,7 @@ def main() -> None:
         crea_consegne_sbar(db, turni, assegnazioni, pazienti)
         crea_diario_cedema(db, turni, assegnazioni, pazienti)
         crea_valutazioni(db, pazienti, infermieri)
+        crea_carello_farmaci(db, reparti)
         db.commit()
 
         print("[seed] Dati mock creati:")
@@ -532,6 +573,8 @@ def main() -> None:
         print(f"  voci diario CEDEMA: {db.query(VoceDiarioCedema).count()}")
         print(f"  valutazioni Norton: {db.query(ValutazioneNorton).count()}")
         print(f"  valutazioni Conley: {db.query(ValutazioneConley).count()}")
+        print(f"  farmaci catalogo: {db.query(Farmaco).count()}")
+        print(f"  carello farmaci: {db.query(CarelloFarmaco).count()}")
         print()
         print("[seed] Login di prova (username = id utente):")
         print(f"  caposala: username={caposale[0].id} password={settings.seed_caposala_password}")

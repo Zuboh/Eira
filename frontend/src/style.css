@@ -152,6 +152,10 @@ p {
   font-size: 0.8125rem;
 }
 
+:focus-visible {
+  outline: none;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from fastapi import FastAPI
@@ -11,6 +12,7 @@ from app.core.database import Base, SessionLocal, engine
 from app.core.rate_limit import limiter
 from app.core.security import hash_password
 from app.models.enums import RuoloUtente, StatoUtente
+from app.models.farmaco import CarelloFarmaco, Farmaco
 from app.models.profilo_infermiere import ProfiloInfermiere
 from app.models.reparto import Reparto
 from app.models.utente import Utente
@@ -18,6 +20,7 @@ from app.routers import (
     auth,
     banca_ore,
     cambi_turno,
+    carello_farmaci,
     consegne_sbar,
     dashboard,
     diario_cedema,
@@ -53,6 +56,7 @@ app.include_router(pazienti.router, prefix=API_V1_PREFIX)
 app.include_router(turni.router, prefix=API_V1_PREFIX)
 app.include_router(cambi_turno.router, prefix=API_V1_PREFIX)
 app.include_router(ferie.router, prefix=API_V1_PREFIX)
+app.include_router(carello_farmaci.router, prefix=API_V1_PREFIX)
 app.include_router(consegne_sbar.router, prefix=API_V1_PREFIX)
 app.include_router(diario_cedema.router, prefix=API_V1_PREFIX)
 app.include_router(parametri_vitali.router, prefix=API_V1_PREFIX)
@@ -147,6 +151,8 @@ def _seed_dev_data() -> None:
                 )
             )
 
+        _seed_farmaci(db)
+
         db.commit()
         db.refresh(reparto_principale)
         db.refresh(caposala)
@@ -161,6 +167,44 @@ def _seed_dev_data() -> None:
         )
     finally:
         db.close()
+
+
+FARMACI_SEED = [
+    ("Paracetamolo", "compresse", "Analgesici"),
+    ("Amoxicillina", "capsule", "Antibiotici"),
+    ("Furosemide", "fiale", "Diuretici"),
+    ("Omeprazolo", "capsule", "Gastroprotettori"),
+]
+
+
+def _seed_farmaci(db) -> None:
+    reparti = db.query(Reparto).all()
+    oggi = datetime.date.today()
+    for index, (nome, unita_misura, categoria) in enumerate(FARMACI_SEED):
+        farmaco = db.query(Farmaco).filter(Farmaco.nome == nome).first()
+        if farmaco is None:
+            farmaco = Farmaco(nome=nome, unita_misura=unita_misura, categoria=categoria)
+            db.add(farmaco)
+            db.flush()
+        for reparto in reparti:
+            carello = (
+                db.query(CarelloFarmaco)
+                .filter(
+                    CarelloFarmaco.farmaco_id == farmaco.id,
+                    CarelloFarmaco.reparto_id == reparto.id,
+                )
+                .first()
+            )
+            if carello is None:
+                db.add(
+                    CarelloFarmaco(
+                        farmaco_id=farmaco.id,
+                        reparto_id=reparto.id,
+                        quantita=max(0, 12 - index * 3),
+                        soglia_minima=5 + index,
+                        prossima_scadenza=oggi + datetime.timedelta(days=10 + index * 18),
+                    )
+                )
 
 
 def _get_or_create_reparto(db, nome: str) -> Reparto:

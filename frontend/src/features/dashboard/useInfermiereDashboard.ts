@@ -1,4 +1,5 @@
 import { computed, ref } from 'vue'
+import { listCarelloFarmaci, type CarelloFarmaco } from '@/api/carelloFarmaci'
 import { listConsegneSbar, type ConsegnaSbar } from '@/api/consegneSbar'
 import { listPazienti, type Paziente } from '@/api/pazienti'
 import {
@@ -15,6 +16,7 @@ export function useInfermiereDashboard() {
   const assegnazioni = ref<AssegnazioneTurno[]>([])
   const turni = ref<Turno[]>([])
   const consegne = ref<ConsegnaSbar[]>([])
+  const farmaci = ref<CarelloFarmaco[]>([])
   const pazienti = ref<Paziente[]>([])
   const loading = ref(false)
   const error = ref('')
@@ -43,6 +45,18 @@ export function useInfermiereDashboard() {
 
   const consegneRecenti = computed(() => consegne.value)
   const pazientiAttivi = computed(() => pazienti.value)
+  const farmaciCritici = computed(() =>
+    farmaci.value.filter((riga) => {
+      const giorni = riga.prossima_scadenza
+        ? Math.ceil(
+            (new Date(`${riga.prossima_scadenza}T00:00:00`).getTime() -
+              new Date(oggi).getTime()) /
+              86_400_000,
+          )
+        : null
+      return riga.quantita < riga.soglia_minima || (giorni !== null && giorni <= 30)
+    }),
+  )
 
   function nomePaziente(pazienteId: number) {
     const paziente = pazientiById.value.get(pazienteId)
@@ -58,11 +72,13 @@ export function useInfermiereDashboard() {
         turniResponse,
         consegneResponse,
         pazientiResponse,
+        farmaciResponse,
       ] = await Promise.all([
         getMieAssegnazioni(),
         listTurni(),
         listConsegneSbar({ limit: 5 }),
         listPazienti(),
+        listCarelloFarmaci(),
       ])
       assegnazioni.value = assegnazioniResponse.data
       turni.value = turniResponse.data
@@ -70,6 +86,7 @@ export function useInfermiereDashboard() {
       pazienti.value = pazientiResponse.data.filter(
         (paziente) => !paziente.dimesso,
       )
+      farmaci.value = farmaciResponse.data
     } catch {
       error.value = 'Impossibile caricare la dashboard.'
     } finally {
@@ -84,6 +101,7 @@ export function useInfermiereDashboard() {
     calendarEvents,
     consegneRecenti,
     pazientiAttivi,
+    farmaciCritici,
     nomePaziente,
     load,
   }

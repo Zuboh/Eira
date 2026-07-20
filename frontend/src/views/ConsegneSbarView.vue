@@ -43,7 +43,7 @@ function onPageChange(event: { page: number }) {
 
 <template>
   <div class="sbar-view">
-    <PageHeader title="Consegne SBAR">
+    <PageHeader title="Diario Clinico">
       <template #actions>
         <Button
           v-if="canCreateConsegna"

@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useInfermiereDashboard } from '@/features/dashboard/useInfermiereDashboard'
+import * as carelloFarmaciApi from '@/api/carelloFarmaci'
 import * as consegneSbarApi from '@/api/consegneSbar'
 import * as pazientiApi from '@/api/pazienti'
 import * as turniApi from '@/api/turni'
 
+vi.mock('@/api/carelloFarmaci')
 vi.mock('@/api/consegneSbar')
 vi.mock('@/api/pazienti')
 vi.mock('@/api/turni')
@@ -35,6 +37,9 @@ function assegnazione(id: number, turnoId: number, stato: string = 'attiva') {
 }
 
 beforeEach(() => {
+  vi.mocked(carelloFarmaciApi.listCarelloFarmaci).mockResolvedValue({
+    data: [],
+  })
   vi.mocked(consegneSbarApi.listConsegneSbar).mockResolvedValue({
     data: { items: [], total: 0 },
   })
@@ -89,7 +94,10 @@ describe('useInfermiereDashboard — mieiTurni', () => {
 
 describe('useInfermiereDashboard — consegneRecenti / pazientiAttivi', () => {
   it('caps consegne at 5 (already sliced by the API layer) and filters out dimessi pazienti', async () => {
-    vi.mocked(consegneSbarApi.listConsegneSbar).mockResolvedValue({
+    vi.mocked(carelloFarmaciApi.listCarelloFarmaci).mockResolvedValue({
+    data: [],
+  })
+  vi.mocked(consegneSbarApi.listConsegneSbar).mockResolvedValue({
       data: {
         items: [
           {

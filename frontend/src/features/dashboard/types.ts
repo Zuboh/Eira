@@ -1,3 +1,4 @@
+import type { CarelloFarmaco } from '@/api/carelloFarmaci'
 import type { ConsegnaSbar } from '@/api/consegneSbar'
 import type { Paziente } from '@/api/pazienti'
 import type { Turno, TurnoCalendario } from '@/api/turni'
@@ -15,7 +16,7 @@ export type CalendarioRiga = {
 
 export type DashboardInfermiereQuickLink = {
   label: string
-  routeName: 'pazienti' | 'consegne-sbar' | 'cambio-turno'
+  routeName: 'pazienti' | 'consegne-sbar' | 'carello-farmaci' | 'cambio-turno'
 }
 
 export type ProssimiTurniCardProps = {
@@ -31,5 +32,10 @@ export type ConsegneRecentiCardProps = {
 
 export type PazientiAttiviCardProps = {
   pazienti: Paziente[]
+  loading: boolean
+}
+
+export type CarelloBassoStockCardProps = {
+  farmaci: CarelloFarmaco[]
   loading: boolean
 }

@@ -423,6 +423,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/carello-farmaci/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Carello Farmaci */
+        get: operations["list_carello_farmaci_api_v1_carello_farmaci__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/carello-farmaci/movimenti": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Movimenti Farmaci */
+        get: operations["list_movimenti_farmaci_api_v1_carello_farmaci_movimenti_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/carello-farmaci/{carello_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Carello Farmaco */
+        patch: operations["update_carello_farmaco_api_v1_carello_farmaci__carello_id__patch"];
+        trace?: never;
+    };
     "/api/v1/consegne-sbar/": {
         parameters: {
             query?: never;
@@ -712,6 +763,27 @@ export interface components {
              */
             client_secret?: string | null;
         };
+        /** CarelloFarmacoRead */
+        CarelloFarmacoRead: {
+            /** Id */
+            id: number;
+            /** Farmaco Id */
+            farmaco_id: number;
+            /** Reparto Id */
+            reparto_id: number;
+            /** Quantita */
+            quantita: number;
+            /** Soglia Minima */
+            soglia_minima: number;
+            /** Prossima Scadenza */
+            prossima_scadenza?: string | null;
+            farmaco: components["schemas"]["FarmacoRead"];
+        };
+        /** CarelloFarmacoUpdate */
+        CarelloFarmacoUpdate: {
+            /** Delta */
+            delta: number;
+        };
         /** ConsegnaSbarCreate */
         ConsegnaSbarCreate: {
             /** Paziente Id */
@@ -784,10 +856,43 @@ export interface components {
             /** Cambi Turno In Attesa Count */
             cambi_turno_in_attesa_count: number;
         };
+        /** FarmacoRead */
+        FarmacoRead: {
+            /** Id */
+            id: number;
+            /** Nome */
+            nome: string;
+            /** Unita Misura */
+            unita_misura: string;
+            /** Categoria */
+            categoria: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** MovimentoFarmacoRead */
+        MovimentoFarmacoRead: {
+            /** Id */
+            id: number;
+            /** Carello Farmaco Id */
+            carello_farmaco_id: number;
+            /** Farmaco Id */
+            farmaco_id: number;
+            /** Farmaco Nome */
+            farmaco_nome: string;
+            /** Autore Id */
+            autore_id: number;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            /** Delta */
+            delta: number;
+            /** Quantita Dopo */
+            quantita_dopo: number;
         };
         /** ParametriVitaliCreate */
         ParametriVitaliCreate: {
@@ -2826,6 +2931,153 @@ export interface operations {
             };
             /** @description Conflitto di stato o unicità */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_carello_farmaci_api_v1_carello_farmaci__get: {
+        parameters: {
+            query?: {
+                search?: string | null;
+                categoria?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CarelloFarmacoRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_movimenti_farmaci_api_v1_carello_farmaci_movimenti_get: {
+        parameters: {
+            query?: {
+                farmaco_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MovimentoFarmacoRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_carello_farmaco_api_v1_carello_farmaci__carello_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                carello_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CarelloFarmacoUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CarelloFarmacoRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

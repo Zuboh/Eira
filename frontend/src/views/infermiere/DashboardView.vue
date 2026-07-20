@@ -4,6 +4,7 @@ import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import BancaOreSection from '@/features/banca-ore/components/BancaOreSection.vue'
 import { useBancaOre } from '@/features/banca-ore/useBancaOre'
+import CarelloBassoStockCard from '@/features/dashboard/components/CarelloBassoStockCard.vue'
 import ConsegneRecentiCard from '@/features/dashboard/components/ConsegneRecentiCard.vue'
 import PazientiAttiviCard from '@/features/dashboard/components/PazientiAttiviCard.vue'
 import ProssimiTurniCard from '@/features/dashboard/components/ProssimiTurniCard.vue'
@@ -23,6 +24,7 @@ const {
   calendarEvents,
   consegneRecenti,
   pazientiAttivi,
+  farmaciCritici,
   nomePaziente,
   load,
 } = useInfermiereDashboard()
@@ -64,11 +66,15 @@ onMounted(load)
     <div class="dashboard-row">
       <PazientiAttiviCard :pazienti="pazientiAttivi" :loading="loading" />
 
-      <ConsegneRecentiCard
-        :consegne="consegneRecenti"
-        :loading="loading"
-        :nome-paziente="nomePaziente"
-      />
+      <div class="side-column">
+        <ConsegneRecentiCard
+          :consegne="consegneRecenti"
+          :loading="loading"
+          :nome-paziente="nomePaziente"
+        />
+
+        <CarelloBassoStockCard :farmaci="farmaciCritici" :loading="loading" />
+      </div>
     </div>
   </div>
 </template>

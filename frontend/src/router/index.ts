@@ -81,7 +81,13 @@ const router = createRouter({
       path: '/consegne-sbar',
       name: 'consegne-sbar',
       component: () => import('@/views/ConsegneSbarView.vue'),
-      meta: { roles: ALL_ROLES, nav: { label: 'Consegne SBAR', order: 30 } },
+      meta: { roles: ALL_ROLES, nav: { label: 'Diario Clinico', order: 30 } },
+    },
+    {
+      path: '/carello-farmaci',
+      name: 'carello-farmaci',
+      component: () => import('@/views/CarelloFarmaciView.vue'),
+      meta: { roles: ALL_ROLES, nav: { label: 'Carello Farmaci', order: 35 } },
     },
     {
       path: '/cambio-turno',

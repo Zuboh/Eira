@@ -25,15 +25,37 @@ const EiraPreset = definePreset(Aura, {
       950: '#172554',
     },
     focusRing: {
-      width: '2px',
-      style: 'solid',
+      // width 0 kills PrimeVue's own hardcoded outline on Button (and
+      // anything else keyed off {focus.ring.*}) — the visible ring is the
+      // box-shadow set per severity below instead. Soft glow, not a hard border.
+      width: '0',
+      style: 'none',
       color: '{primary.color}',
       offset: '2px',
+    },
+    // form controls (input, select...) key off a SEPARATE {form.field.focus.ring.*}
+    // namespace, not {focus.ring.*} above — same fix, different token path
+    formField: {
+      focusRing: {
+        width: '0',
+        style: 'none',
+      },
     },
   },
   components: {
     button: {
       root: { borderRadius: '0.5rem' },
+      // secondary severity (incl. Dialog's default close button) otherwise
+      // gets Aura's stock {surface.600}/{surface.300} gray focus ring —
+      // keep buttons clean/no ring everywhere, not stock-gray on secondary
+      colorScheme: {
+        light: {
+          root: { secondary: { focusRing: { color: '{primary.color}' } } },
+        },
+        dark: {
+          root: { secondary: { focusRing: { color: '{primary.color}' } } },
+        },
+      },
     },
     inputtext: {
       root: { borderRadius: '0.5rem' },
