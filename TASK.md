@@ -72,17 +72,18 @@ data/schema layer). Solo review, nessun fix applicato.
       dev data sull'engine di produzione) non gira più durante i test —
       verificato: mtime di `consegne_infermieristiche.db` invariato
       prima/dopo l'intera suite.
-- [ ] 🟡 `StatoAssegnazione.cambiata` enum mai assegnato — flusso swap
-      turno (`cambi_turno.py:157`) muta `infermiere_id` in place senza
-      mai marcare `cambiata`.
-- [ ] 🟡 Gate "turno attivo" su pazienti non è time-scoped — una
-      singola assegnazione passata/futura/altro-reparto basta per
-      sempre (combinato col punto sopra). Scelta esplicita utente via
-      AskUserQuestion: gate su assegnazione attiva, non su turno di
-      oggi — se si rivede, serve filtro su `Turno.data` in
-      `_infermiere_ha_turno_attivo` (`pazienti.py`). Test nuovo non
-      distingue implementazione corretta da bug (usa solo turno di
-      oggi).
+- [x] 🟡 `StatoAssegnazione.cambiata` enum mai assegnato — rimosso
+      (scelta utente via AskUserQuestion: cheap delete, non redesign).
+      Confermato dead: swap muta `infermiere_id` in place e lascia
+      `stato=attiva`, che è già ciò che serve alle ~10 query
+      `stato==attiva` sparse nei router. `StatoAssegnazione` ora
+      enum a singolo valore.
+- [x] 🟡 Gate "turno attivo" su pazienti non era time-scoped — fix:
+      join `Turno` + filtro `Turno.data == oggi` in
+      `_infermiere_ha_turno_attivo` (`pazienti.py`). Nuovo test
+      `test_list_pazienti_infermiere_con_turno_passato_vede_lista_vuota`
+      (verificato che fallisce senza il fix, a differenza del vecchio
+      test che usava solo turno di oggi).
 
 Ordine suggerito: 🔴 prima (concreti), 🟡 dopo (richiedono decisione
 design su semantica "turno attivo").
