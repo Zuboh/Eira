@@ -30,12 +30,8 @@ function turno(
   }
 }
 
-function assegnazione(
-  id: number,
-  turnoId: number,
-  stato: 'attiva' | 'cambiata' = 'attiva',
-) {
-  return { id, turno_id: turnoId, infermiere_id: 9, stato }
+function assegnazione(id: number, turnoId: number, stato: string = 'attiva') {
+  return { id, turno_id: turnoId, infermiere_id: 9, stato: stato as 'attiva' }
 }
 
 beforeEach(() => {

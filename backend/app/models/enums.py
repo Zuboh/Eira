@@ -23,7 +23,6 @@ class TipoTurno(str, enum.Enum):
 
 class StatoAssegnazione(str, enum.Enum):
     attiva = "attiva"
-    cambiata = "cambiata"
 
 
 class PrioritaConsegna(str, enum.Enum):

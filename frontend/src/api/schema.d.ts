@@ -1025,7 +1025,7 @@ export interface components {
          * StatoAssegnazione
          * @enum {string}
          */
-        StatoAssegnazione: "attiva" | "cambiata";
+        StatoAssegnazione: "attiva";
         /**
          * StatoCambioTurno
          * @enum {string}
