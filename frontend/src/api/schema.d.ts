@@ -4,3426 +4,3688 @@
  */
 
 export interface paths {
-  '/api/v1/auth/token': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Login */
-    post: operations['login_api_v1_auth_token_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/auth/me': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Read Me */
-    get: operations['read_me_api_v1_auth_me_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/auth/change-temporary-password': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Change Temporary Password */
-    post: operations['change_temporary_password_api_v1_auth_change_temporary_password_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/auth/register': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Register */
-    post: operations['register_api_v1_auth_register_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/utenti/': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Utenti */
-    get: operations['list_utenti_api_v1_utenti__get']
-    put?: never
-    /** Create Utente */
-    post: operations['create_utente_api_v1_utenti__post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/utenti/{utente_id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get Utente */
-    get: operations['get_utente_api_v1_utenti__utente_id__get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    /** Update Utente */
-    patch: operations['update_utente_api_v1_utenti__utente_id__patch']
-    trace?: never
-  }
-  '/api/v1/utenti/{utente_id}/password-temporanea': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Create Temporary Password */
-    post: operations['create_temporary_password_api_v1_utenti__utente_id__password_temporanea_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/pazienti/': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Pazienti */
-    get: operations['list_pazienti_api_v1_pazienti__get']
-    put?: never
-    /** Create Paziente */
-    post: operations['create_paziente_api_v1_pazienti__post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/pazienti/{paziente_id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get Paziente */
-    get: operations['get_paziente_api_v1_pazienti__paziente_id__get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    /** Update Paziente */
-    patch: operations['update_paziente_api_v1_pazienti__paziente_id__patch']
-    trace?: never
-  }
-  '/api/v1/turni/': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Turni */
-    get: operations['list_turni_api_v1_turni__get']
-    put?: never
-    /** Create Turno */
-    post: operations['create_turno_api_v1_turni__post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/turni/calendario': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Calendario Turni */
-    get: operations['list_calendario_turni_api_v1_turni_calendario_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/turni/scoperti': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Turni Scoperti */
-    get: operations['list_turni_scoperti_api_v1_turni_scoperti_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/turni/{turno_id}/assegnazioni': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Assegna Turno */
-    post: operations['assegna_turno_api_v1_turni__turno_id__assegnazioni_post']
-    /** Rimuovi Assegnazione */
-    delete: operations['rimuovi_assegnazione_api_v1_turni__turno_id__assegnazioni_delete']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/turni/mie-assegnazioni': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Mie Assegnazioni */
-    get: operations['list_mie_assegnazioni_api_v1_turni_mie_assegnazioni_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/cambi-turno/': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Richieste */
-    get: operations['list_richieste_api_v1_cambi_turno__get']
-    put?: never
-    /**
-     * Create Richiesta
-     * @description Apre una richiesta di cambio turno, stato iniziale `in_attesa_collega`.
-     *
-     *     Il flusso a doppia conferma richiede poi la risposta del collega
-     *     interpellato (`/risposta-collega`) e infine l'approvazione della
-     *     caposala (`/risposta-caposala`) prima che lo scambio diventi effettivo.
-     */
-    post: operations['create_richiesta_api_v1_cambi_turno__post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/cambi-turno/{richiesta_id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    /**
-     * Delete Richiesta
-     * @description Il richiedente annulla una richiesta ancora pendente (non ancora
-     *     approvata/rifiutata).
-     */
-    delete: operations['delete_richiesta_api_v1_cambi_turno__richiesta_id__delete']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/cambi-turno/{richiesta_id}/risposta-collega': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Risposta Collega
-     * @description Il collega interpellato accetta o rifiuta lo scambio.
-     *
-     *     Accettando, la richiesta passa a `in_attesa_caposala`; rifiutando,
-     *     diventa `rifiutata_collega` e il flusso si ferma qui.
-     */
-    post: operations['risposta_collega_api_v1_cambi_turno__richiesta_id__risposta_collega_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/cambi-turno/{richiesta_id}/risposta-caposala': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Risposta Caposala
-     * @description La caposala approva o rifiuta lo scambio già accettato dal collega.
-     *
-     *     Approvando, l'`infermiere_id` sull'assegnazione originale viene
-     *     sostituito con quello del collega (se non crea un doppio turno nella
-     *     stessa data); rifiutando, la richiesta diventa `rifiutata_caposala`.
-     */
-    post: operations['risposta_caposala_api_v1_cambi_turno__richiesta_id__risposta_caposala_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/ferie/slot-disponibili': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Slot Disponibili */
-    get: operations['list_slot_disponibili_api_v1_ferie_slot_disponibili_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/ferie/richieste': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Richieste */
-    get: operations['list_richieste_api_v1_ferie_richieste_get']
-    put?: never
-    /**
-     * Create Richiesta
-     * @description Apre una richiesta con fino a 3 preferenze ordinate sui blocchi fissi
-     *     di 2 settimane della stagione. Stato iniziale `in_attesa`, in attesa di
-     *     approvazione della caposala. Un infermiere può avere una sola richiesta
-     *     attiva (in_attesa o approvata) alla volta.
-     */
-    post: operations['create_richiesta_api_v1_ferie_richieste_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/ferie/richieste/{richiesta_id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    /**
-     * Delete Richiesta
-     * @description Annulla una richiesta ancora in_attesa.
-     */
-    delete: operations['delete_richiesta_api_v1_ferie_richieste__richiesta_id__delete']
-    options?: never
-    head?: never
-    /**
-     * Update Richiesta
-     * @description Sostituisce le preferenze di una richiesta ancora in_attesa.
-     */
-    patch: operations['update_richiesta_api_v1_ferie_richieste__richiesta_id__patch']
-    trace?: never
-  }
-  '/api/v1/ferie/richieste/{richiesta_id}/rispondi': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Rispondi Richiesta */
-    post: operations['rispondi_richiesta_api_v1_ferie_richieste__richiesta_id__rispondi_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/consegne-sbar/': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Consegne */
-    get: operations['list_consegne_api_v1_consegne_sbar__get']
-    put?: never
-    /** Create Consegna */
-    post: operations['create_consegna_api_v1_consegne_sbar__post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/consegne-sbar/{consegna_id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    /** Update Consegna */
-    patch: operations['update_consegna_api_v1_consegne_sbar__consegna_id__patch']
-    trace?: never
-  }
-  '/api/v1/pazienti/{paziente_id}/diario-cedema': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Voci */
-    get: operations['list_voci_api_v1_pazienti__paziente_id__diario_cedema_get']
-    put?: never
-    /** Create Voce */
-    post: operations['create_voce_api_v1_pazienti__paziente_id__diario_cedema_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/pazienti/{paziente_id}/norton': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Norton */
-    get: operations['list_norton_api_v1_pazienti__paziente_id__norton_get']
-    put?: never
-    /** Create Norton */
-    post: operations['create_norton_api_v1_pazienti__paziente_id__norton_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/pazienti/{paziente_id}/conley': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Conley */
-    get: operations['list_conley_api_v1_pazienti__paziente_id__conley_get']
-    put?: never
-    /** Create Conley */
-    post: operations['create_conley_api_v1_pazienti__paziente_id__conley_post']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/pazienti/{paziente_id}/valutazioni': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get Valutazioni Aggregate */
-    get: operations['get_valutazioni_aggregate_api_v1_pazienti__paziente_id__valutazioni_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/banca-ore/{infermiere_id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get Banca Ore
-     * @description Saldo ore mensile: ore effettuate (da turni assegnati attivi, dall'inizio del
-     *     mese fino a oggi incluso) meno ore contrattuali.
-     *
-     *     L'infermiere può consultare solo la propria banca ore; la caposala solo
-     *     quella degli infermieri del proprio reparto. `mese` nel formato `YYYY-MM`.
-     */
-    get: operations['get_banca_ore_api_v1_banca_ore__infermiere_id__get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/dashboard/caposala': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Dashboard Caposala */
-    get: operations['dashboard_caposala_api_v1_dashboard_caposala_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/reparti/': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Reparti */
-    get: operations['list_reparti_api_v1_reparti__get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/v1/reparti/{reparto_id}/utenti': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List Utenti By Reparto */
-    get: operations['list_utenti_by_reparto_api_v1_reparti__reparto_id__utenti_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/health': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Health */
-    get: operations['health_health_get']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
+    "/api/v1/auth/token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Login */
+        post: operations["login_api_v1_auth_token_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Me */
+        get: operations["read_me_api_v1_auth_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/change-temporary-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Change Temporary Password */
+        post: operations["change_temporary_password_api_v1_auth_change_temporary_password_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register */
+        post: operations["register_api_v1_auth_register_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/utenti/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Utenti */
+        get: operations["list_utenti_api_v1_utenti__get"];
+        put?: never;
+        /** Create Utente */
+        post: operations["create_utente_api_v1_utenti__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/utenti/{utente_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Utente */
+        get: operations["get_utente_api_v1_utenti__utente_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Utente */
+        patch: operations["update_utente_api_v1_utenti__utente_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/utenti/{utente_id}/password-temporanea": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Temporary Password */
+        post: operations["create_temporary_password_api_v1_utenti__utente_id__password_temporanea_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pazienti/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Pazienti */
+        get: operations["list_pazienti_api_v1_pazienti__get"];
+        put?: never;
+        /** Create Paziente */
+        post: operations["create_paziente_api_v1_pazienti__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pazienti/{paziente_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Paziente */
+        get: operations["get_paziente_api_v1_pazienti__paziente_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Paziente */
+        patch: operations["update_paziente_api_v1_pazienti__paziente_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/turni/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Turni */
+        get: operations["list_turni_api_v1_turni__get"];
+        put?: never;
+        /** Create Turno */
+        post: operations["create_turno_api_v1_turni__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turni/calendario": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Calendario Turni */
+        get: operations["list_calendario_turni_api_v1_turni_calendario_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turni/scoperti": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Turni Scoperti */
+        get: operations["list_turni_scoperti_api_v1_turni_scoperti_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turni/{turno_id}/assegnazioni": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Assegna Turno */
+        post: operations["assegna_turno_api_v1_turni__turno_id__assegnazioni_post"];
+        /** Rimuovi Assegnazione */
+        delete: operations["rimuovi_assegnazione_api_v1_turni__turno_id__assegnazioni_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turni/mie-assegnazioni": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Mie Assegnazioni */
+        get: operations["list_mie_assegnazioni_api_v1_turni_mie_assegnazioni_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cambi-turno/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Richieste */
+        get: operations["list_richieste_api_v1_cambi_turno__get"];
+        put?: never;
+        /**
+         * Create Richiesta
+         * @description Apre una richiesta di cambio turno, stato iniziale `in_attesa_collega`.
+         *
+         *     Il flusso a doppia conferma richiede poi la risposta del collega
+         *     interpellato (`/risposta-collega`) e infine l'approvazione della
+         *     caposala (`/risposta-caposala`) prima che lo scambio diventi effettivo.
+         */
+        post: operations["create_richiesta_api_v1_cambi_turno__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cambi-turno/{richiesta_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Richiesta
+         * @description Il richiedente annulla una richiesta ancora pendente (non ancora
+         *     approvata/rifiutata).
+         */
+        delete: operations["delete_richiesta_api_v1_cambi_turno__richiesta_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cambi-turno/{richiesta_id}/risposta-collega": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Risposta Collega
+         * @description Il collega interpellato accetta o rifiuta lo scambio.
+         *
+         *     Accettando, la richiesta passa a `in_attesa_caposala`; rifiutando,
+         *     diventa `rifiutata_collega` e il flusso si ferma qui.
+         */
+        post: operations["risposta_collega_api_v1_cambi_turno__richiesta_id__risposta_collega_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cambi-turno/{richiesta_id}/risposta-caposala": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Risposta Caposala
+         * @description La caposala approva o rifiuta lo scambio già accettato dal collega.
+         *
+         *     Approvando, l'`infermiere_id` sull'assegnazione originale viene
+         *     sostituito con quello del collega (se non crea un doppio turno nella
+         *     stessa data); rifiutando, la richiesta diventa `rifiutata_caposala`.
+         */
+        post: operations["risposta_caposala_api_v1_cambi_turno__richiesta_id__risposta_caposala_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ferie/slot-disponibili": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Slot Disponibili */
+        get: operations["list_slot_disponibili_api_v1_ferie_slot_disponibili_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ferie/richieste": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Richieste */
+        get: operations["list_richieste_api_v1_ferie_richieste_get"];
+        put?: never;
+        /**
+         * Create Richiesta
+         * @description Apre una richiesta con fino a 3 preferenze ordinate sui blocchi fissi
+         *     di 2 settimane della stagione. Stato iniziale `in_attesa`, in attesa di
+         *     approvazione della caposala. Un infermiere può avere una sola richiesta
+         *     attiva (in_attesa o approvata) alla volta.
+         */
+        post: operations["create_richiesta_api_v1_ferie_richieste_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ferie/richieste/{richiesta_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Richiesta
+         * @description Annulla una richiesta ancora in_attesa.
+         */
+        delete: operations["delete_richiesta_api_v1_ferie_richieste__richiesta_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Richiesta
+         * @description Sostituisce le preferenze di una richiesta ancora in_attesa.
+         */
+        patch: operations["update_richiesta_api_v1_ferie_richieste__richiesta_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/ferie/richieste/{richiesta_id}/rispondi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rispondi Richiesta */
+        post: operations["rispondi_richiesta_api_v1_ferie_richieste__richiesta_id__rispondi_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/consegne-sbar/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Consegne */
+        get: operations["list_consegne_api_v1_consegne_sbar__get"];
+        put?: never;
+        /** Create Consegna */
+        post: operations["create_consegna_api_v1_consegne_sbar__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/consegne-sbar/pazienti/{paziente_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Consegne By Paziente */
+        get: operations["list_consegne_by_paziente_api_v1_consegne_sbar_pazienti__paziente_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/consegne-sbar/{consegna_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Consegna */
+        patch: operations["update_consegna_api_v1_consegne_sbar__consegna_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/pazienti/{paziente_id}/diario-cedema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Voci */
+        get: operations["list_voci_api_v1_pazienti__paziente_id__diario_cedema_get"];
+        put?: never;
+        /** Create Voce */
+        post: operations["create_voce_api_v1_pazienti__paziente_id__diario_cedema_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pazienti/{paziente_id}/parametri-vitali": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Parametri Vitali */
+        get: operations["list_parametri_vitali_api_v1_pazienti__paziente_id__parametri_vitali_get"];
+        put?: never;
+        /** Create Parametri Vitali */
+        post: operations["create_parametri_vitali_api_v1_pazienti__paziente_id__parametri_vitali_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pazienti/{paziente_id}/norton": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Norton */
+        get: operations["list_norton_api_v1_pazienti__paziente_id__norton_get"];
+        put?: never;
+        /** Create Norton */
+        post: operations["create_norton_api_v1_pazienti__paziente_id__norton_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pazienti/{paziente_id}/conley": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Conley */
+        get: operations["list_conley_api_v1_pazienti__paziente_id__conley_get"];
+        put?: never;
+        /** Create Conley */
+        post: operations["create_conley_api_v1_pazienti__paziente_id__conley_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pazienti/{paziente_id}/valutazioni": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Valutazioni Aggregate */
+        get: operations["get_valutazioni_aggregate_api_v1_pazienti__paziente_id__valutazioni_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/banca-ore/{infermiere_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Banca Ore
+         * @description Saldo ore mensile: ore effettuate (da turni assegnati attivi, dall'inizio del
+         *     mese fino a oggi incluso) meno ore contrattuali.
+         *
+         *     L'infermiere può consultare solo la propria banca ore; la caposala solo
+         *     quella degli infermieri del proprio reparto. `mese` nel formato `YYYY-MM`.
+         */
+        get: operations["get_banca_ore_api_v1_banca_ore__infermiere_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dashboard/caposala": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dashboard Caposala */
+        get: operations["dashboard_caposala_api_v1_dashboard_caposala_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reparti/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Reparti */
+        get: operations["list_reparti_api_v1_reparti__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reparti/{reparto_id}/utenti": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Utenti By Reparto */
+        get: operations["list_utenti_by_reparto_api_v1_reparti__reparto_id__utenti_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Health */
+        get: operations["health_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-export type webhooks = Record<string, never>
+export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /** AssegnazioneTurnoCreate */
-    AssegnazioneTurnoCreate: {
-      /** Infermiere Id */
-      infermiere_id: number
-    }
-    /** AssegnazioneTurnoRead */
-    AssegnazioneTurnoRead: {
-      /** Id */
-      id: number
-      /** Turno Id */
-      turno_id: number
-      /** Infermiere Id */
-      infermiere_id: number
-      stato: components['schemas']['StatoAssegnazione']
-    }
-    /** BancaOreRead */
-    BancaOreRead: {
-      /** Infermiere Id */
-      infermiere_id: number
-      /** Mese */
-      mese: string
-      /** Ore Effettuate */
-      ore_effettuate: number
-      /** Ore Contrattuali */
-      ore_contrattuali: number
-      /** Saldo */
-      saldo: number
-    }
-    /** Body_login_api_v1_auth_token_post */
-    Body_login_api_v1_auth_token_post: {
-      /** Grant Type */
-      grant_type?: string | null
-      /** Username */
-      username: string
-      /**
-       * Password
-       * Format: password
-       */
-      password: string
-      /**
-       * Scope
-       * @default
-       */
-      scope: string
-      /** Client Id */
-      client_id?: string | null
-      /**
-       * Client Secret
-       * Format: password
-       */
-      client_secret?: string | null
-    }
-    /** ConsegnaSbarCreate */
-    ConsegnaSbarCreate: {
-      /** Paziente Id */
-      paziente_id: number
-      /** Turno Id */
-      turno_id: number
-      /** Situation */
-      situation: string
-      /** Background */
-      background: string
-      /** Assessment */
-      assessment: string
-      /** Recommendation */
-      recommendation: string
-      /** @default normale */
-      priorita: components['schemas']['PrioritaConsegna']
-    }
-    /** ConsegnaSbarRead */
-    ConsegnaSbarRead: {
-      /** Id */
-      id: number
-      /** Paziente Id */
-      paziente_id: number
-      /** Turno Id */
-      turno_id: number
-      /** Autore Id */
-      autore_id: number
-      /** Situation */
-      situation: string
-      /** Background */
-      background: string
-      /** Assessment */
-      assessment: string
-      /** Recommendation */
-      recommendation: string
-      priorita: components['schemas']['PrioritaConsegna']
-      /**
-       * Creata Il
-       * Format: date-time
-       */
-      creata_il: string
-    }
-    /** ConsegnaSbarUpdate */
-    ConsegnaSbarUpdate: {
-      /** Situation */
-      situation?: string | null
-      /** Background */
-      background?: string | null
-      /** Assessment */
-      assessment?: string | null
-      /** Recommendation */
-      recommendation?: string | null
-      priorita?: components['schemas']['PrioritaConsegna'] | null
-    }
-    /** ConsegneSbarPage */
-    ConsegneSbarPage: {
-      /** Items */
-      items: components['schemas']['ConsegnaSbarRead'][]
-      /** Total */
-      total: number
-    }
-    /** DashboardCaposala */
-    DashboardCaposala: {
-      /** Turni Scoperti */
-      turni_scoperti: components['schemas']['TurnoRead'][]
-      /** Turni Scoperti Count */
-      turni_scoperti_count: number
-      /** Cambi Turno In Attesa */
-      cambi_turno_in_attesa: components['schemas']['RichiestaCambioTurnoRead'][]
-      /** Cambi Turno In Attesa Count */
-      cambi_turno_in_attesa_count: number
-    }
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: components['schemas']['ValidationError'][]
-    }
-    /** PazienteCreate */
-    PazienteCreate: {
-      /** Nome */
-      nome: string
-      /** Cognome */
-      cognome: string
-      /** Eta */
-      eta: number
-      /** Letto */
-      letto: string
-      /**
-       * Data Ricovero
-       * Format: date
-       */
-      data_ricovero: string
-      /** Diagnosi Ingresso */
-      diagnosi_ingresso: string
-      /** Reparto Id */
-      reparto_id: number
-    }
-    /** PazienteRead */
-    PazienteRead: {
-      /** Nome */
-      nome: string
-      /** Cognome */
-      cognome: string
-      /** Eta */
-      eta: number
-      /** Letto */
-      letto: string
-      /**
-       * Data Ricovero
-       * Format: date
-       */
-      data_ricovero: string
-      /** Diagnosi Ingresso */
-      diagnosi_ingresso: string
-      /** Reparto Id */
-      reparto_id: number
-      /** Id */
-      id: number
-      /** Dimesso */
-      dimesso: boolean
-    }
-    /** PazienteUpdate */
-    PazienteUpdate: {
-      /** Letto */
-      letto?: string | null
-      /** Diagnosi Ingresso */
-      diagnosi_ingresso?: string | null
-      /** Dimesso */
-      dimesso?: boolean | null
-    }
-    /** PreferenzaFerieRead */
-    PreferenzaFerieRead: {
-      /** Rank */
-      rank: number
-      /**
-       * Data Inizio
-       * Format: date
-       */
-      data_inizio: string
-      /**
-       * Data Fine
-       * Format: date
-       */
-      data_fine: string
-    }
-    /**
-     * PrioritaConsegna
-     * @enum {string}
-     */
-    PrioritaConsegna: 'normale' | 'urgente'
-    /** RepartoRead */
-    RepartoRead: {
-      /** Id */
-      id: number
-      /** Nome */
-      nome: string
-    }
-    /** RichiestaCambioTurnoCreate */
-    RichiestaCambioTurnoCreate: {
-      /** Assegnazione Turno Id */
-      assegnazione_turno_id: number
-      /** Collega Id */
-      collega_id: number
-    }
-    /** RichiestaCambioTurnoRead */
-    RichiestaCambioTurnoRead: {
-      /** Id */
-      id: number
-      /** Assegnazione Turno Id */
-      assegnazione_turno_id: number
-      /** Richiedente Id */
-      richiedente_id: number
-      /** Collega Id */
-      collega_id: number
-      stato: components['schemas']['StatoCambioTurno']
-      /**
-       * Creata Il
-       * Format: date-time
-       */
-      creata_il: string
-      /** Risposta Collega Il */
-      risposta_collega_il?: string | null
-      /** Risposta Caposala Id */
-      risposta_caposala_id?: number | null
-      /** Risposta Caposala Il */
-      risposta_caposala_il?: string | null
-      /** Motivo Rifiuto */
-      motivo_rifiuto?: string | null
-    }
-    /** RichiestaFerieCreate */
-    RichiestaFerieCreate: {
-      /** Preferenze */
-      preferenze: string[]
-    }
-    /** RichiestaFerieRead */
-    RichiestaFerieRead: {
-      /** Id */
-      id: number
-      /** Infermiere Id */
-      infermiere_id: number
-      /** Data Inizio */
-      data_inizio?: string | null
-      /** Data Fine */
-      data_fine?: string | null
-      /**
-       * Preferenze
-       * @default []
-       */
-      preferenze: components['schemas']['PreferenzaFerieRead'][]
-      stato: components['schemas']['StatoRichiestaFerie']
-      /**
-       * Creata Il
-       * Format: date-time
-       */
-      creata_il: string
-      /** Risposta Caposala Id */
-      risposta_caposala_id?: number | null
-      /** Risposta Caposala Il */
-      risposta_caposala_il?: string | null
-      /** Motivo Rifiuto */
-      motivo_rifiuto?: string | null
-    }
-    /** RispostaCaposalaRequest */
-    RispostaCaposalaRequest: {
-      /** Accetta */
-      accetta: boolean
-      /** Motivo Rifiuto */
-      motivo_rifiuto?: string | null
-    }
-    /** RispostaCollegaRequest */
-    RispostaCollegaRequest: {
-      /** Accetta */
-      accetta: boolean
-    }
-    /** RispostaFerieRequest */
-    RispostaFerieRequest: {
-      /** Accetta */
-      accetta: boolean
-      /** Preferenza Rank */
-      preferenza_rank?: number | null
-      /** Motivo Rifiuto */
-      motivo_rifiuto?: string | null
-    }
-    /**
-     * RuoloUtente
-     * @enum {string}
-     */
-    RuoloUtente: 'infermiere' | 'caposala'
-    /**
-     * StatoAssegnazione
-     * @enum {string}
-     */
-    StatoAssegnazione: 'attiva' | 'cambiata'
-    /**
-     * StatoCambioTurno
-     * @enum {string}
-     */
-    StatoCambioTurno:
-      | 'in_attesa_collega'
-      | 'rifiutata_collega'
-      | 'in_attesa_caposala'
-      | 'rifiutata_caposala'
-      | 'approvata'
-    /**
-     * StatoRichiestaFerie
-     * @enum {string}
-     */
-    StatoRichiestaFerie: 'in_attesa' | 'approvata' | 'rifiutata'
-    /**
-     * StatoUtente
-     * @enum {string}
-     */
-    StatoUtente: 'in_attesa' | 'attivo' | 'disattivato'
-    /** TemporaryPasswordChange */
-    TemporaryPasswordChange: {
-      /** Utente Id */
-      utente_id: number
-      /** Temporary Password */
-      temporary_password: string
-      /** New Password */
-      new_password: string
-    }
-    /** TemporaryPasswordResponse */
-    TemporaryPasswordResponse: {
-      /** Temporary Password */
-      temporary_password: string
-    }
-    /**
-     * TipoTurno
-     * @enum {string}
-     */
-    TipoTurno:
-      'mattina' | 'pomeriggio' | 'notte' | 'riposo' | 'ferie' | 'ferie_estive'
-    /** Token */
-    Token: {
-      /** Access Token */
-      access_token: string
-      /**
-       * Token Type
-       * @default bearer
-       */
-      token_type: string
-    }
-    /** TurnoCalendarioRead */
-    TurnoCalendarioRead: {
-      /**
-       * Data
-       * Format: date
-       */
-      data: string
-      tipo: components['schemas']['TipoTurno']
-      /** Reparto Id */
-      reparto_id: number
-      /**
-       * Ora Inizio
-       * Format: time
-       */
-      ora_inizio: string
-      /**
-       * Ora Fine
-       * Format: time
-       */
-      ora_fine: string
-      /** Id */
-      id: number
-      /** Assegnazioni */
-      assegnazioni: components['schemas']['AssegnazioneTurnoRead'][]
-    }
-    /** TurnoCreate */
-    TurnoCreate: {
-      /**
-       * Data
-       * Format: date
-       */
-      data: string
-      tipo: components['schemas']['TipoTurno']
-      /** Reparto Id */
-      reparto_id: number
-      /**
-       * Ora Inizio
-       * Format: time
-       */
-      ora_inizio: string
-      /**
-       * Ora Fine
-       * Format: time
-       */
-      ora_fine: string
-    }
-    /** TurnoRead */
-    TurnoRead: {
-      /**
-       * Data
-       * Format: date
-       */
-      data: string
-      tipo: components['schemas']['TipoTurno']
-      /** Reparto Id */
-      reparto_id: number
-      /**
-       * Ora Inizio
-       * Format: time
-       */
-      ora_inizio: string
-      /**
-       * Ora Fine
-       * Format: time
-       */
-      ora_fine: string
-      /** Id */
-      id: number
-    }
-    /** UtenteCreate */
-    UtenteCreate: {
-      /** Nome */
-      nome: string
-      /** Cognome */
-      cognome: string
-      /** Email */
-      email: string
-      ruolo: components['schemas']['RuoloUtente']
-      /** Reparto Id */
-      reparto_id: number
-      /** Password */
-      password: string
-    }
-    /** UtenteRead */
-    UtenteRead: {
-      /** Nome */
-      nome: string
-      /** Cognome */
-      cognome: string
-      /** Email */
-      email: string
-      ruolo: components['schemas']['RuoloUtente']
-      /** Reparto Id */
-      reparto_id: number
-      /** Id */
-      id: number
-      stato: components['schemas']['StatoUtente']
-    }
-    /** UtenteRegister */
-    UtenteRegister: {
-      /** Email */
-      email: string
-      /** Password */
-      password: string
-      /** Nome */
-      nome: string
-      /** Cognome */
-      cognome: string
-      /** Reparto Id */
-      reparto_id: number
-    }
-    /** UtenteTile */
-    UtenteTile: {
-      /** Id */
-      id: number
-      /** Nome */
-      nome: string
-      /** Cognome */
-      cognome: string
-      ruolo: components['schemas']['RuoloUtente']
-    }
-    /** UtenteUpdate */
-    UtenteUpdate: {
-      /** Nome */
-      nome?: string | null
-      /** Cognome */
-      cognome?: string | null
-      stato?: components['schemas']['StatoUtente'] | null
-    }
-    /** ValidationError */
-    ValidationError: {
-      /** Location */
-      loc: (string | number)[]
-      /** Message */
-      msg: string
-      /** Error Type */
-      type: string
-      /** Input */
-      input?: unknown
-      /** Context */
-      ctx?: Record<string, never>
-    }
-    /** ValutazioneConleyCreate */
-    ValutazioneConleyCreate: {
-      /**
-       * Data Valutazione
-       * Format: date
-       */
-      data_valutazione: string
-      /** Storia Cadute */
-      storia_cadute: number
-      /** Deficit Visivo */
-      deficit_visivo: number
-      /** Alterazione Eliminazione */
-      alterazione_eliminazione: number
-      /** Agitazione */
-      agitazione: number
-      /** Deficit Vista Osservato */
-      deficit_vista_osservato: number
-      /** Andatura Alterata */
-      andatura_alterata: number
-    }
-    /** ValutazioneConleyRead */
-    ValutazioneConleyRead: {
-      /**
-       * Data Valutazione
-       * Format: date
-       */
-      data_valutazione: string
-      /** Storia Cadute */
-      storia_cadute: number
-      /** Deficit Visivo */
-      deficit_visivo: number
-      /** Alterazione Eliminazione */
-      alterazione_eliminazione: number
-      /** Agitazione */
-      agitazione: number
-      /** Deficit Vista Osservato */
-      deficit_vista_osservato: number
-      /** Andatura Alterata */
-      andatura_alterata: number
-      /** Id */
-      id: number
-      /** Paziente Id */
-      paziente_id: number
-      /** Autore Id */
-      autore_id: number
-      /** Punteggio Totale */
-      punteggio_totale: number
-    }
-    /** ValutazioneNortonCreate */
-    ValutazioneNortonCreate: {
-      /**
-       * Data Valutazione
-       * Format: date
-       */
-      data_valutazione: string
-      /** Condizioni Generali */
-      condizioni_generali: number
-      /** Stato Mentale */
-      stato_mentale: number
-      /** Attivita */
-      attivita: number
-      /** Mobilita */
-      mobilita: number
-      /** Incontinenza */
-      incontinenza: number
-    }
-    /** ValutazioneNortonRead */
-    ValutazioneNortonRead: {
-      /**
-       * Data Valutazione
-       * Format: date
-       */
-      data_valutazione: string
-      /** Condizioni Generali */
-      condizioni_generali: number
-      /** Stato Mentale */
-      stato_mentale: number
-      /** Attivita */
-      attivita: number
-      /** Mobilita */
-      mobilita: number
-      /** Incontinenza */
-      incontinenza: number
-      /** Id */
-      id: number
-      /** Paziente Id */
-      paziente_id: number
-      /** Autore Id */
-      autore_id: number
-      /** Punteggio Totale */
-      punteggio_totale: number
-    }
-    /** ValutazioniAggregateRead */
-    ValutazioniAggregateRead: {
-      /** Norton */
-      norton: components['schemas']['ValutazioneNortonRead'][]
-      /** Conley */
-      conley: components['schemas']['ValutazioneConleyRead'][]
-    }
-    /** VoceDiarioCedemaCreate */
-    VoceDiarioCedemaCreate: {
-      /** Turno Id */
-      turno_id?: number | null
-      /** Coscienza */
-      coscienza: string
-      /** Emotivita */
-      emotivita: string
-      /** Dolore */
-      dolore: string
-      /** Emodinamica */
-      emodinamica: string
-      /** Mobilizzazione */
-      mobilizzazione: string
-      /** Allert */
-      allert: string
-    }
-    /** VoceDiarioCedemaRead */
-    VoceDiarioCedemaRead: {
-      /** Turno Id */
-      turno_id?: number | null
-      /** Coscienza */
-      coscienza: string
-      /** Emotivita */
-      emotivita: string
-      /** Dolore */
-      dolore: string
-      /** Emodinamica */
-      emodinamica: string
-      /** Mobilizzazione */
-      mobilizzazione: string
-      /** Allert */
-      allert: string
-      /** Id */
-      id: number
-      /** Paziente Id */
-      paziente_id: number
-      /** Autore Id */
-      autore_id: number
-      /**
-       * Timestamp
-       * Format: date-time
-       */
-      timestamp: string
-    }
-  }
-  responses: never
-  parameters: never
-  requestBodies: never
-  headers: never
-  pathItems: never
+    schemas: {
+        /** AssegnazioneTurnoCreate */
+        AssegnazioneTurnoCreate: {
+            /** Infermiere Id */
+            infermiere_id: number;
+        };
+        /** AssegnazioneTurnoRead */
+        AssegnazioneTurnoRead: {
+            /** Id */
+            id: number;
+            /** Turno Id */
+            turno_id: number;
+            /** Infermiere Id */
+            infermiere_id: number;
+            stato: components["schemas"]["StatoAssegnazione"];
+        };
+        /** BancaOreRead */
+        BancaOreRead: {
+            /** Infermiere Id */
+            infermiere_id: number;
+            /** Mese */
+            mese: string;
+            /** Ore Effettuate */
+            ore_effettuate: number;
+            /** Ore Contrattuali */
+            ore_contrattuali: number;
+            /** Saldo */
+            saldo: number;
+        };
+        /** Body_login_api_v1_auth_token_post */
+        Body_login_api_v1_auth_token_post: {
+            /** Grant Type */
+            grant_type?: string | null;
+            /** Username */
+            username: string;
+            /**
+             * Password
+             * Format: password
+             */
+            password: string;
+            /**
+             * Scope
+             * @default
+             */
+            scope: string;
+            /** Client Id */
+            client_id?: string | null;
+            /**
+             * Client Secret
+             * Format: password
+             */
+            client_secret?: string | null;
+        };
+        /** ConsegnaSbarCreate */
+        ConsegnaSbarCreate: {
+            /** Paziente Id */
+            paziente_id: number;
+            /** Turno Id */
+            turno_id: number;
+            /** Situation */
+            situation: string;
+            /** Background */
+            background: string;
+            /** Assessment */
+            assessment: string;
+            /** Recommendation */
+            recommendation: string;
+            /** @default normale */
+            priorita: components["schemas"]["PrioritaConsegna"];
+        };
+        /** ConsegnaSbarRead */
+        ConsegnaSbarRead: {
+            /** Id */
+            id: number;
+            /** Paziente Id */
+            paziente_id: number;
+            /** Turno Id */
+            turno_id: number;
+            /** Autore Id */
+            autore_id: number;
+            /** Situation */
+            situation: string;
+            /** Background */
+            background: string;
+            /** Assessment */
+            assessment: string;
+            /** Recommendation */
+            recommendation: string;
+            priorita: components["schemas"]["PrioritaConsegna"];
+            /**
+             * Creata Il
+             * Format: date-time
+             */
+            creata_il: string;
+        };
+        /** ConsegnaSbarUpdate */
+        ConsegnaSbarUpdate: {
+            /** Situation */
+            situation?: string | null;
+            /** Background */
+            background?: string | null;
+            /** Assessment */
+            assessment?: string | null;
+            /** Recommendation */
+            recommendation?: string | null;
+            priorita?: components["schemas"]["PrioritaConsegna"] | null;
+        };
+        /** ConsegneSbarPage */
+        ConsegneSbarPage: {
+            /** Items */
+            items: components["schemas"]["ConsegnaSbarRead"][];
+            /** Total */
+            total: number;
+        };
+        /** DashboardCaposala */
+        DashboardCaposala: {
+            /** Turni Scoperti */
+            turni_scoperti: components["schemas"]["TurnoRead"][];
+            /** Turni Scoperti Count */
+            turni_scoperti_count: number;
+            /** Cambi Turno In Attesa */
+            cambi_turno_in_attesa: components["schemas"]["RichiestaCambioTurnoRead"][];
+            /** Cambi Turno In Attesa Count */
+            cambi_turno_in_attesa_count: number;
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** ParametriVitaliCreate */
+        ParametriVitaliCreate: {
+            /** Turno Id */
+            turno_id?: number | null;
+            /** Temperatura */
+            temperatura: number;
+            /** Frequenza Cardiaca */
+            frequenza_cardiaca: number;
+            /** Pressione Sistolica */
+            pressione_sistolica: number;
+            /** Pressione Diastolica */
+            pressione_diastolica: number;
+            /** Frequenza Respiratoria */
+            frequenza_respiratoria: number;
+            /** Saturazione O2 */
+            saturazione_o2: number;
+            stato_coscienza: components["schemas"]["StatoCoscienza"];
+            /**
+             * Ossigeno
+             * @default false
+             */
+            ossigeno: boolean;
+            /** Note */
+            note?: string | null;
+        };
+        /** ParametriVitaliRead */
+        ParametriVitaliRead: {
+            /** Turno Id */
+            turno_id?: number | null;
+            /** Temperatura */
+            temperatura: number;
+            /** Frequenza Cardiaca */
+            frequenza_cardiaca: number;
+            /** Pressione Sistolica */
+            pressione_sistolica: number;
+            /** Pressione Diastolica */
+            pressione_diastolica: number;
+            /** Frequenza Respiratoria */
+            frequenza_respiratoria: number;
+            /** Saturazione O2 */
+            saturazione_o2: number;
+            stato_coscienza: components["schemas"]["StatoCoscienza"];
+            /**
+             * Ossigeno
+             * @default false
+             */
+            ossigeno: boolean;
+            /** Note */
+            note?: string | null;
+            /** Id */
+            id: number;
+            /** Paziente Id */
+            paziente_id: number;
+            /** Autore Id */
+            autore_id: number;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+        };
+        /** PazienteCreate */
+        PazienteCreate: {
+            /** Nome */
+            nome: string;
+            /** Cognome */
+            cognome: string;
+            /** Eta */
+            eta: number;
+            /** Letto */
+            letto: string;
+            /**
+             * Data Ricovero
+             * Format: date
+             */
+            data_ricovero: string;
+            /** Diagnosi Ingresso */
+            diagnosi_ingresso: string;
+            /** Reparto Id */
+            reparto_id: number;
+        };
+        /** PazienteRead */
+        PazienteRead: {
+            /** Nome */
+            nome: string;
+            /** Cognome */
+            cognome: string;
+            /** Eta */
+            eta: number;
+            /** Letto */
+            letto: string;
+            /**
+             * Data Ricovero
+             * Format: date
+             */
+            data_ricovero: string;
+            /** Diagnosi Ingresso */
+            diagnosi_ingresso: string;
+            /** Reparto Id */
+            reparto_id: number;
+            /** Id */
+            id: number;
+            /** Dimesso */
+            dimesso: boolean;
+        };
+        /** PazienteUpdate */
+        PazienteUpdate: {
+            /** Letto */
+            letto?: string | null;
+            /** Diagnosi Ingresso */
+            diagnosi_ingresso?: string | null;
+            /** Dimesso */
+            dimesso?: boolean | null;
+        };
+        /** PreferenzaFerieRead */
+        PreferenzaFerieRead: {
+            /** Rank */
+            rank: number;
+            /**
+             * Data Inizio
+             * Format: date
+             */
+            data_inizio: string;
+            /**
+             * Data Fine
+             * Format: date
+             */
+            data_fine: string;
+        };
+        /**
+         * PrioritaConsegna
+         * @enum {string}
+         */
+        PrioritaConsegna: "normale" | "urgente";
+        /** RepartoRead */
+        RepartoRead: {
+            /** Id */
+            id: number;
+            /** Nome */
+            nome: string;
+        };
+        /** RichiestaCambioTurnoCreate */
+        RichiestaCambioTurnoCreate: {
+            /** Assegnazione Turno Id */
+            assegnazione_turno_id: number;
+            /** Collega Id */
+            collega_id: number;
+        };
+        /** RichiestaCambioTurnoRead */
+        RichiestaCambioTurnoRead: {
+            /** Id */
+            id: number;
+            /** Assegnazione Turno Id */
+            assegnazione_turno_id: number;
+            /** Richiedente Id */
+            richiedente_id: number;
+            /** Collega Id */
+            collega_id: number;
+            stato: components["schemas"]["StatoCambioTurno"];
+            /**
+             * Creata Il
+             * Format: date-time
+             */
+            creata_il: string;
+            /** Risposta Collega Il */
+            risposta_collega_il?: string | null;
+            /** Risposta Caposala Id */
+            risposta_caposala_id?: number | null;
+            /** Risposta Caposala Il */
+            risposta_caposala_il?: string | null;
+            /** Motivo Rifiuto */
+            motivo_rifiuto?: string | null;
+        };
+        /** RichiestaFerieCreate */
+        RichiestaFerieCreate: {
+            /** Preferenze */
+            preferenze: string[];
+        };
+        /** RichiestaFerieRead */
+        RichiestaFerieRead: {
+            /** Id */
+            id: number;
+            /** Infermiere Id */
+            infermiere_id: number;
+            /** Data Inizio */
+            data_inizio?: string | null;
+            /** Data Fine */
+            data_fine?: string | null;
+            /**
+             * Preferenze
+             * @default []
+             */
+            preferenze: components["schemas"]["PreferenzaFerieRead"][];
+            stato: components["schemas"]["StatoRichiestaFerie"];
+            /**
+             * Creata Il
+             * Format: date-time
+             */
+            creata_il: string;
+            /** Risposta Caposala Id */
+            risposta_caposala_id?: number | null;
+            /** Risposta Caposala Il */
+            risposta_caposala_il?: string | null;
+            /** Motivo Rifiuto */
+            motivo_rifiuto?: string | null;
+        };
+        /** RispostaCaposalaRequest */
+        RispostaCaposalaRequest: {
+            /** Accetta */
+            accetta: boolean;
+            /** Motivo Rifiuto */
+            motivo_rifiuto?: string | null;
+        };
+        /** RispostaCollegaRequest */
+        RispostaCollegaRequest: {
+            /** Accetta */
+            accetta: boolean;
+        };
+        /** RispostaFerieRequest */
+        RispostaFerieRequest: {
+            /** Accetta */
+            accetta: boolean;
+            /** Preferenza Rank */
+            preferenza_rank?: number | null;
+            /** Motivo Rifiuto */
+            motivo_rifiuto?: string | null;
+        };
+        /**
+         * RuoloUtente
+         * @enum {string}
+         */
+        RuoloUtente: "infermiere" | "caposala";
+        /**
+         * StatoAssegnazione
+         * @enum {string}
+         */
+        StatoAssegnazione: "attiva" | "cambiata";
+        /**
+         * StatoCambioTurno
+         * @enum {string}
+         */
+        StatoCambioTurno: "in_attesa_collega" | "rifiutata_collega" | "in_attesa_caposala" | "rifiutata_caposala" | "approvata";
+        /**
+         * StatoCoscienza
+         * @enum {string}
+         */
+        StatoCoscienza: "vigile" | "verbale" | "dolore" | "coma";
+        /**
+         * StatoRichiestaFerie
+         * @enum {string}
+         */
+        StatoRichiestaFerie: "in_attesa" | "approvata" | "rifiutata";
+        /**
+         * StatoUtente
+         * @enum {string}
+         */
+        StatoUtente: "in_attesa" | "attivo" | "disattivato";
+        /** TemporaryPasswordChange */
+        TemporaryPasswordChange: {
+            /** Utente Id */
+            utente_id: number;
+            /** Temporary Password */
+            temporary_password: string;
+            /** New Password */
+            new_password: string;
+        };
+        /** TemporaryPasswordResponse */
+        TemporaryPasswordResponse: {
+            /** Temporary Password */
+            temporary_password: string;
+        };
+        /**
+         * TipoTurno
+         * @enum {string}
+         */
+        TipoTurno: "mattina" | "pomeriggio" | "notte" | "riposo" | "ferie" | "ferie_estive";
+        /** Token */
+        Token: {
+            /** Access Token */
+            access_token: string;
+            /**
+             * Token Type
+             * @default bearer
+             */
+            token_type: string;
+        };
+        /** TurnoCalendarioRead */
+        TurnoCalendarioRead: {
+            /**
+             * Data
+             * Format: date
+             */
+            data: string;
+            tipo: components["schemas"]["TipoTurno"];
+            /** Reparto Id */
+            reparto_id: number;
+            /**
+             * Ora Inizio
+             * Format: time
+             */
+            ora_inizio: string;
+            /**
+             * Ora Fine
+             * Format: time
+             */
+            ora_fine: string;
+            /** Id */
+            id: number;
+            /** Assegnazioni */
+            assegnazioni: components["schemas"]["AssegnazioneTurnoRead"][];
+        };
+        /** TurnoCreate */
+        TurnoCreate: {
+            /**
+             * Data
+             * Format: date
+             */
+            data: string;
+            tipo: components["schemas"]["TipoTurno"];
+            /** Reparto Id */
+            reparto_id: number;
+            /**
+             * Ora Inizio
+             * Format: time
+             */
+            ora_inizio: string;
+            /**
+             * Ora Fine
+             * Format: time
+             */
+            ora_fine: string;
+        };
+        /** TurnoRead */
+        TurnoRead: {
+            /**
+             * Data
+             * Format: date
+             */
+            data: string;
+            tipo: components["schemas"]["TipoTurno"];
+            /** Reparto Id */
+            reparto_id: number;
+            /**
+             * Ora Inizio
+             * Format: time
+             */
+            ora_inizio: string;
+            /**
+             * Ora Fine
+             * Format: time
+             */
+            ora_fine: string;
+            /** Id */
+            id: number;
+        };
+        /** UtenteCreate */
+        UtenteCreate: {
+            /** Nome */
+            nome: string;
+            /** Cognome */
+            cognome: string;
+            /** Email */
+            email: string;
+            ruolo: components["schemas"]["RuoloUtente"];
+            /** Reparto Id */
+            reparto_id: number;
+            /** Password */
+            password: string;
+        };
+        /** UtenteRead */
+        UtenteRead: {
+            /** Nome */
+            nome: string;
+            /** Cognome */
+            cognome: string;
+            /** Email */
+            email: string;
+            ruolo: components["schemas"]["RuoloUtente"];
+            /** Reparto Id */
+            reparto_id: number;
+            /** Id */
+            id: number;
+            stato: components["schemas"]["StatoUtente"];
+        };
+        /** UtenteRegister */
+        UtenteRegister: {
+            /** Email */
+            email: string;
+            /** Password */
+            password: string;
+            /** Nome */
+            nome: string;
+            /** Cognome */
+            cognome: string;
+            /** Reparto Id */
+            reparto_id: number;
+        };
+        /** UtenteTile */
+        UtenteTile: {
+            /** Id */
+            id: number;
+            /** Nome */
+            nome: string;
+            /** Cognome */
+            cognome: string;
+            ruolo: components["schemas"]["RuoloUtente"];
+        };
+        /** UtenteUpdate */
+        UtenteUpdate: {
+            /** Nome */
+            nome?: string | null;
+            /** Cognome */
+            cognome?: string | null;
+            stato?: components["schemas"]["StatoUtente"] | null;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+            /** Input */
+            input?: unknown;
+            /** Context */
+            ctx?: Record<string, never>;
+        };
+        /** ValutazioneConleyCreate */
+        ValutazioneConleyCreate: {
+            /**
+             * Data Valutazione
+             * Format: date
+             */
+            data_valutazione: string;
+            /** Storia Cadute */
+            storia_cadute: number;
+            /** Deficit Visivo */
+            deficit_visivo: number;
+            /** Alterazione Eliminazione */
+            alterazione_eliminazione: number;
+            /** Agitazione */
+            agitazione: number;
+            /** Deficit Vista Osservato */
+            deficit_vista_osservato: number;
+            /** Andatura Alterata */
+            andatura_alterata: number;
+        };
+        /** ValutazioneConleyRead */
+        ValutazioneConleyRead: {
+            /**
+             * Data Valutazione
+             * Format: date
+             */
+            data_valutazione: string;
+            /** Storia Cadute */
+            storia_cadute: number;
+            /** Deficit Visivo */
+            deficit_visivo: number;
+            /** Alterazione Eliminazione */
+            alterazione_eliminazione: number;
+            /** Agitazione */
+            agitazione: number;
+            /** Deficit Vista Osservato */
+            deficit_vista_osservato: number;
+            /** Andatura Alterata */
+            andatura_alterata: number;
+            /** Id */
+            id: number;
+            /** Paziente Id */
+            paziente_id: number;
+            /** Autore Id */
+            autore_id: number;
+            /** Punteggio Totale */
+            punteggio_totale: number;
+        };
+        /** ValutazioneNortonCreate */
+        ValutazioneNortonCreate: {
+            /**
+             * Data Valutazione
+             * Format: date
+             */
+            data_valutazione: string;
+            /** Condizioni Generali */
+            condizioni_generali: number;
+            /** Stato Mentale */
+            stato_mentale: number;
+            /** Attivita */
+            attivita: number;
+            /** Mobilita */
+            mobilita: number;
+            /** Incontinenza */
+            incontinenza: number;
+        };
+        /** ValutazioneNortonRead */
+        ValutazioneNortonRead: {
+            /**
+             * Data Valutazione
+             * Format: date
+             */
+            data_valutazione: string;
+            /** Condizioni Generali */
+            condizioni_generali: number;
+            /** Stato Mentale */
+            stato_mentale: number;
+            /** Attivita */
+            attivita: number;
+            /** Mobilita */
+            mobilita: number;
+            /** Incontinenza */
+            incontinenza: number;
+            /** Id */
+            id: number;
+            /** Paziente Id */
+            paziente_id: number;
+            /** Autore Id */
+            autore_id: number;
+            /** Punteggio Totale */
+            punteggio_totale: number;
+        };
+        /** ValutazioniAggregateRead */
+        ValutazioniAggregateRead: {
+            /** Norton */
+            norton: components["schemas"]["ValutazioneNortonRead"][];
+            /** Conley */
+            conley: components["schemas"]["ValutazioneConleyRead"][];
+        };
+        /** VoceDiarioCedemaCreate */
+        VoceDiarioCedemaCreate: {
+            /** Turno Id */
+            turno_id?: number | null;
+            /** Coscienza */
+            coscienza: string;
+            /** Emotivita */
+            emotivita: string;
+            /** Dolore */
+            dolore: string;
+            /** Emodinamica */
+            emodinamica: string;
+            /** Mobilizzazione */
+            mobilizzazione: string;
+            /** Allert */
+            allert: string;
+        };
+        /** VoceDiarioCedemaRead */
+        VoceDiarioCedemaRead: {
+            /** Turno Id */
+            turno_id?: number | null;
+            /** Coscienza */
+            coscienza: string;
+            /** Emotivita */
+            emotivita: string;
+            /** Dolore */
+            dolore: string;
+            /** Emodinamica */
+            emodinamica: string;
+            /** Mobilizzazione */
+            mobilizzazione: string;
+            /** Allert */
+            allert: string;
+            /** Id */
+            id: number;
+            /** Paziente Id */
+            paziente_id: number;
+            /** Autore Id */
+            autore_id: number;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-export type $defs = Record<string, never>
+export type $defs = Record<string, never>;
 export interface operations {
-  login_api_v1_auth_token_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/x-www-form-urlencoded': components['schemas']['Body_login_api_v1_auth_token_post']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Token']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  read_me_api_v1_auth_me_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UtenteRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  change_temporary_password_api_v1_auth_change_temporary_password_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TemporaryPasswordChange']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UtenteRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  register_api_v1_auth_register_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UtenteRegister']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UtenteRead']
-        }
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_utenti_api_v1_utenti__get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UtenteRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  create_utente_api_v1_utenti__post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UtenteCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UtenteRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  get_utente_api_v1_utenti__utente_id__get: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        utente_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UtenteRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  update_utente_api_v1_utenti__utente_id__patch: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        utente_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UtenteUpdate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UtenteRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  create_temporary_password_api_v1_utenti__utente_id__password_temporanea_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        utente_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TemporaryPasswordResponse']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_pazienti_api_v1_pazienti__get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PazienteRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  create_paziente_api_v1_pazienti__post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PazienteCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PazienteRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  get_paziente_api_v1_pazienti__paziente_id__get: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PazienteRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  update_paziente_api_v1_pazienti__paziente_id__patch: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PazienteUpdate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PazienteRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_turni_api_v1_turni__get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TurnoRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  create_turno_api_v1_turni__post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TurnoCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TurnoRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_calendario_turni_api_v1_turni_calendario_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TurnoCalendarioRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  list_turni_scoperti_api_v1_turni_scoperti_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['TurnoRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  assegna_turno_api_v1_turni__turno_id__assegnazioni_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        turno_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AssegnazioneTurnoCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['AssegnazioneTurnoRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  rimuovi_assegnazione_api_v1_turni__turno_id__assegnazioni_delete: {
-    parameters: {
-      query: {
-        assegnazione_id: number
-      }
-      header?: never
-      path: {
-        turno_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_mie_assegnazioni_api_v1_turni_mie_assegnazioni_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['AssegnazioneTurnoRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  list_richieste_api_v1_cambi_turno__get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RichiestaCambioTurnoRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  create_richiesta_api_v1_cambi_turno__post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RichiestaCambioTurnoCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RichiestaCambioTurnoRead']
-        }
-      }
-      /** @description Richiesta non valida */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  delete_richiesta_api_v1_cambi_turno__richiesta_id__delete: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        richiesta_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  risposta_collega_api_v1_cambi_turno__richiesta_id__risposta_collega_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        richiesta_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RispostaCollegaRequest']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RichiestaCambioTurnoRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  risposta_caposala_api_v1_cambi_turno__richiesta_id__risposta_caposala_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        richiesta_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RispostaCaposalaRequest']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RichiestaCambioTurnoRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_slot_disponibili_api_v1_ferie_slot_disponibili_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': string[]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  list_richieste_api_v1_ferie_richieste_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RichiestaFerieRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  create_richiesta_api_v1_ferie_richieste_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RichiestaFerieCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RichiestaFerieRead']
-        }
-      }
-      /** @description Richiesta non valida */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  delete_richiesta_api_v1_ferie_richieste__richiesta_id__delete: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        richiesta_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  update_richiesta_api_v1_ferie_richieste__richiesta_id__patch: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        richiesta_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RichiestaFerieCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RichiestaFerieRead']
-        }
-      }
-      /** @description Richiesta non valida */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  rispondi_richiesta_api_v1_ferie_richieste__richiesta_id__rispondi_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        richiesta_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RispostaFerieRequest']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RichiestaFerieRead']
-        }
-      }
-      /** @description Richiesta non valida */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_consegne_api_v1_consegne_sbar__get: {
-    parameters: {
-      query?: {
-        skip?: number
-        limit?: number
-      }
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ConsegneSbarPage']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  create_consegna_api_v1_consegne_sbar__post: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConsegnaSbarCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ConsegnaSbarRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Conflitto di stato o unicità */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  update_consegna_api_v1_consegne_sbar__consegna_id__patch: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        consegna_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConsegnaSbarUpdate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ConsegnaSbarRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_voci_api_v1_pazienti__paziente_id__diario_cedema_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['VoceDiarioCedemaRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  create_voce_api_v1_pazienti__paziente_id__diario_cedema_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['VoceDiarioCedemaCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['VoceDiarioCedemaRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_norton_api_v1_pazienti__paziente_id__norton_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ValutazioneNortonRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  create_norton_api_v1_pazienti__paziente_id__norton_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ValutazioneNortonCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ValutazioneNortonRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  list_conley_api_v1_pazienti__paziente_id__conley_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ValutazioneConleyRead'][]
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  create_conley_api_v1_pazienti__paziente_id__conley_post: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ValutazioneConleyCreate']
-      }
-    }
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ValutazioneConleyRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  get_valutazioni_aggregate_api_v1_pazienti__paziente_id__valutazioni_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        paziente_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ValutazioniAggregateRead']
-        }
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  get_banca_ore_api_v1_banca_ore__infermiere_id__get: {
-    parameters: {
-      query: {
-        mese: string
-      }
-      header?: never
-      path: {
-        infermiere_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['BancaOreRead']
-        }
-      }
-      /** @description Richiesta non valida */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Token mancante o non valido */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Ruolo non autorizzato o risorsa di un altro reparto */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Risorsa non trovata */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  dashboard_caposala_api_v1_dashboard_caposala_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['DashboardCaposala']
-        }
-      }
-    }
-  }
-  list_reparti_api_v1_reparti__get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['RepartoRead'][]
-        }
-      }
-    }
-  }
-  list_utenti_by_reparto_api_v1_reparti__reparto_id__utenti_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        reparto_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UtenteTile'][]
-        }
-      }
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['HTTPValidationError']
-        }
-      }
-    }
-  }
-  health_health_get: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            [key: string]: string
-          }
-        }
-      }
-    }
-  }
+    login_api_v1_auth_token_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Body_login_api_v1_auth_token_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Token"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_me_api_v1_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    change_temporary_password_api_v1_auth_change_temporary_password_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemporaryPasswordChange"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    register_api_v1_auth_register_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UtenteRegister"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_utenti_api_v1_utenti__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_utente_api_v1_utenti__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UtenteCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_utente_api_v1_utenti__utente_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                utente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_utente_api_v1_utenti__utente_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                utente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UtenteUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_temporary_password_api_v1_utenti__utente_id__password_temporanea_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                utente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemporaryPasswordResponse"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_pazienti_api_v1_pazienti__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PazienteRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_paziente_api_v1_pazienti__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PazienteCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PazienteRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_paziente_api_v1_pazienti__paziente_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PazienteRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_paziente_api_v1_pazienti__paziente_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PazienteUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PazienteRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_turni_api_v1_turni__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnoRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_turno_api_v1_turni__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TurnoCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnoRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_calendario_turni_api_v1_turni_calendario_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnoCalendarioRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_turni_scoperti_api_v1_turni_scoperti_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnoRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    assegna_turno_api_v1_turni__turno_id__assegnazioni_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                turno_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssegnazioneTurnoCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssegnazioneTurnoRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rimuovi_assegnazione_api_v1_turni__turno_id__assegnazioni_delete: {
+        parameters: {
+            query: {
+                assegnazione_id: number;
+            };
+            header?: never;
+            path: {
+                turno_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_mie_assegnazioni_api_v1_turni_mie_assegnazioni_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssegnazioneTurnoRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_richieste_api_v1_cambi_turno__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaCambioTurnoRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_richiesta_api_v1_cambi_turno__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RichiestaCambioTurnoCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaCambioTurnoRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_richiesta_api_v1_cambi_turno__richiesta_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    risposta_collega_api_v1_cambi_turno__richiesta_id__risposta_collega_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RispostaCollegaRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaCambioTurnoRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    risposta_caposala_api_v1_cambi_turno__richiesta_id__risposta_caposala_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RispostaCaposalaRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaCambioTurnoRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_slot_disponibili_api_v1_ferie_slot_disponibili_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string[];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_richieste_api_v1_ferie_richieste_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaFerieRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_richiesta_api_v1_ferie_richieste_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RichiestaFerieCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaFerieRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_richiesta_api_v1_ferie_richieste__richiesta_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_richiesta_api_v1_ferie_richieste__richiesta_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RichiestaFerieCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaFerieRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rispondi_richiesta_api_v1_ferie_richieste__richiesta_id__rispondi_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                richiesta_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RispostaFerieRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RichiestaFerieRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_consegne_api_v1_consegne_sbar__get: {
+        parameters: {
+            query?: {
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsegneSbarPage"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_consegna_api_v1_consegne_sbar__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsegnaSbarCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsegnaSbarRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflitto di stato o unicità */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_consegne_by_paziente_api_v1_consegne_sbar_pazienti__paziente_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsegnaSbarRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_consegna_api_v1_consegne_sbar__consegna_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                consegna_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsegnaSbarUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsegnaSbarRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_voci_api_v1_pazienti__paziente_id__diario_cedema_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoceDiarioCedemaRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_voce_api_v1_pazienti__paziente_id__diario_cedema_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VoceDiarioCedemaCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoceDiarioCedemaRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_parametri_vitali_api_v1_pazienti__paziente_id__parametri_vitali_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParametriVitaliRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_parametri_vitali_api_v1_pazienti__paziente_id__parametri_vitali_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParametriVitaliCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParametriVitaliRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_norton_api_v1_pazienti__paziente_id__norton_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValutazioneNortonRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_norton_api_v1_pazienti__paziente_id__norton_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ValutazioneNortonCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValutazioneNortonRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_conley_api_v1_pazienti__paziente_id__conley_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValutazioneConleyRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_conley_api_v1_pazienti__paziente_id__conley_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ValutazioneConleyCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValutazioneConleyRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_valutazioni_aggregate_api_v1_pazienti__paziente_id__valutazioni_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValutazioniAggregateRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_banca_ore_api_v1_banca_ore__infermiere_id__get: {
+        parameters: {
+            query: {
+                mese: string;
+            };
+            header?: never;
+            path: {
+                infermiere_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BancaOreRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dashboard_caposala_api_v1_dashboard_caposala_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardCaposala"];
+                };
+            };
+        };
+    };
+    list_reparti_api_v1_reparti__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepartoRead"][];
+                };
+            };
+        };
+    };
+    list_utenti_by_reparto_api_v1_reparti__reparto_id__utenti_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reparto_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteTile"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    health_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+    };
 }

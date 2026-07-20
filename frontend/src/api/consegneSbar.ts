@@ -77,6 +77,23 @@ export async function createConsegnaSbar(
   return unwrapData(result, 'createConsegnaSbar')
 }
 
+export async function listConsegneSbarByPaziente(
+  pazienteId: number,
+): ApiDataResponse<ConsegnaSbar[]> {
+  const result = await eiraClient.GET(
+    '/api/v1/consegne-sbar/pazienti/{paziente_id}',
+    {
+      params: {
+        path: {
+          paziente_id: pazienteId,
+        },
+      },
+    },
+  )
+
+  return unwrapData(result, 'listConsegneSbarByPaziente')
+}
+
 export async function updateConsegnaSbar(
   id: number,
   payload: ConsegnaSbarUpdatePayload,

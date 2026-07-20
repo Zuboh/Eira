@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import Button from 'primevue/button'
 import Tabs from 'primevue/tabs'
@@ -10,14 +10,14 @@ import TabPanel from 'primevue/tabpanel'
 import InlineError from '@/components/ui/InlineError.vue'
 import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
-import CedemaDialog from '@/features/patient-chart/components/CedemaDialog.vue'
-import CedemaTab from '@/features/patient-chart/components/CedemaTab.vue'
+import ClinicalTimelineTab from '@/features/patient-chart/components/ClinicalTimelineTab.vue'
 import ConleyDialog from '@/features/patient-chart/components/ConleyDialog.vue'
+import GenericConsegnaDrawer from '@/features/patient-chart/components/GenericConsegnaDrawer.vue'
 import NortonDialog from '@/features/patient-chart/components/NortonDialog.vue'
+import ParametriVitaliDialog from '@/features/patient-chart/components/ParametriVitaliDialog.vue'
+import ParametriVitaliTab from '@/features/patient-chart/components/ParametriVitaliTab.vue'
 import PatientEditDialog from '@/features/patient-chart/components/PatientEditDialog.vue'
 import ValutazioniTab from '@/features/patient-chart/components/ValutazioniTab.vue'
-import StoricoSbarTab from '@/features/patient-chart/components/StoricoSbarTab.vue'
-import SbarDialog from '@/features/sbar/components/SbarDialog.vue'
 import { usePatientChart } from '@/features/patient-chart/usePatientChart'
 
 const route = useRoute()
@@ -27,62 +27,42 @@ const {
   paziente,
   loading,
   error,
-  cedema,
+  timeline,
   norton,
   conley,
-  consegne,
-  consegneLoaded,
-  sbarLoading,
+  parametriVitali,
   assegnazioni,
   editing,
   editForm,
-  cedemaDialog,
-  cedemaSaving,
-  cedemaForm,
+  consegnaDrawer,
+  consegnaSaving,
+  consegnaForm,
+  consegnaInsight,
   nortonDialog,
   nortonSaving,
   nortonForm,
   conleyDialog,
   conleySaving,
   conleyForm,
-  sbarDialog,
-  sbarSaving,
-  sbarForm,
-  sbarAssegnazioni,
-  sbarCreateError,
+  parametriDialog,
+  parametriSaving,
+  parametriForm,
   canEditPatient,
   canCreateClinicalEntries,
   load,
-  loadConsegneSbar,
   apriEdit,
   salvaEdit,
-  apriCedema,
-  salvaCedema,
+  apriConsegna,
+  salvaConsegna,
   apriNorton,
   salvaNorton,
   apriConley,
   salvaConley,
-  apriSbar,
-  salvaSbar,
+  apriParametri,
+  salvaParametri,
 } = usePatientChart(pazienteId)
 
-const activeTab = ref('cedema')
-
-watch(activeTab, async (tab) => {
-  if (tab !== 'sbar' || consegneLoaded.value) return
-
-  try {
-    await loadConsegneSbar()
-  } catch {
-    // The composable keeps the page-level error for the primary chart load.
-    // Keep the lazy SBAR tab non-blocking until the backend exposes a patient-scoped endpoint.
-  }
-})
-
-async function apriNuovaSbar() {
-  activeTab.value = 'sbar'
-  await apriSbar()
-}
+const activeTab = ref('diario')
 
 onMounted(load)
 </script>
@@ -90,7 +70,6 @@ onMounted(load)
 <template>
   <div class="scheda-view">
     <InlineError :message="error" />
-    <InlineError :message="sbarCreateError" />
 
     <div v-if="loading && !paziente" class="header-skeleton">
       <SkeletonBlock :lines="3" style="max-width: 22rem" />
@@ -112,13 +91,6 @@ onMounted(load)
             :label="paziente.dimesso ? 'Dimesso' : 'Attivo'"
           />
           <Button
-            v-if="canCreateClinicalEntries"
-            label="Nuova SBAR"
-            size="small"
-            severity="secondary"
-            @click="apriNuovaSbar"
-          />
-          <Button
             v-if="canEditPatient"
             label="Modifica"
             size="small"
@@ -128,18 +100,23 @@ onMounted(load)
         </div>
       </div>
 
+      <ParametriVitaliTab
+        :entries="parametriVitali"
+        :can-create="canCreateClinicalEntries"
+        @new-entry="apriParametri"
+      />
+
       <Tabs v-model:value="activeTab">
         <TabList>
-          <Tab value="cedema">CEDEMA</Tab>
-          <Tab value="valutazioni">Valutazioni</Tab>
-          <Tab value="sbar">Storico SBAR</Tab>
+          <Tab value="diario">Diario clinico</Tab>
+          <Tab value="valutazioni">Scale di valutazione</Tab>
         </TabList>
         <TabPanels>
-          <TabPanel value="cedema">
-            <CedemaTab
-              :entries="cedema"
+          <TabPanel value="diario">
+            <ClinicalTimelineTab
+              :entries="timeline"
               :can-create="canCreateClinicalEntries"
-              @new-entry="apriCedema"
+              @new-entry="apriConsegna"
             />
           </TabPanel>
 
@@ -152,10 +129,6 @@ onMounted(load)
               @new-conley="apriConley"
             />
           </TabPanel>
-
-          <TabPanel value="sbar">
-            <StoricoSbarTab :consegne="consegne" :loading="sbarLoading" />
-          </TabPanel>
         </TabPanels>
       </Tabs>
     </template>
@@ -166,12 +139,13 @@ onMounted(load)
       @save="salvaEdit"
     />
 
-    <CedemaDialog
-      v-model:visible="cedemaDialog"
-      v-model:form="cedemaForm"
+    <GenericConsegnaDrawer
+      v-model:visible="consegnaDrawer"
+      v-model:form="consegnaForm"
       :assegnazioni="assegnazioni"
-      :saving="cedemaSaving"
-      @save="salvaCedema"
+      :saving="consegnaSaving"
+      :insight="consegnaInsight"
+      @save="salvaConsegna"
     />
 
     <NortonDialog
@@ -188,14 +162,11 @@ onMounted(load)
       @save="salvaConley"
     />
 
-    <SbarDialog
-      v-model:visible="sbarDialog"
-      v-model:form="sbarForm"
-      :is-editing="false"
-      :saving="sbarSaving"
-      :assegnazioni="sbarAssegnazioni"
-      hide-paziente
-      @save="salvaSbar"
+    <ParametriVitaliDialog
+      v-model:visible="parametriDialog"
+      v-model:form="parametriForm"
+      :saving="parametriSaving"
+      @save="salvaParametri"
     />
   </div>
 </template>

@@ -18,6 +18,17 @@ from app.schemas.consegna_sbar import (
 router = APIRouter(prefix="/consegne-sbar", tags=["consegne-sbar"])
 
 
+def _get_paziente_same_reparto(paziente_id: int, current_user, db) -> Paziente:
+    paziente = db.get(Paziente, paziente_id)
+    if paziente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paziente non trovato")
+    if paziente.reparto_id != current_user.reparto_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Paziente di un altro reparto"
+        )
+    return paziente
+
+
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
@@ -47,13 +58,7 @@ def create_consegna(
             status_code=status.HTTP_403_FORBIDDEN, detail="Non sei assegnata a questo turno"
         )
 
-    paziente = db.get(Paziente, payload.paziente_id)
-    if paziente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paziente non trovato")
-    if paziente.reparto_id != current_user.reparto_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Paziente di un altro reparto"
-        )
+    _get_paziente_same_reparto(payload.paziente_id, current_user, db)
 
     consegna = ConsegnaSbar(**payload.model_dump(), autore_id=current_user.id)
     db.add(consegna)
@@ -98,6 +103,31 @@ def list_consegne(
         items=[ConsegnaSbarRead.model_validate(consegna) for consegna in consegne],
         total=total,
     )
+
+
+@router.get(
+    "/pazienti/{paziente_id}",
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
+)
+def list_consegne_by_paziente(
+    paziente_id: int, current_user: CurrentUserDep, db: DbDep
+) -> list[ConsegnaSbarRead]:
+    _get_paziente_same_reparto(paziente_id, current_user, db)
+
+    if current_user.ruolo == RuoloUtente.caposala:
+        query = db.query(ConsegnaSbar).filter(ConsegnaSbar.paziente_id == paziente_id)
+    else:
+        query = db.query(ConsegnaSbar).join(
+            AssegnazioneTurno,
+            and_(
+                AssegnazioneTurno.turno_id == ConsegnaSbar.turno_id,
+                AssegnazioneTurno.infermiere_id == current_user.id,
+                AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+            ),
+        ).filter(ConsegnaSbar.paziente_id == paziente_id)
+
+    consegne = query.order_by(ConsegnaSbar.creata_il.desc()).all()
+    return [ConsegnaSbarRead.model_validate(consegna) for consegna in consegne]
 
 
 @router.patch(

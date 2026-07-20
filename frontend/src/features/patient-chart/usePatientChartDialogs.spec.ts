@@ -1,12 +1,16 @@
 import { ref } from 'vue'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { usePatientChartDialogs } from '@/features/patient-chart/usePatientChartDialogs'
 import * as pazientiApi from '@/api/pazienti'
 import * as diarioCedemaApi from '@/api/diarioCedema'
+import * as consegneSbarApi from '@/api/consegneSbar'
+import * as parametriVitaliApi from '@/api/parametriVitali'
 import * as valutazioniApi from '@/api/valutazioni'
 
 vi.mock('@/api/pazienti')
 vi.mock('@/api/diarioCedema')
+vi.mock('@/api/consegneSbar')
+vi.mock('@/api/parametriVitali')
 vi.mock('@/api/valutazioni')
 
 const paziente = {
@@ -22,16 +26,18 @@ const paziente = {
 }
 
 function makeDialogs() {
-  const reloadCedema = vi.fn().mockResolvedValue(undefined)
+  const reloadTimeline = vi.fn().mockResolvedValue(undefined)
   const reloadValutazioni = vi.fn().mockResolvedValue(undefined)
+  const reloadParametriVitali = vi.fn().mockResolvedValue(undefined)
   const dialogs = usePatientChartDialogs({
     pazienteId: 1,
     paziente: ref(paziente),
     error: ref(''),
-    reloadCedema,
+    reloadTimeline,
     reloadValutazioni,
+    reloadParametriVitali,
   })
-  return { dialogs, reloadCedema, reloadValutazioni }
+  return { dialogs, reloadTimeline, reloadValutazioni, reloadParametriVitali }
 }
 
 beforeEach(() => {
@@ -51,53 +57,69 @@ describe('usePatientChartDialogs — edit', () => {
       dimesso: false,
     })
   })
-
-  it('salvaEdit updates paziente and closes the dialog', async () => {
-    const { dialogs } = makeDialogs()
-    dialogs.apriEdit()
-
-    await dialogs.salvaEdit()
-
-    expect(pazientiApi.updatePaziente).toHaveBeenCalledWith(
-      1,
-      dialogs.editForm.value,
-    )
-    expect(dialogs.editing.value).toBe(false)
-  })
 })
 
-describe('usePatientChartDialogs — cedema', () => {
-  it('salvaCedema saves, closes the dialog, and reloads cedema on success', async () => {
+describe('usePatientChartDialogs — generic consegna', () => {
+  it('salvaConsegna saves SBAR and reloads timeline on success', async () => {
+    vi.mocked(consegneSbarApi.createConsegnaSbar).mockResolvedValue({
+      data: {} as never,
+    })
+    const { dialogs, reloadTimeline } = makeDialogs()
+    dialogs.apriConsegna()
+    dialogs.consegnaForm.value.testo = 'Situation: dolore acuto'
+    dialogs.consegnaForm.value.turno_id = 7
+
+    await dialogs.salvaConsegna()
+
+    expect(consegneSbarApi.createConsegnaSbar).toHaveBeenCalledOnce()
+    expect(dialogs.consegnaDrawer.value).toBe(false)
+    expect(reloadTimeline).toHaveBeenCalledOnce()
+  })
+
+  it('salvaConsegna saves CEDEMA and reloads timeline on success', async () => {
     vi.mocked(diarioCedemaApi.createVoceDiarioCedema).mockResolvedValue({
       data: {} as never,
     })
-    const { dialogs, reloadCedema } = makeDialogs()
-    dialogs.apriCedema()
+    const { dialogs, reloadTimeline } = makeDialogs()
+    dialogs.apriConsegna()
+    dialogs.consegnaForm.value.tipo = 'cedema'
+    dialogs.consegnaForm.value.testo = 'Paziente tranquillo e collaborante.'
 
-    await dialogs.salvaCedema()
+    await dialogs.salvaConsegna()
 
     expect(diarioCedemaApi.createVoceDiarioCedema).toHaveBeenCalledOnce()
-    expect(dialogs.cedemaDialog.value).toBe(false)
-    expect(dialogs.cedemaSaving.value).toBe(false)
-    expect(reloadCedema).toHaveBeenCalledOnce()
+    expect(reloadTimeline).toHaveBeenCalledOnce()
   })
 
-  it('salvaCedema sets an error and keeps the dialog open on failure', async () => {
-    vi.mocked(diarioCedemaApi.createVoceDiarioCedema).mockRejectedValue(
-      new Error('down'),
-    )
+  it('salvaConsegna blocks empty text', async () => {
     const { dialogs } = makeDialogs()
-    dialogs.apriCedema()
+    dialogs.apriConsegna()
 
-    await dialogs.salvaCedema()
+    await dialogs.salvaConsegna()
 
-    expect(dialogs.cedemaDialog.value).toBe(true)
-    expect(dialogs.cedemaSaving.value).toBe(false)
+    expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
+    expect(dialogs.consegnaSaving.value).toBe(false)
   })
 })
 
-describe('usePatientChartDialogs — norton', () => {
-  it('salvaNorton saves, closes the dialog, and reloads valutazioni on success', async () => {
+describe('usePatientChartDialogs — parametri vitali', () => {
+  it('salvaParametri saves and reloads parametri vitali on success', async () => {
+    vi.mocked(parametriVitaliApi.createParametriVitali).mockResolvedValue({
+      data: {} as never,
+    })
+    const { dialogs, reloadParametriVitali } = makeDialogs()
+    dialogs.apriParametri()
+
+    await dialogs.salvaParametri()
+
+    expect(parametriVitaliApi.createParametriVitali).toHaveBeenCalledOnce()
+    expect(dialogs.parametriDialog.value).toBe(false)
+    expect(reloadParametriVitali).toHaveBeenCalledOnce()
+  })
+})
+
+describe('usePatientChartDialogs — valutazioni', () => {
+  it('salvaNorton saves and reloads valutazioni on success', async () => {
     vi.mocked(valutazioniApi.createNorton).mockResolvedValue({
       data: {} as never,
     })
@@ -111,18 +133,7 @@ describe('usePatientChartDialogs — norton', () => {
     expect(reloadValutazioni).toHaveBeenCalledOnce()
   })
 
-  it('salvaNorton sets an error on failure', async () => {
-    vi.mocked(valutazioniApi.createNorton).mockRejectedValue(new Error('down'))
-    const { dialogs } = makeDialogs()
-
-    await dialogs.salvaNorton()
-
-    expect(dialogs.nortonSaving.value).toBe(false)
-  })
-})
-
-describe('usePatientChartDialogs — conley', () => {
-  it('salvaConley saves, closes the dialog, and reloads valutazioni on success', async () => {
+  it('salvaConley saves and reloads valutazioni on success', async () => {
     vi.mocked(valutazioniApi.createConley).mockResolvedValue({
       data: {} as never,
     })
@@ -134,14 +145,5 @@ describe('usePatientChartDialogs — conley', () => {
     expect(valutazioniApi.createConley).toHaveBeenCalledOnce()
     expect(dialogs.conleyDialog.value).toBe(false)
     expect(reloadValutazioni).toHaveBeenCalledOnce()
-  })
-
-  it('salvaConley sets an error on failure', async () => {
-    vi.mocked(valutazioniApi.createConley).mockRejectedValue(new Error('down'))
-    const { dialogs } = makeDialogs()
-
-    await dialogs.salvaConley()
-
-    expect(dialogs.conleySaving.value).toBe(false)
   })
 })

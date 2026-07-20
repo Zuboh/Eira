@@ -31,6 +31,13 @@ class PrioritaConsegna(str, enum.Enum):
     urgente = "urgente"
 
 
+class StatoCoscienza(str, enum.Enum):
+    vigile = "vigile"
+    verbale = "verbale"
+    dolore = "dolore"
+    coma = "coma"
+
+
 class StatoCambioTurno(str, enum.Enum):
     in_attesa_collega = "in_attesa_collega"
     rifiutata_collega = "rifiutata_collega"

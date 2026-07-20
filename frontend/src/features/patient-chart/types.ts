@@ -1,10 +1,12 @@
 import type { PazienteUpdatePayload } from '@/api/pazienti'
 import type { AssegnazioneTurno } from '@/api/turni'
-import type { ConsegnaSbar } from '@/api/consegneSbar'
+import type { ConsegnaSbar, PrioritaConsegna } from '@/api/consegneSbar'
+import type { VoceDiarioCedema } from '@/api/diarioCedema'
 import type {
-  VoceDiarioCedema,
-  VoceDiarioCedemaCreatePayload,
-} from '@/api/diarioCedema'
+  ParametriVitali,
+  ParametriVitaliCreatePayload,
+  StatoCoscienza,
+} from '@/api/parametriVitali'
 import type {
   ValutazioneConley,
   ValutazioneConleyCreatePayload,
@@ -12,33 +14,64 @@ import type {
   ValutazioneNortonCreatePayload,
 } from '@/api/valutazioni'
 
-export type CedemaForm = VoceDiarioCedemaCreatePayload
 export type NortonForm = ValutazioneNortonCreatePayload
 export type ConleyForm = ValutazioneConleyCreatePayload
+export type ParametriVitaliForm = ParametriVitaliCreatePayload
 export type PatientEditForm = Required<
   Pick<PazienteUpdatePayload, 'letto' | 'diagnosi_ingresso' | 'dimesso'>
 >
+
+export type GenericConsegnaKind = 'sbar' | 'cedema'
+
+export type GenericConsegnaForm = {
+  tipo: GenericConsegnaKind
+  data: string
+  turno_id: number | null
+  priorita: PrioritaConsegna
+  testo: string
+}
+
+export type ClinicalInsight = {
+  summary: string
+  tags: string[]
+}
+
+export type ClinicalTimelineEntry = {
+  id: string
+  sourceId: number
+  tipo: GenericConsegnaKind
+  timestamp: string
+  autoreId: number
+  title: string
+  body: string
+  priorita?: PrioritaConsegna
+}
 
 export type PatientChartSaveEmit = {
   save: []
 }
 
-export type CedemaDialogProps = {
+export type ClinicalTimelineTabProps = {
+  entries: ClinicalTimelineEntry[]
+  canCreate: boolean
+}
+
+export type ClinicalTimelineTabEmits = {
+  newEntry: []
+}
+
+export type GenericConsegnaDrawerProps = {
   assegnazioni: AssegnazioneTurno[]
+  saving: boolean
+  insight: ClinicalInsight | null
+}
+
+export type ParametriVitaliDialogProps = {
   saving: boolean
 }
 
 export type ValutazioneDialogProps = {
   saving: boolean
-}
-
-export type CedemaTabProps = {
-  entries: VoceDiarioCedema[]
-  canCreate: boolean
-}
-
-export type CedemaTabEmits = {
-  newEntry: []
 }
 
 export type ValutazioniTabProps = {
@@ -52,7 +85,31 @@ export type ValutazioniTabEmits = {
   newConley: []
 }
 
-export type StoricoSbarTabProps = {
-  consegne: ConsegnaSbar[]
-  loading: boolean
+export type ParametriVitaliTabProps = {
+  entries: ParametriVitali[]
+  canCreate: boolean
+}
+
+export type ParametriVitaliTabEmits = {
+  newEntry: []
+}
+
+export type CedemaNarrativeSource = Pick<
+  VoceDiarioCedema,
+  | 'coscienza'
+  | 'emotivita'
+  | 'dolore'
+  | 'emodinamica'
+  | 'mobilizzazione'
+  | 'allert'
+>
+
+export type SbarNarrativeSource = Pick<
+  ConsegnaSbar,
+  'situation' | 'background' | 'assessment' | 'recommendation'
+>
+
+export type StatoCoscienzaOption = {
+  value: StatoCoscienza
+  label: string
 }

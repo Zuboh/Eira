@@ -136,6 +136,57 @@ def test_infermiere_not_assigned_does_not_see_others_consegna(client, db_session
     assert listed.json() == {"items": [], "total": 0}
 
 
+def test_list_consegne_by_paziente_returns_only_patient_entries(client, db_session, reparti):
+    reparto_a, _ = reparti
+    from app.models.paziente import Paziente
+
+    infermiere = _infermiere(db_session, reparto_a.id)
+    turno, paziente = _setup_turno_paziente_assegnazione(db_session, reparto_a.id, infermiere.id)
+    altro_paziente = Paziente(
+        nome="Luigi",
+        cognome="Verdi",
+        eta=75,
+        letto="4A",
+        data_ricovero=datetime.date.today(),
+        diagnosi_ingresso="BPCO",
+        reparto_id=reparto_a.id,
+    )
+    db_session.add(altro_paziente)
+    db_session.commit()
+    db_session.refresh(altro_paziente)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    client.post(
+        "/api/v1/consegne-sbar/",
+        headers=headers,
+        json={
+            "paziente_id": paziente.id,
+            "turno_id": turno.id,
+            "situation": "s",
+            "background": "b",
+            "assessment": "a",
+            "recommendation": "r",
+        },
+    )
+    client.post(
+        "/api/v1/consegne-sbar/",
+        headers=headers,
+        json={
+            "paziente_id": altro_paziente.id,
+            "turno_id": turno.id,
+            "situation": "s2",
+            "background": "b2",
+            "assessment": "a2",
+            "recommendation": "r2",
+        },
+    )
+
+    listed = client.get(f"/api/v1/consegne-sbar/pazienti/{paziente.id}", headers=headers)
+    assert listed.status_code == 200
+    assert len(listed.json()) == 1
+    assert listed.json()[0]["paziente_id"] == paziente.id
+
+
 def test_update_consegna_only_by_author(client, db_session, reparti):
     reparto_a, _ = reparti
     infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")

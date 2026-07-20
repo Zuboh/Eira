@@ -3,10 +3,18 @@ import { getPaziente, type Paziente } from '@/api/pazienti'
 import { getMieAssegnazioni, type AssegnazioneTurno } from '@/api/turni'
 import { listDiarioCedema, type VoceDiarioCedema } from '@/api/diarioCedema'
 import {
+  listParametriVitali,
+  type ParametriVitali,
+} from '@/api/parametriVitali'
+import {
   getValutazioni,
   type ValutazioneConley,
   type ValutazioneNorton,
 } from '@/api/valutazioni'
+import {
+  listConsegneSbarByPaziente,
+  type ConsegnaSbar,
+} from '@/api/consegneSbar'
 
 export function usePatientChartQueries(
   pazienteId: MaybeRef<number>,
@@ -17,13 +25,19 @@ export function usePatientChartQueries(
   const loading = ref(false)
 
   const cedema = ref<VoceDiarioCedema[]>([])
+  const sbar = ref<ConsegnaSbar[]>([])
   const norton = ref<ValutazioneNorton[]>([])
   const conley = ref<ValutazioneConley[]>([])
+  const parametriVitali = ref<ParametriVitali[]>([])
   const assegnazioni = ref<AssegnazioneTurno[]>([])
 
-  async function reloadCedema() {
-    const { data } = await listDiarioCedema(unref(pazienteId))
-    cedema.value = data
+  async function reloadTimeline() {
+    const [cedemaResponse, sbarResponse] = await Promise.all([
+      listDiarioCedema(unref(pazienteId)),
+      listConsegneSbarByPaziente(unref(pazienteId)),
+    ])
+    cedema.value = cedemaResponse.data
+    sbar.value = sbarResponse.data
   }
 
   async function reloadValutazioni() {
@@ -32,19 +46,30 @@ export function usePatientChartQueries(
     conley.value = data.conley
   }
 
+  async function reloadParametriVitali() {
+    const { data } = await listParametriVitali(unref(pazienteId))
+    parametriVitali.value = data
+  }
+
   async function load() {
     error.value = ''
     loading.value = true
     try {
-      const [p, d, v] = await Promise.all([
+      const [p, timelineData, v, pv] = await Promise.all([
         getPaziente(unref(pazienteId)),
-        listDiarioCedema(unref(pazienteId)),
+        Promise.all([
+          listDiarioCedema(unref(pazienteId)),
+          listConsegneSbarByPaziente(unref(pazienteId)),
+        ]),
         getValutazioni(unref(pazienteId)),
+        listParametriVitali(unref(pazienteId)),
       ])
       paziente.value = p.data
-      cedema.value = d.data
+      cedema.value = timelineData[0].data
+      sbar.value = timelineData[1].data
       norton.value = v.data.norton
       conley.value = v.data.conley
+      parametriVitali.value = pv.data
       if (unref(ruolo) === 'infermiere') {
         const a = await getMieAssegnazioni()
         assegnazioni.value = a.data
@@ -61,11 +86,14 @@ export function usePatientChartQueries(
     error,
     loading,
     cedema,
+    sbar,
     norton,
     conley,
+    parametriVitali,
     assegnazioni,
     load,
-    reloadCedema,
+    reloadTimeline,
     reloadValutazioni,
+    reloadParametriVitali,
   }
 }

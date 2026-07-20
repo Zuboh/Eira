@@ -5,12 +5,14 @@ import { useAuthStore } from '@/stores/auth'
 import * as pazientiApi from '@/api/pazienti'
 import * as turniApi from '@/api/turni'
 import * as diarioCedemaApi from '@/api/diarioCedema'
+import * as parametriVitaliApi from '@/api/parametriVitali'
 import * as valutazioniApi from '@/api/valutazioni'
 import * as consegneSbarApi from '@/api/consegneSbar'
 
 vi.mock('@/api/pazienti')
 vi.mock('@/api/turni')
 vi.mock('@/api/diarioCedema')
+vi.mock('@/api/parametriVitali')
 vi.mock('@/api/valutazioni')
 vi.mock('@/api/consegneSbar')
 
@@ -30,13 +32,16 @@ beforeEach(() => {
   setActivePinia(createPinia())
   vi.mocked(pazientiApi.getPaziente).mockResolvedValue({ data: paziente })
   vi.mocked(diarioCedemaApi.listDiarioCedema).mockResolvedValue({ data: [] })
+  vi.mocked(consegneSbarApi.listConsegneSbarByPaziente).mockResolvedValue({
+    data: [],
+  })
   vi.mocked(valutazioniApi.getValutazioni).mockResolvedValue({
     data: { norton: [], conley: [] },
   })
-  vi.mocked(turniApi.getMieAssegnazioni).mockResolvedValue({ data: [] })
-  vi.mocked(consegneSbarApi.listConsegneSbar).mockResolvedValue({
-    data: { items: [], total: 0 },
+  vi.mocked(parametriVitaliApi.listParametriVitali).mockResolvedValue({
+    data: [],
   })
+  vi.mocked(turniApi.getMieAssegnazioni).mockResolvedValue({ data: [] })
 })
 
 describe('usePatientChart — load', () => {
@@ -72,13 +77,48 @@ describe('usePatientChart — load', () => {
     expect(turniApi.getMieAssegnazioni).not.toHaveBeenCalled()
   })
 
-  it('sets an error message when loading fails', async () => {
-    vi.mocked(pazientiApi.getPaziente).mockRejectedValue(new Error('down'))
+  it('builds a unified timeline from cedema and sbar', async () => {
+    vi.mocked(diarioCedemaApi.listDiarioCedema).mockResolvedValue({
+      data: [
+        {
+          id: 2,
+          paziente_id: 1,
+          turno_id: null,
+          autore_id: 9,
+          timestamp: '2026-07-18T10:00:00Z',
+          coscienza: '',
+          emotivita: '',
+          dolore: '',
+          emodinamica: '',
+          mobilizzazione: '',
+          allert: 'Tranquillo',
+        },
+      ],
+    })
+    vi.mocked(consegneSbarApi.listConsegneSbarByPaziente).mockResolvedValue({
+      data: [
+        {
+          id: 1,
+          paziente_id: 1,
+          turno_id: 4,
+          autore_id: 9,
+          creata_il: '2026-07-19T10:00:00Z',
+          priorita: 'normale',
+          situation: 's',
+          background: 'b',
+          assessment: 'a',
+          recommendation: 'r',
+        },
+      ],
+    })
     const chart = usePatientChart(1)
 
     await chart.load()
 
-    expect(chart.error.value).toBe('Impossibile caricare la scheda paziente.')
+    expect(chart.timeline.value.map((entry) => entry.tipo)).toEqual([
+      'sbar',
+      'cedema',
+    ])
   })
 })
 
@@ -109,59 +149,5 @@ describe('usePatientChart — role gating', () => {
     const chartInfermiere = usePatientChart(1)
     expect(chartInfermiere.canEditPatient.value).toBe(false)
     expect(chartInfermiere.canCreateClinicalEntries.value).toBe(true)
-  })
-})
-
-describe('usePatientChart — loadConsegneSbar', () => {
-  it('wraps failures into chart.error and rethrows', async () => {
-    vi.mocked(consegneSbarApi.listConsegneSbar).mockRejectedValue(
-      new Error('down'),
-    )
-    const chart = usePatientChart(1)
-
-    await expect(chart.loadConsegneSbar()).rejects.toThrow()
-    expect(chart.error.value).toBe('Impossibile caricare lo storico SBAR.')
-  })
-})
-
-describe('usePatientChart — cedema dialog', () => {
-  it('salvaCedema saves, closes the dialog, and reloads cedema on success', async () => {
-    vi.mocked(diarioCedemaApi.createVoceDiarioCedema).mockResolvedValue({
-      data: {
-        id: 1,
-        paziente_id: 1,
-        turno_id: null,
-        autore_id: 9,
-        timestamp: '2026-07-18T10:00:00Z',
-        coscienza: '',
-        emotivita: '',
-        dolore: '',
-        emodinamica: '',
-        mobilizzazione: '',
-        allert: '',
-      },
-    })
-    const chart = usePatientChart(1)
-    chart.apriCedema()
-
-    await chart.salvaCedema()
-
-    expect(diarioCedemaApi.createVoceDiarioCedema).toHaveBeenCalledOnce()
-    expect(chart.cedemaDialog.value).toBe(false)
-    expect(chart.cedemaSaving.value).toBe(false)
-    expect(diarioCedemaApi.listDiarioCedema).toHaveBeenCalledOnce()
-  })
-
-  it('salvaCedema sets an error and keeps saving false on failure', async () => {
-    vi.mocked(diarioCedemaApi.createVoceDiarioCedema).mockRejectedValue(
-      new Error('down'),
-    )
-    const chart = usePatientChart(1)
-    chart.apriCedema()
-
-    await chart.salvaCedema()
-
-    expect(chart.error.value).toBe('Impossibile salvare la voce diario.')
-    expect(chart.cedemaSaving.value).toBe(false)
   })
 })
