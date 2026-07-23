@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import Select from 'primevue/select'
-import EiraCard from '@/components/ui/EiraCard.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import type {
@@ -65,22 +64,19 @@ function saldoLabel() {
 
     <InlineError :message="error" />
 
-    <div v-if="bancaOre" class="tiles">
-      <EiraCard class="tile">
-        <span class="tile-label">Ore effettuate</span>
-        <span class="tile-value mono">{{ bancaOre.ore_effettuate }}</span>
-      </EiraCard>
-      <EiraCard class="tile">
-        <span class="tile-label">Ore contrattuali</span>
-        <span class="tile-value mono">{{ bancaOre.ore_contrattuali }}</span>
-      </EiraCard>
-      <EiraCard
-        class="tile"
-        :class="{ negative: bancaOre.saldo < 0, positive: bancaOre.saldo >= 0 }"
-      >
-        <span class="tile-label">Saldo</span>
-        <span class="tile-value mono">{{ saldoLabel() }}</span>
-      </EiraCard>
+    <div v-if="bancaOre" class="ledger">
+      <div class="ledger-row">
+        <span class="ledger-label">Ore effettuate</span>
+        <span class="ledger-value mono">{{ bancaOre.ore_effettuate }}</span>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-label">Ore contrattuali</span>
+        <span class="ledger-value mono">{{ bancaOre.ore_contrattuali }}</span>
+      </div>
+      <div class="ledger-row" :class="{ negative: bancaOre.saldo < 0 }">
+        <span class="ledger-label">Saldo</span>
+        <span class="ledger-value mono">{{ saldoLabel() }}</span>
+      </div>
     </div>
     <EmptyState
       v-else-if="!loading && !error"
@@ -138,36 +134,35 @@ function saldoLabel() {
   container-type: inline-size;
 }
 
-.tiles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+.ledger {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
 }
 
-.tile {
-  flex: 1 1 12rem;
+.ledger-row {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
 }
 
-.tile-label {
+.ledger-row + .ledger-row {
+  border-top: 1px solid var(--border);
+}
+
+.ledger-label {
   font-size: 0.8125rem;
-  font-weight: 600;
   color: var(--steel);
 }
 
-.tile-value {
-  font-size: 1.5rem;
+.ledger-value {
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--ink);
 }
 
-.tile.positive .tile-value {
-  color: var(--state-attiva);
-}
-
-.tile.negative .tile-value {
+.ledger-row.negative .ledger-value {
   color: var(--state-urgente);
 }
 
