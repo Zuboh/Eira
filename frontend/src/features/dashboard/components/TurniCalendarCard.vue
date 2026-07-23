@@ -4,9 +4,15 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import itLocale from '@fullcalendar/core/locales/it'
-import EiraCard from '@/components/ui/EiraCard.vue'
+import Button from 'primevue/button'
 import { formatDateShortIt } from '@/utils/dateFormat'
-import type { EventApi, EventHoveringArg, EventInput } from '@fullcalendar/core'
+import EiraCard from '@/components/ui/EiraCard.vue'
+import type {
+  DatesSetArg,
+  EventApi,
+  EventHoveringArg,
+  EventInput,
+} from '@fullcalendar/core'
 import type { TurnoCalendarEventProps } from '@/features/dashboard/infermiereCalendarViewModel'
 
 const props = defineProps<{
@@ -31,18 +37,37 @@ const tooltip = ref<{
   props: null,
 })
 
+const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null)
+const currentTitle = ref('')
+
 const calendarOptions = computed(() => ({
   plugins: [dayGridPlugin, interactionPlugin],
   initialView: 'dayGridMonth',
   locale: itLocale,
   firstDay: 1,
   height: 'auto',
+  headerToolbar: false as const,
   displayEventTime: false,
   dayMaxEvents: 2,
   events: props.events,
   eventMouseEnter: handleEventMouseEnter,
   eventMouseLeave: hideTooltip,
+  datesSet: (arg: DatesSetArg) => {
+    currentTitle.value = arg.view.title
+  },
 }))
+
+function goToday() {
+  calendarRef.value?.getApi().today()
+}
+
+function goPrev() {
+  calendarRef.value?.getApi().prev()
+}
+
+function goNext() {
+  calendarRef.value?.getApi().next()
+}
 
 const legendItems = [
   { className: 'turno-mattina', label: 'Mattina' },
@@ -120,8 +145,27 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 </script>
 
 <template>
-  <EiraCard title="Calendario turni" class="turni-calendar-card">
-    <FullCalendar :options="calendarOptions">
+  <EiraCard class="turni-calendar-card">
+    <div class="calendar-toolbar">
+      <h2 class="calendar-toolbar-title">{{ currentTitle }}</h2>
+      <div class="calendar-toolbar-nav">
+        <Button text label="Oggi" @click="goToday" />
+        <Button
+          text
+          icon="pi pi-chevron-left"
+          aria-label="Mese precedente"
+          @click="goPrev"
+        />
+        <Button
+          text
+          icon="pi pi-chevron-right"
+          aria-label="Mese successivo"
+          @click="goNext"
+        />
+      </div>
+    </div>
+
+    <FullCalendar ref="calendarRef" :options="calendarOptions">
       <template #eventContent="arg">
         <span
           class="turno-event"
@@ -164,7 +208,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
     </Teleport>
 
     <ul class="legend" aria-label="Legenda turni">
-      <li v-for="item in legendItems" :key="item.className">
+      <li v-for="item in legendItems" :key="item.className" :class="item.className">
         <span class="dot" :class="item.className" aria-hidden="true" />
         {{ item.label }}
       </li>
@@ -178,17 +222,6 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   --fc-page-bg-color: var(--surface);
   --fc-neutral-bg-color: var(--canvas);
   --fc-list-event-hover-bg-color: var(--canvas);
-  --fc-today-bg-color: color-mix(
-    in srgb,
-    var(--color-primary) 12%,
-    transparent
-  );
-  --fc-button-bg-color: var(--color-primary);
-  --fc-button-border-color: var(--color-primary);
-  --fc-button-hover-bg-color: var(--color-primary);
-  --fc-button-hover-border-color: var(--color-primary);
-  --fc-button-active-bg-color: var(--color-primary);
-  --fc-button-active-border-color: var(--color-primary);
   color: var(--ink);
 }
 
@@ -197,30 +230,66 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   color: var(--ink);
 }
 
-.turni-calendar-card :deep(.fc-toolbar-title) {
+.turni-calendar-card :deep(.fc-day-today) {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--surface)) !important;
+  box-shadow: var(--shadow);
+}
+
+.turni-calendar-card :deep(.fc-day-today .fc-daygrid-day-frame) {
+  border: 1px solid var(--color-primary);
+}
+
+.turni-calendar-card :deep(.fc-scrollgrid) {
+  border: 0;
+}
+
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.calendar-toolbar-title {
+  margin: 0;
+  font-family: var(--sans);
   font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ink);
   text-transform: capitalize;
 }
 
-.turni-calendar-card :deep(.fc-button) {
+.calendar-toolbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.calendar-toolbar-nav :deep(.p-button) {
+  min-width: var(--size-touch);
+  min-height: var(--size-touch);
+  padding: 0 var(--space-2);
+  border: none;
   border-radius: var(--radius-sm);
-  font-weight: 600;
-  box-shadow: none;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 1.125rem;
+  color: var(--ink);
+  transition: color 0.15s ease-out;
 }
 
-/* FullCalendar ships its own unthemed dark focus ring
-   (.fc-button:focus box-shadow rgba(44,62,80,.25)) — killed, clean focus */
-.turni-calendar-card :deep(.fc-button:focus) {
-  outline: none;
-  box-shadow: none;
+.calendar-toolbar-nav :deep(.p-button .p-button-icon) {
+  font-size: 1.125rem;
 }
 
-/* same unthemed dark ring, active/pressed+focus variant
-   (.fc-button-primary.fc-button-active:focus / :active:focus) */
-.turni-calendar-card
-  :deep(.fc-button-primary:not(:disabled).fc-button-active:focus),
-.turni-calendar-card :deep(.fc-button-primary:not(:disabled):active:focus) {
-  box-shadow: none;
+.calendar-toolbar-nav :deep(.p-button:hover) {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.turni-calendar-card :deep(.fc-daygrid-day-number) {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
 }
 
 .turni-calendar-card :deep(.fc-col-header-cell-cushion),
@@ -277,51 +346,79 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 .turni-calendar-card :deep(.turno-mattina) {
-  background: var(--turno-mattina);
+  background: var(--turno-mattina-chip);
   color: white;
 }
 
 .turni-calendar-card :deep(.turno-pomeriggio) {
-  background: var(--turno-pomeriggio);
+  background: var(--turno-pomeriggio-chip);
   color: white;
 }
 
 .turni-calendar-card :deep(.turno-notte) {
-  background: var(--turno-notte);
+  background: var(--turno-notte-chip);
   color: white;
 }
 
 .turni-calendar-card :deep(.turno-riposo) {
-  background: var(--turno-riposo);
+  background: var(--turno-riposo-chip);
   color: white;
 }
 
 .turni-calendar-card :deep(.turno-ferie) {
-  background: var(--turno-ferie);
+  background: var(--turno-ferie-chip);
   color: white;
 }
 
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   margin: 16px 0 0;
   padding: 0;
   list-style: none;
-  color: var(--steel);
-  font-size: 0.8125rem;
 }
 
 .legend li {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.legend li.turno-mattina {
+  background: color-mix(in srgb, var(--turno-mattina) 15%, transparent);
+  color: var(--turno-mattina);
+}
+
+.legend li.turno-pomeriggio {
+  background: color-mix(in srgb, var(--turno-pomeriggio) 15%, transparent);
+  color: var(--turno-pomeriggio);
+}
+
+.legend li.turno-notte {
+  background: color-mix(in srgb, var(--turno-notte) 15%, transparent);
+  color: var(--turno-notte);
+}
+
+.legend li.turno-riposo {
+  background: color-mix(in srgb, var(--turno-riposo) 15%, transparent);
+  color: var(--turno-riposo);
+}
+
+.legend li.turno-ferie {
+  background: color-mix(in srgb, var(--turno-ferie) 15%, transparent);
+  color: var(--turno-ferie);
 }
 
 .dot.turno-mattina {
@@ -345,7 +442,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 @media (max-width: 640px) {
-  .turni-calendar-card :deep(.fc-toolbar) {
+  .calendar-toolbar {
     align-items: flex-start;
     flex-direction: column;
     gap: 8px;
