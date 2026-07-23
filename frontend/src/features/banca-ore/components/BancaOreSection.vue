@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import Select from 'primevue/select'
+import EiraCard from '@/components/ui/EiraCard.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import type {
@@ -28,7 +29,7 @@ function saldoLabel() {
 </script>
 
 <template>
-  <section class="banca-ore-section">
+  <EiraCard class="banca-ore-section">
     <div class="section-header">
       <div>
         <h2>Banca ore</h2>
@@ -83,7 +84,7 @@ function saldoLabel() {
       title="Nessun saldo disponibile"
       message="Seleziona un infermiere e un mese per visualizzare la banca ore."
     />
-  </section>
+  </EiraCard>
 </template>
 
 <style scoped>
