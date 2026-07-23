@@ -47,13 +47,10 @@ onMounted(load)
     <InlineError :message="error" />
 
     <div class="dashboard-row">
-      <TurniCalendarCard class="calendar-column" :events="calendarEvents" />
+      <TurniCalendarCard class="calendar-hero" :events="calendarEvents" />
 
       <div class="side-column">
-        <ProssimiTurniCard
-          :turni="prossimiTurniConColleghi"
-          :loading="loading"
-        />
+        <ProssimiTurniCard :turni="prossimiTurniConColleghi" :loading="loading" />
 
         <BancaOreSection
           :banca-ore="bancaOre"
@@ -85,11 +82,15 @@ onMounted(load)
 <style scoped>
 .dashboard-infermiere {
   padding: var(--page-padding);
-  max-width: var(--page-xl);
+  max-width: var(--page-2xl);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.calendar-hero {
+  width: 100%;
 }
 
 .dashboard-row {
