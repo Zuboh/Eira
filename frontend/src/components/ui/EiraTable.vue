@@ -5,18 +5,23 @@ withDefaults(
     emptyMessage?: string
     loading?: boolean
     loadingRows?: number
+    flush?: boolean
   }>(),
   {
     empty: false,
     emptyMessage: 'Nessun dato da mostrare',
     loading: false,
     loadingRows: 4,
+    flush: false,
   },
 )
 </script>
 
 <template>
-  <section class="eira-table" :class="{ 'eira-table--empty': empty }">
+  <section
+    class="eira-table"
+    :class="{ 'eira-table--empty': empty, 'eira-table--flush': flush }"
+  >
     <div v-if="$slots.actions" class="eira-table__actions">
       <slot name="actions" />
     </div>
@@ -121,6 +126,15 @@ withDefaults(
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
+}
+
+.eira-table--flush .eira-table__scroll,
+.eira-table--flush .eira-table__empty,
+.eira-table--flush .eira-table__skeleton {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 0;
 }
 
 .skeleton-row {
