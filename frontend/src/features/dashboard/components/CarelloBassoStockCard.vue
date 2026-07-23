@@ -33,6 +33,7 @@ function isLowStock(riga: CarelloFarmaco) {
     />
     <p class="summary">{{ summary }}</p>
     <EiraTable
+      flush
       :loading="loading"
       :empty="alertRows.length === 0"
       empty-message="Nessun farmaco sotto soglia."

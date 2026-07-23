@@ -16,6 +16,7 @@ defineProps<PazientiAttiviCardProps>()
       link-label="Vedi tutti"
     />
     <EiraTable
+      flush
       :loading="loading"
       :empty="pazienti.length === 0"
       empty-message="Nessun paziente in reparto."
