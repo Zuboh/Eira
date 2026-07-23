@@ -9,7 +9,7 @@ defineProps<PazientiAttiviCardProps>()
 </script>
 
 <template>
-  <EiraCard class="dashboard-card">
+  <EiraCard flush class="dashboard-card">
     <DashboardSectionHeader
       title="Pazienti in reparto"
       route-name="pazienti"

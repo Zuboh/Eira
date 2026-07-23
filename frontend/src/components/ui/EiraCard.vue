@@ -1,11 +1,17 @@
 <script setup lang="ts">
-defineProps<{
-  title?: string
-}>()
+withDefaults(
+  defineProps<{
+    title?: string
+    flush?: boolean
+  }>(),
+  {
+    flush: false,
+  },
+)
 </script>
 
 <template>
-  <section class="eira-card">
+  <section class="eira-card" :class="{ 'eira-card--flush': flush }">
     <h2 v-if="title" class="eira-card__title">{{ title }}</h2>
     <slot />
   </section>
@@ -18,6 +24,12 @@ defineProps<{
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: var(--shadow);
+}
+
+.eira-card--flush {
+  border: none;
+  box-shadow: none;
+  background: transparent;
 }
 
 .eira-card__title {

@@ -29,7 +29,7 @@ function saldoLabel() {
 </script>
 
 <template>
-  <EiraCard class="banca-ore-section">
+  <EiraCard flush class="banca-ore-section">
     <div class="section-header">
       <div>
         <h2>Banca ore</h2>
