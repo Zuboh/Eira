@@ -5,6 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import itLocale from '@fullcalendar/core/locales/it'
 import Button from 'primevue/button'
+import Popover from 'primevue/popover'
 import { formatDateShortIt } from '@/utils/dateFormat'
 import EiraCard from '@/components/ui/EiraCard.vue'
 import type {
@@ -40,6 +41,24 @@ const tooltip = ref<{
 const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null)
 const currentTitle = ref('')
 
+const monthPickerRef = ref<InstanceType<typeof Popover> | null>(null)
+const pickerYear = ref(new Date().getFullYear())
+
+const MESI_IT = [
+  'Gen',
+  'Feb',
+  'Mar',
+  'Apr',
+  'Mag',
+  'Giu',
+  'Lug',
+  'Ago',
+  'Set',
+  'Ott',
+  'Nov',
+  'Dic',
+]
+
 const calendarOptions = computed(() => ({
   plugins: [dayGridPlugin, interactionPlugin],
   initialView: 'dayGridMonth',
@@ -67,6 +86,25 @@ function goPrev() {
 
 function goNext() {
   calendarRef.value?.getApi().next()
+}
+
+function toggleMonthPicker(domEvent: Event) {
+  const api = calendarRef.value?.getApi()
+  if (api) pickerYear.value = api.getDate().getFullYear()
+  monthPickerRef.value?.toggle(domEvent)
+}
+
+function pickerPrevYear() {
+  pickerYear.value -= 1
+}
+
+function pickerNextYear() {
+  pickerYear.value += 1
+}
+
+function selectMonth(monthIndex: number) {
+  calendarRef.value?.getApi().gotoDate(new Date(pickerYear.value, monthIndex, 1))
+  monthPickerRef.value?.hide()
 }
 
 const legendItems = [
@@ -147,7 +185,18 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 <template>
   <EiraCard class="turni-calendar-card">
     <div class="calendar-toolbar">
-      <h2 class="calendar-toolbar-title">{{ currentTitle }}</h2>
+      <h2 class="calendar-toolbar-title-wrap">
+        <button
+          type="button"
+          class="calendar-toolbar-title"
+          aria-haspopup="true"
+          :aria-label="`Cambia mese, mese corrente: ${currentTitle}`"
+          @click="toggleMonthPicker"
+        >
+          {{ currentTitle }}
+          <i class="pi pi-chevron-down calendar-toolbar-title-caret" aria-hidden="true" />
+        </button>
+      </h2>
       <div class="calendar-toolbar-nav">
         <Button text label="Oggi" @click="goToday" />
         <Button
@@ -164,6 +213,37 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
         />
       </div>
     </div>
+
+    <Popover ref="monthPickerRef">
+      <div class="month-picker">
+        <div class="month-picker-year">
+          <Button
+            text
+            icon="pi pi-chevron-left"
+            aria-label="Anno precedente"
+            @click="pickerPrevYear"
+          />
+          <span class="month-picker-year-label mono">{{ pickerYear }}</span>
+          <Button
+            text
+            icon="pi pi-chevron-right"
+            aria-label="Anno successivo"
+            @click="pickerNextYear"
+          />
+        </div>
+        <div class="month-picker-grid">
+          <button
+            v-for="(label, index) in MESI_IT"
+            :key="label"
+            type="button"
+            class="month-picker-cell"
+            @click="selectMonth(index)"
+          >
+            {{ label }}
+          </button>
+        </div>
+      </div>
+    </Popover>
 
     <FullCalendar ref="calendarRef" :options="calendarOptions">
       <template #eventContent="arg">
@@ -250,13 +330,91 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   margin-bottom: 16px;
 }
 
-.calendar-toolbar-title {
+.calendar-toolbar-title-wrap {
   margin: 0;
+}
+
+.calendar-toolbar-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
   font-family: var(--sans);
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--ink);
   text-transform: capitalize;
+  cursor: pointer;
+  transition: color 150ms ease-out;
+}
+
+.calendar-toolbar-title:hover {
+  color: var(--color-primary);
+}
+
+.calendar-toolbar-title:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.calendar-toolbar-title-caret {
+  font-size: 0.75rem;
+  color: var(--steel);
+}
+
+.month-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px;
+  min-width: 14rem;
+}
+
+.month-picker-year {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.month-picker-year-label {
+  min-width: 3.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.month-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.month-picker-cell {
+  min-height: var(--size-touch);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition:
+    background 150ms ease-out,
+    color 150ms ease-out;
+}
+
+.month-picker-cell:hover {
+  background: var(--canvas);
+  color: var(--color-primary);
+}
+
+.month-picker-cell:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .calendar-toolbar-nav {
