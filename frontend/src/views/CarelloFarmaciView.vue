@@ -61,7 +61,7 @@ onMounted(async () => {
       </button>
     </div>
 
-    <EiraCard v-if="activeTab === 'stock'">
+    <EiraCard v-if="activeTab === 'stock'" flush>
       <div class="filters">
         <FormField label="Cerca farmaco" for-id="farmaco-search">
           <InputText
@@ -82,6 +82,7 @@ onMounted(async () => {
       </div>
 
       <EiraTable
+        flush
         :loading="loading"
         :empty="farmaciFiltrati.length === 0"
         empty-message="Nessun farmaco nel carello."
@@ -137,8 +138,9 @@ onMounted(async () => {
       </EiraTable>
     </EiraCard>
 
-    <EiraCard v-else title="Storico movimenti">
+    <EiraCard v-else flush title="Storico movimenti">
       <EiraTable
+        flush
         :loading="movimentiLoading"
         :empty="movimenti.length === 0"
         empty-message="Nessun movimento registrato."

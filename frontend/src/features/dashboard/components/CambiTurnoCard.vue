@@ -19,13 +19,14 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <EiraCard class="dashboard-card">
+  <EiraCard flush class="dashboard-card">
     <DashboardSectionHeader
       title="Cambi turno in attesa"
       route-name="cambio-turno"
       link-label="Vedi tutti"
     />
     <EiraTable
+      flush
       :loading="loading"
       :empty="richieste.length === 0"
       empty-message="Nessun cambio turno in attesa."

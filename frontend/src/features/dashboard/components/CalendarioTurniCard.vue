@@ -26,8 +26,9 @@ function tooltipText(cella: CalendarioCella) {
 </script>
 
 <template>
-  <EiraCard title="Calendario turni" class="dashboard-card">
+  <EiraCard flush title="Calendario turni" class="dashboard-card">
     <EiraTable
+      flush
       :loading="loading"
       :empty="rows.length === 0"
       empty-message="Nessun turno pianificato."

@@ -102,8 +102,11 @@ Usati per SBAR priorità, stati `RichiestaCambioTurno`,
 - **Tabelle come pattern primario** per liste dense (pazienti, turni,
   consegne): righe con `border-top` divider, header sticky, zebra
   striping opzionale a Density 6. **Non** cards-per-riga.
-- **Cards:** riservate a stat tile di riepilogo (dashboard, banca ore,
-  contatori) — mai per liste. Radius coerente col resto (0.5–0.75rem).
+- **Cards:** non usate nell'implementazione attuale — `EiraCard`/
+  `EiraTable` restano sempre `flush` (nessun bordo/ombra/background) in
+  ogni contesto. Le sezioni si distinguono per titolo + spaziatura, non
+  per box. Liste/tabelle dense usano divider `border-top` tra
+  righe/voci come unico elemento strutturale.
 - **Buttons:** flat, no glow. Primary: fill accent, testo bianco.
   Secondary: outline/ghost. Active: `scale(0.98)` o `-1px translateY`.
 - **Inputs/Forms:** label sopra, helper text opzionale, errore sotto in
@@ -120,7 +123,10 @@ Usati per SBAR priorità, stati `RichiestaCambioTurno`,
 ## 6. Layout Principles
 
 - CSS Grid per layout strutturali. Niente `calc()` percentuale.
-- Contenimento `max-width: 1400px` centrato per viste dashboard.
+- Contenimento `max-width: 1800px` centrato per viste dashboard
+  (`--page-2xl`) — alzato da 1400px per non lasciare spazio morto
+  eccessivo su monitor 2k/ultra-wide da reparto. Altre viste (tabelle
+  liste, form) restano su `--page-xl` (1400px).
 - `min-height: 100dvh` per sezioni full-height — mai `100vh`.
 - Sidebar/nav laterale per navigazione ruolo (infermiere/caposala) —
   non hero, non landing-style: la prima vista dopo login è già

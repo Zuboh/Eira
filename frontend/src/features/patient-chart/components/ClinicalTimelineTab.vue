@@ -2,7 +2,6 @@
 import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import EmptyState from '@/components/ui/EmptyState.vue'
-import EiraCard from '@/components/ui/EiraCard.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import { formatDateTimeCompactIt } from '@/utils/dateFormat'
 import type {
@@ -35,8 +34,8 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
   />
 
   <div v-else class="timeline">
-    <EiraCard v-for="entry in entries" :key="entry.id" class="timeline-card">
-      <div class="timeline-card__header">
+    <article v-for="entry in entries" :key="entry.id" class="timeline-entry">
+      <div class="timeline-entry-header">
         <div>
           <h3>{{ entry.title }}</h3>
           <p class="meta mono">
@@ -53,7 +52,7 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
         </div>
       </div>
       <pre class="body">{{ entry.body }}</pre>
-    </EiraCard>
+    </article>
   </div>
 </template>
 
@@ -85,17 +84,24 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
-.timeline-card__header {
+.timeline-entry {
+  padding: 16px 0;
+}
+
+.timeline-entry + .timeline-entry {
+  border-top: 1px solid var(--border);
+}
+
+.timeline-entry-header {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
 }
 
-.timeline-card__header h3 {
+.timeline-entry-header h3 {
   margin: 0;
   font-size: 1rem;
 }

@@ -15,7 +15,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 </script>
 
 <template>
-  <EiraCard>
+  <EiraCard flush>
     <div class="panel-header">
       <div>
         <h2 class="title">Parametri vitali</h2>
@@ -83,6 +83,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
       </section>
 
       <EiraTable
+        flush
         :empty="entries.length === 0"
         empty-message="Nessun parametro vitale registrato."
       >

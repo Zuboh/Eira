@@ -4,7 +4,7 @@ import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
 </script>
 
 <template>
-  <EiraCard title="Calendario turni" class="turni-calendar-card">
+  <EiraCard flush title="Calendario turni" class="turni-calendar-card">
     <SkeletonBlock :lines="6" />
   </EiraCard>
 </template>

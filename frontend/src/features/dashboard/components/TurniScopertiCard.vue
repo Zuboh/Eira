@@ -18,8 +18,9 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <EiraCard title="Turni da coprire" class="dashboard-card">
+  <EiraCard flush title="Turni da coprire" class="dashboard-card">
     <EiraTable
+      flush
       :loading="loading"
       :empty="turni.length === 0"
       empty-message="Tutti i turni hanno almeno 2 infermieri."
