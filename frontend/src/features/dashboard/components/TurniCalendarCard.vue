@@ -456,6 +456,11 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   text-decoration: none;
 }
 
+.turni-calendar-card :deep(.fc-col-header-cell-cushion) {
+  font-family: var(--sans);
+  font-weight: 600;
+}
+
 .turni-calendar-card :deep(.fc-daygrid-event) {
   border: 0;
   border-radius: 999px;
@@ -483,6 +488,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-family: var(--sans);
 }
 
 .turni-calendar-card :deep(.turno-event:focus-visible) {
