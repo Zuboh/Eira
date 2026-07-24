@@ -27,10 +27,15 @@ test('infermiere adjusts farmaco quantity and sees movement history', async ({
   const page = await context.newPage()
 
   await page.goto('/carello-farmaci')
-  await expect(page.getByRole('heading', { name: 'Carello Farmaci' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'Carello Farmaci' }),
+  ).toBeVisible()
   expect(await checkA11y(page)).toEqual([])
 
-  const firstRow = page.getByRole('row').filter({ has: page.getByRole('button', { name: 'Aumenta quantità' }) }).first()
+  const firstRow = page
+    .getByRole('row')
+    .filter({ has: page.getByRole('button', { name: 'Aumenta quantità' }) })
+    .first()
   await expect(firstRow).toBeVisible()
   const farmacoName = (await firstRow.locator('td').first().textContent())
     ?.trim()
@@ -39,7 +44,9 @@ test('infermiere adjusts farmaco quantity and sees movement history', async ({
 
   await page.getByRole('button', { name: 'Storico movimenti' }).click()
   if (farmacoName) {
-    await expect(page.getByRole('row', { name: new RegExp(farmacoName) }).first()).toBeVisible()
+    await expect(
+      page.getByRole('row', { name: new RegExp(farmacoName) }).first(),
+    ).toBeVisible()
   }
   expect(await checkA11y(page)).toEqual([])
 })

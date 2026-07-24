@@ -103,7 +103,9 @@ function pickerNextYear() {
 }
 
 function selectMonth(monthIndex: number) {
-  calendarRef.value?.getApi().gotoDate(new Date(pickerYear.value, monthIndex, 1))
+  calendarRef.value
+    ?.getApi()
+    .gotoDate(new Date(pickerYear.value, monthIndex, 1))
   monthPickerRef.value?.hide()
 }
 
@@ -194,7 +196,10 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
           @click="toggleMonthPicker"
         >
           {{ currentTitle }}
-          <i class="pi pi-chevron-down calendar-toolbar-title-caret" aria-hidden="true" />
+          <i
+            class="pi pi-chevron-down calendar-toolbar-title-caret"
+            aria-hidden="true"
+          />
         </button>
       </h2>
       <div class="calendar-toolbar-nav">
@@ -288,7 +293,11 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
     </Teleport>
 
     <ul class="legend" aria-label="Legenda turni">
-      <li v-for="item in legendItems" :key="item.className" :class="item.className">
+      <li
+        v-for="item in legendItems"
+        :key="item.className"
+        :class="item.className"
+      >
         <span class="dot" :class="item.className" aria-hidden="true" />
         {{ item.label }}
       </li>
@@ -311,7 +320,11 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 .turni-calendar-card :deep(.fc-day-today) {
-  background: color-mix(in srgb, var(--color-primary) 8%, var(--surface)) !important;
+  background: color-mix(
+    in srgb,
+    var(--color-primary) 8%,
+    var(--surface)
+  ) !important;
   box-shadow: var(--shadow);
 }
 

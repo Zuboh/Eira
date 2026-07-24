@@ -3,7 +3,8 @@ import type { components } from '@/api/schema'
 
 export type Farmaco = components['schemas']['FarmacoRead']
 export type CarelloFarmaco = components['schemas']['CarelloFarmacoRead']
-export type CarelloFarmacoUpdatePayload = components['schemas']['CarelloFarmacoUpdate']
+export type CarelloFarmacoUpdatePayload =
+  components['schemas']['CarelloFarmacoUpdate']
 export type MovimentoFarmaco = components['schemas']['MovimentoFarmacoRead']
 
 type ApiDataResponse<T> = Promise<{ data: T }>
@@ -17,7 +18,8 @@ type OpenApiResult<TData> = {
 function formatOpenApiError(error: unknown, response: Response) {
   if (error instanceof Error) return error.message
   if (typeof error === 'string') return error
-  if (error === undefined) return `Request failed with status ${response.status}`
+  if (error === undefined)
+    return `Request failed with status ${response.status}`
 
   try {
     return JSON.stringify(error)
@@ -55,10 +57,13 @@ export async function updateCarelloFarmaco(
   id: number,
   payload: CarelloFarmacoUpdatePayload,
 ): ApiDataResponse<CarelloFarmaco> {
-  const result = await eiraClient.PATCH('/api/v1/carello-farmaci/{carello_id}', {
-    params: { path: { carello_id: id } },
-    body: payload,
-  })
+  const result = await eiraClient.PATCH(
+    '/api/v1/carello-farmaci/{carello_id}',
+    {
+      params: { path: { carello_id: id } },
+      body: payload,
+    },
+  )
 
   return unwrapData(result, 'updateCarelloFarmaco')
 }

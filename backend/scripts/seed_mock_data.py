@@ -20,7 +20,6 @@ from app.core.security import hash_password
 from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.consegna_sbar import ConsegnaSbar
 from app.models.diario_cedema import VoceDiarioCedema
-from app.models.farmaco import CarelloFarmaco, Farmaco
 from app.models.enums import (
     PrioritaConsegna,
     RuoloUtente,
@@ -29,6 +28,7 @@ from app.models.enums import (
     StatoUtente,
     TipoTurno,
 )
+from app.models.farmaco import CarelloFarmaco, Farmaco
 from app.models.paziente import Paziente
 from app.models.profilo_infermiere import ProfiloInfermiere
 from app.models.reparto import Reparto
@@ -537,7 +537,8 @@ def crea_carello_farmaci(db, reparti: list[Reparto]) -> None:
                     reparto_id=reparto.id,
                     quantita=quantita,
                     soglia_minima=soglia,
-                    prossima_scadenza=OGGI + datetime.timedelta(days=7 + reparto_index * 5 + farmaco_index * 9),
+                    prossima_scadenza=OGGI
+                    + datetime.timedelta(days=7 + reparto_index * 5 + farmaco_index * 9),
                 )
             )
     db.add_all(carello)

@@ -65,7 +65,8 @@ onMounted(async () => {
   try {
     const { data } = await getMieiProssimiTurni({ limit: 1 })
     const primo = data[0]
-    turnoOggi.value = primo && primo.turno.data === todayIso() ? primo.turno.tipo : null
+    turnoOggi.value =
+      primo && primo.turno.data === todayIso() ? primo.turno.tipo : null
   } catch {
     turnoOggi.value = null
   }

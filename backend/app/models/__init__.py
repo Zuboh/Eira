@@ -1,8 +1,8 @@
 from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.consegna_sbar import ConsegnaSbar
 from app.models.diario_cedema import VoceDiarioCedema
-from app.models.ferie import RichiestaFerie
 from app.models.farmaco import CarelloFarmaco, Farmaco, MovimentoFarmaco
+from app.models.ferie import RichiestaFerie
 from app.models.parametri_vitali import ParametriVitali
 from app.models.password_reset import PasswordResetRequirement
 from app.models.paziente import Paziente

@@ -53,8 +53,8 @@ def _infermiere(db_session, reparto_id, email="nurse.a@example.com"):
 
 def test_create_and_list_parametri_vitali(client, db_session, reparti):
     reparto_a, _ = reparti
-    from app.models.turno import Turno
     from app.models.enums import TipoTurno
+    from app.models.turno import Turno
 
     infermiere = _infermiere(db_session, reparto_a.id)
     paziente = _paziente(reparto_a.id)
@@ -104,8 +104,8 @@ def test_create_parametri_vitali_other_reparto_forbidden(client, db_session, rep
 
 def test_create_parametri_vitali_turno_other_reparto_forbidden(client, db_session, reparti):
     reparto_a, reparto_b = reparti
-    from app.models.turno import Turno
     from app.models.enums import TipoTurno
+    from app.models.turno import Turno
 
     infermiere = _infermiere(db_session, reparto_a.id)
     paziente = _paziente(reparto_a.id)
