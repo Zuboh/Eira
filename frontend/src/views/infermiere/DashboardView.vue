@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted } from 'vue'
 import InlineError from '@/components/ui/InlineError.vue'
-import PageHeader from '@/components/ui/PageHeader.vue'
 import BancaOreSection from '@/features/banca-ore/components/BancaOreSection.vue'
 import { useBancaOre } from '@/features/banca-ore/useBancaOre'
 import CarelloBassoStockCard from '@/features/dashboard/components/CarelloBassoStockCard.vue'
@@ -42,8 +41,6 @@ onMounted(load)
 
 <template>
   <div class="dashboard-infermiere">
-    <PageHeader title="Dashboard Infermiere" />
-
     <InlineError :message="error" />
 
     <div class="dashboard-row">
