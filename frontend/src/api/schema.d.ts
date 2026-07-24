@@ -707,6 +707,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/reparti/{reparto_id}/utenti/{utente_id}/turno-oggi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Turno Oggi Utente */
+        get: operations["get_turno_oggi_utente_api_v1_reparti__reparto_id__utenti__utente_id__turno_oggi_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -1248,6 +1265,10 @@ export interface components {
              * Format: time
              */
             ora_fine: string;
+        };
+        /** TurnoOggiRead */
+        TurnoOggiRead: {
+            tipo: components["schemas"]["TipoTurno"];
         };
         /** TurnoRead */
         TurnoRead: {
@@ -3973,6 +3994,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UtenteTile"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_turno_oggi_utente_api_v1_reparti__reparto_id__utenti__utente_id__turno_oggi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reparto_id: number;
+                utente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnoOggiRead"] | null;
                 };
             };
             /** @description Validation Error */

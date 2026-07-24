@@ -49,3 +49,7 @@ class ProssimoTurnoConColleghiRead(BaseModel):
     colleghi: list[UtenteTile]
 
     model_config = {"from_attributes": True}
+
+
+class TurnoOggiRead(BaseModel):
+    tipo: TipoTurno

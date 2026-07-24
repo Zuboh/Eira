@@ -33,10 +33,6 @@ defineExpose({ focusPassword })
 
 <template>
   <form class="password-step" @submit.prevent="emit('submit')">
-    <p class="subtitle">
-      {{ selectedUtente?.nome }} {{ selectedUtente?.cognome }}
-    </p>
-
     <div class="field">
       <label for="password">Password</label>
       <Password
@@ -74,12 +70,6 @@ defineExpose({ focusPassword })
 </template>
 
 <style scoped>
-.subtitle {
-  color: var(--steel);
-  font-size: 0.9375rem;
-  margin-bottom: 8px;
-}
-
 .password-step {
   display: flex;
   flex-direction: column;
@@ -127,6 +117,9 @@ defineExpose({ focusPassword })
 
 .submit {
   margin-top: 8px;
+  min-height: var(--size-touch);
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .submit:active {
@@ -149,5 +142,10 @@ defineExpose({ focusPassword })
   cursor: pointer;
   align-self: flex-start;
   min-height: var(--size-touch);
+}
+
+.link-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 </style>

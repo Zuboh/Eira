@@ -1,7 +1,9 @@
 import { onMounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { changeTemporaryPassword } from '@/api/auth'
+import type { TipoTurno } from '@/api/turni'
 import {
+  getTurnoOggiUtente,
   listReparti,
   listUtentiByReparto,
   type Reparto,
@@ -43,6 +45,7 @@ type UseLoginFlowResult = {
   success: Ref<string>
   loading: Ref<boolean>
   stepError: Ref<string>
+  turnoOggi: Ref<TipoTurno | null>
   chooseReparto: (reparto: Reparto) => Promise<void>
   cambiaReparto: () => void
   selectUtente: (utente: UtenteTile) => Promise<void>
@@ -73,6 +76,7 @@ export function useLoginFlow({
   const success = ref('')
   const loading = ref(false)
   const stepError = ref('')
+  const turnoOggi = ref<TipoTurno | null>(null)
 
   const auth = useAuthStore()
   const router = useRouter()
@@ -129,6 +133,7 @@ export function useLoginFlow({
     clearDeviceRepartoId()
     utenti.value = []
     selectedUtente.value = null
+    turnoOggi.value = null
     clearPasswordState()
     error.value = ''
     success.value = ''
@@ -142,11 +147,25 @@ export function useLoginFlow({
     error.value = ''
     success.value = ''
     step.value = 'password'
+    turnoOggi.value = null
+
+    const repartoId = getDeviceRepartoId()
+    if (repartoId) {
+      try {
+        const { data } = await getTurnoOggiUtente(repartoId, utente.id)
+        turnoOggi.value = data?.tipo ?? null
+      } catch {
+        turnoOggi.value = null
+      }
+    }
+
     await focusFirstOf('password')
   }
 
   function tornaAiTile(): void {
     step.value = 'tiles'
+    selectedUtente.value = null
+    turnoOggi.value = null
     clearPasswordState()
     error.value = ''
     success.value = ''
@@ -249,6 +268,7 @@ export function useLoginFlow({
     success,
     loading,
     stepError,
+    turnoOggi,
     chooseReparto,
     cambiaReparto,
     selectUtente,

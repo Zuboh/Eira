@@ -12,6 +12,7 @@ declare module 'vue-router' {
     nav?: {
       label: string
       order: number
+      icon: string
     }
   }
 }
@@ -50,25 +51,37 @@ const router = createRouter({
       path: '/infermiere',
       name: 'infermiere-dashboard',
       component: () => import('@/views/infermiere/DashboardView.vue'),
-      meta: { roles: ['infermiere'], nav: { label: 'Dashboard', order: 10 } },
+      meta: {
+        roles: ['infermiere'],
+        nav: { label: 'Dashboard', order: 10, icon: 'pi-home' },
+      },
     },
     {
       path: '/caposala',
       name: 'caposala-dashboard',
       component: () => import('@/views/caposala/DashboardView.vue'),
-      meta: { roles: ['caposala'], nav: { label: 'Dashboard', order: 10 } },
+      meta: {
+        roles: ['caposala'],
+        nav: { label: 'Dashboard', order: 10, icon: 'pi-home' },
+      },
     },
     {
       path: '/caposala/personale',
       name: 'caposala-staff',
       component: () => import('@/views/caposala/StaffView.vue'),
-      meta: { roles: ['caposala'], nav: { label: 'Personale', order: 60 } },
+      meta: {
+        roles: ['caposala'],
+        nav: { label: 'Personale', order: 60, icon: 'pi-id-card' },
+      },
     },
     {
       path: '/pazienti',
       name: 'pazienti',
       component: () => import('@/views/PazientiView.vue'),
-      meta: { roles: ALL_ROLES, nav: { label: 'Pazienti', order: 20 } },
+      meta: {
+        roles: ALL_ROLES,
+        nav: { label: 'Pazienti', order: 20, icon: 'pi-users' },
+      },
     },
     {
       path: '/pazienti/:id',
@@ -81,31 +94,46 @@ const router = createRouter({
       path: '/consegne-sbar',
       name: 'consegne-sbar',
       component: () => import('@/views/ConsegneSbarView.vue'),
-      meta: { roles: ALL_ROLES, nav: { label: 'Diario Clinico', order: 30 } },
+      meta: {
+        roles: ALL_ROLES,
+        nav: { label: 'Diario Clinico', order: 30, icon: 'pi-book' },
+      },
     },
     {
       path: '/carello-farmaci',
       name: 'carello-farmaci',
       component: () => import('@/views/CarelloFarmaciView.vue'),
-      meta: { roles: ALL_ROLES, nav: { label: 'Carello Farmaci', order: 35 } },
+      meta: {
+        roles: ALL_ROLES,
+        nav: { label: 'Carello Farmaci', order: 35, icon: 'pi-shopping-cart' },
+      },
     },
     {
       path: '/cambio-turno',
       name: 'cambio-turno',
       component: () => import('@/views/CambioTurnoView.vue'),
-      meta: { roles: ALL_ROLES, nav: { label: 'Cambio Turno', order: 40 } },
+      meta: {
+        roles: ALL_ROLES,
+        nav: { label: 'Cambio Turno', order: 40, icon: 'pi-sync' },
+      },
     },
     {
       path: '/ferie',
       name: 'ferie',
       component: () => import('@/views/FerieView.vue'),
-      meta: { roles: ALL_ROLES, nav: { label: 'Ferie', order: 45 } },
+      meta: {
+        roles: ALL_ROLES,
+        nav: { label: 'Ferie', order: 45, icon: 'pi-sun' },
+      },
     },
     {
       path: '/banca-ore',
       name: 'banca-ore',
       component: () => import('@/views/BancaOreView.vue'),
-      meta: { roles: ['caposala'], nav: { label: 'Banca Ore', order: 50 } },
+      meta: {
+        roles: ['caposala'],
+        nav: { label: 'Banca Ore', order: 50, icon: 'pi-wallet' },
+      },
     },
   ],
 })

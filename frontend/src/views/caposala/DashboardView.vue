@@ -116,7 +116,7 @@ onMounted(load)
 <style scoped>
 .dashboard-caposala {
   padding: var(--page-padding);
-  max-width: var(--page-xl);
+  max-width: var(--page-2xl);
   margin: 0 auto;
 }
 

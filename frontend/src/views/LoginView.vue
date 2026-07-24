@@ -33,6 +33,7 @@ const {
   success,
   loading,
   stepError,
+  turnoOggi,
   chooseReparto,
   cambiaReparto,
   selectUtente,
@@ -43,7 +44,12 @@ const {
 </script>
 
 <template>
-  <AuthCard>
+  <AuthCard
+    :subtitle="
+      selectedUtente ? `${selectedUtente.nome} ${selectedUtente.cognome}` : null
+    "
+    :turno="turnoOggi"
+  >
     <RepartoStep
       v-if="step === 'reparto'"
       ref="repartoStepRef"

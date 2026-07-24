@@ -18,6 +18,10 @@ function focusFirst() {
   firstButton.value?.focus()
 }
 
+function repartoInitial(nome: string): string {
+  return nome.charAt(0).toUpperCase()
+}
+
 defineExpose({ focusFirst })
 </script>
 
@@ -34,7 +38,10 @@ defineExpose({ focusFirst })
         :disabled="loading"
         @click="emit('choose', reparto)"
       >
-        {{ reparto.nome }}
+        <span class="reparto-avatar" aria-hidden="true">{{
+          repartoInitial(reparto.nome)
+        }}</span>
+        <span class="reparto-name">{{ reparto.nome }}</span>
       </button>
     </li>
   </ul>
@@ -67,23 +74,54 @@ defineExpose({ focusFirst })
 .reparto-item {
   width: 100%;
   min-height: var(--size-touch);
+  display: flex;
+  align-items: center;
+  gap: 12px;
   text-align: left;
-  padding: 12px 16px;
+  padding: 10px 16px;
   background: var(--canvas);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  font-size: 0.9375rem;
   cursor: pointer;
   transition:
     background 0.15s ease,
+    border-color 0.15s ease,
     transform 0.15s ease;
 }
 
+.reparto-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--color-primary) 14%, var(--surface));
+  color: var(--color-primary-on-tint);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.reparto-name {
+  font-size: 0.9375rem;
+}
+
 .reparto-item:hover {
-  background: var(--surface);
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--canvas));
+  border-color: color-mix(in oklch, var(--color-primary) 35%, var(--border));
 }
 
 .reparto-item:active {
   transform: scale(0.98);
+}
+
+.reparto-item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.reparto-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
