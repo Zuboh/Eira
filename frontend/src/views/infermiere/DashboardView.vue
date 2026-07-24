@@ -47,7 +47,10 @@ onMounted(load)
       <TurniCalendarCard class="calendar-hero" :events="calendarEvents" />
 
       <div class="side-column">
-        <ProssimiTurniCard :turni="prossimiTurniConColleghi" :loading="loading" />
+        <ProssimiTurniCard
+          :turni="prossimiTurniConColleghi"
+          :loading="loading"
+        />
 
         <BancaOreSection
           :banca-ore="bancaOre"
