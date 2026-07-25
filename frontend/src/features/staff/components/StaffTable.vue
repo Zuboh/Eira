@@ -11,6 +11,7 @@ const emit = defineEmits<StaffTableEmits>()
 
 <template>
   <EiraTable
+    flush
     :empty="utenti.length === 0"
     empty-message="Nessun utente in questo filtro."
   >

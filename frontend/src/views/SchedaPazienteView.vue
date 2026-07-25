@@ -92,6 +92,8 @@ onMounted(load)
           />
           <Button
             v-if="canEditPatient"
+            v-tooltip.top="'Modifica'"
+            icon="pi pi-pencil"
             label="Modifica"
             size="small"
             severity="secondary"

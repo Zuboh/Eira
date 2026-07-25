@@ -104,18 +104,21 @@ onMounted(async () => {
                 <span class="unit">{{ riga.farmaco.unita_misura }}</span>
               </td>
               <td>{{ riga.farmaco.categoria }}</td>
-              <td class="quantity">
-                {{ riga.quantita }}
-                <StatusBadge
-                  v-if="isSottoSoglia(riga)"
-                  status="urgente"
-                  label="Sotto soglia"
-                />
+              <td>
+                <span class="quantity">
+                  {{ riga.quantita }}
+                  <StatusBadge
+                    v-if="isSottoSoglia(riga)"
+                    status="urgente"
+                    label="Sotto soglia"
+                  />
+                </span>
               </td>
               <td>{{ riga.soglia_minima }}</td>
               <td>
                 <div class="stepper" aria-label="Modifica quantità">
                   <Button
+                    v-tooltip.top="'Riduci quantità'"
                     icon="pi pi-minus"
                     aria-label="Riduci quantità"
                     size="small"
@@ -124,6 +127,7 @@ onMounted(async () => {
                     @click="adjust(riga, -1)"
                   />
                   <Button
+                    v-tooltip.top="'Aumenta quantità'"
                     icon="pi pi-plus"
                     aria-label="Aumenta quantità"
                     size="small"
@@ -151,7 +155,7 @@ onMounted(async () => {
               <th>Data</th>
               <th>Farmaco</th>
               <th>Delta</th>
-              <th>Quantità dopo</th>
+              <th>Nuova quantità</th>
               <th>Autore</th>
             </tr>
           </thead>
@@ -165,7 +169,7 @@ onMounted(async () => {
                 {{ movimento.delta > 0 ? '+' : '' }}{{ movimento.delta }}
               </td>
               <td>{{ movimento.quantita_dopo }}</td>
-              <td>#{{ movimento.autore_id }}</td>
+              <td>{{ movimento.autore_nome }}</td>
             </tr>
           </tbody>
         </table>
@@ -186,9 +190,14 @@ onMounted(async () => {
 
 .tabs,
 .filters,
-.stepper,
-.quantity {
+.stepper {
   display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantity {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
 }

@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.models.enums import StatoCoscienza
 
@@ -13,6 +13,7 @@ class ParametriVitaliCreate(BaseModel):
     pressione_diastolica: int
     frequenza_respiratoria: int
     saturazione_o2: int
+    scala_dolore: int = Field(ge=0, le=10)
     stato_coscienza: StatoCoscienza
     ossigeno: bool = False
     note: str | None = None

@@ -43,12 +43,14 @@ const emit = defineEmits<{
                 turno.ora_fine.slice(0, 5)
               }}
             </td>
-            <td class="actions">
-              <Button
-                label="Assegna"
-                size="small"
-                @click="emit('assign', turno)"
-              />
+            <td>
+              <span class="actions">
+                <Button
+                  label="Assegna"
+                  size="small"
+                  @click="emit('assign', turno)"
+                />
+              </span>
             </td>
           </tr>
         </tbody>
@@ -63,7 +65,8 @@ const emit = defineEmits<{
 }
 
 .actions {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
 }
 </style>

@@ -41,6 +41,7 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
 
 <template>
   <EiraTable
+    flush
     :empty="richieste.length === 0"
     empty-message="Nessuna richiesta di cambio turno."
   >
@@ -62,41 +63,45 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
           <td class="mono">
             {{ formatDateTimeCompactIt(richiesta.creata_il) }}
           </td>
-          <td class="actions">
-            <template v-if="canAnswerAsColleague(richiesta)">
+          <td>
+            <span class="actions">
+              <template v-if="canAnswerAsColleague(richiesta)">
+                <Button
+                  label="Accetta"
+                  size="small"
+                  @click="emit('colleagueResponse', richiesta, true)"
+                />
+                <Button
+                  label="Rifiuta"
+                  size="small"
+                  severity="secondary"
+                  @click="emit('colleagueResponse', richiesta, false)"
+                />
+              </template>
+              <template v-else-if="canAnswerAsCaposala(richiesta)">
+                <Button
+                  label="Approva"
+                  size="small"
+                  @click="emit('approve', richiesta)"
+                />
+                <Button
+                  label="Rifiuta"
+                  size="small"
+                  severity="secondary"
+                  @click="emit('reject', richiesta)"
+                />
+              </template>
               <Button
-                label="Accetta"
+                v-if="canCancel(richiesta)"
+                v-tooltip.top="'Annulla'"
+                icon="pi pi-times"
+                label="Annulla"
                 size="small"
-                @click="emit('colleagueResponse', richiesta, true)"
+                severity="danger"
+                text
+                @click="emit('cancel', richiesta)"
               />
-              <Button
-                label="Rifiuta"
-                size="small"
-                severity="secondary"
-                @click="emit('colleagueResponse', richiesta, false)"
-              />
-            </template>
-            <template v-else-if="canAnswerAsCaposala(richiesta)">
-              <Button
-                label="Approva"
-                size="small"
-                @click="emit('approve', richiesta)"
-              />
-              <Button
-                label="Rifiuta"
-                size="small"
-                severity="secondary"
-                @click="emit('reject', richiesta)"
-              />
-            </template>
-            <Button
-              v-if="canCancel(richiesta)"
-              label="Annulla"
-              size="small"
-              severity="danger"
-              text
-              @click="emit('cancel', richiesta)"
-            />
+            </span>
           </td>
         </tr>
       </tbody>
@@ -106,7 +111,8 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
 
 <style scoped>
 .actions {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
 }
 

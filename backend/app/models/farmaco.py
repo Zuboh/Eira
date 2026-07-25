@@ -4,6 +4,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+from app.models.utente import Utente
 
 
 class Farmaco(Base):
@@ -42,3 +43,4 @@ class MovimentoFarmaco(Base):
     quantita_dopo: Mapped[int] = mapped_column()
 
     carello_farmaco: Mapped[CarelloFarmaco] = relationship()
+    autore: Mapped[Utente] = relationship()

@@ -33,6 +33,7 @@ class AssegnazioneTurnoRead(BaseModel):
     turno_id: int
     infermiere_id: int
     stato: StatoAssegnazione
+    turno: TurnoRead | None = None
 
     model_config = {"from_attributes": True}
 

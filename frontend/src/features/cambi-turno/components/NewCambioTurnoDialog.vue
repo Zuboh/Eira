@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import FormField from '@/components/ui/FormField.vue'
 import { dialogStyle } from '@/components/ui/dialogStyles'
+import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
+import { formatDateShortIt } from '@/utils/dateFormat'
 import type {
   CambioTurnoForm,
   CambioTurnoSubmitEmits,
@@ -13,9 +16,18 @@ import type {
 const visible = defineModel<boolean>('visible', { required: true })
 const form = defineModel<CambioTurnoForm>('form', { required: true })
 
-defineProps<NewCambioTurnoDialogProps>()
+const props = defineProps<NewCambioTurnoDialogProps>()
 
 const emit = defineEmits<CambioTurnoSubmitEmits>()
+
+const assegnazioniConLabel = computed(() =>
+  props.assegnazioni.map((a) => ({
+    ...a,
+    label: a.turno
+      ? `${formatDateShortIt(a.turno.data)} · ${TIPO_TURNO_LABEL[a.turno.tipo]}`
+      : `Turno #${a.turno_id}`,
+  })),
+)
 </script>
 
 <template>
@@ -29,8 +41,8 @@ const emit = defineEmits<CambioTurnoSubmitEmits>()
       <FormField label="Tuo turno" required>
         <Select
           v-model="form.assegnazione_turno_id"
-          :options="assegnazioni"
-          optionLabel="turno_id"
+          :options="assegnazioniConLabel"
+          optionLabel="label"
           optionValue="id"
           placeholder="Seleziona assegnazione"
           required

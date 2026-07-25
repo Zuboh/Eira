@@ -51,6 +51,9 @@ const emit = defineEmits<PatientChartSaveEmit>()
         <FormField label="SpO₂" required>
           <InputNumber v-model="form.saturazione_o2" />
         </FormField>
+        <FormField label="Scala dolore (NRS)" required>
+          <InputNumber v-model="form.scala_dolore" :min="0" :max="10" />
+        </FormField>
       </div>
       <FormField label="Stato di coscienza" required>
         <Select

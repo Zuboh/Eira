@@ -66,6 +66,7 @@ export function createEmptyParametriVitaliForm(): ParametriVitaliForm {
     pressione_diastolica: 80,
     frequenza_respiratoria: 16,
     saturazione_o2: 98,
+    scala_dolore: 0,
     stato_coscienza: 'vigile',
     ossigeno: false,
     note: '',

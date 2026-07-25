@@ -13,10 +13,13 @@ defineProps<{
     <h2>{{ title }}</h2>
     <RouterLink
       v-if="routeName && linkLabel"
+      v-tooltip.top="linkLabel"
       :to="{ name: routeName }"
       class="see-all"
+      :aria-label="linkLabel"
     >
       {{ linkLabel }}
+      <i class="pi pi-arrow-right" aria-hidden="true" />
     </RouterLink>
   </div>
 </template>
@@ -36,9 +39,16 @@ defineProps<{
 }
 
 .see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   color: var(--steel);
   font-size: 0.8125rem;
   font-weight: 600;
   text-decoration: none;
+}
+
+.see-all .pi {
+  font-size: 0.75rem;
 }
 </style>

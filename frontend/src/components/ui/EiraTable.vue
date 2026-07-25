@@ -137,6 +137,10 @@ withDefaults(
   border-radius: 0;
 }
 
+.eira-table--flush .eira-table__scroll :deep(th) {
+  background: transparent;
+}
+
 .skeleton-row {
   display: flex;
   gap: 1rem;

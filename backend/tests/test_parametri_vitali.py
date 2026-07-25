@@ -26,6 +26,7 @@ def _payload():
         "pressione_diastolica": 80,
         "frequenza_respiratoria": 18,
         "saturazione_o2": 97,
+        "scala_dolore": 3,
         "stato_coscienza": "vigile",
         "ossigeno": False,
         "note": "Paziente collaborante.",

@@ -324,8 +324,6 @@ def crea_richieste_cambio_turno(
                 richiesta.risposta_caposala_il = creata_il + datetime.timedelta(days=1)
                 if stato == StatoCambioTurno.rifiutata_caposala:
                     richiesta.motivo_rifiuto = "Copertura insufficiente per il reparto in quel turno."
-                elif stato == StatoCambioTurno.approvata:
-                    assegnazione.stato = StatoAssegnazione.cambiata
 
         db.add(richiesta)
     db.flush()

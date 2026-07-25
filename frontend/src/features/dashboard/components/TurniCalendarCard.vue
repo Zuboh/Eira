@@ -474,6 +474,10 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   font-weight: 600;
 }
 
+.turni-calendar-card :deep(.fc-col-header-cell) {
+  background: transparent;
+}
+
 .turni-calendar-card :deep(.fc-daygrid-event) {
   border: 0;
   border-radius: 999px;

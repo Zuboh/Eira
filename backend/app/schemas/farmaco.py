@@ -34,6 +34,7 @@ class MovimentoFarmacoRead(BaseModel):
     farmaco_id: int
     farmaco_nome: str
     autore_id: int
+    autore_nome: str
     timestamp: datetime.datetime
     delta: int
     quantita_dopo: int

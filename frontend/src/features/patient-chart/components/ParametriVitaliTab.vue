@@ -25,6 +25,8 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
       </div>
       <Button
         v-if="canCreate"
+        v-tooltip.top="'Nuovi parametri'"
+        icon="pi pi-plus"
         label="Nuovi parametri"
         size="small"
         @click="emit('newEntry')"
@@ -69,6 +71,10 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
             <dd>{{ entries[0].saturazione_o2 }}%</dd>
           </div>
           <div>
+            <dt>Dolore</dt>
+            <dd>{{ entries[0].scala_dolore }}/10</dd>
+          </div>
+          <div>
             <dt>Coscienza</dt>
             <dd>{{ entries[0].stato_coscienza }}</dd>
           </div>
@@ -96,6 +102,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
               <th>PA</th>
               <th>FR</th>
               <th>SpO₂</th>
+              <th>Dolore</th>
               <th>Coscienza</th>
               <th>O₂</th>
               <th>Note</th>
@@ -113,6 +120,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
               </td>
               <td>{{ entry.frequenza_respiratoria }}</td>
               <td>{{ entry.saturazione_o2 }}%</td>
+              <td>{{ entry.scala_dolore }}/10</td>
               <td>{{ entry.stato_coscienza }}</td>
               <td>{{ entry.ossigeno ? 'Sì' : 'No' }}</td>
               <td>{{ entry.note || '—' }}</td>

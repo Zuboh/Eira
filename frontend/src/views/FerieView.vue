@@ -91,6 +91,7 @@ onMounted(load)
           />
           <Button
             v-if="index > 0"
+            v-tooltip.top="'Rimuovi preferenza'"
             icon="pi pi-times"
             text
             severity="secondary"
@@ -102,7 +103,9 @@ onMounted(load)
       <div class="form-actions">
         <Button
           v-if="preferenzeSelezionate.length < 3"
+          v-tooltip.top="'Aggiungi preferenza'"
           type="button"
+          icon="pi pi-plus"
           label="Aggiungi preferenza"
           text
           @click="aggiungiPreferenza"

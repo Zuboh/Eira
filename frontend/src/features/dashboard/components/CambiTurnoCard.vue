@@ -45,20 +45,22 @@ const emit = defineEmits<{
             <td>{{ nomeUtente(richiesta.richiedente_id) }}</td>
             <td>{{ nomeUtente(richiesta.collega_id) }}</td>
             <td><StatusBadge :status="richiesta.stato" /></td>
-            <td class="actions">
-              <template v-if="richiesta.stato === 'in_attesa_caposala'">
-                <Button
-                  label="Approva"
-                  size="small"
-                  @click="emit('approve', richiesta)"
-                />
-                <Button
-                  label="Rifiuta"
-                  size="small"
-                  severity="secondary"
-                  @click="emit('reject', richiesta)"
-                />
-              </template>
+            <td>
+              <span class="actions">
+                <template v-if="richiesta.stato === 'in_attesa_caposala'">
+                  <Button
+                    label="Approva"
+                    size="small"
+                    @click="emit('approve', richiesta)"
+                  />
+                  <Button
+                    label="Rifiuta"
+                    size="small"
+                    severity="secondary"
+                    @click="emit('reject', richiesta)"
+                  />
+                </template>
+              </span>
             </td>
           </tr>
         </tbody>
@@ -73,7 +75,8 @@ const emit = defineEmits<{
 }
 
 .actions {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
 }
 </style>

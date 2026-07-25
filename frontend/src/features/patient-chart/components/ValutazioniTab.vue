@@ -15,12 +15,16 @@ const emit = defineEmits<ValutazioniTabEmits>()
   <div class="panel-header">
     <Button
       v-if="canCreate"
+      v-tooltip.top="'Nuova Norton'"
+      icon="pi pi-plus"
       label="Nuova Norton"
       size="small"
       @click="emit('newNorton')"
     />
     <Button
       v-if="canCreate"
+      v-tooltip.top="'Nuova Conley'"
+      icon="pi pi-plus"
       label="Nuova Conley"
       size="small"
       severity="secondary"
@@ -29,6 +33,7 @@ const emit = defineEmits<ValutazioniTabEmits>()
   </div>
   <h2>Norton</h2>
   <EiraTable
+    flush
     class="clinical-table"
     :empty="norton.length === 0"
     empty-message="Nessuna valutazione Norton."
@@ -63,6 +68,7 @@ const emit = defineEmits<ValutazioniTabEmits>()
 
   <h2>Conley</h2>
   <EiraTable
+    flush
     class="clinical-table"
     :empty="conley.length === 0"
     empty-message="Nessuna valutazione Conley."

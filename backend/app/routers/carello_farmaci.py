@@ -80,6 +80,7 @@ def list_movimenti_farmaci(
             farmaco_id=movimento.carello_farmaco.farmaco_id,
             farmaco_nome=movimento.carello_farmaco.farmaco.nome,
             autore_id=movimento.autore_id,
+            autore_nome=f"{movimento.autore.cognome} {movimento.autore.nome}",
             timestamp=movimento.timestamp,
             delta=movimento.delta,
             quantita_dopo=movimento.quantita_dopo,

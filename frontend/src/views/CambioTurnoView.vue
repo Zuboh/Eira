@@ -42,6 +42,8 @@ onMounted(load)
       <template #actions>
         <Button
           v-if="canRequestChange"
+          v-tooltip.top="'Richiedi cambio'"
+          icon="pi pi-plus"
           label="Richiedi cambio"
           size="small"
           @click="apriNuova"

@@ -759,6 +759,7 @@ export interface components {
             /** Infermiere Id */
             infermiere_id: number;
             stato: components["schemas"]["StatoAssegnazione"];
+            turno?: components["schemas"]["TurnoRead"] | null;
         };
         /** BancaOreRead */
         BancaOreRead: {
@@ -918,6 +919,8 @@ export interface components {
             farmaco_nome: string;
             /** Autore Id */
             autore_id: number;
+            /** Autore Nome */
+            autore_nome: string;
             /**
              * Timestamp
              * Format: date-time
@@ -944,6 +947,8 @@ export interface components {
             frequenza_respiratoria: number;
             /** Saturazione O2 */
             saturazione_o2: number;
+            /** Scala Dolore */
+            scala_dolore: number;
             stato_coscienza: components["schemas"]["StatoCoscienza"];
             /**
              * Ossigeno
@@ -969,6 +974,8 @@ export interface components {
             frequenza_respiratoria: number;
             /** Saturazione O2 */
             saturazione_o2: number;
+            /** Scala Dolore */
+            scala_dolore: number;
             stato_coscienza: components["schemas"]["StatoCoscienza"];
             /**
              * Ossigeno

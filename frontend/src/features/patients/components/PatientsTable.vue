@@ -14,7 +14,7 @@ function goToPaziente(id: number) {
 </script>
 
 <template>
-  <EiraTable :loading="loading">
+  <EiraTable flush :loading="loading">
     <table class="pazienti-table">
       <thead>
         <tr>
@@ -59,7 +59,7 @@ function goToPaziente(id: number) {
 <style scoped>
 .pazienti-table {
   width: 100%;
-  min-width: 760px;
+  min-width: var(--table-min-wide);
   border-collapse: collapse;
 }
 

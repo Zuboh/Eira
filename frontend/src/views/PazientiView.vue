@@ -32,7 +32,13 @@ onMounted(load)
       subtitle="Elenco dei pazienti visibili per reparto e ruolo."
     >
       <template v-if="canCreatePatient" #actions>
-        <Button label="Nuovo paziente" size="small" @click="apriNuovo" />
+        <Button
+          v-tooltip.top="'Nuovo paziente'"
+          icon="pi pi-plus"
+          label="Nuovo paziente"
+          size="small"
+          @click="apriNuovo"
+        />
       </template>
     </PageHeader>
 

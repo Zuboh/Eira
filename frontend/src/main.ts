@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
+import Tooltip from 'primevue/tooltip'
 import { definePreset } from '@primeuix/themes'
 import Aura from '@primeuix/themes/aura'
 import 'primeicons/primeicons.css'
@@ -72,5 +73,6 @@ app.use(PrimeVue, {
     preset: EiraPreset,
   },
 })
+app.directive('tooltip', Tooltip)
 
 router.isReady().then(() => app.mount('#app'))

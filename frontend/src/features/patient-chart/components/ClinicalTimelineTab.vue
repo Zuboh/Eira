@@ -18,12 +18,20 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
   <div class="panel-header">
     <Button
       v-if="canCreate"
+      v-tooltip.top="'Nuova consegna'"
+      icon="pi pi-plus"
       label="Nuova consegna"
       size="small"
       @click="emit('newEntry')"
     />
-    <RouterLink :to="{ name: 'consegne-sbar' }" class="diario-link">
+    <RouterLink
+      v-tooltip.top="'Vedi tutte le consegne'"
+      :to="{ name: 'consegne-sbar' }"
+      class="diario-link"
+      aria-label="Vedi tutte le consegne"
+    >
       Vedi tutte le consegne
+      <i class="pi pi-arrow-right" aria-hidden="true" />
     </RouterLink>
   </div>
 
@@ -68,6 +76,7 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
   min-height: var(--size-touch);
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   padding: 0 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);

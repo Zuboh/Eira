@@ -271,4 +271,19 @@ def list_mie_assegnazioni(current_user: CurrentUserDep, db: DbDep) -> list[Asseg
         )
         .all()
     )
-    return [AssegnazioneTurnoRead.model_validate(a) for a in assegnazioni]
+    turni_per_id = {
+        turno.id: turno
+        for turno in db.query(Turno).filter(
+            Turno.id.in_([a.turno_id for a in assegnazioni])
+        )
+    }
+    return [
+        AssegnazioneTurnoRead(
+            id=a.id,
+            turno_id=a.turno_id,
+            infermiere_id=a.infermiere_id,
+            stato=a.stato,
+            turno=TurnoRead.model_validate(turni_per_id[a.turno_id]),
+        )
+        for a in assegnazioni
+    ]

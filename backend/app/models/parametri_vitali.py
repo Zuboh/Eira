@@ -23,6 +23,7 @@ class ParametriVitali(Base):
     pressione_diastolica: Mapped[int]
     frequenza_respiratoria: Mapped[int]
     saturazione_o2: Mapped[int]
+    scala_dolore: Mapped[int]
     stato_coscienza: Mapped[StatoCoscienza] = mapped_column(sa.Enum(StatoCoscienza))
     ossigeno: Mapped[bool] = mapped_column(default=False)
     note: Mapped[str | None] = mapped_column(sa.Text, default=None)

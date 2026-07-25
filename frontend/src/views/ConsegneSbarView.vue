@@ -52,6 +52,8 @@ function onPageChange(event: { page: number }) {
       <template #actions>
         <Button
           v-if="canCreateConsegna"
+          v-tooltip.top="'Nuova consegna'"
+          icon="pi pi-plus"
           label="Nuova consegna"
           size="small"
           @click="apriNuova"
@@ -62,6 +64,7 @@ function onPageChange(event: { page: number }) {
     <InlineError :message="error" />
 
     <EiraTable
+      flush
       :loading="loading"
       :empty="consegne.length === 0"
       empty-message="Nessuna consegna SBAR."
@@ -87,6 +90,8 @@ function onPageChange(event: { page: number }) {
             <td>
               <Button
                 v-if="canEditConsegna(consegna)"
+                v-tooltip.top="'Modifica'"
+                icon="pi pi-pencil"
                 label="Modifica"
                 size="small"
                 severity="secondary"

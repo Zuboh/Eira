@@ -42,6 +42,7 @@ function preferenzeOrdinate(richiesta: RichiestaFerie) {
 
 <template>
   <EiraTable
+    flush
     :empty="richieste.length === 0"
     empty-message="Nessuna richiesta di ferie."
   >
@@ -78,35 +79,41 @@ function preferenzeOrdinate(richiesta: RichiestaFerie) {
           <td class="mono">
             {{ formatDateTimeCompactIt(richiesta.creata_il) }}
           </td>
-          <td class="actions">
-            <template v-if="canRespond(richiesta)">
-              <Button
-                label="Approva"
-                size="small"
-                @click="emit('approve', richiesta)"
-              />
-              <Button
-                label="Rifiuta"
-                size="small"
-                severity="secondary"
-                @click="emit('reject', richiesta)"
-              />
-            </template>
-            <template v-if="canEditOrCancel(richiesta)">
-              <Button
-                label="Modifica"
-                size="small"
-                severity="secondary"
-                @click="emit('edit', richiesta)"
-              />
-              <Button
-                label="Annulla"
-                size="small"
-                severity="danger"
-                text
-                @click="emit('cancel', richiesta)"
-              />
-            </template>
+          <td>
+            <span class="actions">
+              <template v-if="canRespond(richiesta)">
+                <Button
+                  label="Approva"
+                  size="small"
+                  @click="emit('approve', richiesta)"
+                />
+                <Button
+                  label="Rifiuta"
+                  size="small"
+                  severity="secondary"
+                  @click="emit('reject', richiesta)"
+                />
+              </template>
+              <template v-if="canEditOrCancel(richiesta)">
+                <Button
+                  v-tooltip.top="'Modifica'"
+                  icon="pi pi-pencil"
+                  label="Modifica"
+                  size="small"
+                  severity="secondary"
+                  @click="emit('edit', richiesta)"
+                />
+                <Button
+                  v-tooltip.top="'Annulla'"
+                  icon="pi pi-times"
+                  label="Annulla"
+                  size="small"
+                  severity="danger"
+                  text
+                  @click="emit('cancel', richiesta)"
+                />
+              </template>
+            </span>
           </td>
         </tr>
       </tbody>
@@ -116,7 +123,8 @@ function preferenzeOrdinate(richiesta: RichiestaFerie) {
 
 <style scoped>
 .actions {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
 }
 

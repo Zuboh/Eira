@@ -29,7 +29,9 @@ export function useInfermiereDashboard() {
   )
 
   const consegneRecenti = computed(() => consegne.value)
-  const pazientiAttivi = computed(() => pazienti.value)
+  const pazientiAttivi = computed(() =>
+    pazienti.value.filter((paziente) => !paziente.dimesso),
+  )
   const farmaciCritici = computed(() =>
     farmaci.value.filter((riga) => riga.quantita < riga.soglia_minima),
   )
@@ -56,9 +58,7 @@ export function useInfermiereDashboard() {
       ])
       turniConColleghi.value = prossimiTurniResponse.data
       consegne.value = consegneResponse.data.items
-      pazienti.value = pazientiResponse.data.filter(
-        (paziente) => !paziente.dimesso,
-      )
+      pazienti.value = pazientiResponse.data
       farmaci.value = farmaciResponse.data
     } catch {
       error.value = 'Impossibile caricare la dashboard.'

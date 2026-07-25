@@ -35,7 +35,13 @@ onMounted(load)
   <div class="staff-view">
     <PageHeader title="Personale">
       <template #actions>
-        <Button label="Aggiungi utente" size="small" @click="apriNuovo" />
+        <Button
+          v-tooltip.top="'Aggiungi utente'"
+          icon="pi pi-plus"
+          label="Aggiungi utente"
+          size="small"
+          @click="apriNuovo"
+        />
       </template>
     </PageHeader>
 
