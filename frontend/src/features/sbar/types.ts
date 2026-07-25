@@ -31,5 +31,3 @@ export type PrioritaOption = {
   value: PrioritaConsegna
   label: string
 }
-
-export type SbarFormErrors = Partial<Record<keyof ConsegnaSbarForm, string>>

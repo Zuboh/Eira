@@ -8,16 +8,13 @@ import {
 import { listPazienti } from '@/api/pazienti'
 import { getMieAssegnazioni, listTurni } from '@/api/turni'
 import { useAuthStore } from '@/stores/auth'
-import {
-  createEmptyConsegnaSbarForm,
-  createFormFromConsegna,
-  prioritaOptions,
-  toUpdateConsegnaPayload,
-} from '@/features/sbar/form'
+import { prioritaOptions } from '@/features/sbar/form'
 import {
   createEmptyGenericConsegnaForm,
+  createFormFromConsegnaSbar,
   toCedemaPayload,
   toSbarPayload,
+  toSbarUpdatePayload,
   validateConsegnaForm,
 } from '@/features/patient-chart/form'
 import { buildScaffold } from '@/features/patient-chart/consegnaSections'
@@ -47,11 +44,9 @@ export function useConsegneSbar() {
   )
 
   const dialogOpen = ref(false)
-  const nuovaDialogOpen = ref(false)
   const editingId = ref<number | null>(null)
   const saving = ref(false)
-  const form = ref(createEmptyConsegnaSbarForm())
-  const nuovaForm = ref<GenericConsegnaForm>(createEmptyGenericConsegnaForm())
+  const form = ref<GenericConsegnaForm>(createEmptyGenericConsegnaForm())
 
   const pazientiById = computed(
     () => new Map(pazienti.value.map((p) => [p.id, p])),
@@ -110,14 +105,11 @@ export function useConsegneSbar() {
   async function apriNuova() {
     editingId.value = null
     const emptyForm = createEmptyGenericConsegnaForm()
-    nuovaForm.value = { ...emptyForm, testo: buildScaffold(emptyForm.tipo) }
-    nuovaDialogOpen.value = true
+    form.value = { ...emptyForm, testo: buildScaffold(emptyForm.tipo) }
+    dialogOpen.value = true
     try {
       await loadAssegnazioniIfNeeded()
-      nuovaForm.value.turno_id = turnoIdForDate(
-        assegnazioni.value,
-        nuovaForm.value.data,
-      )
+      form.value.turno_id = turnoIdForDate(assegnazioni.value, form.value.data)
     } catch {
       error.value = 'Impossibile caricare i turni assegnati.'
     }
@@ -125,36 +117,18 @@ export function useConsegneSbar() {
 
   function apriEdit(consegna: ConsegnaSbar) {
     editingId.value = consegna.id
-    form.value = createFormFromConsegna(consegna)
+    form.value = createFormFromConsegnaSbar(consegna)
     dialogOpen.value = true
   }
 
   async function salva() {
-    if (editingId.value === null) return
-
-    saving.value = true
-    error.value = ''
-    try {
-      await updateConsegnaSbar(
-        editingId.value,
-        toUpdateConsegnaPayload(form.value),
-      )
-      dialogOpen.value = false
-      await load()
-    } catch {
-      error.value = 'Impossibile salvare la consegna.'
-    } finally {
-      saving.value = false
-    }
-  }
-
-  async function salvaNuova() {
-    const pazienteId = nuovaForm.value.paziente_id
-    if (pazienteId === null) {
+    const editId = editingId.value
+    const pazienteId = form.value.paziente_id
+    if (editId === null && pazienteId === null) {
       error.value = 'Seleziona il paziente della consegna.'
       return
     }
-    const invalid = validateConsegnaForm(nuovaForm.value)
+    const invalid = validateConsegnaForm(form.value)
     if (invalid) {
       error.value = invalid
       return
@@ -163,23 +137,21 @@ export function useConsegneSbar() {
     saving.value = true
     error.value = ''
     try {
-      if (
-        nuovaForm.value.tipo === 'sbar' &&
-        nuovaForm.value.turno_id !== null
-      ) {
-        await createConsegnaSbar(
-          toSbarPayload(pazienteId, {
-            ...nuovaForm.value,
-            turno_id: nuovaForm.value.turno_id,
-          }),
-        )
-      } else {
-        await createVoceDiarioCedema(
-          pazienteId,
-          toCedemaPayload(nuovaForm.value),
-        )
+      if (editId !== null) {
+        await updateConsegnaSbar(editId, toSbarUpdatePayload(form.value))
+      } else if (pazienteId !== null) {
+        if (form.value.tipo === 'sbar' && form.value.turno_id !== null) {
+          await createConsegnaSbar(
+            toSbarPayload(pazienteId, {
+              ...form.value,
+              turno_id: form.value.turno_id,
+            }),
+          )
+        } else {
+          await createVoceDiarioCedema(pazienteId, toCedemaPayload(form.value))
+        }
       }
-      nuovaDialogOpen.value = false
+      dialogOpen.value = false
       await load()
     } catch {
       error.value = 'Impossibile salvare la consegna.'
@@ -195,12 +167,10 @@ export function useConsegneSbar() {
     loading,
     error,
     dialogOpen,
-    nuovaDialogOpen,
     editingId,
     isEditing,
     saving,
     form,
-    nuovaForm,
     page,
     total,
     pageCount,
@@ -214,6 +184,5 @@ export function useConsegneSbar() {
     apriNuova,
     apriEdit,
     salva,
-    salvaNuova,
   }
 }

@@ -61,6 +61,7 @@ export type GenericConsegnaDialogProps = {
   assegnazioni: AssegnazioneTurnoOption[]
   pazienti?: Paziente[]
   hidePaziente?: boolean
+  isEditing?: boolean
   saving: boolean
 }
 

@@ -75,7 +75,7 @@ test('infermiere creates a SBAR handoff for a patient on their assigned turno', 
 
   await page.goto('/consegne-sbar')
   await expect(
-    page.getByRole('heading', { name: 'Consegne SBAR' }),
+    page.getByRole('heading', { name: 'Diario Clinico' }),
   ).toBeVisible()
   expect(await checkA11y(page)).toEqual([])
 
@@ -91,25 +91,59 @@ test('infermiere creates a SBAR handoff for a patient on their assigned turno', 
     field(page, 'Data turno').getByText(/Turno rilevato:.*Mattina/),
   ).toBeVisible()
 
-  await field(page, 'Situation')
-    .locator('textarea')
-    .fill('Paziente stabile, parametri nella norma.')
-  await field(page, 'Background')
-    .locator('textarea')
-    .fill('Ricovero per osservazione post-caduta.')
-  await field(page, 'Assessment')
-    .locator('textarea')
-    .fill('Nessuna criticità rilevata al turno.')
-  await field(page, 'Recommendation')
-    .locator('textarea')
-    .fill('Proseguire monitoraggio standard.')
+  // Il dialog apre gia' con lo scaffold `S:\nB:\nA:\nR:`; la sigla a inizio
+  // riga e' il marker di sezione.
+  const testo = field(page, 'Testo consegna').locator('textarea')
+  await expect(testo).toHaveValue('S:\nB:\nA:\nR:')
+  await testo.fill(
+    [
+      'S: Paziente stabile, parametri nella norma.',
+      'B: Ricovero per osservazione post-caduta.',
+      'A: Nessuna criticità rilevata al turno.',
+      'R: Proseguire monitoraggio standard.',
+    ].join('\n'),
+  )
+  await expect(
+    page.getByText('Nessuna criticità rilevata al turno.'),
+  ).toBeVisible()
 
-  await page.getByRole('button', { name: 'Salva' }).click()
+  await page.getByRole('button', { name: 'Salva consegna' }).click()
 
   await expect(
     page.getByRole('dialog', { name: 'Nuova consegna' }),
   ).toBeHidden()
   await expect(page.getByText(paziente.cognome)).toBeVisible()
+  expect(await checkA11y(page)).toEqual([])
+
+  // Round-trip: la modifica riapre lo stesso dialog, precompilato in sigle.
+  await page.getByRole('button', { name: 'Modifica' }).first().click()
+  const editDialog = page.getByRole('dialog', { name: 'Modifica consegna' })
+  await expect(editDialog).toBeVisible()
+
+  const testoEdit = field(page, 'Testo consegna').locator('textarea')
+  await expect(testoEdit).toHaveValue(
+    [
+      'S: Paziente stabile, parametri nella norma.',
+      'B: Ricovero per osservazione post-caduta.',
+      'A: Nessuna criticità rilevata al turno.',
+      'R: Proseguire monitoraggio standard.',
+    ].join('\n'),
+  )
+
+  await testoEdit.fill(
+    [
+      'S: Paziente vigile, richiede analgesia al bisogno.',
+      'B: Ricovero per osservazione post-caduta.',
+      'A: Nessuna criticità rilevata al turno.',
+      'R: Proseguire monitoraggio standard.',
+    ].join('\n'),
+  )
+  await page.getByRole('button', { name: 'Salva modifiche' }).click()
+
+  await expect(editDialog).toBeHidden()
+  await expect(
+    page.getByText('Paziente vigile, richiede analgesia al bisogno.'),
+  ).toBeVisible()
   expect(await checkA11y(page)).toEqual([])
 
   await context.close()

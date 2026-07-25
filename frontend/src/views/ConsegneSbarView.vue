@@ -7,7 +7,6 @@ import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import GenericConsegnaDialog from '@/features/patient-chart/components/GenericConsegnaDialog.vue'
-import SbarDialog from '@/features/sbar/components/SbarDialog.vue'
 import { useConsegneSbar } from '@/features/sbar/useConsegneSbar'
 import { formatDateTimeCompactIt } from '@/utils/dateFormat'
 
@@ -20,11 +19,9 @@ const {
   loading,
   error,
   dialogOpen,
-  nuovaDialogOpen,
   isEditing,
   saving,
   form,
-  nuovaForm,
   page,
   total,
   canCreateConsegna,
@@ -35,7 +32,6 @@ const {
   apriNuova,
   apriEdit,
   salva,
-  salvaNuova,
 } = useConsegneSbar()
 
 onMounted(load)
@@ -111,21 +107,12 @@ function onPageChange(event: { page: number }) {
     />
 
     <GenericConsegnaDialog
-      v-model:visible="nuovaDialogOpen"
-      v-model:form="nuovaForm"
-      :assegnazioni="assegnazioni"
-      :pazienti="pazienti"
-      :saving="saving"
-      @save="salvaNuova"
-    />
-
-    <SbarDialog
       v-model:visible="dialogOpen"
       v-model:form="form"
-      :is-editing="isEditing"
-      :saving="saving"
       :assegnazioni="assegnazioni"
       :pazienti="pazienti"
+      :is-editing="isEditing"
+      :saving="saving"
       @save="salva"
     />
   </div>

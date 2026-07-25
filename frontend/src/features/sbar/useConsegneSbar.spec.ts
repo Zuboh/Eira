@@ -124,7 +124,7 @@ describe('useConsegneSbar — apriNuova', () => {
     const hook = useConsegneSbar()
 
     await hook.apriNuova()
-    expect(hook.nuovaDialogOpen.value).toBe(true)
+    expect(hook.dialogOpen.value).toBe(true)
     expect(hook.assegnazioni.value).toHaveLength(1)
     expect(hook.assegnazioni.value[0].label).toContain('18/07/2026')
 
@@ -140,7 +140,7 @@ describe('useConsegneSbar — salva', () => {
       data: consegna(),
     })
     const hook = useConsegneSbar()
-    hook.nuovaForm.value = {
+    hook.form.value = {
       paziente_id: 1,
       tipo: 'sbar',
       data: '2026-07-18',
@@ -149,10 +149,10 @@ describe('useConsegneSbar — salva', () => {
       testo: 'S: dolore\nB: post-operatorio\nA: stabile\nR: rivalutare',
     }
 
-    await hook.salvaNuova()
+    await hook.salva()
 
     expect(consegneSbarApi.createConsegnaSbar).toHaveBeenCalledOnce()
-    expect(hook.nuovaDialogOpen.value).toBe(false)
+    expect(hook.dialogOpen.value).toBe(false)
   })
 
   it('creates a CEDEMA consegna from the generic dialog, then reloads', async () => {
@@ -160,7 +160,7 @@ describe('useConsegneSbar — salva', () => {
       data: {} as never,
     })
     const hook = useConsegneSbar()
-    hook.nuovaForm.value = {
+    hook.form.value = {
       paziente_id: 1,
       tipo: 'cedema',
       data: '2026-07-18',
@@ -170,14 +170,14 @@ describe('useConsegneSbar — salva', () => {
         'C: vigile\nE: tranquillo\nD: assente\nE: PA 120/80\nM: autonomo\nA: nessuna',
     }
 
-    await hook.salvaNuova()
+    await hook.salva()
 
     expect(diarioCedemaApi.createVoceDiarioCedema).toHaveBeenCalledOnce()
   })
 
   it('blocks a consegna with empty sections and says which ones', async () => {
     const hook = useConsegneSbar()
-    hook.nuovaForm.value = {
+    hook.form.value = {
       paziente_id: 1,
       tipo: 'sbar',
       data: '2026-07-18',
@@ -186,7 +186,7 @@ describe('useConsegneSbar — salva', () => {
       testo: 'S: dolore\nA: stabile',
     }
 
-    await hook.salvaNuova()
+    await hook.salva()
 
     expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
     expect(hook.error.value).toBe(
@@ -196,7 +196,7 @@ describe('useConsegneSbar — salva', () => {
 
   it('is a no-op creating without paziente_id/turno_id', async () => {
     const hook = useConsegneSbar()
-    hook.nuovaForm.value = {
+    hook.form.value = {
       paziente_id: null,
       tipo: 'sbar',
       data: null,
@@ -205,9 +205,20 @@ describe('useConsegneSbar — salva', () => {
       testo: 'S',
     }
 
-    await hook.salvaNuova()
+    await hook.salva()
 
     expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
+  })
+
+  it('prefills the edit form with the consegna serialized to sigle', () => {
+    const hook = useConsegneSbar()
+
+    hook.apriEdit(consegna())
+
+    expect(hook.dialogOpen.value).toBe(true)
+    expect(hook.isEditing.value).toBe(true)
+    expect(hook.form.value.testo).toBe('S: S\nB: B\nA: A\nR: R')
+    expect(hook.form.value.turno_id).toBe(5)
   })
 
   it('updates instead of creating when editing', async () => {
@@ -216,7 +227,7 @@ describe('useConsegneSbar — salva', () => {
     })
     const hook = useConsegneSbar()
     hook.apriEdit(consegna())
-    hook.form.value.situation = 'nuova situation'
+    hook.form.value.testo = 'S: nuova situation\nB: B\nA: A\nR: R'
 
     await hook.salva()
 
@@ -225,6 +236,18 @@ describe('useConsegneSbar — salva', () => {
       expect.objectContaining({ situation: 'nuova situation' }),
     )
     expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
+    expect(hook.dialogOpen.value).toBe(false)
+  })
+
+  it('blocks an edit that empties a section', async () => {
+    const hook = useConsegneSbar()
+    hook.apriEdit(consegna())
+    hook.form.value.testo = 'S: nuova situation\nB:\nA: A\nR: R'
+
+    await hook.salva()
+
+    expect(consegneSbarApi.updateConsegnaSbar).not.toHaveBeenCalled()
+    expect(hook.error.value).toBe('Completa le sezioni mancanti: Background.')
   })
 
   it('sets an error on failure', async () => {
@@ -232,7 +255,7 @@ describe('useConsegneSbar — salva', () => {
       new Error('down'),
     )
     const hook = useConsegneSbar()
-    hook.nuovaForm.value = {
+    hook.form.value = {
       paziente_id: 1,
       tipo: 'sbar',
       data: '2026-07-18',
@@ -241,7 +264,7 @@ describe('useConsegneSbar — salva', () => {
       testo: 'S: dolore\nB: post-operatorio\nA: stabile\nR: rivalutare',
     }
 
-    await hook.salvaNuova()
+    await hook.salva()
 
     expect(hook.error.value).toBe('Impossibile salvare la consegna.')
   })

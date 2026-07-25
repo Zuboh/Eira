@@ -1,10 +1,15 @@
 import type { Paziente } from '@/api/pazienti'
+import type {
+  ConsegnaSbar,
+  ConsegnaSbarUpdatePayload,
+} from '@/api/consegneSbar'
 import { prioritaOptions } from '@/features/sbar/form'
 import { todayIsoDate } from '@/features/sbar/turnoOptions'
 import {
   findEmptySections,
   isPristineScaffold,
   parseConsegnaText,
+  serializeToSigle,
 } from '@/features/patient-chart/consegnaSections'
 import type {
   CedemaNarrativeSource,
@@ -95,6 +100,46 @@ export function toCedemaPayload(form: GenericConsegnaForm) {
     emodinamica: values.emodinamica,
     mobilizzazione: values.mobilizzazione,
     allert: values.allert,
+  }
+}
+
+/**
+ * Precompila il dialog in modifica. Il testo torna in **sigle**, come lo
+ * scaffold che si digita in creazione; le etichette estese restano alla
+ * timeline (`sbarToNarrative`).
+ */
+export function createFormFromConsegnaSbar(
+  consegna: ConsegnaSbar,
+): GenericConsegnaForm {
+  return {
+    paziente_id: consegna.paziente_id,
+    tipo: 'sbar',
+    data: null,
+    turno_id: consegna.turno_id,
+    priorita: consegna.priorita,
+    testo: serializeToSigle(
+      {
+        situation: consegna.situation,
+        background: consegna.background,
+        assessment: consegna.assessment,
+        recommendation: consegna.recommendation,
+      },
+      'sbar',
+    ),
+  }
+}
+
+export function toSbarUpdatePayload(
+  form: GenericConsegnaForm,
+): ConsegnaSbarUpdatePayload {
+  const { values } = parseConsegnaText(form.testo, 'sbar')
+
+  return {
+    situation: values.situation,
+    background: values.background,
+    assessment: values.assessment,
+    recommendation: values.recommendation,
+    priorita: form.priorita,
   }
 }
 

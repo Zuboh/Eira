@@ -34,10 +34,15 @@ const form = defineModel<GenericConsegnaForm>('form', { required: true })
 const props = withDefaults(defineProps<GenericConsegnaDialogProps>(), {
   pazienti: () => [],
   hidePaziente: false,
+  isEditing: false,
 })
 const emit = defineEmits<PatientChartSaveEmit>()
 
-const showPaziente = computed(() => !props.hidePaziente)
+// In modifica paziente, tipo e turno sono gia' scritti nella riga salvata:
+// cambiarli significherebbe spostare la consegna, non modificarla.
+const showPaziente = computed(() => !props.hidePaziente && !props.isEditing)
+const showTipo = computed(() => !props.isEditing)
+const showTurno = computed(() => !props.isEditing)
 
 const tipoOptions = [
   { label: 'SBAR', value: 'sbar' },
@@ -58,6 +63,9 @@ const selectedTurnoLabel = computed(() =>
 watch(
   () => [form.value.data, props.assegnazioni] as const,
   () => {
+    // In modifica il turno arriva dalla consegna: ricalcolarlo da `data`
+    // (nulla in edit) lo azzererebbe.
+    if (!showTurno.value) return
     form.value.turno_id = turnoIdForDate(props.assegnazioni, form.value.data)
   },
   { immediate: true },
@@ -89,7 +97,7 @@ function quickFill(key: string) {
 <template>
   <Dialog
     v-model:visible="visible"
-    header="Nuova consegna"
+    :header="isEditing ? 'Modifica consegna' : 'Nuova consegna'"
     modal
     :style="dialogStyle.xl"
   >
@@ -104,7 +112,7 @@ function quickFill(key: string) {
         />
       </FormField>
 
-      <FormField label="Tipo consegna" required>
+      <FormField v-if="showTipo" label="Tipo consegna" required>
         <Select
           v-model="form.tipo"
           :options="tipoOptions"
@@ -114,6 +122,7 @@ function quickFill(key: string) {
       </FormField>
 
       <FormField
+        v-if="showTurno"
         :label="turnoRequired ? 'Data turno' : 'Data turno (opzionale)'"
       >
         <DatePicker
@@ -157,7 +166,11 @@ function quickFill(key: string) {
       />
 
       <div class="form-actions span-2">
-        <Button type="submit" label="Salva consegna" :loading="saving" />
+        <Button
+          type="submit"
+          :label="isEditing ? 'Salva modifiche' : 'Salva consegna'"
+          :loading="saving"
+        />
       </div>
     </form>
   </Dialog>
