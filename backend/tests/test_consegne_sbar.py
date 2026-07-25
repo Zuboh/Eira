@@ -232,6 +232,52 @@ def test_update_consegna_only_by_author(client, db_session, reparti):
     assert ok.json()["situation"] == "updated"
 
 
+def test_create_consegna_rejects_empty_sections(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    turno, paziente = _setup_turno_paziente_assegnazione(db_session, reparto_a.id, infermiere.id)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    for campo in ("situation", "background", "assessment", "recommendation"):
+        payload = {
+            "paziente_id": paziente.id,
+            "turno_id": turno.id,
+            "situation": "s",
+            "background": "b",
+            "assessment": "a",
+            "recommendation": "r",
+        }
+        payload[campo] = "   "
+        response = client.post("/api/v1/consegne-sbar/", headers=headers, json=payload)
+        assert response.status_code == 422, f"{campo}: {response.text}"
+
+
+def test_update_consegna_rejects_empty_section(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    turno, paziente = _setup_turno_paziente_assegnazione(db_session, reparto_a.id, infermiere.id)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    created = client.post(
+        "/api/v1/consegne-sbar/",
+        headers=headers,
+        json={
+            "paziente_id": paziente.id,
+            "turno_id": turno.id,
+            "situation": "s",
+            "background": "b",
+            "assessment": "a",
+            "recommendation": "r",
+        },
+    )
+    consegna_id = created.json()["id"]
+
+    response = client.patch(
+        f"/api/v1/consegne-sbar/{consegna_id}", headers=headers, json={"situation": ""}
+    )
+    assert response.status_code == 422, response.text
+
+
 def test_list_consegne_paginated(client, db_session, reparti):
     reparto_a, _ = reparti
     infermiere = _infermiere(db_session, reparto_a.id)

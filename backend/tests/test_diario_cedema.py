@@ -84,6 +84,22 @@ def test_create_and_list_voce_same_reparto_succeeds(client, db_session, reparti)
     assert len(listed.json()) == 1
 
 
+def test_create_voce_rejects_empty_sections(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    paziente = _paziente(reparto_a.id)
+    db_session.add(paziente)
+    db_session.commit()
+    db_session.refresh(paziente)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    for campo in ("coscienza", "emotivita", "dolore", "emodinamica", "mobilizzazione", "allert"):
+        payload = _voce_payload()
+        payload[campo] = "   "
+        response = client.post(f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers, json=payload)
+        assert response.status_code == 422, f"{campo}: {response.text}"
+
+
 def test_list_voci_other_reparto_forbidden(client, db_session, reparti):
     reparto_a, reparto_b = reparti
     infermiere = _infermiere(db_session, reparto_a.id)
