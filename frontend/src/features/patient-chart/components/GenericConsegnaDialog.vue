@@ -6,9 +6,16 @@ import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import FormField from '@/components/ui/FormField.vue'
-import StatusBadge from '@/components/StatusBadge.vue'
+import ConsegnaPreview from '@/features/patient-chart/components/ConsegnaPreview.vue'
 import { dialogStyle } from '@/components/ui/dialogStyles'
 import { prioritaOptions } from '@/features/patient-chart/form'
+import {
+  buildScaffold,
+  isPristineScaffold,
+  parseConsegnaText,
+  sectionsFor,
+  serializeToSigle,
+} from '@/features/patient-chart/consegnaSections'
 import {
   dateFromIsoDate,
   isoDateFromDate,
@@ -55,6 +62,28 @@ watch(
   },
   { immediate: true },
 )
+
+const sections = computed(() => sectionsFor(form.value.tipo))
+const parsed = computed(() =>
+  parseConsegnaText(form.value.testo, form.value.tipo),
+)
+
+// Lo scaffold del nuovo tipo entra solo su testo vuoto o scaffold non
+// compilato: con del testo vero il cambio tipo non tocca nulla.
+watch(
+  () => form.value.tipo,
+  (tipo) => {
+    if (isPristineScaffold(form.value.testo))
+      form.value.testo = buildScaffold(tipo)
+  },
+)
+
+function quickFill(key: string) {
+  form.value.testo = serializeToSigle(
+    { ...parsed.value.values, [key]: 'invariato' },
+    form.value.tipo,
+  )
+}
 </script>
 
 <template>
@@ -62,7 +91,7 @@ watch(
     v-model:visible="visible"
     header="Nuova consegna"
     modal
-    :style="dialogStyle.lg"
+    :style="dialogStyle.xl"
   >
     <form class="form" @submit.prevent="emit('save')">
       <FormField v-if="showPaziente" label="Paziente" required>
@@ -110,38 +139,54 @@ watch(
         />
       </FormField>
 
-      <FormField label="Testo consegna" required>
+      <FormField class="span-2" label="Testo consegna" required>
         <Textarea
           v-model="form.testo"
-          rows="14"
+          rows="8"
           autoResize
-          placeholder="Scrivi la consegna. Se vuoi, puoi usare etichette come Situation:, Background:, Assessment:, Recommendation: oppure Coscienza:, Dolore:, Mobilizzazione: ..."
+          placeholder="Una sigla a inizio riga apre la sezione, il resto del testo la riempie."
         />
       </FormField>
 
-      <section v-if="insight" class="insight" aria-live="polite">
-        <h3>Suggerimento automatico</h3>
-        <p>{{ insight.summary }}</p>
-        <div v-if="insight.tags.length > 0" class="insight-tags">
-          <StatusBadge
-            v-for="tag in insight.tags"
-            :key="tag"
-            status="attivo"
-            :label="tag"
-          />
-        </div>
-      </section>
+      <ConsegnaPreview
+        class="span-2"
+        :sections="sections"
+        :values="parsed.values"
+        :has-orphan-text="parsed.hasOrphanText"
+        @quick-fill="quickFill"
+      />
 
-      <Button type="submit" label="Salva consegna" :loading="saving" />
+      <div class="form-actions span-2">
+        <Button type="submit" label="Salva consegna" :loading="saving" />
+      </div>
     </form>
   </Dialog>
 </template>
 
 <style scoped>
 .form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--space-3) var(--space-4);
+}
+
+.span-2 {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  justify-content: flex-end;
+}
+
+/* cap all'autoResize: oltre questa soglia la textarea scrolla invece di
+   allungare il dialog fino al max-height. `overflow-y` va riaffermato perche'
+   autoResize di PrimeVue imposta `overflow: hidden` -> col cap il testo oltre
+   la soglia risulterebbe tagliato e irraggiungibile. */
+textarea {
+  max-height: 40vh;
+  overflow-y: auto;
 }
 
 .field-hint {
@@ -151,30 +196,12 @@ watch(
 }
 
 .field-hint--warning {
-  color: var(--danger);
+  color: var(--state-urgente);
 }
 
-.insight {
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--surface) 88%, var(--color-primary));
-}
-
-.insight h3 {
-  margin: 0 0 8px;
-  font-size: 0.95rem;
-}
-
-.insight p {
-  margin: 0;
-  color: var(--ink);
-}
-
-.insight-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
+@media (max-width: 720px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

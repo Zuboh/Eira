@@ -15,11 +15,12 @@ import {
   toUpdateConsegnaPayload,
 } from '@/features/sbar/form'
 import {
-  buildClinicalInsight,
   createEmptyGenericConsegnaForm,
   toCedemaPayload,
   toSbarPayload,
+  validateConsegnaForm,
 } from '@/features/patient-chart/form'
+import { buildScaffold } from '@/features/patient-chart/consegnaSections'
 import {
   buildAssegnazioneTurnoOptions,
   turnoIdForDate,
@@ -51,9 +52,6 @@ export function useConsegneSbar() {
   const saving = ref(false)
   const form = ref(createEmptyConsegnaSbarForm())
   const nuovaForm = ref<GenericConsegnaForm>(createEmptyGenericConsegnaForm())
-  const nuovaInsight = computed(() =>
-    buildClinicalInsight(nuovaForm.value.testo, nuovaForm.value.tipo),
-  )
 
   const pazientiById = computed(
     () => new Map(pazienti.value.map((p) => [p.id, p])),
@@ -111,7 +109,8 @@ export function useConsegneSbar() {
 
   async function apriNuova() {
     editingId.value = null
-    nuovaForm.value = createEmptyGenericConsegnaForm()
+    const emptyForm = createEmptyGenericConsegnaForm()
+    nuovaForm.value = { ...emptyForm, testo: buildScaffold(emptyForm.tipo) }
     nuovaDialogOpen.value = true
     try {
       await loadAssegnazioniIfNeeded()
@@ -151,10 +150,15 @@ export function useConsegneSbar() {
 
   async function salvaNuova() {
     const pazienteId = nuovaForm.value.paziente_id
-    const testo = nuovaForm.value.testo.trim()
-    if (pazienteId === null || !testo) return
-    if (nuovaForm.value.tipo === 'sbar' && nuovaForm.value.turno_id === null)
+    if (pazienteId === null) {
+      error.value = 'Seleziona il paziente della consegna.'
       return
+    }
+    const invalid = validateConsegnaForm(nuovaForm.value)
+    if (invalid) {
+      error.value = invalid
+      return
+    }
 
     saving.value = true
     error.value = ''
@@ -197,7 +201,6 @@ export function useConsegneSbar() {
     saving,
     form,
     nuovaForm,
-    nuovaInsight,
     page,
     total,
     pageCount,

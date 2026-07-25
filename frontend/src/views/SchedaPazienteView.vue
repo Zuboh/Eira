@@ -37,7 +37,6 @@ const {
   consegnaDrawer,
   consegnaSaving,
   consegnaForm,
-  consegnaInsight,
   nortonDialog,
   nortonSaving,
   nortonForm,
@@ -146,7 +145,6 @@ onMounted(load)
       v-model:form="consegnaForm"
       :assegnazioni="assegnazioni"
       :saving="consegnaSaving"
-      :insight="consegnaInsight"
       hide-paziente
       @save="salvaConsegna"
     />

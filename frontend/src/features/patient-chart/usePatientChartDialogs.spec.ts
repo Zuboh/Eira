@@ -67,7 +67,8 @@ describe('usePatientChartDialogs — generic consegna', () => {
     })
     const { dialogs, reloadTimeline } = makeDialogs()
     dialogs.apriConsegna()
-    dialogs.consegnaForm.value.testo = 'Situation: dolore acuto'
+    dialogs.consegnaForm.value.testo =
+      'S: dolore acuto\nB: frattura femore\nA: parametri stabili\nR: rivalutare alle 22'
     dialogs.consegnaForm.value.turno_id = 7
 
     await dialogs.salvaConsegna()
@@ -84,12 +85,21 @@ describe('usePatientChartDialogs — generic consegna', () => {
     const { dialogs, reloadTimeline } = makeDialogs()
     dialogs.apriConsegna()
     dialogs.consegnaForm.value.tipo = 'cedema'
-    dialogs.consegnaForm.value.testo = 'Paziente tranquillo e collaborante.'
+    dialogs.consegnaForm.value.testo =
+      'C: vigile\nE: tranquillo\nD: assente\nE: PA 120/80\nM: autonomo\nA: nessuna'
 
     await dialogs.salvaConsegna()
 
     expect(diarioCedemaApi.createVoceDiarioCedema).toHaveBeenCalledOnce()
     expect(reloadTimeline).toHaveBeenCalledOnce()
+  })
+
+  it('apriConsegna prefills the SBAR scaffold', () => {
+    const { dialogs } = makeDialogs()
+
+    dialogs.apriConsegna()
+
+    expect(dialogs.consegnaForm.value.testo).toBe('S:\nB:\nA:\nR:')
   })
 
   it('salvaConsegna blocks empty text', async () => {
@@ -100,6 +110,29 @@ describe('usePatientChartDialogs — generic consegna', () => {
 
     expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
     expect(dialogs.consegnaSaving.value).toBe(false)
+  })
+
+  it('salvaConsegna blocks a consegna with empty sections', async () => {
+    const error = ref('')
+    const dialogs = usePatientChartDialogs({
+      pazienteId: 1,
+      paziente: ref(paziente),
+      error,
+      assegnazioni: ref([]),
+      reloadTimeline: vi.fn().mockResolvedValue(undefined),
+      reloadValutazioni: vi.fn().mockResolvedValue(undefined),
+      reloadParametriVitali: vi.fn().mockResolvedValue(undefined),
+    })
+    dialogs.apriConsegna()
+    dialogs.consegnaForm.value.testo = 'S: dolore acuto\nA: parametri stabili'
+    dialogs.consegnaForm.value.turno_id = 7
+
+    await dialogs.salvaConsegna()
+
+    expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
+    expect(error.value).toBe(
+      'Completa le sezioni mancanti: Background, Recommendation.',
+    )
   })
 })
 

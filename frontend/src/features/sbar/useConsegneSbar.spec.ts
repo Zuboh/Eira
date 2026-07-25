@@ -146,7 +146,7 @@ describe('useConsegneSbar — salva', () => {
       data: '2026-07-18',
       turno_id: 5,
       priorita: 'normale',
-      testo: 'Situation: S\nBackground: B\nAssessment: A\nRecommendation: R',
+      testo: 'S: dolore\nB: post-operatorio\nA: stabile\nR: rivalutare',
     }
 
     await hook.salvaNuova()
@@ -166,12 +166,32 @@ describe('useConsegneSbar — salva', () => {
       data: '2026-07-18',
       turno_id: null,
       priorita: 'normale',
-      testo: 'Paziente tranquillo.',
+      testo:
+        'C: vigile\nE: tranquillo\nD: assente\nE: PA 120/80\nM: autonomo\nA: nessuna',
     }
 
     await hook.salvaNuova()
 
     expect(diarioCedemaApi.createVoceDiarioCedema).toHaveBeenCalledOnce()
+  })
+
+  it('blocks a consegna with empty sections and says which ones', async () => {
+    const hook = useConsegneSbar()
+    hook.nuovaForm.value = {
+      paziente_id: 1,
+      tipo: 'sbar',
+      data: '2026-07-18',
+      turno_id: 5,
+      priorita: 'normale',
+      testo: 'S: dolore\nA: stabile',
+    }
+
+    await hook.salvaNuova()
+
+    expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
+    expect(hook.error.value).toBe(
+      'Completa le sezioni mancanti: Background, Recommendation.',
+    )
   })
 
   it('is a no-op creating without paziente_id/turno_id', async () => {
@@ -218,7 +238,7 @@ describe('useConsegneSbar — salva', () => {
       data: '2026-07-18',
       turno_id: 5,
       priorita: 'normale',
-      testo: 'Situation: S',
+      testo: 'S: dolore\nB: post-operatorio\nA: stabile\nR: rivalutare',
     }
 
     await hook.salvaNuova()

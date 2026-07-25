@@ -33,11 +33,6 @@ export type GenericConsegnaForm = {
   testo: string
 }
 
-export type ClinicalInsight = {
-  summary: string
-  tags: string[]
-}
-
 export type ClinicalTimelineEntry = {
   id: string
   sourceId: number
@@ -67,7 +62,6 @@ export type GenericConsegnaDialogProps = {
   pazienti?: Paziente[]
   hidePaziente?: boolean
   saving: boolean
-  insight: ClinicalInsight | null
 }
 
 export type ParametriVitaliDialogProps = {

@@ -1,11 +1,14 @@
 import type { Paziente } from '@/api/pazienti'
 import { prioritaOptions } from '@/features/sbar/form'
 import { todayIsoDate } from '@/features/sbar/turnoOptions'
+import {
+  findEmptySections,
+  isPristineScaffold,
+  parseConsegnaText,
+} from '@/features/patient-chart/consegnaSections'
 import type {
   CedemaNarrativeSource,
-  ClinicalInsight,
   GenericConsegnaForm,
-  GenericConsegnaKind,
   NortonForm,
   ConleyForm,
   ParametriVitaliForm,
@@ -81,52 +84,17 @@ export function createPatientEditForm(paziente: Paziente): PatientEditForm {
   }
 }
 
-function normalizeWhitespace(value: string) {
-  return value.replace(/\r/g, '').trim()
-}
-
-function extractSections(text: string, labels: string[]) {
-  const content = normalizeWhitespace(text)
-  const lower = content.toLowerCase()
-  const sections: Record<string, string> = {}
-
-  for (let index = 0; index < labels.length; index += 1) {
-    const label = labels[index]
-    const marker = `${label.toLowerCase()}:`
-    const start = lower.indexOf(marker)
-    if (start === -1) continue
-
-    const valueStart = start + marker.length
-    let end = content.length
-    for (let nextIndex = index + 1; nextIndex < labels.length; nextIndex += 1) {
-      const nextMarker = `${labels[nextIndex].toLowerCase()}:`
-      const candidate = lower.indexOf(nextMarker, valueStart)
-      if (candidate !== -1 && candidate < end) end = candidate
-    }
-    sections[label] = content.slice(valueStart, end).trim()
-  }
-
-  return sections
-}
-
 export function toCedemaPayload(form: GenericConsegnaForm) {
-  const sections = extractSections(form.testo, [
-    'coscienza',
-    'emotivita',
-    'dolore',
-    'emodinamica',
-    'mobilizzazione',
-    'allert',
-  ])
+  const { values } = parseConsegnaText(form.testo, 'cedema')
 
   return {
     turno_id: form.turno_id,
-    coscienza: sections.coscienza ?? '',
-    emotivita: sections.emotivita ?? '',
-    dolore: sections.dolore ?? '',
-    emodinamica: sections.emodinamica ?? '',
-    mobilizzazione: sections.mobilizzazione ?? '',
-    allert: sections.allert ?? normalizeWhitespace(form.testo),
+    coscienza: values.coscienza,
+    emotivita: values.emotivita,
+    dolore: values.dolore,
+    emodinamica: values.emodinamica,
+    mobilizzazione: values.mobilizzazione,
+    allert: values.allert,
   }
 }
 
@@ -134,37 +102,41 @@ export function toSbarPayload(
   pazienteId: number,
   form: GenericConsegnaForm & { turno_id: number },
 ) {
-  const sections = extractSections(form.testo, [
-    'situation',
-    'background',
-    'assessment',
-    'recommendation',
-  ])
-  const paragraphs = normalizeWhitespace(form.testo)
-    .split(/\n\s*\n/)
-    .map((part) => part.trim())
-    .filter(Boolean)
-
-  const situation =
-    sections.situation ?? paragraphs[0] ?? normalizeWhitespace(form.testo)
-  const background =
-    sections.background ?? paragraphs[1] ?? 'Contesto clinico non specificato.'
-  const assessment =
-    sections.assessment ?? paragraphs[2] ?? 'Valutazione in corso.'
-  const recommendation =
-    sections.recommendation ??
-    paragraphs[3] ??
-    'Monitorare e rivalutare nel prossimo turno.'
+  const { values } = parseConsegnaText(form.testo, 'sbar')
 
   return {
     paziente_id: pazienteId,
     turno_id: form.turno_id,
-    situation,
-    background,
-    assessment,
-    recommendation,
+    situation: values.situation,
+    background: values.background,
+    assessment: values.assessment,
+    recommendation: values.recommendation,
     priorita: form.priorita,
   }
+}
+
+/**
+ * Validazione unica per le due viste che creano una consegna. Restituisce il
+ * messaggio da mostrare, oppure `null` se il form e' salvabile. Le sezioni
+ * vuote bloccano il salvataggio: il backend le rifiuta comunque (min_length=1)
+ * e un campo vuoto in consegna e' ambiguo — non compilato o niente da segnalare.
+ */
+export function validateConsegnaForm(form: GenericConsegnaForm): string | null {
+  if (!form.testo.trim() || isPristineScaffold(form.testo)) {
+    return 'Inserisci il testo della consegna.'
+  }
+  if (form.tipo === 'sbar' && form.turno_id === null) {
+    return 'Seleziona una data con turno assegnato per una consegna SBAR.'
+  }
+
+  const { values } = parseConsegnaText(form.testo, form.tipo)
+  const missing = findEmptySections(values, form.tipo)
+  if (missing.length > 0) {
+    const labels = missing.map((section) => section.label).join(', ')
+    return `Completa le sezioni mancanti: ${labels}.`
+  }
+
+  return null
 }
 
 function uniqueNonEmpty(values: string[]) {
@@ -199,33 +171,4 @@ export function sbarToNarrative(entry: SbarNarrativeSource) {
     .filter(([, value]) => value.trim())
     .map(([label, value]) => `${label}: ${value.trim()}`)
     .join('\n')
-}
-
-const KEYWORD_TAGS: Array<{ tag: string; pattern: RegExp }> = [
-  { tag: 'Dolore', pattern: /dolor|algia/i },
-  { tag: 'Respirazione', pattern: /respiro|dispnea|satur/i },
-  { tag: 'Emodinamica', pattern: /pressione|tachic|ipotens|emodinam/i },
-  { tag: 'Coscienza', pattern: /vigile|sonnol|coscienza|agit/i },
-  { tag: 'Mobilizzazione', pattern: /mobil|deambul|cammin/i },
-  { tag: 'Terapia', pattern: /terapia|farmac|antibiot/i },
-  { tag: 'Urgenza', pattern: /urgente|subito|immediato/i },
-]
-
-export function buildClinicalInsight(
-  testo: string,
-  tipo: GenericConsegnaKind,
-): ClinicalInsight | null {
-  const content = normalizeWhitespace(testo)
-  if (!content) return null
-
-  const firstSentence = content.split(/(?<=[.!?])\s+/)[0] ?? content
-  const tags = KEYWORD_TAGS.filter(({ pattern }) => pattern.test(content)).map(
-    ({ tag }) => tag,
-  )
-
-  const prefix = tipo === 'sbar' ? 'Bozza SBAR' : 'Bozza diario'
-  return {
-    summary: `${prefix}: ${firstSentence.slice(0, 140)}`,
-    tags,
-  }
 }

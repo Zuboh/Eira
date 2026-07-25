@@ -25,7 +25,6 @@ const {
   saving,
   form,
   nuovaForm,
-  nuovaInsight,
   page,
   total,
   canCreateConsegna,
@@ -117,7 +116,6 @@ function onPageChange(event: { page: number }) {
       :assegnazioni="assegnazioni"
       :pazienti="pazienti"
       :saving="saving"
-      :insight="nuovaInsight"
       @save="salvaNuova"
     />
 

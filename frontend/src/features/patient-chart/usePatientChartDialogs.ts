@@ -1,4 +1,4 @@
-import { computed, ref, unref, type MaybeRef, type Ref } from 'vue'
+import { ref, unref, type MaybeRef, type Ref } from 'vue'
 import { updatePaziente, type Paziente } from '@/api/pazienti'
 import { createVoceDiarioCedema } from '@/api/diarioCedema'
 import { createConsegnaSbar } from '@/api/consegneSbar'
@@ -7,7 +7,6 @@ import { createConley, createNorton } from '@/api/valutazioni'
 import { turnoIdForDate } from '@/features/sbar/turnoOptions'
 import type { AssegnazioneTurnoOption } from '@/features/sbar/turnoOptions'
 import {
-  buildClinicalInsight,
   createEmptyConleyForm,
   createEmptyGenericConsegnaForm,
   createEmptyNortonForm,
@@ -15,7 +14,9 @@ import {
   createPatientEditForm,
   toCedemaPayload,
   toSbarPayload,
+  validateConsegnaForm,
 } from '@/features/patient-chart/form'
+import { buildScaffold } from '@/features/patient-chart/consegnaSections'
 import type {
   ConleyForm,
   GenericConsegnaForm,
@@ -70,10 +71,6 @@ export function usePatientChartDialogs({
     createEmptyParametriVitaliForm(),
   )
 
-  const consegnaInsight = computed(() =>
-    buildClinicalInsight(consegnaForm.value.testo, consegnaForm.value.tipo),
-  )
-
   function apriEdit() {
     if (!paziente.value) return
     editForm.value = createPatientEditForm(paziente.value)
@@ -92,22 +89,15 @@ export function usePatientChartDialogs({
       ...emptyForm,
       paziente_id: unref(pazienteId),
       turno_id: turnoIdForDate(assegnazioni.value, emptyForm.data),
+      testo: buildScaffold(emptyForm.tipo),
     }
     consegnaDrawer.value = true
   }
 
   async function salvaConsegna() {
-    const testo = consegnaForm.value.testo.trim()
-    if (!testo) {
-      error.value = 'Inserisci il testo della consegna.'
-      return
-    }
-    if (
-      consegnaForm.value.tipo === 'sbar' &&
-      consegnaForm.value.turno_id === null
-    ) {
-      error.value =
-        'Seleziona una data con turno assegnato per una consegna SBAR.'
+    const invalid = validateConsegnaForm(consegnaForm.value)
+    if (invalid) {
+      error.value = invalid
       return
     }
 
@@ -199,7 +189,6 @@ export function usePatientChartDialogs({
     consegnaDrawer,
     consegnaSaving,
     consegnaForm,
-    consegnaInsight,
     nortonDialog,
     nortonSaving,
     nortonForm,
