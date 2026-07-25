@@ -32,6 +32,11 @@ const {
   apriNuova,
   apriEdit,
   salva,
+  copiedKeys,
+  canCopyForward,
+  copyForwardLoading,
+  riprendiUltima,
+  riprendiSezione,
 } = useConsegneSbar()
 
 onMounted(load)
@@ -113,7 +118,12 @@ function onPageChange(event: { page: number }) {
       :pazienti="pazienti"
       :is-editing="isEditing"
       :saving="saving"
+      :copied-keys="copiedKeys"
+      :can-copy-forward="canCopyForward && !isEditing"
+      :copy-forward-loading="copyForwardLoading"
       @save="salva"
+      @copy-forward="riprendiUltima"
+      @copy-forward-section="riprendiSezione"
     />
   </div>
 </template>

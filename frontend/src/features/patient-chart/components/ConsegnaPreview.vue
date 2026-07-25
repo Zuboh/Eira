@@ -2,12 +2,23 @@
 import Button from 'primevue/button'
 import type { ConsegnaSection } from '@/features/patient-chart/consegnaSections'
 
-defineProps<{
-  sections: ConsegnaSection[]
-  values: Record<string, string>
-  hasOrphanText: boolean
+withDefaults(
+  defineProps<{
+    sections: ConsegnaSection[]
+    values: Record<string, string>
+    hasOrphanText: boolean
+    copiedKeys?: string[]
+    canCopyForward?: boolean
+  }>(),
+  {
+    copiedKeys: () => [],
+    canCopyForward: false,
+  },
+)
+const emit = defineEmits<{
+  quickFill: [key: string]
+  copyForwardSection: [key: string]
 }>()
-const emit = defineEmits<{ quickFill: [key: string] }>()
 </script>
 
 <template>
@@ -23,6 +34,14 @@ const emit = defineEmits<{ quickFill: [key: string] }>()
         <dt>
           <span class="sigla">{{ section.sigla }}</span>
           {{ section.label }}
+          <span
+            v-if="copiedKeys.includes(section.key)"
+            class="copied"
+            :title="`${section.label} ripresa dalla consegna precedente`"
+            >↻<span class="sr-only">
+              ripresa dalla consegna precedente</span
+            ></span
+          >
         </dt>
         <dd v-if="values[section.key]">{{ values[section.key] }}</dd>
         <dd v-else class="empty">
@@ -35,6 +54,16 @@ const emit = defineEmits<{ quickFill: [key: string] }>()
             :label="`Segna «invariato»`"
             :aria-label="`Segna ${section.label} come invariato`"
             @click="emit('quickFill', section.key)"
+          />
+          <Button
+            v-if="canCopyForward"
+            type="button"
+            severity="secondary"
+            text
+            size="small"
+            label="Riprendi"
+            :aria-label="`Riprendi ${section.label} dalla consegna precedente`"
+            @click="emit('copyForwardSection', section.key)"
           />
         </dd>
       </div>
@@ -103,6 +132,11 @@ dd.empty {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 4px 8px;
+}
+
+.copied {
+  color: var(--muted);
+  font-weight: 400;
 }
 
 .hint {

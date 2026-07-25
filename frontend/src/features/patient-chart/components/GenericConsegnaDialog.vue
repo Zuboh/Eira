@@ -23,9 +23,9 @@ import {
   turnoLabelForDate,
 } from '@/features/sbar/turnoOptions'
 import type {
+  GenericConsegnaDialogEmits,
   GenericConsegnaDialogProps,
   GenericConsegnaForm,
-  PatientChartSaveEmit,
 } from '@/features/patient-chart/types'
 
 const visible = defineModel<boolean>('visible', { required: true })
@@ -35,8 +35,11 @@ const props = withDefaults(defineProps<GenericConsegnaDialogProps>(), {
   pazienti: () => [],
   hidePaziente: false,
   isEditing: false,
+  copiedKeys: () => [],
+  canCopyForward: false,
+  copyForwardLoading: false,
 })
-const emit = defineEmits<PatientChartSaveEmit>()
+const emit = defineEmits<GenericConsegnaDialogEmits>()
 
 // In modifica paziente, tipo e turno sono gia' scritti nella riga salvata:
 // cambiarli significherebbe spostare la consegna, non modificarla.
@@ -84,6 +87,13 @@ watch(
     if (isPristineScaffold(form.value.testo))
       form.value.testo = buildScaffold(tipo)
   },
+)
+
+const copyForwardLabels = computed(() =>
+  sections.value
+    .filter((section) => section.copyForward)
+    .map((section) => section.label)
+    .join(' e '),
 )
 
 function quickFill(key: string) {
@@ -155,6 +165,20 @@ function quickFill(key: string) {
           autoResize
           placeholder="Una sigla a inizio riga apre la sezione, il resto del testo la riempie."
         />
+        <div v-if="canCopyForward" class="copy-forward">
+          <Button
+            type="button"
+            severity="secondary"
+            outlined
+            size="small"
+            label="Riprendi ultima consegna"
+            :loading="copyForwardLoading"
+            @click="emit('copyForward')"
+          />
+          <span class="field-hint">
+            Riprende solo {{ copyForwardLabels }}: il resto cambia a ogni turno.
+          </span>
+        </div>
       </FormField>
 
       <ConsegnaPreview
@@ -162,7 +186,10 @@ function quickFill(key: string) {
         :sections="sections"
         :values="parsed.values"
         :has-orphan-text="parsed.hasOrphanText"
+        :copied-keys="copiedKeys"
+        :can-copy-forward="canCopyForward"
         @quick-fill="quickFill"
+        @copy-forward-section="emit('copyForwardSection', $event)"
       />
 
       <div class="form-actions span-2">
@@ -200,6 +227,18 @@ function quickFill(key: string) {
 textarea {
   max-height: 40vh;
   overflow-y: auto;
+}
+
+.copy-forward {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 8px;
+}
+
+.copy-forward .field-hint {
+  margin: 0;
 }
 
 .field-hint {

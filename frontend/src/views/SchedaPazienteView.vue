@@ -53,6 +53,11 @@ const {
   salvaEdit,
   apriConsegna,
   salvaConsegna,
+  copiedKeys,
+  canCopyForward,
+  copyForwardLoading,
+  riprendiUltima,
+  riprendiSezione,
   apriNorton,
   salvaNorton,
   apriConley,
@@ -145,8 +150,13 @@ onMounted(load)
       v-model:form="consegnaForm"
       :assegnazioni="assegnazioni"
       :saving="consegnaSaving"
+      :copied-keys="copiedKeys"
+      :can-copy-forward="canCopyForward"
+      :copy-forward-loading="copyForwardLoading"
       hide-paziente
       @save="salvaConsegna"
+      @copy-forward="riprendiUltima"
+      @copy-forward-section="riprendiSezione"
     />
 
     <NortonDialog

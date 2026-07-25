@@ -67,6 +67,24 @@ export async function listDiarioCedema(
   return unwrapData(result, 'listDiarioCedema')
 }
 
+/** `null` quando il paziente non ha voci precedenti: caso normale. */
+export async function getUltimaVoceDiarioCedema(
+  pazienteId: number,
+): ApiDataResponse<VoceDiarioCedema | null> {
+  const result = await eiraClient.GET(
+    '/api/v1/pazienti/{paziente_id}/diario-cedema/ultima',
+    {
+      params: {
+        path: {
+          paziente_id: pazienteId,
+        },
+      },
+    },
+  )
+
+  return unwrapData(result, 'getUltimaVoceDiarioCedema')
+}
+
 export async function createVoceDiarioCedema(
   pazienteId: number,
   payload: VoceDiarioCedemaCreatePayload,

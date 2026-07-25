@@ -94,6 +94,24 @@ export async function listConsegneSbarByPaziente(
   return unwrapData(result, 'listConsegneSbarByPaziente')
 }
 
+/** `null` quando il paziente non ha consegne precedenti: caso normale. */
+export async function getUltimaConsegnaSbar(
+  pazienteId: number,
+): ApiDataResponse<ConsegnaSbar | null> {
+  const result = await eiraClient.GET(
+    '/api/v1/consegne-sbar/pazienti/{paziente_id}/ultima',
+    {
+      params: {
+        path: {
+          paziente_id: pazienteId,
+        },
+      },
+    },
+  )
+
+  return unwrapData(result, 'getUltimaConsegnaSbar')
+}
+
 export async function updateConsegnaSbar(
   id: number,
   payload: ConsegnaSbarUpdatePayload,

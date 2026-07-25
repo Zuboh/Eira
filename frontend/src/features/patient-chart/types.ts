@@ -63,6 +63,15 @@ export type GenericConsegnaDialogProps = {
   hidePaziente?: boolean
   isEditing?: boolean
   saving: boolean
+  copiedKeys?: string[]
+  canCopyForward?: boolean
+  copyForwardLoading?: boolean
+}
+
+export type GenericConsegnaDialogEmits = {
+  save: []
+  copyForward: []
+  copyForwardSection: [key: string]
 }
 
 export type ParametriVitaliDialogProps = {

@@ -62,5 +62,10 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     salvaConley: dialogs.salvaConley,
     apriParametri: dialogs.apriParametri,
     salvaParametri: dialogs.salvaParametri,
+    copiedKeys: dialogs.copiedKeys,
+    canCopyForward: dialogs.canCopyForward,
+    copyForwardLoading: dialogs.copyForwardLoading,
+    riprendiUltima: dialogs.riprendiUltima,
+    riprendiSezione: dialogs.riprendiSezione,
   }
 }

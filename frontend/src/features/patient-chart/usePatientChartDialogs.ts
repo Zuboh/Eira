@@ -17,6 +17,7 @@ import {
   validateConsegnaForm,
 } from '@/features/patient-chart/form'
 import { buildScaffold } from '@/features/patient-chart/consegnaSections'
+import { useConsegnaCopyForward } from '@/features/patient-chart/useConsegnaCopyForward'
 import type {
   ConleyForm,
   GenericConsegnaForm,
@@ -56,6 +57,7 @@ export function usePatientChartDialogs({
   const consegnaForm = ref<GenericConsegnaForm>(
     createEmptyGenericConsegnaForm(),
   )
+  const copyForward = useConsegnaCopyForward({ form: consegnaForm, error })
 
   const nortonDialog = ref(false)
   const nortonSaving = ref(false)
@@ -84,6 +86,7 @@ export function usePatientChartDialogs({
   }
 
   function apriConsegna() {
+    copyForward.resetCopyForward()
     const emptyForm = createEmptyGenericConsegnaForm()
     consegnaForm.value = {
       ...emptyForm,
@@ -208,5 +211,6 @@ export function usePatientChartDialogs({
     salvaConley,
     apriParametri,
     salvaParametri,
+    ...copyForward,
   }
 }

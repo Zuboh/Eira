@@ -18,6 +18,7 @@ import {
   validateConsegnaForm,
 } from '@/features/patient-chart/form'
 import { buildScaffold } from '@/features/patient-chart/consegnaSections'
+import { useConsegnaCopyForward } from '@/features/patient-chart/useConsegnaCopyForward'
 import {
   buildAssegnazioneTurnoOptions,
   turnoIdForDate,
@@ -47,6 +48,8 @@ export function useConsegneSbar() {
   const editingId = ref<number | null>(null)
   const saving = ref(false)
   const form = ref<GenericConsegnaForm>(createEmptyGenericConsegnaForm())
+
+  const copyForward = useConsegnaCopyForward({ form, error })
 
   const pazientiById = computed(
     () => new Map(pazienti.value.map((p) => [p.id, p])),
@@ -104,6 +107,7 @@ export function useConsegneSbar() {
 
   async function apriNuova() {
     editingId.value = null
+    copyForward.resetCopyForward()
     const emptyForm = createEmptyGenericConsegnaForm()
     form.value = { ...emptyForm, testo: buildScaffold(emptyForm.tipo) }
     dialogOpen.value = true
@@ -117,6 +121,7 @@ export function useConsegneSbar() {
 
   function apriEdit(consegna: ConsegnaSbar) {
     editingId.value = consegna.id
+    copyForward.resetCopyForward()
     form.value = createFormFromConsegnaSbar(consegna)
     dialogOpen.value = true
   }
@@ -184,5 +189,6 @@ export function useConsegneSbar() {
     apriNuova,
     apriEdit,
     salva,
+    ...copyForward,
   }
 }
