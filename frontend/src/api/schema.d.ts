@@ -526,6 +526,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/consegne-sbar/pazienti/{paziente_id}/ultima": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Ultima Consegna By Paziente
+         * @description Ultima consegna SBAR visibile per il paziente, o `null` se non esiste.
+         *
+         *     Serve al copy-forward del dialog consegna: risponde 200 con corpo nullo
+         *     invece di 404, perche' "nessuna consegna precedente" e' un caso normale.
+         */
+        get: operations["get_ultima_consegna_by_paziente_api_v1_consegne_sbar_pazienti__paziente_id__ultima_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/consegne-sbar/{consegna_id}": {
         parameters: {
             query?: never;
@@ -555,6 +578,29 @@ export interface paths {
         put?: never;
         /** Create Voce */
         post: operations["create_voce_api_v1_pazienti__paziente_id__diario_cedema_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pazienti/{paziente_id}/diario-cedema/ultima": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Ultima Voce
+         * @description Ultima voce CEDEMA del paziente, o `null` se il diario e' vuoto.
+         *
+         *     Simmetrico a `/consegne-sbar/pazienti/{id}/ultima`: alimenta il
+         *     copy-forward del dialog consegna.
+         */
+        get: operations["get_ultima_voce_api_v1_pazienti__paziente_id__diario_cedema_ultima_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -3342,6 +3388,58 @@ export interface operations {
             };
         };
     };
+    get_ultima_consegna_by_paziente_api_v1_consegne_sbar_pazienti__paziente_id__ultima_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsegnaSbarRead"] | null;
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     update_consegna_api_v1_consegne_sbar__consegna_id__patch: {
         parameters: {
             query?: never;
@@ -3472,6 +3570,58 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VoceDiarioCedemaRead"];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_ultima_voce_api_v1_pazienti__paziente_id__diario_cedema_ultima_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paziente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoceDiarioCedemaRead"] | null;
                 };
             };
             /** @description Token mancante o non valido */

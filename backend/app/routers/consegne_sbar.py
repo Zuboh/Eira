@@ -105,6 +105,19 @@ def list_consegne(
     )
 
 
+def _consegne_visibili_per_paziente(paziente_id: int, current_user, db):
+    if current_user.ruolo == RuoloUtente.caposala:
+        return db.query(ConsegnaSbar).filter(ConsegnaSbar.paziente_id == paziente_id)
+    return db.query(ConsegnaSbar).join(
+        AssegnazioneTurno,
+        and_(
+            AssegnazioneTurno.turno_id == ConsegnaSbar.turno_id,
+            AssegnazioneTurno.infermiere_id == current_user.id,
+            AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+        ),
+    ).filter(ConsegnaSbar.paziente_id == paziente_id)
+
+
 @router.get(
     "/pazienti/{paziente_id}",
     responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
@@ -114,20 +127,31 @@ def list_consegne_by_paziente(
 ) -> list[ConsegnaSbarRead]:
     _get_paziente_same_reparto(paziente_id, current_user, db)
 
-    if current_user.ruolo == RuoloUtente.caposala:
-        query = db.query(ConsegnaSbar).filter(ConsegnaSbar.paziente_id == paziente_id)
-    else:
-        query = db.query(ConsegnaSbar).join(
-            AssegnazioneTurno,
-            and_(
-                AssegnazioneTurno.turno_id == ConsegnaSbar.turno_id,
-                AssegnazioneTurno.infermiere_id == current_user.id,
-                AssegnazioneTurno.stato == StatoAssegnazione.attiva,
-            ),
-        ).filter(ConsegnaSbar.paziente_id == paziente_id)
-
+    query = _consegne_visibili_per_paziente(paziente_id, current_user, db)
     consegne = query.order_by(ConsegnaSbar.creata_il.desc()).all()
     return [ConsegnaSbarRead.model_validate(consegna) for consegna in consegne]
+
+
+@router.get(
+    "/pazienti/{paziente_id}/ultima",
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
+)
+def get_ultima_consegna_by_paziente(
+    paziente_id: int, current_user: CurrentUserDep, db: DbDep
+) -> ConsegnaSbarRead | None:
+    """Ultima consegna SBAR visibile per il paziente, o `null` se non esiste.
+
+    Serve al copy-forward del dialog consegna: risponde 200 con corpo nullo
+    invece di 404, perche' "nessuna consegna precedente" e' un caso normale.
+    """
+    _get_paziente_same_reparto(paziente_id, current_user, db)
+
+    consegna = (
+        _consegne_visibili_per_paziente(paziente_id, current_user, db)
+        .order_by(ConsegnaSbar.creata_il.desc())
+        .first()
+    )
+    return ConsegnaSbarRead.model_validate(consegna) if consegna is not None else None
 
 
 @router.patch(

@@ -100,6 +100,43 @@ def test_create_voce_rejects_empty_sections(client, db_session, reparti):
         assert response.status_code == 422, f"{campo}: {response.text}"
 
 
+def test_ultima_voce_cedema(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    paziente = _paziente(reparto_a.id)
+    db_session.add(paziente)
+    db_session.commit()
+    db_session.refresh(paziente)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    vuoto = client.get(f"/api/v1/pazienti/{paziente.id}/diario-cedema/ultima", headers=headers)
+    assert vuoto.status_code == 200
+    assert vuoto.json() is None
+
+    for suffisso in ("1", "2"):
+        payload = _voce_payload()
+        payload["coscienza"] = f"vigile {suffisso}"
+        client.post(f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers, json=payload)
+
+    ultima = client.get(f"/api/v1/pazienti/{paziente.id}/diario-cedema/ultima", headers=headers)
+    assert ultima.status_code == 200
+    listed = client.get(f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers)
+    assert ultima.json()["id"] == listed.json()[0]["id"]
+
+
+def test_ultima_voce_other_reparto_forbidden(client, db_session, reparti):
+    reparto_a, reparto_b = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    paziente_b = _paziente(reparto_b.id)
+    db_session.add(paziente_b)
+    db_session.commit()
+    db_session.refresh(paziente_b)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.get(f"/api/v1/pazienti/{paziente_b.id}/diario-cedema/ultima", headers=headers)
+    assert response.status_code == 403
+
+
 def test_list_voci_other_reparto_forbidden(client, db_session, reparti):
     reparto_a, reparto_b = reparti
     infermiere = _infermiere(db_session, reparto_a.id)

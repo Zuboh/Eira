@@ -232,6 +232,67 @@ def test_update_consegna_only_by_author(client, db_session, reparti):
     assert ok.json()["situation"] == "updated"
 
 
+def test_ultima_consegna_by_paziente(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    turno, paziente = _setup_turno_paziente_assegnazione(db_session, reparto_a.id, infermiere.id)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    vuota = client.get(f"/api/v1/consegne-sbar/pazienti/{paziente.id}/ultima", headers=headers)
+    assert vuota.status_code == 200
+    assert vuota.json() is None
+
+    for suffisso in ("1", "2"):
+        client.post(
+            "/api/v1/consegne-sbar/",
+            headers=headers,
+            json={
+                "paziente_id": paziente.id,
+                "turno_id": turno.id,
+                "situation": f"s{suffisso}",
+                "background": f"b{suffisso}",
+                "assessment": f"a{suffisso}",
+                "recommendation": f"r{suffisso}",
+            },
+        )
+
+    ultima = client.get(f"/api/v1/consegne-sbar/pazienti/{paziente.id}/ultima", headers=headers)
+    assert ultima.status_code == 200
+    body = ultima.json()
+    assert body["paziente_id"] == paziente.id
+    assert body["situation"] in {"s1", "s2"}
+
+    listed = client.get(f"/api/v1/consegne-sbar/pazienti/{paziente.id}", headers=headers)
+    assert body["id"] == listed.json()[0]["id"]
+
+
+def test_ultima_consegna_other_reparto_forbidden(client, db_session, reparti):
+    reparto_a, reparto_b = reparti
+    import datetime as _datetime
+
+    from app.models.paziente import Paziente
+
+    infermiere = _infermiere(db_session, reparto_a.id)
+    paziente_b = Paziente(
+        nome="Anna",
+        cognome="Neri",
+        eta=70,
+        letto="9B",
+        data_ricovero=_datetime.date.today(),
+        diagnosi_ingresso="Scompenso",
+        reparto_id=reparto_b.id,
+    )
+    db_session.add(paziente_b)
+    db_session.commit()
+    db_session.refresh(paziente_b)
+
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.get(
+        f"/api/v1/consegne-sbar/pazienti/{paziente_b.id}/ultima", headers=headers
+    )
+    assert response.status_code == 403
+
+
 def test_create_consegna_rejects_empty_sections(client, db_session, reparti):
     reparto_a, _ = reparti
     infermiere = _infermiere(db_session, reparto_a.id)

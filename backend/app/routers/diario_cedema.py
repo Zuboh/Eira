@@ -50,6 +50,29 @@ def create_voce(
 
 
 @router.get(
+    "/{paziente_id}/diario-cedema/ultima",
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND),
+)
+def get_ultima_voce(
+    paziente_id: int, current_user: CurrentUserDep, db: DbDep
+) -> VoceDiarioCedemaRead | None:
+    """Ultima voce CEDEMA del paziente, o `null` se il diario e' vuoto.
+
+    Simmetrico a `/consegne-sbar/pazienti/{id}/ultima`: alimenta il
+    copy-forward del dialog consegna.
+    """
+    _get_paziente_same_reparto(paziente_id, current_user, db)
+
+    voce = (
+        db.query(VoceDiarioCedema)
+        .filter(VoceDiarioCedema.paziente_id == paziente_id)
+        .order_by(VoceDiarioCedema.timestamp.desc())
+        .first()
+    )
+    return VoceDiarioCedemaRead.model_validate(voce) if voce is not None else None
+
+
+@router.get(
     "/{paziente_id}/diario-cedema", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND)
 )
 def list_voci(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> list[VoceDiarioCedemaRead]:
