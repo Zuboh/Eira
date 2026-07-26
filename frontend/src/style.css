@@ -20,6 +20,9 @@
   --surface: #ffffff;
   --ink: #18181b;
   --steel: #71717a;
+  /* Same reasoning as --color-primary-on-tint: --steel su un fondo tintato
+     (es. il pannello anteprima consegna) scende a 4.21:1. */
+  --steel-on-tint: #52525b;
   --muted: #94a3b8;
   --border: rgba(226, 232, 240, 0.5);
 
@@ -61,6 +64,15 @@
   --turno-riposo-chip: #0f766e;
   --turno-ferie-chip: #71717a;
 
+  /* Same reasoning as --color-primary-on-tint: --turno-* as text on its own
+     15% tint (calendar legend) fails 4.5:1 in light mode (2.61:1 mattina,
+     3.01:1 riposo, 3.86:1 ferie, 4.04:1 pomeriggio). */
+  --turno-mattina-on-tint: #92400e;
+  --turno-pomeriggio-on-tint: #1d4ed8;
+  --turno-notte-on-tint: #4338ca;
+  --turno-riposo-on-tint: #115e59;
+  --turno-ferie-on-tint: #52525b;
+
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   --radius: 0.625rem;
   --radius-sm: 0.5rem;
@@ -71,7 +83,10 @@
   --space-5: 1.25rem;
   --space-6: 1.5rem;
   --space-8: 2rem;
-  --size-touch: 2.75rem;
+  /* px e non rem: DESIGN.md sez. 7 impone 44px fisici come minimo di
+     tocco. In rem il valore segue la scala tipografica e sotto un root
+     < 16px scendeva a ~41px. */
+  --size-touch: 44px;
   --page-sm: 56.25rem;
   --page-md: 60rem;
   --page-lg: 75rem;
@@ -102,6 +117,7 @@
     --surface: #27272a;
     --ink: #f4f4f5;
     --steel: #a1a1aa;
+    --steel-on-tint: #a1a1aa;
     --muted: #71717a;
     --border: rgba(255, 255, 255, 0.08);
 
@@ -123,6 +139,14 @@
     --turno-riposo: #2dd4bf;
     --turno-ferie: #a1a1aa;
     --turno-ferie-estive: #4ade80;
+
+    /* In dark i --turno-* sono gia' tinte chiare: passano 4.5:1 sul proprio
+       tint al 15% su --canvas, nessuna variante piu' scura serve. */
+    --turno-mattina-on-tint: #f59e0b;
+    --turno-pomeriggio-on-tint: #60a5fa;
+    --turno-notte-on-tint: #818cf8;
+    --turno-riposo-on-tint: #2dd4bf;
+    --turno-ferie-on-tint: #a1a1aa;
   }
 }
 
@@ -178,4 +202,24 @@ p {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Hit-area 44px senza costo di layout.
+   DESIGN.md sez. 7 chiede --size-touch anche sui link inline (nomi
+   paziente in tabella, "vedi tutti", chip turno): quelli sono alti
+   19-20px per via del font, e alzare le righe a 44 distruggerebbe la
+   densita' del reparto. Il padding gonfia la box, la margin negativa
+   di pari valore la riporta a zero nel flusso: la margin box resta
+   quella di prima, la border box — quella che il dito colpisce e che
+   getBoundingClientRect misura — arriva a 44.
+   `position: relative` non e' decorativo: senza, un fratello
+   successivo non posizionato (es. .meta sotto il link) viene dipinto
+   sopra e si mangia i click nella zona di sovrapposizione. */
+.hit-area-touch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--size-touch);
+  padding-block: var(--hit-area-pad, 0.85rem);
+  margin-block: calc(-1 * var(--hit-area-pad, 0.85rem));
 }

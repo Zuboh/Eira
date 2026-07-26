@@ -33,5 +33,14 @@ export default defineConfig(
       ],
     },
   },
+  {
+    // script di build/audit: girano in Node, non nel browser
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
   prettier,
 )

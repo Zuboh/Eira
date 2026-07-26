@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import listPlugin from '@fullcalendar/list'
 import itLocale from '@fullcalendar/core/locales/it'
 import Button from 'primevue/button'
 import Popover from 'primevue/popover'
+import { useMediaQuery } from '@/composables/useMediaQuery'
 import { formatDateShortIt } from '@/utils/dateFormat'
 import EiraCard from '@/components/ui/EiraCard.vue'
 import type {
@@ -59,15 +61,24 @@ const MESI_IT = [
   'Dic',
 ]
 
+/* Sotto 600px la griglia mensile tronca i chip a ~26px ("Ma…", "Rip…"):
+   si passa alla vista lista, che mantiene il range mensile della toolbar
+   e del selettore mese. */
+const isCompact = useMediaQuery('(max-width: 599px)')
+const viewName = computed(() =>
+  isCompact.value ? 'listMonth' : 'dayGridMonth',
+)
+
 const calendarOptions = computed(() => ({
-  plugins: [dayGridPlugin, interactionPlugin],
-  initialView: 'dayGridMonth',
+  plugins: [dayGridPlugin, interactionPlugin, listPlugin],
+  initialView: viewName.value,
   locale: itLocale,
   firstDay: 1,
-  height: 'auto',
+  height: isCompact.value ? '60vh' : 'auto',
   headerToolbar: false as const,
   displayEventTime: false,
   dayMaxEvents: 2,
+  noEventsText: 'Nessun turno questo mese',
   events: props.events,
   eventMouseEnter: handleEventMouseEnter,
   eventMouseLeave: hideTooltip,
@@ -75,6 +86,11 @@ const calendarOptions = computed(() => ({
     currentTitle.value = arg.view.title
   },
 }))
+
+// initialView vale solo all'init: al cambio di viewport serve changeView.
+watch(viewName, (view) => {
+  calendarRef.value?.getApi().changeView(view)
+})
 
 function goToday() {
   calendarRef.value?.getApi().today()
@@ -252,8 +268,23 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 
     <FullCalendar ref="calendarRef" :options="calendarOptions">
       <template #eventContent="arg">
+        <!-- In lista c'e' spazio: orario e colleghi inline invece del
+             tooltip, che su touch non e' raggiungibile. -->
+        <span v-if="arg.view.type === 'listMonth'" class="turno-list-event">
+          <span class="turno-list-event-title">
+            {{ eventProps(arg.event).tipoLabel }}
+          </span>
+          <span
+            v-if="eventProps(arg.event).isLavorativo"
+            class="turno-list-event-meta"
+          >
+            {{ eventProps(arg.event).orario }} ·
+            {{ colleghiLabel(arg.event) }}
+          </span>
+        </span>
         <span
-          class="turno-event"
+          v-else
+          class="turno-event hit-area-touch"
           :class="{ 'with-tooltip': eventProps(arg.event).isLavorativo }"
           :tabindex="eventProps(arg.event).isLavorativo ? 0 : undefined"
           :aria-label="eventAriaLabel(arg.event)"
@@ -332,6 +363,11 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   border: 1px solid var(--color-primary);
 }
 
+/* --steel sul tint primary della cella "oggi" si ferma a 4.41:1. */
+.turni-calendar-card :deep(.fc-day-today .fc-daygrid-day-number) {
+  color: var(--steel-on-tint);
+}
+
 .turni-calendar-card :deep(.fc-scrollgrid) {
   border: 0;
 }
@@ -351,6 +387,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  min-height: var(--size-touch);
   padding: 4px 6px;
   border: none;
   border-radius: var(--radius-sm);
@@ -482,7 +519,8 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   border: 0;
   border-radius: 999px;
   padding: 2px 6px;
-  font-size: 0.75rem;
+  /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
@@ -490,7 +528,12 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   width: 100%;
 }
 
+/* La pillola colorata e' .fc-daygrid-event (il wrapper di FullCalendar):
+   il chip resta alto ~24px perche' .hit-area-touch lascia la margin box
+   invariata. La border box del focus target sale a 44 sconfinando sopra
+   e sotto la pillola, ma e' trasparente — si vede solo al tocco. */
 .turni-calendar-card :deep(.turno-event) {
+  --hit-area-pad: 12px;
   display: flex;
   width: 100%;
   max-width: 100%;
@@ -508,7 +551,13 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   font-family: var(--sans);
 }
 
-.turni-calendar-card :deep(.turno-event:focus-visible) {
+/* L'outline diretto seguirebbe la border box da 44px e disegnerebbe un
+   anello enorme attorno a una pillola da 24. Lo ridisegna uno pseudo
+   rimesso sulla geometria di prima: inset verticale = --hit-area-pad. */
+.turni-calendar-card :deep(.turno-event:focus-visible)::before {
+  content: '';
+  position: absolute;
+  inset: var(--hit-area-pad) 0;
   border-radius: 999px;
   outline: 2px solid white;
   outline-offset: 2px;
@@ -518,37 +567,132 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   background: var(--fc-neutral-bg-color);
 }
 
+/* Niente color-mix trasparente qui: al 60% il numero scendeva a 2.27:1 in
+   light / 3.33:1 in dark, e con "oggi" a fine mese quasi tutta la griglia e'
+   .fc-day-past. Il passato resta distinguibile via --fc-neutral-bg-color
+   sulla cella + opacity 0.5 sui chip. */
 .turni-calendar-card :deep(.fc-day-past .fc-daygrid-day-number) {
-  color: color-mix(in srgb, var(--steel) 60%, transparent);
+  color: var(--steel);
 }
 
 .turni-calendar-card :deep(.fc-day-past .fc-daygrid-event) {
   opacity: 0.5;
 }
 
-.turni-calendar-card :deep(.turno-mattina) {
+/* Le classi turno-* stanno sull'evento in entrambe le viste: qui il
+   riempimento pieno vale solo per il chip della griglia, in lista
+   colorano il pallino (vedi .fc-list-event-dot piu' sotto). */
+.turni-calendar-card :deep(.fc-daygrid-event.turno-mattina) {
   background: var(--turno-mattina-chip);
   color: white;
 }
 
-.turni-calendar-card :deep(.turno-pomeriggio) {
+.turni-calendar-card :deep(.fc-daygrid-event.turno-pomeriggio) {
   background: var(--turno-pomeriggio-chip);
   color: white;
 }
 
-.turni-calendar-card :deep(.turno-notte) {
+.turni-calendar-card :deep(.fc-daygrid-event.turno-notte) {
   background: var(--turno-notte-chip);
   color: white;
 }
 
-.turni-calendar-card :deep(.turno-riposo) {
+.turni-calendar-card :deep(.fc-daygrid-event.turno-riposo) {
   background: var(--turno-riposo-chip);
   color: white;
 }
 
-.turni-calendar-card :deep(.turno-ferie) {
+.turni-calendar-card :deep(.fc-daygrid-event.turno-ferie) {
   background: var(--turno-ferie-chip);
   color: white;
+}
+
+/* --- Vista lista (<600px) --- */
+
+.turni-calendar-card :deep(.fc-list) {
+  border: 0;
+}
+
+.turni-calendar-card :deep(.fc-list-day-cushion) {
+  background: var(--canvas);
+  padding: var(--space-2) var(--space-3);
+}
+
+.turni-calendar-card :deep(.fc-list-day-text),
+.turni-calendar-card :deep(.fc-list-day-side-text) {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  text-transform: capitalize;
+}
+
+.turni-calendar-card :deep(.fc-list-event td) {
+  padding: var(--space-2) var(--space-3);
+}
+
+.turni-calendar-card :deep(.fc-list-event:hover td) {
+  background: var(--canvas);
+}
+
+/* displayEventTime e' false: la colonna orario resta vuota e ruberebbe
+   larghezza, che a 375px e' la risorsa scarsa. */
+.turni-calendar-card :deep(.fc-list-event-time) {
+  display: none;
+}
+
+.turni-calendar-card :deep(.fc-list-event-dot) {
+  border-color: var(--steel);
+}
+
+.turni-calendar-card :deep(.turno-mattina .fc-list-event-dot) {
+  border-color: var(--turno-mattina-chip);
+}
+
+.turni-calendar-card :deep(.turno-pomeriggio .fc-list-event-dot) {
+  border-color: var(--turno-pomeriggio-chip);
+}
+
+.turni-calendar-card :deep(.turno-notte .fc-list-event-dot) {
+  border-color: var(--turno-notte-chip);
+}
+
+.turni-calendar-card :deep(.turno-riposo .fc-list-event-dot) {
+  border-color: var(--turno-riposo-chip);
+}
+
+.turni-calendar-card :deep(.turno-ferie .fc-list-event-dot) {
+  border-color: var(--turno-ferie-chip);
+}
+
+.turni-calendar-card :deep(.turno-list-event) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* riga a 44px anche quando il turno non ha meta (riposo/ferie) */
+  min-height: var(--size-touch);
+  justify-content: center;
+}
+
+.turni-calendar-card :deep(.turno-list-event-title) {
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.turni-calendar-card :deep(.turno-list-event-meta) {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  color: var(--steel);
+}
+
+.turni-calendar-card :deep(.fc-list-empty) {
+  background: transparent;
+  color: var(--steel);
+  font-family: var(--sans);
+  font-size: 0.875rem;
 }
 
 .legend {
@@ -566,7 +710,8 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   gap: 6px;
   padding: 3px 10px 3px 8px;
   border-radius: 999px;
-  font-size: 0.75rem;
+  /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
@@ -579,27 +724,27 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 
 .legend li.turno-mattina {
   background: color-mix(in srgb, var(--turno-mattina) 15%, transparent);
-  color: var(--turno-mattina);
+  color: var(--turno-mattina-on-tint);
 }
 
 .legend li.turno-pomeriggio {
   background: color-mix(in srgb, var(--turno-pomeriggio) 15%, transparent);
-  color: var(--turno-pomeriggio);
+  color: var(--turno-pomeriggio-on-tint);
 }
 
 .legend li.turno-notte {
   background: color-mix(in srgb, var(--turno-notte) 15%, transparent);
-  color: var(--turno-notte);
+  color: var(--turno-notte-on-tint);
 }
 
 .legend li.turno-riposo {
   background: color-mix(in srgb, var(--turno-riposo) 15%, transparent);
-  color: var(--turno-riposo);
+  color: var(--turno-riposo-on-tint);
 }
 
 .legend li.turno-ferie {
   background: color-mix(in srgb, var(--turno-ferie) 15%, transparent);
-  color: var(--turno-ferie);
+  color: var(--turno-ferie-on-tint);
 }
 
 .dot.turno-mattina {

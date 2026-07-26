@@ -29,3 +29,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# output audit a11y (scripts/a11y-audit.mjs)
+audit-report.json
+audit-shots/

@@ -83,7 +83,8 @@ withDefaults(
 .eira-table__scroll :deep(th) {
   padding: 0.75rem 1rem;
   text-align: left;
-  font-size: 0.75rem;
+  /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
+  font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -101,6 +102,22 @@ withDefaults(
 
 .eira-table__scroll :deep(tbody tr:last-child td) {
   border-bottom: 0;
+}
+
+/* I link nelle celle arrivano dallo slot, quindi la classe utility
+   .hit-area-touch andrebbe ricordata a ogni nuova tabella: la regola
+   sta qui perche' valga per tutte senza doverla riapplicare. Stessa
+   tecnica (padding + margin negativa di pari valore), spiegata per
+   esteso in style.css. Il valore combacia con il padding della cella,
+   quindi l'hit-area riempie la cella e non sconfina nella riga
+   accanto. */
+.eira-table__scroll :deep(td a) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--size-touch);
+  padding-block: 0.85rem;
+  margin-block: -0.85rem;
 }
 
 .eira-table__empty {

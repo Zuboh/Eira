@@ -12,12 +12,14 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "audit:a11y": "node scripts/a11y-audit.mjs"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.21",
     "@fullcalendar/daygrid": "^6.1.21",
     "@fullcalendar/interaction": "^6.1.21",
+    "@fullcalendar/list": "^6.1.21",
     "@fullcalendar/vue3": "^6.1.21",
     "@primeuix/themes": "^2.0.3",
     "openapi-fetch": "^0.17.0",

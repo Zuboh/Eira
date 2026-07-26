@@ -15,7 +15,7 @@ defineProps<{
       v-if="routeName && linkLabel"
       v-tooltip.top="linkLabel"
       :to="{ name: routeName }"
-      class="see-all"
+      class="see-all hit-area-touch"
       :aria-label="linkLabel"
     >
       {{ linkLabel }}
@@ -38,6 +38,9 @@ defineProps<{
   font-size: 1.0625rem;
 }
 
+/* L'altezza reale del link e' ~20px: i 44px di tocco arrivano da
+   .hit-area-touch (style.css), che gonfia la box senza spostare la
+   riga del titolo. */
 .see-all {
   display: inline-flex;
   align-items: center;

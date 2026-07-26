@@ -1,141 +1,59 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
-import type { TipoTurno } from '@/api/turni'
-import { getMieiProssimiTurni } from '@/api/turni'
-import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
+import { ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
+import Drawer from 'primevue/drawer'
+import { useMediaQuery } from '@/composables/useMediaQuery'
 import { useAuthStore } from '@/stores/auth'
+import AppNavPanel from '@/components/layout/AppNavPanel.vue'
 
 const auth = useAuthStore()
-const router = useRouter()
 
-const navItems = computed(() => {
-  if (!auth.ruolo) return []
+/* Sotto 768px la sidebar diventava una striscia a scroll orizzontale con
+   ~1.5 voci visibili su 6 (8 per caposala) e nessuna affordance: passa a
+   drawer off-canvas. PrimeVue Drawer porta focus-trap, Esc e aria-modal. */
+const isCompact = useMediaQuery('(max-width: 47.9375rem)')
+const drawerOpen = ref(false)
 
-  return router
-    .getRoutes()
-    .filter(
-      (route) =>
-        route.name && route.meta.nav && route.meta.roles?.includes(auth.ruolo!),
-    )
-    .sort((a, b) => a.meta.nav!.order - b.meta.nav!.order)
-    .map((route) => ({
-      to: { name: route.name! },
-      label: route.meta.nav!.label,
-      icon: route.meta.nav!.icon,
-    }))
+watch(isCompact, (compact) => {
+  if (!compact) drawerOpen.value = false
 })
-
-const ROLE_LABEL: Record<string, string> = {
-  infermiere: 'Infermiere',
-  caposala: 'Caposala',
-}
-
-const initials = computed(() => {
-  const user = auth.user
-  if (!user) return ''
-  return `${user.nome.charAt(0)}${user.cognome.charAt(0)}`.toUpperCase()
-})
-
-const roleLabel = computed(() =>
-  auth.ruolo ? (ROLE_LABEL[auth.ruolo] ?? auth.ruolo) : '',
-)
-
-const turnoOggi = ref<TipoTurno | null>(null)
-
-const turnoCssVar = computed(() =>
-  turnoOggi.value
-    ? `var(--turno-${turnoOggi.value.replace(/_/g, '-')})`
-    : undefined,
-)
-const turnoLabel = computed(() =>
-  turnoOggi.value ? TIPO_TURNO_LABEL[turnoOggi.value] : '',
-)
-
-function todayIso(): string {
-  const d = new Date()
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  const dd = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${mm}-${dd}`
-}
-
-onMounted(async () => {
-  if (auth.ruolo !== 'infermiere') return
-
-  try {
-    const { data } = await getMieiProssimiTurni({ limit: 1 })
-    const primo = data[0]
-    turnoOggi.value =
-      primo && primo.turno.data === todayIso() ? primo.turno.tipo : null
-  } catch {
-    turnoOggi.value = null
-  }
-})
-
-function logout() {
-  auth.logout()
-  router.push({ name: 'login' })
-}
 </script>
 
 <template>
   <div class="app-shell">
-    <aside class="sidebar">
+    <header v-if="isCompact" class="topbar">
+      <button
+        type="button"
+        class="topbar-toggle"
+        aria-controls="app-nav-drawer"
+        aria-label="Apri il menu di navigazione"
+        :aria-expanded="drawerOpen"
+        @click="drawerOpen = true"
+      >
+        <i class="pi pi-bars" aria-hidden="true" />
+      </button>
       <RouterLink :to="auth.landingRoute" class="brand">
         <span class="brand-label">Eira</span>
       </RouterLink>
+    </header>
 
-      <nav class="nav">
-        <RouterLink
-          v-for="item in navItems"
-          :key="item.label"
-          :to="item.to"
-          class="nav-link"
-          active-class="active"
-          :aria-label="item.label"
-        >
-          <span class="nav-link-icon">
-            <i class="pi" :class="item.icon" aria-hidden="true" />
-          </span>
-          <span class="nav-link-label">{{ item.label }}</span>
-        </RouterLink>
-      </nav>
-
-      <div
-        v-if="auth.user"
-        class="identity"
-        :title="`${auth.user.nome} ${auth.user.cognome} — ${roleLabel}`"
-      >
-        <span class="identity-avatar" aria-hidden="true">{{ initials }}</span>
-        <div class="identity-info">
-          <p class="identity-name">
-            {{ auth.user.nome }} {{ auth.user.cognome }}
-          </p>
-          <p class="identity-role">{{ roleLabel }}</p>
-          <p v-if="turnoOggi" class="identity-turno">
-            <span
-              class="turno-dot"
-              aria-hidden="true"
-              :style="{ '--turno-color': turnoCssVar }"
-            />
-            {{ turnoLabel }}
-          </p>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        class="logout"
-        aria-label="Esci"
-        title="Esci"
-        @click="logout"
-      >
-        <span class="nav-link-icon">
-          <i class="pi pi-sign-out" aria-hidden="true" />
-        </span>
-        <span class="logout-label">Esci</span>
-      </button>
+    <aside v-else class="sidebar">
+      <RouterLink :to="auth.landingRoute" class="brand">
+        <span class="brand-label">Eira</span>
+      </RouterLink>
+      <AppNavPanel />
     </aside>
+
+    <Drawer
+      id="app-nav-drawer"
+      v-model:visible="drawerOpen"
+      class="nav-drawer"
+      header="Eira"
+      position="left"
+    >
+      <AppNavPanel @navigate="drawerOpen = false" />
+    </Drawer>
+
     <main class="content">
       <slot />
     </main>
@@ -164,7 +82,9 @@ function logout() {
 }
 
 .brand {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-height: var(--size-touch);
   font-family: var(--sans);
   font-weight: 700;
   font-size: 1.125rem;
@@ -175,150 +95,9 @@ function logout() {
 }
 
 .brand:focus-visible,
-.nav-link:focus-visible,
-.logout:focus-visible {
+.topbar-toggle:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-}
-
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  flex: 1;
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: var(--size-touch);
-  padding: 0 var(--space-2);
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  color: var(--steel);
-  text-decoration: none;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  transition:
-    background 150ms ease-out,
-    box-shadow 150ms ease-out,
-    border-color 150ms ease-out;
-}
-
-.nav-link-icon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 1.75rem;
-  height: 1.75rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-}
-
-.nav-link-icon i {
-  font-size: 0.875rem;
-}
-
-.nav-link:hover {
-  background: var(--surface);
-  color: var(--color-primary);
-}
-
-.nav-link.active {
-  background: var(--surface);
-  border-color: var(--border);
-  box-shadow: var(--shadow);
-  color: var(--ink);
-  font-weight: 600;
-}
-
-.identity {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  margin-top: var(--space-2);
-  margin-bottom: var(--space-4);
-  border-top: 1px solid var(--border);
-}
-
-.identity-avatar {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: color-mix(in oklch, var(--color-primary) 14%, var(--surface));
-  color: var(--color-primary-on-tint);
-  font-size: 0.8125rem;
-  font-weight: 700;
-}
-
-.identity-info {
-  min-width: 0;
-}
-
-.identity-name {
-  margin: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.identity-role {
-  margin: 0;
-  font-size: 0.75rem;
-  color: var(--steel);
-}
-
-.identity-turno {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 2px 0 0;
-  font-size: 0.75rem;
-  color: var(--steel);
-}
-
-.turno-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--turno-color);
-}
-
-.logout {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: var(--size-touch);
-  padding: 0 var(--space-2);
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--state-urgente) 10%, transparent);
-  color: var(--state-urgente-on-tint);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-}
-
-.logout .nav-link-icon {
-  background: var(--surface);
-}
-
-.logout:hover {
-  background: color-mix(in srgb, var(--state-urgente) 18%, transparent);
-}
-
-.logout:active {
-  transform: scale(0.98);
 }
 
 .content {
@@ -334,85 +113,99 @@ function logout() {
     padding: var(--space-5) var(--space-2);
   }
 
-  .brand-label,
-  .nav-link-label,
-  .logout-label {
+  .brand-label {
     display: none;
   }
 
-  .nav-link,
-  .logout {
+  /* senza label il link resta largo quanto il padding: sotto i 44px */
+  .brand {
     justify-content: center;
-    padding: 0;
-    width: 2.75rem;
-  }
-
-  .identity {
-    justify-content: center;
-    padding: var(--space-2);
-  }
-
-  .identity-info {
-    display: none;
+    min-width: var(--size-touch);
+    padding: var(--space-2) 0 var(--space-5);
   }
 }
 
-@media (max-width: 48rem) {
+/* Mobile — topbar + drawer. Il limite e' 47.9375rem e non 48rem per non
+   sovrapporsi alla query tablet, che parte esattamente da 48rem. */
+@media (max-width: 47.9375rem) {
   .app-shell {
     flex-direction: column;
   }
 
-  .sidebar {
+  .topbar {
     position: sticky;
     top: 0;
     z-index: 10;
-    width: 100%;
-    height: auto;
-    flex-direction: row;
+    display: flex;
     align-items: center;
     gap: var(--space-2);
-    overflow-y: visible;
-    border-right: 0;
     border-bottom: 1px solid var(--border);
+    background: var(--canvas);
     padding: var(--space-2);
   }
 
   .brand {
-    flex: 0 0 auto;
     padding: 0 var(--space-2);
   }
 
-  .nav {
-    min-width: 0;
-    flex-direction: row;
-    gap: var(--space-1);
-    overflow-x: auto;
-    scrollbar-width: thin;
+  .topbar-toggle {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: var(--size-touch);
+    height: var(--size-touch);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
   }
 
-  .nav-link {
-    flex: 0 0 auto;
-    min-height: 2.5rem;
-    padding-inline: var(--space-3);
-    white-space: nowrap;
+  .topbar-toggle i {
+    font-size: 1.125rem;
   }
+}
+</style>
 
-  .identity {
-    flex: 0 0 auto;
-    margin: 0;
-    border: none;
-    padding: 0 var(--space-2);
-  }
+<style>
+/* Il Drawer di PrimeVue viene teleportato su body: fuori dalla portata
+   degli stili scoped di questo componente. */
+.nav-drawer.p-drawer {
+  width: 17rem;
+  max-width: 85vw;
+  background: var(--canvas);
+  border-right: 1px solid var(--border);
+}
 
-  .identity-info {
-    display: none;
-  }
+.nav-drawer .p-drawer-header {
+  padding: var(--space-4) var(--space-3) var(--space-2);
+}
 
-  .logout {
-    flex: 0 0 auto;
-    min-height: 2.5rem;
-    padding-inline: var(--space-3);
-    white-space: nowrap;
+.nav-drawer .p-drawer-title {
+  font-family: var(--sans);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* PrimeVue fissa height sul close button: serve min-height per arrivare a 44 */
+.nav-drawer .p-drawer-close-button {
+  width: var(--size-touch);
+  height: var(--size-touch);
+  min-width: var(--size-touch);
+  min-height: var(--size-touch);
+}
+
+.nav-drawer .p-drawer-content {
+  display: flex;
+  padding: 0 var(--space-3) var(--space-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-drawer.p-drawer,
+  .p-drawer-mask {
+    transition: none !important;
+    animation: none !important;
   }
 }
 </style>

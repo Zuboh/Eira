@@ -126,6 +126,12 @@ function saldoLabel() {
   gap: 8px;
 }
 
+/* I text button di PrimeVue si fermano a 38x36: sotto il minimo di tocco */
+.mese-picker :deep(.p-button) {
+  min-width: var(--size-touch);
+  min-height: var(--size-touch);
+}
+
 .mese-picker span {
   min-width: 8rem;
   text-align: center;
