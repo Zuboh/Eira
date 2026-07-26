@@ -263,6 +263,8 @@ function logout() {
   background: var(--turno-color);
 }
 
+/* A riposo identico a .nav-link: il rosso e' un avviso, e tenerlo acceso
+   di continuo su una voce che non e' un errore lo spegne come segnale. */
 .logout {
   display: flex;
   align-items: center;
@@ -271,20 +273,23 @@ function logout() {
   padding: 0 var(--space-2);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--state-urgente) 10%, transparent);
-  color: var(--state-urgente-on-tint);
-  font-size: 0.875rem;
-  font-weight: 600;
+  background: transparent;
+  color: var(--steel);
+  font-size: 0.9375rem;
+  font-weight: 500;
   text-align: left;
   cursor: pointer;
+  transition:
+    background 150ms ease-out,
+    box-shadow 150ms ease-out,
+    border-color 150ms ease-out;
 }
 
-.logout .nav-link-icon {
-  background: var(--surface);
-}
-
+/* Dove .nav-link vira su --color-primary, qui si vira sul rosso: stesso
+   gesto, colore diverso perche' l'azione lo e'. */
 .logout:hover {
   background: color-mix(in srgb, var(--state-urgente) 18%, transparent);
+  color: var(--state-urgente-on-tint);
 }
 
 .logout:active {
