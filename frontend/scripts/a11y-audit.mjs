@@ -31,6 +31,9 @@ const SHOT_DIR = 'audit-shots'
 const VIEWPORTS = [
   { name: '375', width: 375, height: 812 },
   { name: '768', width: 768, height: 1024 },
+  /* Il range tablet arriva a 1023px: campionarlo solo al bordo inferiore
+     lasciava passare la sidebar che sfora a meta' range. */
+  { name: '900', width: 900, height: 900 },
   { name: '1440', width: 1440, height: 900 },
 ]
 const SCHEMES = ['light', 'dark']

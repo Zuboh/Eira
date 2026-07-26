@@ -108,7 +108,10 @@ watch(isCompact, (compact) => {
 /* Tablet — DESIGN.md sez. 7: sidebar collassabile a icone */
 @media (min-width: 48rem) and (max-width: 63.9375rem) {
   .sidebar {
-    width: 4rem;
+    /* non 4rem: seguiva la scala tipografica e con root a 15px valeva
+       60px, meno dei 44px di --size-touch piu' il padding. I figli sono
+       ancorati ai px, la larghezza del rail deve esserlo con loro. */
+    width: calc(var(--size-touch) + 2 * var(--space-3));
     align-items: center;
     padding: var(--space-5) var(--space-2);
   }

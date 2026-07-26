@@ -319,7 +319,10 @@ function logout() {
 
   .identity {
     justify-content: center;
-    padding: var(--space-2);
+    /* padding orizzontale inutile senza label, e con l'avatar a
+       flex-shrink: 0 spingeva il contenuto oltre il rail: la sidebar
+       si ritrovava overflow-x auto e una scrollbar orizzontale. */
+    padding: var(--space-2) 0;
   }
 
   .identity-info {
