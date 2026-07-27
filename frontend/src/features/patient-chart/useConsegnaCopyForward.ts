@@ -3,8 +3,8 @@ import { getUltimaConsegnaSbar } from '@/api/consegneSbar'
 import { getUltimaVoceDiarioCedema } from '@/api/diarioCedema'
 import {
   parseConsegnaText,
+  replaceSection,
   sectionsFor,
-  serializeToSigle,
 } from '@/features/patient-chart/consegnaSections'
 import type {
   GenericConsegnaForm,
@@ -82,17 +82,19 @@ export function useConsegnaCopyForward({ form, error }: CopyForwardOptions) {
           .filter((section) => section.copyForward)
           .map((section) => section.key)
 
-      const { values } = parseConsegnaText(form.value.testo, form.value.tipo)
       const applied: SectionValues = { ...copied.value }
+      let testo = form.value.testo
       for (const key of wanted) {
         const value = (ultima[key] ?? '').trim()
         if (!value) continue
-        values[key] = value
+        // Splice mirato: riserializzare tutto sposterebbe il testo orfano
+        // dentro la prima sezione e riscriverebbe righe non richieste.
+        testo = replaceSection(testo, form.value.tipo, key, value)
         applied[key] = value
       }
 
       copied.value = applied
-      form.value.testo = serializeToSigle(values, form.value.tipo)
+      form.value.testo = testo
     } catch {
       error.value = 'Impossibile recuperare la consegna precedente.'
     } finally {

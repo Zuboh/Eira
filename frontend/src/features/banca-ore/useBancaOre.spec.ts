@@ -17,6 +17,7 @@ const infermiere = {
   cognome: 'Rossi',
   ruolo: 'infermiere' as const,
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
 }
 const bancaOre = {
   infermiere_id: 9,

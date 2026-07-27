@@ -13,6 +13,7 @@ const caposala = {
   cognome: 'Caposala',
   ruolo: 'caposala' as const,
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
 }
 const utenti = [
   {

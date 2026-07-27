@@ -18,6 +18,7 @@ const infermiere = {
   cognome: 'Rossi',
   ruolo: 'infermiere' as const,
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
 }
 const utenti = [
   {
@@ -55,8 +56,25 @@ function richiesta(
   return {
     id: 1,
     assegnazione_turno_id: 10,
+    assegnazione_collega_id: 20,
     richiedente_id: 1,
     collega_id: 2,
+    turno_richiedente: {
+      id: 100,
+      data: '2026-07-27',
+      tipo: 'mattina',
+      reparto_id: 1,
+      ora_inizio: '07:00:00',
+      ora_fine: '14:00:00',
+    },
+    turno_collega: {
+      id: 101,
+      data: '2026-07-27',
+      tipo: 'pomeriggio',
+      reparto_id: 1,
+      ora_inizio: '14:00:00',
+      ora_fine: '21:00:00',
+    },
     stato: 'in_attesa_collega',
     creata_il: '2026-07-18T10:00:00Z',
     risposta_collega_il: null,
@@ -72,6 +90,7 @@ beforeEach(() => {
   vi.mocked(cambiTurnoApi.listCambiTurno).mockResolvedValue({ data: [] })
   vi.mocked(utentiApi.listUtenti).mockResolvedValue({ data: utenti })
   vi.mocked(turniApi.getMieAssegnazioni).mockResolvedValue({ data: [] })
+  vi.mocked(turniApi.getAssegnazioniScambiabili).mockResolvedValue({ data: [] })
 })
 
 describe('useCambiTurno — load', () => {
@@ -127,7 +146,11 @@ describe('useCambiTurno — colleghi/gates', () => {
 describe('useCambiTurno — salva', () => {
   it('is a no-op when the form is incomplete', async () => {
     const hook = useCambiTurno()
-    hook.form.value = { assegnazione_turno_id: null, collega_id: null }
+    hook.form.value = {
+      assegnazione_turno_id: null,
+      collega_id: null,
+      assegnazione_collega_id: null,
+    }
 
     await hook.salva()
 
@@ -140,13 +163,18 @@ describe('useCambiTurno — salva', () => {
     })
     const hook = useCambiTurno()
     hook.dialogOpen.value = true
-    hook.form.value = { assegnazione_turno_id: 10, collega_id: 2 }
+    hook.form.value = {
+      assegnazione_turno_id: 10,
+      collega_id: 2,
+      assegnazione_collega_id: 20,
+    }
 
     await hook.salva()
 
     expect(cambiTurnoApi.createRichiestaCambioTurno).toHaveBeenCalledWith({
       assegnazione_turno_id: 10,
       collega_id: 2,
+      assegnazione_collega_id: 20,
     })
     expect(hook.dialogOpen.value).toBe(false)
     expect(cambiTurnoApi.listCambiTurno).toHaveBeenCalledOnce()
@@ -158,7 +186,11 @@ describe('useCambiTurno — salva', () => {
     })
     const refreshAfterMutation = vi.fn()
     const hook = useCambiTurno({ refreshAfterMutation })
-    hook.form.value = { assegnazione_turno_id: 10, collega_id: 2 }
+    hook.form.value = {
+      assegnazione_turno_id: 10,
+      collega_id: 2,
+      assegnazione_collega_id: 20,
+    }
 
     await hook.salva()
 
@@ -171,7 +203,11 @@ describe('useCambiTurno — salva', () => {
       new Error('down'),
     )
     const hook = useCambiTurno()
-    hook.form.value = { assegnazione_turno_id: 10, collega_id: 2 }
+    hook.form.value = {
+      assegnazione_turno_id: 10,
+      collega_id: 2,
+      assegnazione_collega_id: 20,
+    }
 
     await hook.salva()
 

@@ -1,4 +1,5 @@
 import { computed, ref } from 'vue'
+import { apiErrorMessage } from '@/api/apiError'
 import { createVoceDiarioCedema } from '@/api/diarioCedema'
 import {
   createConsegnaSbar,
@@ -49,7 +50,10 @@ export function useConsegneSbar() {
   const saving = ref(false)
   const form = ref<GenericConsegnaForm>(createEmptyGenericConsegnaForm())
 
-  const copyForward = useConsegnaCopyForward({ form, error })
+  // Errore del form consegna, separato da `error`: quello vive sulla pagina,
+  // che mentre il dialog e' aperto sta sotto la mask modale.
+  const formError = ref('')
+  const copyForward = useConsegnaCopyForward({ form, error: formError })
 
   const pazientiById = computed(
     () => new Map(pazienti.value.map((p) => [p.id, p])),
@@ -106,6 +110,7 @@ export function useConsegneSbar() {
   }
 
   async function apriNuova() {
+    formError.value = ''
     editingId.value = null
     copyForward.resetCopyForward()
     const emptyForm = createEmptyGenericConsegnaForm()
@@ -115,11 +120,12 @@ export function useConsegneSbar() {
       await loadAssegnazioniIfNeeded()
       form.value.turno_id = turnoIdForDate(assegnazioni.value, form.value.data)
     } catch {
-      error.value = 'Impossibile caricare i turni assegnati.'
+      formError.value = 'Impossibile caricare i turni assegnati.'
     }
   }
 
   function apriEdit(consegna: ConsegnaSbar) {
+    formError.value = ''
     editingId.value = consegna.id
     copyForward.resetCopyForward()
     form.value = createFormFromConsegnaSbar(consegna)
@@ -130,17 +136,17 @@ export function useConsegneSbar() {
     const editId = editingId.value
     const pazienteId = form.value.paziente_id
     if (editId === null && pazienteId === null) {
-      error.value = 'Seleziona il paziente della consegna.'
+      formError.value = 'Seleziona il paziente della consegna.'
       return
     }
     const invalid = validateConsegnaForm(form.value)
     if (invalid) {
-      error.value = invalid
+      formError.value = invalid
       return
     }
 
     saving.value = true
-    error.value = ''
+    formError.value = ''
     try {
       if (editId !== null) {
         await updateConsegnaSbar(editId, toSbarUpdatePayload(form.value))
@@ -158,8 +164,8 @@ export function useConsegneSbar() {
       }
       dialogOpen.value = false
       await load()
-    } catch {
-      error.value = 'Impossibile salvare la consegna.'
+    } catch (err) {
+      formError.value = apiErrorMessage(err, 'Impossibile salvare la consegna.')
     } finally {
       saving.value = false
     }
@@ -171,6 +177,7 @@ export function useConsegneSbar() {
     assegnazioni,
     loading,
     error,
+    formError,
     dialogOpen,
     editingId,
     isEditing,

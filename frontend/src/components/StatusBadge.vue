@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { STATO_CAMBIO_TURNO_LABEL } from '@/features/cambi-turno/constants'
 
 const props = defineProps<{
   status: string
@@ -26,6 +27,22 @@ const STATE_MAP: Record<string, 'urgente' | 'pending' | 'attiva' | 'chiusa'> = {
 }
 
 const state = computed(() => STATE_MAP[props.status] ?? 'chiusa')
+const STATUS_LABEL: Record<string, string> = {
+  ...STATO_CAMBIO_TURNO_LABEL,
+  urgente: 'Urgente',
+  normale: 'Normale',
+  in_attesa: 'In attesa',
+  attivo: 'Attivo',
+  attiva: 'Attiva',
+  approvata: 'Approvata',
+  rifiutata: 'Rifiutata',
+  cambiata: 'Cambiata',
+  disattivato: 'Disattivato',
+  dimesso: 'Dimesso',
+}
+const displayLabel = computed(
+  () => props.label ?? STATUS_LABEL[props.status] ?? props.status,
+)
 const pulse = computed(
   () =>
     props.status === 'in_attesa_collega' ||
@@ -34,9 +51,9 @@ const pulse = computed(
 </script>
 
 <template>
-  <span class="status-badge" :class="[state, { pulse }]">{{
-    label ?? status
-  }}</span>
+  <span class="status-badge" :class="[state, { pulse }]">
+    {{ displayLabel }}
+  </span>
 </template>
 
 <style scoped>

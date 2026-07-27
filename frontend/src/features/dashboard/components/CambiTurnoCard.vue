@@ -5,6 +5,7 @@ import EiraTable from '@/components/ui/EiraTable.vue'
 import DashboardSectionHeader from '@/features/dashboard/components/DashboardSectionHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import type { RichiestaCambioTurno } from '@/api/cambiTurno'
+import { formatCambioRichiesto } from '@/features/cambi-turno/format'
 
 defineProps<{
   richieste: RichiestaCambioTurno[]
@@ -36,14 +37,16 @@ const emit = defineEmits<{
           <tr>
             <th>Richiedente</th>
             <th>Collega</th>
+            <th>Cambio</th>
             <th>Stato</th>
-            <th><span class="sr-only">Azioni</span></th>
+            <th>Azioni</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="richiesta in richieste" :key="richiesta.id">
             <td>{{ nomeUtente(richiesta.richiedente_id) }}</td>
             <td>{{ nomeUtente(richiesta.collega_id) }}</td>
+            <td class="cambio">{{ formatCambioRichiesto(richiesta) }}</td>
             <td><StatusBadge :status="richiesta.stato" /></td>
             <td>
               <span class="actions">
@@ -60,6 +63,12 @@ const emit = defineEmits<{
                     @click="emit('reject', richiesta)"
                   />
                 </template>
+                <span
+                  v-else-if="richiesta.stato === 'in_attesa_collega'"
+                  class="muted"
+                >
+                  In attesa del collega
+                </span>
               </span>
             </td>
           </tr>
@@ -70,13 +79,21 @@ const emit = defineEmits<{
 </template>
 
 <style scoped>
-.dashboard-card {
-  margin-top: 24px;
-}
-
 .actions {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+.muted {
+  color: var(--steel);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.cambio {
+  min-width: 15rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 </style>

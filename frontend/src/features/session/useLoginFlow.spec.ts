@@ -78,6 +78,41 @@ describe('useLoginFlow — bootstrap on mount', () => {
     expect(flow.step.value).toBe('tiles')
     expect(flow.utenti.value).toEqual([utente])
   })
+
+  it('exposes the saved reparto name without refetching reparti', async () => {
+    localStorage.setItem('eira_device_reparto', '1')
+    localStorage.setItem('eira_device_reparto_nome', 'Cardiologia')
+
+    const { flow } = mountLoginFlow()
+    await flushMounted()
+
+    expect(flow.repartoNome.value).toBe('Cardiologia')
+    expect(repartiApi.listReparti).not.toHaveBeenCalled()
+  })
+
+  it('backfills the reparto name for a device saved with the id only', async () => {
+    localStorage.setItem('eira_device_reparto', '1')
+
+    const { flow } = mountLoginFlow()
+    await flushMounted()
+
+    expect(repartiApi.listReparti).toHaveBeenCalledOnce()
+    expect(flow.repartoNome.value).toBe('Cardiologia')
+    expect(localStorage.getItem('eira_device_reparto_nome')).toBe('Cardiologia')
+    expect(flow.step.value).toBe('tiles')
+  })
+
+  it('returns to the reparto step when the saved reparto no longer exists', async () => {
+    localStorage.setItem('eira_device_reparto', '99')
+
+    const { flow } = mountLoginFlow()
+    await flushMounted()
+
+    expect(flow.step.value).toBe('reparto')
+    expect(flow.repartoNome.value).toBeNull()
+    expect(localStorage.getItem('eira_device_reparto')).toBeNull()
+    expect(repartiApi.listUtentiByReparto).not.toHaveBeenCalled()
+  })
 })
 
 describe('useLoginFlow — navigation', () => {
@@ -129,6 +164,7 @@ describe('useLoginFlow — onSubmit', () => {
         cognome: 'Rossi',
         ruolo: 'infermiere',
         reparto_id: 1,
+        reparto_nome: 'Cardiologia',
       },
     })
 

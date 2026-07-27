@@ -7,10 +7,12 @@ type RichiestaCambioTurnoRead =
   components['schemas']['RichiestaCambioTurnoRead']
 
 type NullableResponseFields =
+  | 'assegnazione_collega_id'
   | 'risposta_collega_il'
   | 'risposta_caposala_id'
   | 'risposta_caposala_il'
   | 'motivo_rifiuto'
+  | 'turno_collega'
 
 export type RichiestaCambioTurno = Omit<
   RichiestaCambioTurnoRead,
@@ -66,10 +68,12 @@ export function normalizeRichiestaCambioTurno(
 ): RichiestaCambioTurno {
   return {
     ...richiesta,
+    assegnazione_collega_id: richiesta.assegnazione_collega_id ?? null,
     risposta_collega_il: richiesta.risposta_collega_il ?? null,
     risposta_caposala_id: richiesta.risposta_caposala_id ?? null,
     risposta_caposala_il: richiesta.risposta_caposala_il ?? null,
     motivo_rifiuto: richiesta.motivo_rifiuto ?? null,
+    turno_collega: richiesta.turno_collega ?? null,
   }
 }
 

@@ -8,7 +8,11 @@ import {
   rispondiCollega,
   type RichiestaCambioTurno,
 } from '@/api/cambiTurno'
-import { getMieAssegnazioni, type AssegnazioneTurno } from '@/api/turni'
+import {
+  getAssegnazioniScambiabili,
+  getMieAssegnazioni,
+  type AssegnazioneTurno,
+} from '@/api/turni'
 import { listUtenti, type Utente } from '@/api/utenti'
 import {
   createEmptyCambioTurnoForm,
@@ -27,6 +31,7 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
   const richieste = ref<RichiestaCambioTurno[]>([])
   const utenti = ref<Utente[]>([])
   const assegnazioni = ref<AssegnazioneTurno[]>([])
+  const assegnazioniScambiabili = ref<AssegnazioneTurno[]>([])
   const loading = ref(false)
   const error = ref('')
 
@@ -70,8 +75,12 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
       richieste.value = r.data
       utenti.value = u.data
       if (auth.ruolo === 'infermiere') {
-        const a = await getMieAssegnazioni()
-        assegnazioni.value = a.data
+        const [mie, scambiabili] = await Promise.all([
+          getMieAssegnazioni(),
+          getAssegnazioniScambiabili(),
+        ])
+        assegnazioni.value = mie.data
+        assegnazioniScambiabili.value = scambiabili.data
       }
     } catch (err) {
       console.error('Impossibile caricare le richieste di cambio turno.', err)
@@ -170,6 +179,7 @@ export function useCambiTurno(options: UseCambiTurnoOptions = {}) {
     richieste,
     utenti,
     assegnazioni,
+    assegnazioniScambiabili,
     loading,
     error,
     dialogOpen,

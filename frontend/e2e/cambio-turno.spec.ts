@@ -44,6 +44,21 @@ test('cambio turno round-trip: richiedente -> collega accetta -> caposala approv
   })
 
   const oggi = new Date().toISOString().slice(0, 10)
+  const turnoOptionLabel = `${new Date(`${oggi}T00:00:00`).toLocaleDateString(
+    'it-IT',
+    {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+    },
+  )} · Pomeriggio`
+  const turnoCollegaOptionLabel = `${new Date(
+    `${oggi}T00:00:00`,
+  ).toLocaleDateString('it-IT', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  })} · Mattina`
   const turno = await createTurno(request, caposalaToken, {
     data: oggi,
     tipo: 'pomeriggio',
@@ -52,6 +67,14 @@ test('cambio turno round-trip: richiedente -> collega accetta -> caposala approv
     ora_fine: '21:00:00',
   })
   await assegnaTurno(request, caposalaToken, turno.id, richiedente.id)
+  const turnoCollega = await createTurno(request, caposalaToken, {
+    data: oggi,
+    tipo: 'mattina',
+    reparto_id: repartoId,
+    ora_inizio: '07:00:00',
+    ora_fine: '14:00:00',
+  })
+  await assegnaTurno(request, caposalaToken, turnoCollega.id, collega.id)
 
   // Richiedente: creates the swap request through the real UI.
   const richiedenteToken = await login(
@@ -74,17 +97,24 @@ test('cambio turno round-trip: richiedente -> collega accetta -> caposala approv
     .locator('.form-field', { hasText: 'Tuo turno' })
     .getByRole('combobox')
     .click()
-  await richiedentePage.getByRole('option', { name: String(turno.id) }).click()
   await richiedentePage
-    .locator('.form-field', { hasText: 'Collega' })
-    .getByRole('combobox')
+    .getByRole('option', { name: turnoOptionLabel, exact: true })
+    .click()
+  await richiedentePage
+    .getByRole('combobox', { name: 'Seleziona collega' })
     .click()
   await richiedentePage.getByRole('option', { name: collega.cognome }).click()
+  await richiedentePage
+    .getByRole('combobox', { name: 'Seleziona il turno offerto' })
+    .click()
+  await richiedentePage
+    .getByRole('option', { name: turnoCollegaOptionLabel, exact: true })
+    .click()
   await richiedentePage.getByRole('button', { name: 'Invia richiesta' }).click()
 
   await expect(
     richiedentePage.getByRole('row', { name: new RegExp(collega.cognome) }),
-  ).toBeVisible()
+  ).toContainText(`${turnoOptionLabel} → ${turnoCollegaOptionLabel}`)
   await richiedenteCtx.close()
 
   // Collega: accepts the swap.
@@ -100,7 +130,7 @@ test('cambio turno round-trip: richiedente -> collega accetta -> caposala approv
     .click()
   await expect(
     collegaPage.getByRole('row', { name: new RegExp(collega.cognome) }),
-  ).toContainText('in_attesa_caposala')
+  ).toContainText('In attesa di approvazione')
   await collegaCtx.close()
 
   // Caposala: approves — the swap is complete.

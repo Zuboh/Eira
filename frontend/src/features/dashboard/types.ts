@@ -1,4 +1,5 @@
 import type { CarelloFarmaco } from '@/api/carelloFarmaci'
+import type { RichiestaCambioTurno } from '@/api/cambiTurno'
 import type { ConsegnaSbar } from '@/api/consegneSbar'
 import type { Paziente } from '@/api/pazienti'
 import type {
@@ -11,6 +12,7 @@ export type CalendarioCella = {
   tipo: Turno['tipo']
   turno: TurnoCalendario | null
   assegnati: string
+  assegnatiBreve: string
   assegnatiCount: number
   sottoCopertura: boolean
 }
@@ -44,4 +46,10 @@ export type PazientiAttiviCardProps = {
 export type CarelloBassoStockCardProps = {
   farmaci: CarelloFarmaco[]
   loading: boolean
+}
+
+export type RichiesteCambioTurnoCardProps = {
+  richieste: RichiestaCambioTurno[]
+  loading: boolean
+  nomeUtente: (utenteId: number) => string
 }

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useSbarCreateDialog } from '@/features/sbar/useSbarCreateDialog'
+import { ApiError } from '@/api/apiError'
 import * as consegneSbarApi from '@/api/consegneSbar'
 import * as turniApi from '@/api/turni'
 
@@ -132,5 +133,34 @@ describe('useSbarCreateDialog — salva', () => {
     expect(dialog.error.value).toBe('Impossibile salvare la consegna.')
     expect(dialog.saving.value).toBe(false)
     expect(onCreated).not.toHaveBeenCalled()
+  })
+
+  it('shows the backend detail instead of the generic message', async () => {
+    vi.mocked(consegneSbarApi.createConsegnaSbar).mockRejectedValue(
+      new ApiError(
+        'createConsegnaSbar',
+        409,
+        'Consegna già esistente per questo paziente/turno',
+        'createConsegnaSbar failed',
+      ),
+    )
+    const onCreated = vi.fn()
+    const dialog = useSbarCreateDialog({ pazienteId: 7, onCreated })
+    dialog.form.value = {
+      paziente_id: 7,
+      data: '2026-07-18',
+      turno_id: 5,
+      situation: 'S',
+      background: 'B',
+      assessment: 'A',
+      recommendation: 'R',
+      priorita: 'normale',
+    }
+
+    await dialog.salva()
+
+    expect(dialog.error.value).toBe(
+      'Consegna già esistente per questo paziente/turno',
+    )
   })
 })

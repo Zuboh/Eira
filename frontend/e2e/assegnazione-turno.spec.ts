@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test'
 import {
+  assegnaTurno,
   createTurno,
+  createUtente,
   findUtente,
   getSeedRepartoId,
   login,
@@ -32,17 +34,30 @@ test('caposala assigns an uncovered turno to an infermiere', async ({
     caposala.id,
     SEED_CAPOSALA.password,
   )
+  const infermiereSupporto = await createUtente(
+    request,
+    caposalaToken,
+    repartoId,
+    {
+      nome: 'Luca',
+      cognome: 'Copertura',
+      email: 'copertura.turno@eira.local',
+      ruolo: 'infermiere',
+      password: 'password',
+    },
+  )
 
   const domani = new Date(Date.now() + 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10)
-  await createTurno(request, caposalaToken, {
+  const turno = await createTurno(request, caposalaToken, {
     data: domani,
     tipo: 'notte',
     reparto_id: repartoId,
     ora_inizio: '21:00:00',
     ora_fine: '07:00:00',
   })
+  await assegnaTurno(request, caposalaToken, turno.id, infermiereSupporto.id)
 
   const context = await browser.newContext({
     storageState: storageStateForToken(caposalaToken),
@@ -53,11 +68,13 @@ test('caposala assigns an uncovered turno to an infermiere', async ({
     page.getByRole('heading', { name: 'Dashboard Caposala' }),
   ).toBeVisible()
   await expect(
-    page.getByRole('heading', { name: 'Turni scoperti' }),
+    page.getByRole('heading', { name: 'Turni da coprire' }),
   ).toBeVisible()
   expect(await checkA11y(page)).toEqual([])
 
-  const scopertiCard = page.locator('.eira-card', { hasText: 'Turni scoperti' })
+  const scopertiCard = page.locator('.eira-card', {
+    hasText: 'Turni da coprire',
+  })
   const scopertiRow = scopertiCard.getByRole('row', { name: /Notte/ })
   await expect(scopertiRow).toBeVisible()
   await scopertiRow.getByRole('button', { name: 'Assegna' }).click()

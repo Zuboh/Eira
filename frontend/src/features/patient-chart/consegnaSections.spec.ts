@@ -4,6 +4,7 @@ import {
   findEmptySections,
   isPristineScaffold,
   parseConsegnaText,
+  replaceSection,
   sectionsFor,
   serializeToSigle,
 } from '@/features/patient-chart/consegnaSections'
@@ -302,5 +303,71 @@ describe('findEmptySections', () => {
     )
 
     expect(missing).toEqual([])
+  })
+})
+
+describe('replaceSection', () => {
+  it('rewrites only the target section and leaves the rest byte-identical', () => {
+    const testo = ['S: dolore acuto', 'B: appendicectomia', 'A:', 'R:'].join(
+      '\n',
+    )
+
+    expect(replaceSection(testo, 'sbar', 'assessment', 'invariato')).toBe(
+      ['S: dolore acuto', 'B: appendicectomia', 'A: invariato', 'R:'].join(
+        '\n',
+      ),
+    )
+  })
+
+  it('keeps orphan text where the user wrote it', () => {
+    const testo = ['nota libera in cima', 'S: dolore', 'B:'].join('\n')
+
+    expect(replaceSection(testo, 'sbar', 'background', 'appendicectomia')).toBe(
+      ['nota libera in cima', 'S: dolore', 'B: appendicectomia'].join('\n'),
+    )
+  })
+
+  it('replaces every line of a multi-line section', () => {
+    const testo = [
+      'S: dolore',
+      'persiste da due ore',
+      'B: appendicectomia',
+    ].join('\n')
+
+    expect(replaceSection(testo, 'sbar', 'situation', 'risolto')).toBe(
+      ['S: risolto', 'B: appendicectomia'].join('\n'),
+    )
+  })
+
+  it('inserts a missing sigla at its section order', () => {
+    const testo = ['S: dolore', 'R: rivalutare'].join('\n')
+
+    expect(replaceSection(testo, 'sbar', 'background', 'appendicectomia')).toBe(
+      ['S: dolore', 'B: appendicectomia', 'R: rivalutare'].join('\n'),
+    )
+  })
+
+  it('appends when no later section is present', () => {
+    expect(
+      replaceSection('S: dolore', 'sbar', 'recommendation', 'rivalutare'),
+    ).toBe(['S: dolore', 'R: rivalutare'].join('\n'))
+  })
+
+  it('writes a bare sigla when the value is empty', () => {
+    expect(replaceSection('S: dolore', 'sbar', 'situation', '')).toBe('S:')
+  })
+
+  it('targets the second E of CEDEMA without touching the first', () => {
+    const testo = ['E: tranquillo', 'D: assente', 'E: stabile'].join('\n')
+
+    expect(replaceSection(testo, 'cedema', 'emodinamica', 'PA 120/80')).toBe(
+      ['E: tranquillo', 'D: assente', 'E: PA 120/80'].join('\n'),
+    )
+  })
+
+  it('round-trips through the parser', () => {
+    const testo = replaceSection('S:\nB:\nA:\nR:', 'sbar', 'background', 'BPCO')
+
+    expect(parseConsegnaText(testo, 'sbar').values.background).toBe('BPCO')
   })
 })

@@ -115,6 +115,75 @@ def test_full_flow_accepted_swaps_infermiere(client, db_session, reparti):
     assert assegnazione.infermiere_id == infermiere_b.id
 
 
+def test_full_flow_scambia_due_turni_e_li_include_nella_risposta(
+    client,
+    db_session,
+    caposala_a,
+    reparti,
+):
+    from app.models.enums import TipoTurno
+
+    reparto_a, _ = reparti
+    infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")
+    infermiere_b = _infermiere(db_session, reparto_a.id, "nurse.b@example.com")
+    data = datetime.date.today()
+    turno_mattina, assegnazione_a = _turno_con_assegnazione(
+        db_session,
+        reparto_a.id,
+        infermiere_a.id,
+        data,
+        TipoTurno.mattina,
+    )
+    turno_pomeriggio, assegnazione_b = _turno_con_assegnazione(
+        db_session,
+        reparto_a.id,
+        infermiere_b.id,
+        data,
+        TipoTurno.pomeriggio,
+    )
+
+    headers_a = auth_headers(client, infermiere_a.email, "password123")
+    created = client.post(
+        "/api/v1/cambi-turno/",
+        headers=headers_a,
+        json={
+            "assegnazione_turno_id": assegnazione_a.id,
+            "collega_id": infermiere_b.id,
+            "assegnazione_collega_id": assegnazione_b.id,
+        },
+    )
+
+    assert created.status_code == 201, created.text
+    body = created.json()
+    assert body["turno_richiedente"]["id"] == turno_mattina.id
+    assert body["turno_richiedente"]["tipo"] == "mattina"
+    assert body["turno_collega"]["id"] == turno_pomeriggio.id
+    assert body["turno_collega"]["tipo"] == "pomeriggio"
+
+    headers_b = auth_headers(client, infermiere_b.email, "password123")
+    client.post(
+        f"/api/v1/cambi-turno/{body['id']}/risposta-collega",
+        headers=headers_b,
+        json={"accetta": True},
+    )
+    headers_caposala = auth_headers(
+        client,
+        "caposala.a@example.com",
+        "password123",
+    )
+    approvata = client.post(
+        f"/api/v1/cambi-turno/{body['id']}/risposta-caposala",
+        headers=headers_caposala,
+        json={"accetta": True},
+    )
+
+    assert approvata.status_code == 200, approvata.text
+    db_session.refresh(assegnazione_a)
+    db_session.refresh(assegnazione_b)
+    assert assegnazione_a.infermiere_id == infermiere_b.id
+    assert assegnazione_b.infermiere_id == infermiere_a.id
+
+
 def test_collega_rifiuta_stops_flow(client, db_session, reparti):
     reparto_a, _ = reparti
     infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")

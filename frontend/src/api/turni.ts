@@ -59,6 +59,14 @@ export async function getMieAssegnazioni(): ApiDataResponse<
   return unwrapData(result, 'getMieAssegnazioni')
 }
 
+export async function getAssegnazioniScambiabili(): ApiDataResponse<
+  AssegnazioneTurno[]
+> {
+  const result = await eiraClient.GET('/api/v1/turni/assegnazioni-scambiabili')
+
+  return unwrapData(result, 'getAssegnazioniScambiabili')
+}
+
 export async function getMieiProssimiTurni(
   params: { limit?: number } = {},
 ): ApiDataResponse<ProssimoTurnoConColleghi[]> {
@@ -75,8 +83,12 @@ export async function listTurni(): ApiDataResponse<Turno[]> {
   return unwrapData(result, 'listTurni')
 }
 
-export async function getCalendarioTurni(): ApiDataResponse<TurnoCalendario[]> {
-  const result = await eiraClient.GET('/api/v1/turni/calendario')
+export async function getCalendarioTurni(
+  params: { da?: string; a?: string } = {},
+): ApiDataResponse<TurnoCalendario[]> {
+  const result = await eiraClient.GET('/api/v1/turni/calendario', {
+    params: { query: params },
+  })
 
   return unwrapData(result, 'getCalendarioTurni')
 }

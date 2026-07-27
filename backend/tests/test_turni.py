@@ -67,6 +67,33 @@ def test_calendario_turni_include_assegnazioni_attive(client, db_session, caposa
     assert scoperto["assegnazioni"] == []
 
 
+def test_calendario_turni_default_settimana_corrente(client, db_session, caposala_a, reparti):
+    reparto_a, _ = reparti
+    oggi = datetime.date.today()
+    _turno(db_session, reparto_a.id, data=oggi - datetime.timedelta(days=1))
+    dentro = _turno(db_session, reparto_a.id, data=oggi + datetime.timedelta(days=6))
+    _turno(db_session, reparto_a.id, data=oggi + datetime.timedelta(days=7))
+
+    headers = auth_headers(client, "caposala.a@example.com", "password123")
+    body = client.get("/api/v1/turni/calendario", headers=headers).json()
+
+    assert [t["id"] for t in body] == [dentro.id]
+
+
+def test_calendario_turni_finestra_esplicita(client, db_session, caposala_a, reparti):
+    reparto_a, _ = reparti
+    oggi = datetime.date.today()
+    passato = _turno(db_session, reparto_a.id, data=oggi - datetime.timedelta(days=3))
+    _turno(db_session, reparto_a.id, data=oggi + datetime.timedelta(days=3))
+
+    headers = auth_headers(client, "caposala.a@example.com", "password123")
+    da = (oggi - datetime.timedelta(days=5)).isoformat()
+    a = (oggi - datetime.timedelta(days=1)).isoformat()
+    body = client.get(f"/api/v1/turni/calendario?da={da}&a={a}", headers=headers).json()
+
+    assert [t["id"] for t in body] == [passato.id]
+
+
 def test_calendario_turni_forbidden_per_infermiere(client, db_session, reparti):
     reparto_a, _ = reparti
     infermiere = _infermiere(db_session, reparto_a.id)
@@ -77,7 +104,7 @@ def test_calendario_turni_forbidden_per_infermiere(client, db_session, reparti):
     assert response.status_code == 403
 
 
-def test_turni_scoperti_include_turni_con_meno_di_due_infermieri(client, db_session, caposala_a, reparti):
+def test_turni_scoperti_include_solo_turni_senza_infermieri(client, db_session, caposala_a, reparti):
     from app.models.enums import StatoAssegnazione
     from app.models.turno import AssegnazioneTurno
 
@@ -112,7 +139,7 @@ def test_turni_scoperti_include_turni_con_meno_di_due_infermieri(client, db_sess
     response = client.get("/api/v1/turni/scoperti", headers=headers)
 
     assert response.status_code == 200, response.text
-    assert [turno["id"] for turno in response.json()] == [turno_zero.id, turno_uno.id]
+    assert [turno["id"] for turno in response.json()] == [turno_zero.id]
 
 
 def test_assegna_turno_accetta_solo_utenti_infermieri(client, db_session, caposala_a, reparti):
@@ -164,6 +191,48 @@ def test_rimuovi_assegnazione_con_cambio_pendente_ritorna_409(client, db_session
 
     assert response.status_code == 409, response.text
     assert db_session.get(AssegnazioneTurno, assegnazione.id) is not None
+
+
+def test_assegnazioni_scambiabili_include_turni_degli_altri_infermieri(
+    client,
+    db_session,
+    reparti,
+):
+    from app.models.enums import StatoAssegnazione
+    from app.models.turno import AssegnazioneTurno
+
+    reparto_a, _ = reparti
+    infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")
+    infermiere_b = _infermiere(db_session, reparto_a.id, "nurse.b@example.com")
+    turno_a = _turno(db_session, reparto_a.id, data=datetime.date.today())
+    turno_b = _turno(
+        db_session,
+        reparto_a.id,
+        data=datetime.date.today() + datetime.timedelta(days=1),
+    )
+    assegnazione_a = AssegnazioneTurno(
+        turno_id=turno_a.id,
+        infermiere_id=infermiere_a.id,
+        stato=StatoAssegnazione.attiva,
+    )
+    assegnazione_b = AssegnazioneTurno(
+        turno_id=turno_b.id,
+        infermiere_id=infermiere_b.id,
+        stato=StatoAssegnazione.attiva,
+    )
+    db_session.add_all([assegnazione_a, assegnazione_b])
+    db_session.commit()
+
+    headers = auth_headers(client, infermiere_a.email, "password123")
+    response = client.get(
+        "/api/v1/turni/assegnazioni-scambiabili",
+        headers=headers,
+    )
+
+    assert response.status_code == 200, response.text
+    assert [item["id"] for item in response.json()] == [assegnazione_b.id]
+    assert response.json()[0]["turno"]["id"] == turno_b.id
+    assert assegnazione_a.id not in [item["id"] for item in response.json()]
 
 
 def test_miei_prossimi_turni_include_colleghi_stesso_turno(client, db_session, reparti):

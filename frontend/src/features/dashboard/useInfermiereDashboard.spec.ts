@@ -1,14 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useInfermiereDashboard } from '@/features/dashboard/useInfermiereDashboard'
 import * as carelloFarmaciApi from '@/api/carelloFarmaci'
+import * as cambiTurnoApi from '@/api/cambiTurno'
 import * as consegneSbarApi from '@/api/consegneSbar'
 import * as pazientiApi from '@/api/pazienti'
 import * as turniApi from '@/api/turni'
+import * as utentiApi from '@/api/utenti'
 
 vi.mock('@/api/carelloFarmaci')
+vi.mock('@/api/cambiTurno')
 vi.mock('@/api/consegneSbar')
 vi.mock('@/api/pazienti')
 vi.mock('@/api/turni')
+vi.mock('@/api/utenti')
 
 const FUTURO_1 = '2030-01-01'
 
@@ -31,11 +35,13 @@ beforeEach(() => {
   vi.mocked(carelloFarmaciApi.listCarelloFarmaci).mockResolvedValue({
     data: [],
   })
+  vi.mocked(cambiTurnoApi.listCambiTurno).mockResolvedValue({ data: [] })
   vi.mocked(consegneSbarApi.listConsegneSbar).mockResolvedValue({
     data: { items: [], total: 0 },
   })
   vi.mocked(pazientiApi.listPazienti).mockResolvedValue({ data: [] })
   vi.mocked(turniApi.getMieiProssimiTurni).mockResolvedValue({ data: [] })
+  vi.mocked(utentiApi.listUtenti).mockResolvedValue({ data: [] })
 })
 
 describe('useInfermiereDashboard — prossimiTurniConColleghi', () => {
@@ -177,6 +183,30 @@ describe('useInfermiereDashboard — nomePaziente', () => {
   })
 })
 
+describe('useInfermiereDashboard — nomeUtente', () => {
+  it('mostra cognome e nome del richiedente', async () => {
+    vi.mocked(utentiApi.listUtenti).mockResolvedValue({
+      data: [
+        {
+          id: 3,
+          nome: 'Marco',
+          cognome: 'Rossi',
+          email: 'marco.rossi@example.com',
+          ruolo: 'infermiere',
+          reparto_id: 1,
+          stato: 'attivo',
+        },
+      ],
+    })
+    const dash = useInfermiereDashboard()
+
+    await dash.load()
+
+    expect(dash.nomeUtente(3)).toBe('Rossi Marco')
+    expect(dash.nomeUtente(99)).toBe('#99')
+  })
+})
+
 describe('useInfermiereDashboard — farmaciCritici', () => {
   it('include solo farmaci sotto soglia e ignora la scadenza singola del farmaco', async () => {
     vi.mocked(carelloFarmaciApi.listCarelloFarmaci).mockResolvedValue({
@@ -216,5 +246,56 @@ describe('useInfermiereDashboard — farmaciCritici', () => {
     await dash.load()
 
     expect(dash.farmaciCritici.value.map((farmaco) => farmaco.id)).toEqual([1])
+  })
+})
+
+describe('useInfermiereDashboard — richiesteCambioTurno', () => {
+  it('mostra al massimo tre richieste in attesa di approvazione', async () => {
+    vi.mocked(cambiTurnoApi.listCambiTurno).mockResolvedValue({
+      data: [
+        ...Array.from({ length: 4 }, (_, index) => ({
+          id: index + 1,
+          assegnazione_turno_id: index + 10,
+          assegnazione_collega_id: index + 20,
+          richiedente_id: 2,
+          collega_id: 3,
+          turno_richiedente: turno(index + 10, `2030-01-0${index + 1}`),
+          turno_collega: turno(
+            index + 20,
+            `2030-01-0${index + 1}`,
+            'pomeriggio',
+          ),
+          stato: 'in_attesa_caposala' as const,
+          creata_il: `2030-01-0${index + 1}T10:00:00Z`,
+          risposta_collega_il: `2030-01-0${index + 1}T11:00:00Z`,
+          risposta_caposala_id: null,
+          risposta_caposala_il: null,
+          motivo_rifiuto: null,
+        })),
+        {
+          id: 5,
+          assegnazione_turno_id: 30,
+          assegnazione_collega_id: 31,
+          richiedente_id: 2,
+          collega_id: 3,
+          turno_richiedente: turno(30, '2030-01-05'),
+          turno_collega: turno(31, '2030-01-05', 'pomeriggio'),
+          stato: 'approvata',
+          creata_il: '2030-01-05T10:00:00Z',
+          risposta_collega_il: '2030-01-05T11:00:00Z',
+          risposta_caposala_id: 1,
+          risposta_caposala_il: '2030-01-05T12:00:00Z',
+          motivo_rifiuto: null,
+        },
+      ],
+    })
+    const dash = useInfermiereDashboard()
+
+    await dash.load()
+
+    expect(cambiTurnoApi.listCambiTurno).toHaveBeenCalledOnce()
+    expect(
+      dash.richiesteCambioTurno.value.map((richiesta) => richiesta.id),
+    ).toEqual([1, 2, 3])
   })
 })

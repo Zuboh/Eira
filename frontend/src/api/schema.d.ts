@@ -265,6 +265,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/turni/assegnazioni-scambiabili": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Assegnazioni Scambiabili */
+        get: operations["list_assegnazioni_scambiabili_api_v1_turni_assegnazioni_scambiabili_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/cambi-turno/": {
         parameters: {
             query?: never;
@@ -347,9 +364,9 @@ export interface paths {
          * Risposta Caposala
          * @description La caposala approva o rifiuta lo scambio già accettato dal collega.
          *
-         *     Approvando, l'`infermiere_id` sull'assegnazione originale viene
-         *     sostituito con quello del collega (se non crea un doppio turno nella
-         *     stessa data); rifiutando, la richiesta diventa `rifiutata_caposala`.
+         *     Approvando una nuova richiesta, le due assegnazioni selezionate vengono
+         *     scambiate se non creano doppi turni. Le richieste storiche senza turno
+         *     offerto mantengono il precedente comportamento di trasferimento.
          */
         post: operations["risposta_caposala_api_v1_cambi_turno__richiesta_id__risposta_caposala_post"];
         delete?: never;
@@ -953,6 +970,28 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /**
+         * MeRead
+         * @description Sessione corrente: aggiunge il nome del reparto, che il client mostra
+         *     in sidebar e dashboard. Separato da UtenteRead per non caricare il join
+         *     anche sulle liste utenti.
+         */
+        MeRead: {
+            /** Nome */
+            nome: string;
+            /** Cognome */
+            cognome: string;
+            /** Email */
+            email: string;
+            ruolo: components["schemas"]["RuoloUtente"];
+            /** Reparto Id */
+            reparto_id: number;
+            /** Id */
+            id: number;
+            stato: components["schemas"]["StatoUtente"];
+            /** Reparto Nome */
+            reparto_nome: string | null;
+        };
         /** MovimentoFarmacoRead */
         MovimentoFarmacoRead: {
             /** Id */
@@ -1134,6 +1173,8 @@ export interface components {
             assegnazione_turno_id: number;
             /** Collega Id */
             collega_id: number;
+            /** Assegnazione Collega Id */
+            assegnazione_collega_id?: number | null;
         };
         /** RichiestaCambioTurnoRead */
         RichiestaCambioTurnoRead: {
@@ -1141,10 +1182,14 @@ export interface components {
             id: number;
             /** Assegnazione Turno Id */
             assegnazione_turno_id: number;
+            /** Assegnazione Collega Id */
+            assegnazione_collega_id?: number | null;
             /** Richiedente Id */
             richiedente_id: number;
             /** Collega Id */
             collega_id: number;
+            turno_richiedente: components["schemas"]["TurnoRead"];
+            turno_collega?: components["schemas"]["TurnoRead"] | null;
             stato: components["schemas"]["StatoCambioTurno"];
             /**
              * Creata Il
@@ -1627,7 +1672,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UtenteRead"];
+                    "application/json": components["schemas"]["MeRead"];
                 };
             };
             /** @description Token mancante o non valido */
@@ -2232,7 +2277,10 @@ export interface operations {
     };
     list_calendario_turni_api_v1_turni_calendario_get: {
         parameters: {
-            query?: never;
+            query?: {
+                da?: string | null;
+                a?: string | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2261,6 +2309,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
@@ -2466,6 +2523,40 @@ export interface operations {
         };
     };
     list_mie_assegnazioni_api_v1_turni_mie_assegnazioni_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssegnazioneTurnoRead"][];
+                };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_assegnazioni_scambiabili_api_v1_turni_assegnazioni_scambiabili_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -4095,7 +4186,10 @@ export interface operations {
     };
     dashboard_caposala_api_v1_dashboard_caposala_get: {
         parameters: {
-            query?: never;
+            query?: {
+                giorni?: number;
+                limit?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -4109,6 +4203,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DashboardCaposala"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

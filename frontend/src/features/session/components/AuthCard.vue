@@ -2,11 +2,13 @@
 import { computed } from 'vue'
 import type { TipoTurno } from '@/api/turni'
 import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
+import RepartoBadge from '@/components/ui/RepartoBadge.vue'
 import mockProfilePic from '@/assets/avatars/mock-profile.png'
 
 const props = defineProps<{
   subtitle?: string | null
   turno?: TipoTurno | null
+  reparto?: string | null
 }>()
 
 const turnoCssVar = computed(() =>
@@ -21,6 +23,8 @@ const turnoLabel = computed(() =>
   <main class="auth-view">
     <section class="auth-card" aria-label="Eira">
       <div class="auth-header">
+        <h1>Eira</h1>
+        <RepartoBadge v-if="reparto" :nome="reparto" />
         <div v-if="subtitle" class="auth-identity">
           <img
             :src="mockProfilePic"
@@ -67,6 +71,15 @@ const turnoLabel = computed(() =>
 
 .auth-header {
   text-align: center;
+}
+
+.auth-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.auth-header h1 + * {
+  margin-top: 12px;
 }
 
 .auth-identity {

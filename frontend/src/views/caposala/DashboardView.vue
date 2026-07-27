@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
@@ -11,14 +10,25 @@ import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import CambiTurnoCard from '@/features/dashboard/components/CambiTurnoCard.vue'
 import CalendarioTurniCard from '@/features/dashboard/components/CalendarioTurniCard.vue'
+import TriageLedgerCard from '@/features/dashboard/components/TriageLedgerCard.vue'
 import TurniScopertiCard from '@/features/dashboard/components/TurniScopertiCard.vue'
 import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
 import { useCaposalaDashboard } from '@/features/dashboard/useCaposalaDashboard'
+import { useAuthStore } from '@/stores/auth'
 import { formatDateShortIt } from '@/utils/dateFormat'
+
+const auth = useAuthStore()
 
 const {
   pendingCount,
   dashboard,
+  turniScopertiGiorni,
+  turniScopertiSetteGiorniCount,
+  cambiDaApprovareCount,
+  calendarioDa,
+  calendarioA,
+  puoAndareSettimanaPrecedente,
+  puoAndareSettimanaSuccessiva,
   loading,
   error,
   infermieri,
@@ -36,6 +46,8 @@ const {
   approvaCambioTurnoCaposala,
   confermaRifiutoCambioTurno,
   load,
+  setTurniScopertiGiorni,
+  spostaSettimanaCalendario,
   apriAssegna,
   confermaAssegna,
 } = useCaposalaDashboard()
@@ -45,32 +57,48 @@ onMounted(load)
 
 <template>
   <div class="dashboard-caposala">
-    <PageHeader title="Dashboard Caposala">
-      <template #actions>
-        <RouterLink :to="{ name: 'caposala-staff' }" class="staff-link">
-          Personale
-          <span v-if="pendingCount > 0" class="badge">{{ pendingCount }}</span>
-        </RouterLink>
-      </template>
-    </PageHeader>
+    <PageHeader title="Dashboard Caposala" :reparto="auth.repartoNome" />
 
     <InlineError :message="error || cambioTurnoError" />
 
-    <TurniScopertiCard
-      :turni="dashboard?.turni_scoperti ?? []"
-      :loading="loading || !dashboard"
-      @assign="apriAssegna"
-    />
+    <div class="dashboard-row dashboard-row--triage">
+      <TriageLedgerCard
+        :turni-scoperti-count="turniScopertiSetteGiorniCount"
+        :cambi-da-approvare-count="cambiDaApprovareCount"
+        :personale-in-attesa-count="pendingCount"
+        :loading="loading || !dashboard"
+      />
 
-    <CambiTurnoCard
-      :richieste="richiesteCambioTurno"
-      :loading="loading"
-      :nome-utente="nomeUtenteCambioTurno"
-      @approve="approvaCambioTurnoCaposala"
-      @reject="apriRifiutoCambioTurno"
-    />
+      <CambiTurnoCard
+        :richieste="richiesteCambioTurno"
+        :loading="loading"
+        :nome-utente="nomeUtenteCambioTurno"
+        @approve="approvaCambioTurnoCaposala"
+        @reject="apriRifiutoCambioTurno"
+      />
+    </div>
 
-    <CalendarioTurniCard :rows="righeCalendario" :loading="loading" />
+    <div class="dashboard-row">
+      <TurniScopertiCard
+        :turni="dashboard?.turni_scoperti ?? []"
+        :total="dashboard?.turni_scoperti_count ?? 0"
+        :giorni="turniScopertiGiorni"
+        :loading="loading || !dashboard"
+        @assign="apriAssegna"
+        @range-change="setTurniScopertiGiorni"
+      />
+
+      <CalendarioTurniCard
+        :rows="righeCalendario"
+        :da="calendarioDa"
+        :a="calendarioA"
+        :can-go-previous="puoAndareSettimanaPrecedente"
+        :can-go-next="puoAndareSettimanaSuccessiva"
+        :loading="loading"
+        @previous-week="spostaSettimanaCalendario(-1)"
+        @next-week="spostaSettimanaCalendario(1)"
+      />
+    </div>
 
     <Dialog
       v-model:visible="assegnaDialog"
@@ -118,34 +146,24 @@ onMounted(load)
   padding: var(--page-padding);
   max-width: var(--page-2xl);
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.staff-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  min-height: var(--size-touch);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: inherit;
-  text-decoration: none;
-  font-size: 0.9375rem;
+.dashboard-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(20rem, 1fr);
+  gap: 24px;
+  align-items: start;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 999px;
-  background: var(--state-urgente);
-  color: var(--color-on-danger);
-  font-size: 0.75rem;
-  font-weight: 700;
+.dashboard-row--triage {
+  grid-template-columns: minmax(20rem, 1fr) minmax(0, 2fr);
+}
+
+.dashboard-row > * {
+  min-width: 0;
 }
 
 .form {
@@ -157,5 +175,12 @@ onMounted(load)
 .hint {
   color: var(--steel);
   font-size: 0.875rem;
+}
+
+@media (max-width: 960px) {
+  .dashboard-row,
+  .dashboard-row--triage {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 </style>

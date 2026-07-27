@@ -1,12 +1,17 @@
 import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import and_, func
+from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.cambio_turno import RichiestaCambioTurno
-from app.models.enums import RuoloUtente, StatoAssegnazione, StatoCambioTurno
+from app.models.enums import (
+    RuoloUtente,
+    StatoAssegnazione,
+    StatoCambioTurno,
+    StatoUtente,
+)
 from app.models.turno import AssegnazioneTurno, Turno
 from app.models.utente import Utente
 from app.openapi_errors import CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
@@ -19,8 +24,13 @@ from app.schemas.turno import (
     TurnoRead,
 )
 from app.schemas.utente import UtenteTile
+from app.services.turni import (
+    COPERTURA_MINIMA_TURNO,
+    FINESTRA_CALENDARIO_GIORNI,
+    query_turni_scoperti,
+)
 
-COPERTURA_MINIMA_TURNO = 2
+__all__ = ["COPERTURA_MINIMA_TURNO", "router"]
 
 router = APIRouter(prefix="/turni", tags=["turni"])
 
@@ -59,13 +69,33 @@ def list_turni(current_user: CurrentUserDep, db: DbDep) -> list[TurnoRead]:
     dependencies=[Depends(require_roles(RuoloUtente.caposala))],
     responses=errors(UNAUTHORIZED, FORBIDDEN),
 )
-def list_calendario_turni(current_user: CurrentUserDep, db: DbDep) -> list[TurnoCalendarioRead]:
-    turni = db.query(Turno).filter(Turno.reparto_id == current_user.reparto_id).order_by(Turno.data).all()
+def list_calendario_turni(
+    current_user: CurrentUserDep,
+    db: DbDep,
+    da: datetime.date | None = None,
+    a: datetime.date | None = None,
+) -> list[TurnoCalendarioRead]:
+    # senza finestra il calendario spediva ogni turno mai pianificato: default
+    # alla settimana corrente, il client sposta la finestra con da/a
+    da_data = da or datetime.date.today()
+    a_data = a or da_data + datetime.timedelta(days=FINESTRA_CALENDARIO_GIORNI - 1)
+    turni = (
+        db.query(Turno)
+        .filter(
+            Turno.reparto_id == current_user.reparto_id,
+            Turno.data >= da_data,
+            Turno.data <= a_data,
+        )
+        .order_by(Turno.data)
+        .all()
+    )
     assegnazioni = (
         db.query(AssegnazioneTurno)
         .join(Turno, AssegnazioneTurno.turno_id == Turno.id)
         .filter(
             Turno.reparto_id == current_user.reparto_id,
+            Turno.data >= da_data,
+            Turno.data <= a_data,
             AssegnazioneTurno.stato == StatoAssegnazione.attiva,
         )
         .all()
@@ -88,28 +118,7 @@ def list_calendario_turni(current_user: CurrentUserDep, db: DbDep) -> list[Turno
     responses=errors(UNAUTHORIZED, FORBIDDEN),
 )
 def list_turni_scoperti(current_user: CurrentUserDep, db: DbDep) -> list[TurnoRead]:
-    turni = (
-        db.query(Turno)
-        .outerjoin(
-            AssegnazioneTurno,
-            and_(
-                AssegnazioneTurno.turno_id == Turno.id,
-                AssegnazioneTurno.stato == StatoAssegnazione.attiva,
-            ),
-        )
-        .outerjoin(
-            Utente,
-            and_(
-                Utente.id == AssegnazioneTurno.infermiere_id,
-                Utente.ruolo == RuoloUtente.infermiere,
-            ),
-        )
-        .filter(Turno.reparto_id == current_user.reparto_id)
-        .group_by(Turno.id)
-        .having(func.count(Utente.id) < COPERTURA_MINIMA_TURNO)
-        .order_by(Turno.data)
-        .all()
-    )
+    turni = query_turni_scoperti(db, current_user.reparto_id, da_data=datetime.date.today())
     return [TurnoRead.model_validate(turno) for turno in turni]
 
 
@@ -240,7 +249,10 @@ def rimuovi_assegnazione(
     richiesta_pendente = (
         db.query(RichiestaCambioTurno)
         .filter(
-            RichiestaCambioTurno.assegnazione_turno_id == assegnazione_id,
+            or_(
+                RichiestaCambioTurno.assegnazione_turno_id == assegnazione_id,
+                RichiestaCambioTurno.assegnazione_collega_id == assegnazione_id,
+            ),
             RichiestaCambioTurno.stato.in_(
                 (StatoCambioTurno.in_attesa_collega, StatoCambioTurno.in_attesa_caposala)
             ),
@@ -272,10 +284,47 @@ def list_mie_assegnazioni(current_user: CurrentUserDep, db: DbDep) -> list[Asseg
         .all()
     )
     turni_per_id = {
-        turno.id: turno
-        for turno in db.query(Turno).filter(
-            Turno.id.in_([a.turno_id for a in assegnazioni])
+        turno.id: turno for turno in db.query(Turno).filter(Turno.id.in_([a.turno_id for a in assegnazioni]))
+    }
+    return [
+        AssegnazioneTurnoRead(
+            id=a.id,
+            turno_id=a.turno_id,
+            infermiere_id=a.infermiere_id,
+            stato=a.stato,
+            turno=TurnoRead.model_validate(turni_per_id[a.turno_id]),
         )
+        for a in assegnazioni
+    ]
+
+
+@router.get(
+    "/assegnazioni-scambiabili",
+    dependencies=[Depends(require_roles(RuoloUtente.infermiere))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN),
+)
+def list_assegnazioni_scambiabili(
+    current_user: CurrentUserDep,
+    db: DbDep,
+) -> list[AssegnazioneTurnoRead]:
+    oggi = datetime.date.today()
+    assegnazioni = (
+        db.query(AssegnazioneTurno)
+        .join(Turno, AssegnazioneTurno.turno_id == Turno.id)
+        .join(Utente, AssegnazioneTurno.infermiere_id == Utente.id)
+        .filter(
+            Turno.reparto_id == current_user.reparto_id,
+            Turno.data >= oggi,
+            AssegnazioneTurno.infermiere_id != current_user.id,
+            AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+            Utente.ruolo == RuoloUtente.infermiere,
+            Utente.stato == StatoUtente.attivo,
+        )
+        .order_by(Turno.data.asc(), Turno.ora_inizio.asc())
+        .all()
+    )
+    turni_per_id = {
+        turno.id: turno for turno in db.query(Turno).filter(Turno.id.in_([a.turno_id for a in assegnazioni]))
     }
     return [
         AssegnazioneTurnoRead(

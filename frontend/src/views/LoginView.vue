@@ -34,6 +34,7 @@ const {
   loading,
   stepError,
   turnoOggi,
+  repartoNome,
   chooseReparto,
   cambiaReparto,
   selectUtente,
@@ -49,6 +50,7 @@ const {
       selectedUtente ? `${selectedUtente.nome} ${selectedUtente.cognome}` : null
     "
     :turno="turnoOggi"
+    :reparto="repartoNome"
   >
     <RepartoStep
       v-if="step === 'reparto'"

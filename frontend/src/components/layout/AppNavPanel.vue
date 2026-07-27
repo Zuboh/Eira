@@ -103,15 +103,23 @@ function logout() {
     <div
       v-if="auth.user"
       class="identity"
-      :title="`${auth.user.nome} ${auth.user.cognome} — ${roleLabel}`"
+      :title="`${auth.user.nome} ${auth.user.cognome} — ${roleLabel}${auth.repartoNome ? ` — ${auth.repartoNome}` : ''}`"
     >
-      <span class="identity-avatar" aria-hidden="true">{{ initials }}</span>
-      <div class="identity-info">
-        <p class="identity-name">
-          {{ auth.user.nome }} {{ auth.user.cognome }}
+      <div class="identity-person">
+        <span class="identity-avatar" aria-hidden="true">{{ initials }}</span>
+        <div class="identity-info">
+          <p class="identity-name">{{ auth.user.nome }}</p>
+          <p class="identity-role">{{ roleLabel }}</p>
+        </div>
+      </div>
+
+      <div class="identity-details">
+        <p v-if="auth.repartoNome" class="identity-detail">
+          <i class="pi pi-building" aria-hidden="true" />
+          <span class="sr-only">Reparto:</span>
+          <span class="identity-reparto-name">{{ auth.repartoNome }}</span>
         </p>
-        <p class="identity-role">{{ roleLabel }}</p>
-        <p v-if="turnoOggi" class="identity-turno">
+        <p v-if="turnoOggi" class="identity-detail">
           <span
             class="turno-dot"
             aria-hidden="true"
@@ -206,12 +214,20 @@ function logout() {
 
 .identity {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--space-2);
   padding: var(--space-3);
   margin-top: var(--space-2);
   margin-bottom: var(--space-4);
   border-top: 1px solid var(--border);
+}
+
+.identity-person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
 }
 
 .identity-avatar {
@@ -247,16 +263,36 @@ function logout() {
   color: var(--steel);
 }
 
-.identity-turno {
+.identity-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.identity-detail {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin: 2px 0 0;
+  min-width: 0;
+  margin: 0;
   font-size: 0.8125rem;
   color: var(--steel);
 }
 
+.identity-reparto-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.identity-detail .pi {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+}
+
 .turno-dot {
+  flex-shrink: 0;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -323,6 +359,7 @@ function logout() {
   }
 
   .identity {
+    align-items: center;
     justify-content: center;
     /* padding orizzontale inutile senza label, e con l'avatar a
        flex-shrink: 0 spingeva il contenuto oltre il rail: la sidebar
@@ -330,7 +367,8 @@ function logout() {
     padding: var(--space-2) 0;
   }
 
-  .identity-info {
+  .identity-info,
+  .identity-details {
     display: none;
   }
 }

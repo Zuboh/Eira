@@ -9,6 +9,7 @@ export type CambioTurnoForm = {
   assegnazione_turno_id:
     RichiestaCambioTurnoCreatePayload['assegnazione_turno_id'] | null
   collega_id: RichiestaCambioTurnoCreatePayload['collega_id'] | null
+  assegnazione_collega_id: number | null
 }
 
 export type UserRole = Utente['ruolo'] | null
@@ -29,6 +30,7 @@ export type CambiTurnoTableEmits = {
 
 export type NewCambioTurnoDialogProps = {
   assegnazioni: AssegnazioneTurno[]
+  assegnazioniColleghi: AssegnazioneTurno[]
   colleghi: Utente[]
   saving: boolean
 }

@@ -4,6 +4,7 @@ import DatePicker from 'primevue/datepicker'
 import Dialog from 'primevue/dialog'
 import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
 import FormField from '@/components/ui/FormField.vue'
 import { dialogStyle } from '@/components/ui/dialogStyles'
 import type {
@@ -55,9 +56,12 @@ const emit = defineEmits<PatientDialogEmits>()
         />
       </FormField>
       <FormField label="Diagnosi ingresso" forId="paziente-diagnosi" required>
-        <InputText
+        <Textarea
           id="paziente-diagnosi"
           v-model="form.diagnosi_ingresso"
+          class="diagnosi-input"
+          rows="3"
+          autoResize
           required
         />
       </FormField>
@@ -71,5 +75,9 @@ const emit = defineEmits<PatientDialogEmits>()
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.diagnosi-input {
+  width: 100%;
 }
 </style>

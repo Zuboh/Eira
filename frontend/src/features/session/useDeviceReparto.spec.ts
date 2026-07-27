@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
-  clearDeviceRepartoId,
+  clearDeviceReparto,
   getDeviceRepartoId,
-  setDeviceRepartoId,
+  getDeviceRepartoNome,
+  setDeviceReparto,
 } from '@/features/session/useDeviceReparto'
 
 const KEY = 'eira_device_reparto'
+const NOME_KEY = 'eira_device_reparto_nome'
 
 beforeEach(() => {
   localStorage.clear()
@@ -30,25 +32,52 @@ describe('getDeviceRepartoId', () => {
   )
 })
 
-describe('setDeviceRepartoId', () => {
-  it('persists a valid id and it can be read back', () => {
-    setDeviceRepartoId(5)
+describe('getDeviceRepartoNome', () => {
+  it('returns null when nothing is stored', () => {
+    expect(getDeviceRepartoNome()).toBeNull()
+  })
+
+  it('returns null for a device saved before the name was persisted', () => {
+    localStorage.setItem(KEY, '3')
+    expect(getDeviceRepartoNome()).toBeNull()
+  })
+
+  it('ignores an orphaned name with no valid id', () => {
+    localStorage.setItem(NOME_KEY, 'Cardiologia')
+    expect(getDeviceRepartoNome()).toBeNull()
+  })
+})
+
+describe('setDeviceReparto', () => {
+  it('persists id and name, and both can be read back', () => {
+    setDeviceReparto({ id: 5, nome: 'Cardiologia' })
+
     expect(localStorage.getItem(KEY)).toBe('5')
+    expect(localStorage.getItem(NOME_KEY)).toBe('Cardiologia')
     expect(getDeviceRepartoId()).toBe(5)
+    expect(getDeviceRepartoNome()).toBe('Cardiologia')
   })
 
   it('clears storage instead of persisting an invalid id (e.g. 0)', () => {
     localStorage.setItem(KEY, '7')
-    setDeviceRepartoId(0)
+    localStorage.setItem(NOME_KEY, 'Medicina')
+
+    setDeviceReparto({ id: 0, nome: 'Cardiologia' })
+
     expect(localStorage.getItem(KEY)).toBeNull()
+    expect(localStorage.getItem(NOME_KEY)).toBeNull()
   })
 })
 
-describe('clearDeviceRepartoId', () => {
-  it('removes the stored id', () => {
-    setDeviceRepartoId(4)
-    clearDeviceRepartoId()
+describe('clearDeviceReparto', () => {
+  it('removes both the stored id and name', () => {
+    setDeviceReparto({ id: 4, nome: 'Cardiologia' })
+
+    clearDeviceReparto()
+
     expect(localStorage.getItem(KEY)).toBeNull()
+    expect(localStorage.getItem(NOME_KEY)).toBeNull()
     expect(getDeviceRepartoId()).toBeNull()
+    expect(getDeviceRepartoNome()).toBeNull()
   })
 })

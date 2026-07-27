@@ -43,6 +43,18 @@ def test_login_active_account_succeeds(client, caposala_a):
     assert response.status_code == 200, response.text
 
 
+def test_me_returns_reparto_nome(client, caposala_a, reparti):
+    reparto_a, _ = reparti
+    headers = auth_headers(client, caposala_a.email, "password123")
+
+    response = client.get("/api/v1/auth/me", headers=headers)
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["reparto_id"] == reparto_a.id
+    assert body["reparto_nome"] == "Cardiologia"
+
+
 def test_register_happy_path(client, reparti, db_session):
     reparto_a, _ = reparti
     response = client.post(

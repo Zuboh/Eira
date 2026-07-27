@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
+import ConfirmationService from 'primevue/confirmationservice'
 import Tooltip from 'primevue/tooltip'
 import { definePreset } from '@primeuix/themes'
 import Aura from '@primeuix/themes/aura'
@@ -73,6 +74,7 @@ app.use(PrimeVue, {
     preset: EiraPreset,
   },
 })
+app.use(ConfirmationService)
 app.directive('tooltip', Tooltip)
 
 router.isReady().then(() => app.mount('#app'))

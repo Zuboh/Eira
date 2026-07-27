@@ -2,6 +2,7 @@
 import Button from 'primevue/button'
 import StatusBadge from '@/components/StatusBadge.vue'
 import EiraTable from '@/components/ui/EiraTable.vue'
+import { formatCambioRichiesto } from '@/features/cambi-turno/format'
 import { formatDateTimeCompactIt } from '@/utils/dateFormat'
 import type {
   CambiTurnoTableEmits,
@@ -50,6 +51,7 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
         <tr>
           <th>Richiedente</th>
           <th>Collega</th>
+          <th>Cambio richiesto</th>
           <th>Stato</th>
           <th>Creata</th>
           <th><span class="sr-only">Azioni</span></th>
@@ -59,6 +61,7 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
         <tr v-for="richiesta in richieste" :key="richiesta.id">
           <td>{{ nomeUtente(richiesta.richiedente_id) }}</td>
           <td>{{ nomeUtente(richiesta.collega_id) }}</td>
+          <td class="cambio">{{ formatCambioRichiesto(richiesta) }}</td>
           <td><StatusBadge :status="richiesta.stato" /></td>
           <td class="mono">
             {{ formatDateTimeCompactIt(richiesta.creata_il) }}
@@ -119,5 +122,11 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
 .mono {
   font-family: var(--mono);
   font-size: 0.8125rem;
+}
+
+.cambio {
+  min-width: 15rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 </style>

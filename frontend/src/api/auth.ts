@@ -3,6 +3,7 @@ import type { components } from '@/api/schema'
 
 type TokenSchema = components['schemas']['Token']
 type UtenteReadSchema = components['schemas']['UtenteRead']
+type MeReadSchema = components['schemas']['MeRead']
 type TemporaryPasswordChangeSchema =
   components['schemas']['TemporaryPasswordChange']
 
@@ -11,13 +12,17 @@ export interface TokenResponse {
   token_type: TokenSchema['token_type']
 }
 
-export interface MeResponse {
+export interface UtenteResponse {
   id: UtenteReadSchema['id']
   email: UtenteReadSchema['email']
   nome: UtenteReadSchema['nome']
   cognome: UtenteReadSchema['cognome']
   ruolo: UtenteReadSchema['ruolo']
   reparto_id: UtenteReadSchema['reparto_id']
+}
+
+export interface MeResponse extends UtenteResponse {
+  reparto_nome: MeReadSchema['reparto_nome']
 }
 
 export interface ChangeTemporaryPasswordPayload {
@@ -89,7 +94,7 @@ export async function login(
 
 export async function changeTemporaryPassword(
   payload: ChangeTemporaryPasswordPayload,
-): ApiResponse<MeResponse> {
+): ApiResponse<UtenteResponse> {
   const result = await eiraClient.POST(
     '/api/v1/auth/change-temporary-password',
     {

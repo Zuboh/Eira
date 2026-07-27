@@ -39,6 +39,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     editForm: dialogs.editForm,
     consegnaDrawer: dialogs.consegnaDrawer,
     consegnaSaving: dialogs.consegnaSaving,
+    consegnaError: dialogs.consegnaError,
     consegnaForm: dialogs.consegnaForm,
     nortonDialog: dialogs.nortonDialog,
     nortonSaving: dialogs.nortonSaving,

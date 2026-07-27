@@ -74,7 +74,7 @@ const calendarOptions = computed(() => ({
   initialView: viewName.value,
   locale: itLocale,
   firstDay: 1,
-  height: isCompact.value ? '60vh' : 'auto',
+  height: 'auto',
   headerToolbar: false as const,
   displayEventTime: false,
   dayMaxEvents: 2,
@@ -769,9 +769,28 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 
 @media (max-width: 640px) {
   .calendar-toolbar {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .calendar-toolbar-title {
+    padding-inline: 0;
+    font-size: 1rem;
+  }
+
+  .calendar-toolbar-nav {
+    gap: 0;
+  }
+
+  .legend {
+    display: none;
+  }
+}
+
+@media (max-width: 359px) {
+  .calendar-toolbar {
     align-items: flex-start;
     flex-direction: column;
-    gap: 8px;
   }
 }
 </style>

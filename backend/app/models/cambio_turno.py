@@ -11,8 +11,9 @@ class RichiestaCambioTurno(Base):
     __tablename__ = "richiesta_cambio_turno"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    assegnazione_turno_id: Mapped[int] = mapped_column(
-        sa.ForeignKey("assegnazione_turno.id"), index=True
+    assegnazione_turno_id: Mapped[int] = mapped_column(sa.ForeignKey("assegnazione_turno.id"), index=True)
+    assegnazione_collega_id: Mapped[int | None] = mapped_column(
+        sa.ForeignKey("assegnazione_turno.id"), index=True, default=None
     )
     richiedente_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"), index=True)
     collega_id: Mapped[int] = mapped_column(sa.ForeignKey("utente.id"), index=True)
@@ -21,12 +22,8 @@ class RichiestaCambioTurno(Base):
         default=StatoCambioTurno.in_attesa_collega,
         index=True,
     )
-    creata_il: Mapped[datetime.datetime] = mapped_column(
-        default=lambda: datetime.datetime.now(datetime.UTC)
-    )
+    creata_il: Mapped[datetime.datetime] = mapped_column(default=lambda: datetime.datetime.now(datetime.UTC))
     risposta_collega_il: Mapped[datetime.datetime | None] = mapped_column(default=None)
-    risposta_caposala_id: Mapped[int | None] = mapped_column(
-        sa.ForeignKey("utente.id"), default=None
-    )
+    risposta_caposala_id: Mapped[int | None] = mapped_column(sa.ForeignKey("utente.id"), default=None)
     risposta_caposala_il: Mapped[datetime.datetime | None] = mapped_column(default=None)
     motivo_rifiuto: Mapped[str | None] = mapped_column(sa.String(512), default=None)

@@ -11,9 +11,10 @@ import {
 } from '@/api/reparti'
 import { useAuthStore } from '@/stores/auth'
 import {
-  clearDeviceRepartoId,
+  clearDeviceReparto,
   getDeviceRepartoId,
-  setDeviceRepartoId,
+  getDeviceRepartoNome,
+  setDeviceReparto,
 } from '@/features/session/useDeviceReparto'
 
 export type LoginStep = 'reparto' | 'tiles' | 'password' | 'change-password'
@@ -46,6 +47,7 @@ type UseLoginFlowResult = {
   loading: Ref<boolean>
   stepError: Ref<string>
   turnoOggi: Ref<TipoTurno | null>
+  repartoNome: Ref<string | null>
   chooseReparto: (reparto: Reparto) => Promise<void>
   cambiaReparto: () => void
   selectUtente: (utente: UtenteTile) => Promise<void>
@@ -77,6 +79,7 @@ export function useLoginFlow({
   const loading = ref(false)
   const stepError = ref('')
   const turnoOggi = ref<TipoTurno | null>(null)
+  const repartoNome = ref<string | null>(getDeviceRepartoNome())
 
   const auth = useAuthStore()
   const router = useRouter()
@@ -101,6 +104,25 @@ export function useLoginFlow({
     }
   }
 
+  // Devices configured before the reparto name was persisted only have the id:
+  // resolve the name once and write it back.
+  async function resolveSavedRepartoNome(
+    repartoId: number,
+  ): Promise<'ok' | 'missing' | 'failed'> {
+    try {
+      const { data } = await listReparti()
+      reparti.value = data
+      const saved = data.find((reparto) => reparto.id === repartoId)
+      if (!saved) return 'missing'
+
+      setDeviceReparto(saved)
+      repartoNome.value = saved.nome
+      return 'ok'
+    } catch {
+      return 'failed'
+    }
+  }
+
   async function loadTilesForDevice(): Promise<void> {
     const repartoId = getDeviceRepartoId()
     if (!repartoId) {
@@ -108,6 +130,19 @@ export function useLoginFlow({
       await loadReparti()
       await focusFirstOf('reparto')
       return
+    }
+
+    if (repartoNome.value === null) {
+      const outcome = await resolveSavedRepartoNome(repartoId)
+      if (outcome === 'missing') {
+        // Reparto deleted backend-side: this device has to pick a new one.
+        clearDeviceReparto()
+        repartoNome.value = null
+        step.value = 'reparto'
+        await focusFirstOf('reparto')
+        return
+      }
+      // On 'failed' keep going: the badge is cosmetic, login must still work.
     }
 
     stepError.value = ''
@@ -125,12 +160,14 @@ export function useLoginFlow({
   }
 
   async function chooseReparto(reparto: Reparto): Promise<void> {
-    setDeviceRepartoId(reparto.id)
+    setDeviceReparto(reparto)
+    repartoNome.value = reparto.nome
     await loadTilesForDevice()
   }
 
   function cambiaReparto(): void {
-    clearDeviceRepartoId()
+    clearDeviceReparto()
+    repartoNome.value = null
     utenti.value = []
     selectedUtente.value = null
     turnoOggi.value = null
@@ -269,6 +306,7 @@ export function useLoginFlow({
     loading,
     stepError,
     turnoOggi,
+    repartoNome,
     chooseReparto,
     cambiaReparto,
     selectUtente,

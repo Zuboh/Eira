@@ -5,8 +5,7 @@ import Dialog from 'primevue/dialog'
 import Select from 'primevue/select'
 import FormField from '@/components/ui/FormField.vue'
 import { dialogStyle } from '@/components/ui/dialogStyles'
-import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
-import { formatDateShortIt } from '@/utils/dateFormat'
+import { formatTurnoCambio } from '@/features/cambi-turno/format'
 import type {
   CambioTurnoForm,
   CambioTurnoSubmitEmits,
@@ -23,11 +22,27 @@ const emit = defineEmits<CambioTurnoSubmitEmits>()
 const assegnazioniConLabel = computed(() =>
   props.assegnazioni.map((a) => ({
     ...a,
-    label: a.turno
-      ? `${formatDateShortIt(a.turno.data)} · ${TIPO_TURNO_LABEL[a.turno.tipo]}`
-      : `Turno #${a.turno_id}`,
+    label: a.turno ? formatTurnoCambio(a.turno) : `Turno #${a.turno_id}`,
   })),
 )
+
+const assegnazioniCollegaConLabel = computed(() =>
+  props.assegnazioniColleghi
+    .filter(
+      (assegnazione) => assegnazione.infermiere_id === form.value.collega_id,
+    )
+    .map((assegnazione) => ({
+      ...assegnazione,
+      label: assegnazione.turno
+        ? formatTurnoCambio(assegnazione.turno)
+        : `Turno #${assegnazione.turno_id}`,
+    })),
+)
+
+function setCollega(collegaId: number | null) {
+  form.value.collega_id = collegaId
+  form.value.assegnazione_collega_id = null
+}
 </script>
 
 <template>
@@ -50,11 +65,27 @@ const assegnazioniConLabel = computed(() =>
       </FormField>
       <FormField label="Collega" required>
         <Select
-          v-model="form.collega_id"
+          :model-value="form.collega_id"
           :options="colleghi"
           optionLabel="cognome"
           optionValue="id"
           placeholder="Seleziona collega"
+          required
+          @update:model-value="setCollega"
+        />
+      </FormField>
+      <FormField label="Turno del collega" required>
+        <Select
+          v-model="form.assegnazione_collega_id"
+          :options="assegnazioniCollegaConLabel"
+          optionLabel="label"
+          optionValue="id"
+          :placeholder="
+            form.collega_id === null
+              ? 'Seleziona prima il collega'
+              : 'Seleziona il turno offerto'
+          "
+          :disabled="form.collega_id === null"
           required
         />
       </FormField>

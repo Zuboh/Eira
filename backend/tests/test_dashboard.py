@@ -53,7 +53,7 @@ def _turno_con_assegnazione(db_session, reparto_id, infermiere_id, data=None, ti
     return turno, assegnazione
 
 
-def test_dashboard_caposala_conta_turni_con_meno_di_due_infermieri_e_cambi_in_attesa(
+def test_dashboard_caposala_conta_solo_turni_senza_infermieri_e_cambi_in_attesa(
     client, db_session, caposala_a, reparti
 ):
     from app.models.cambio_turno import RichiestaCambioTurno
@@ -94,8 +94,101 @@ def test_dashboard_caposala_conta_turni_con_meno_di_due_infermieri_e_cambi_in_at
 
     assert response.status_code == 200, response.text
     body = response.json()
-    assert body["turni_scoperti_count"] == 2
+    assert body["turni_scoperti_count"] == 1
     assert body["cambi_turno_in_attesa_count"] == 1
+
+
+def test_dashboard_caposala_esclude_turni_passati(client, db_session, caposala_a, reparti):
+    reparto_a, _ = reparti
+    ieri = datetime.date.today() - datetime.timedelta(days=1)
+    _turno(db_session, reparto_a.id, data=ieri)
+    _turno(db_session, reparto_a.id, data=datetime.date.today())
+
+    headers = auth_headers(client, "caposala.a@example.com", "password123")
+    body = client.get("/api/v1/dashboard/caposala", headers=headers).json()
+
+    assert body["turni_scoperti_count"] == 1
+    assert all(t["data"] >= datetime.date.today().isoformat() for t in body["turni_scoperti"])
+
+
+def test_dashboard_caposala_esclude_tipi_non_lavorativi(client, db_session, caposala_a, reparti):
+    from app.models.enums import TipoTurno
+
+    reparto_a, _ = reparti
+    # riposo/ferie sono assenze: non serve assegnare un infermiere
+    _turno(db_session, reparto_a.id, tipo=TipoTurno.riposo)
+    _turno(db_session, reparto_a.id, tipo=TipoTurno.ferie)
+    _turno(db_session, reparto_a.id, tipo=TipoTurno.ferie_estive)
+    _turno(db_session, reparto_a.id, tipo=TipoTurno.notte)
+
+    headers = auth_headers(client, "caposala.a@example.com", "password123")
+    body = client.get("/api/v1/dashboard/caposala", headers=headers).json()
+
+    assert body["turni_scoperti_count"] == 1
+    assert [t["tipo"] for t in body["turni_scoperti"]] == ["notte"]
+
+
+def test_dashboard_caposala_finestra_giorni(client, db_session, caposala_a, reparti):
+    from app.models.enums import TipoTurno
+
+    reparto_a, _ = reparti
+    oggi = datetime.date.today()
+    _turno(db_session, reparto_a.id, data=oggi, tipo=TipoTurno.mattina)
+    _turno(db_session, reparto_a.id, data=oggi + datetime.timedelta(days=9), tipo=TipoTurno.mattina)
+
+    headers = auth_headers(client, "caposala.a@example.com", "password123")
+
+    body_7 = client.get("/api/v1/dashboard/caposala", headers=headers).json()
+    assert body_7["turni_scoperti_count"] == 1
+
+    body_14 = client.get("/api/v1/dashboard/caposala?giorni=14", headers=headers).json()
+    assert body_14["turni_scoperti_count"] == 2
+
+    assert client.get("/api/v1/dashboard/caposala?giorni=99", headers=headers).status_code == 422
+
+
+def test_dashboard_caposala_count_resta_reale_oltre_il_limite(client, db_session, caposala_a, reparti):
+    from app.routers.dashboard import LIMITE_TURNI_SCOPERTI
+
+    reparto_a, _ = reparti
+    oggi = datetime.date.today()
+    tipi = _tipi_lavorativi()
+    # 3 tipi * N giorni: supera il limite di lista restando dentro la finestra
+    totale = LIMITE_TURNI_SCOPERTI + 3
+    for i in range(totale):
+        _turno(
+            db_session,
+            reparto_a.id,
+            data=oggi + datetime.timedelta(days=i // 3),
+            tipo=tipi[i % 3],
+        )
+
+    headers = auth_headers(client, "caposala.a@example.com", "password123")
+    body = client.get("/api/v1/dashboard/caposala?giorni=30", headers=headers).json()
+
+    assert body["turni_scoperti_count"] == totale
+    assert len(body["turni_scoperti"]) == LIMITE_TURNI_SCOPERTI
+
+    body_senza_troncamento = client.get(
+        "/api/v1/dashboard/caposala?giorni=30&limit=90",
+        headers=headers,
+    ).json()
+    assert body_senza_troncamento["turni_scoperti_count"] == totale
+    assert len(body_senza_troncamento["turni_scoperti"]) == totale
+
+    assert (
+        client.get(
+            "/api/v1/dashboard/caposala?giorni=30&limit=91",
+            headers=headers,
+        ).status_code
+        == 422
+    )
+
+
+def _tipi_lavorativi():
+    from app.models.enums import TipoTurno
+
+    return [TipoTurno.mattina, TipoTurno.pomeriggio, TipoTurno.notte]
 
 
 def test_dashboard_caposala_forbidden_per_infermiere(client, db_session, reparti):

@@ -47,10 +47,14 @@ function unwrapData<T>(result: EiraResult<T>, operation: string): { data: T } {
   return { data: result.data }
 }
 
-export async function getDashboardCaposala(): Promise<{
+export async function getDashboardCaposala(
+  params: { giorni?: number; limit?: number } = {},
+): Promise<{
   data: DashboardCaposala
 }> {
-  const result = await eiraClient.GET('/api/v1/dashboard/caposala')
+  const result = await eiraClient.GET('/api/v1/dashboard/caposala', {
+    params: { query: params },
+  })
   const { data } = unwrapData(result, 'getDashboardCaposala')
 
   return {

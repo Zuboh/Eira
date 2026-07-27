@@ -36,6 +36,7 @@ const {
   editForm,
   consegnaDrawer,
   consegnaSaving,
+  consegnaError,
   consegnaForm,
   nortonDialog,
   nortonSaving,
@@ -150,6 +151,7 @@ onMounted(load)
       v-model:form="consegnaForm"
       :assegnazioni="assegnazioni"
       :saving="consegnaSaving"
+      :error="consegnaError"
       :copied-keys="copiedKeys"
       :can-copy-forward="canCopyForward"
       :copy-forward-loading="copyForwardLoading"

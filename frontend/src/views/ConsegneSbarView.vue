@@ -18,6 +18,7 @@ const {
   assegnazioni,
   loading,
   error,
+  formError,
   dialogOpen,
   isEditing,
   saving,
@@ -118,6 +119,7 @@ function onPageChange(event: { page: number }) {
       :pazienti="pazienti"
       :is-editing="isEditing"
       :saving="saving"
+      :error="formError"
       :copied-keys="copiedKeys"
       :can-copy-forward="canCopyForward && !isEditing"
       :copy-forward-loading="copyForwardLoading"

@@ -66,6 +66,11 @@ export type GenericConsegnaDialogProps = {
   copiedKeys?: string[]
   canCopyForward?: boolean
   copyForwardLoading?: boolean
+  /**
+   * Errore del form. Vive dentro il dialog: renderizzato dalla vista sarebbe
+   * coperto dalla mask modale e il salvataggio sembrerebbe non fare nulla.
+   */
+  error?: string
 }
 
 export type GenericConsegnaDialogEmits = {

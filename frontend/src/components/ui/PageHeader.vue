@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import RepartoBadge from '@/components/ui/RepartoBadge.vue'
+
 defineProps<{
   title: string
   subtitle?: string
+  reparto?: string | null
 }>()
 </script>
 
@@ -9,6 +12,11 @@ defineProps<{
   <header class="page-header">
     <div class="page-header__copy">
       <h1 class="page-header__title">{{ title }}</h1>
+      <RepartoBadge
+        v-if="reparto"
+        class="page-header__reparto"
+        :nome="reparto"
+      />
       <p v-if="subtitle" class="page-header__subtitle">{{ subtitle }}</p>
     </div>
 
@@ -33,6 +41,10 @@ defineProps<{
 
 .page-header__title {
   margin: 0;
+}
+
+.page-header__reparto {
+  margin-top: 6px;
 }
 
 .page-header__subtitle {

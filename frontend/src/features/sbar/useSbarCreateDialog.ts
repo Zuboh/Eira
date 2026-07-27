@@ -1,4 +1,5 @@
 import { ref, unref, type MaybeRef } from 'vue'
+import { apiErrorMessage } from '@/api/apiError'
 import { createConsegnaSbar } from '@/api/consegneSbar'
 import { getMieAssegnazioni, listTurni } from '@/api/turni'
 import {
@@ -60,8 +61,8 @@ export function useSbarCreateDialog(options: {
       await createConsegnaSbar(toCreateConsegnaPayload(form.value))
       dialogOpen.value = false
       await options.onCreated()
-    } catch {
-      error.value = 'Impossibile salvare la consegna.'
+    } catch (err) {
+      error.value = apiErrorMessage(err, 'Impossibile salvare la consegna.')
     } finally {
       saving.value = false
     }

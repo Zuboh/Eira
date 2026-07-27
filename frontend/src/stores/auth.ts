@@ -14,6 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!token.value)
   const ruolo = computed(() => user.value?.ruolo ?? null)
+  const repartoNome = computed(() => user.value?.reparto_nome ?? null)
   const landingRoute = computed<LandingRoute>(() => {
     if (ruolo.value) {
       return { name: `${ruolo.value}-dashboard` }
@@ -78,6 +79,7 @@ export const useAuthStore = defineStore('auth', () => {
     status,
     isAuthenticated,
     ruolo,
+    repartoNome,
     landingRoute,
     login,
     fetchMe,

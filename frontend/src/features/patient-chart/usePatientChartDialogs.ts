@@ -1,4 +1,5 @@
 import { ref, unref, type MaybeRef, type Ref } from 'vue'
+import { apiErrorMessage } from '@/api/apiError'
 import { updatePaziente, type Paziente } from '@/api/pazienti'
 import { createVoceDiarioCedema } from '@/api/diarioCedema'
 import { createConsegnaSbar } from '@/api/consegneSbar'
@@ -57,7 +58,13 @@ export function usePatientChartDialogs({
   const consegnaForm = ref<GenericConsegnaForm>(
     createEmptyGenericConsegnaForm(),
   )
-  const copyForward = useConsegnaCopyForward({ form: consegnaForm, error })
+  // Vedi useConsegneSbar: l'errore del form non puo' stare sulla pagina,
+  // la mask del dialog lo copre.
+  const consegnaError = ref('')
+  const copyForward = useConsegnaCopyForward({
+    form: consegnaForm,
+    error: consegnaError,
+  })
 
   const nortonDialog = ref(false)
   const nortonSaving = ref(false)
@@ -86,6 +93,7 @@ export function usePatientChartDialogs({
   }
 
   function apriConsegna() {
+    consegnaError.value = ''
     copyForward.resetCopyForward()
     const emptyForm = createEmptyGenericConsegnaForm()
     consegnaForm.value = {
@@ -100,12 +108,12 @@ export function usePatientChartDialogs({
   async function salvaConsegna() {
     const invalid = validateConsegnaForm(consegnaForm.value)
     if (invalid) {
-      error.value = invalid
+      consegnaError.value = invalid
       return
     }
 
     consegnaSaving.value = true
-    error.value = ''
+    consegnaError.value = ''
     try {
       if (
         consegnaForm.value.tipo === 'sbar' &&
@@ -125,8 +133,11 @@ export function usePatientChartDialogs({
       }
       consegnaDrawer.value = false
       await reloadTimeline()
-    } catch {
-      error.value = 'Impossibile salvare la consegna.'
+    } catch (err) {
+      consegnaError.value = apiErrorMessage(
+        err,
+        'Impossibile salvare la consegna.',
+      )
     } finally {
       consegnaSaving.value = false
     }
@@ -191,6 +202,7 @@ export function usePatientChartDialogs({
     editForm,
     consegnaDrawer,
     consegnaSaving,
+    consegnaError,
     consegnaForm,
     nortonDialog,
     nortonSaving,

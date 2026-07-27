@@ -14,7 +14,7 @@ from app.models.reparto import Reparto
 from app.models.utente import Utente
 from app.openapi_errors import FORBIDDEN, UNAUTHORIZED, errors
 from app.schemas.auth import TemporaryPasswordChange, Token
-from app.schemas.utente import UtenteRead, UtenteRegister
+from app.schemas.utente import MeRead, UtenteRead, UtenteRegister
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -76,8 +76,12 @@ def login(
 
 
 @router.get("/me", responses=errors(UNAUTHORIZED))
-def read_me(current_user: CurrentUserDep) -> UtenteRead:
-    return UtenteRead.model_validate(current_user)
+def read_me(current_user: CurrentUserDep, db: DbDep) -> MeRead:
+    reparto = db.get(Reparto, current_user.reparto_id)
+    return MeRead(
+        **UtenteRead.model_validate(current_user).model_dump(),
+        reparto_nome=reparto.nome if reparto else None,
+    )
 
 
 @router.post(

@@ -212,6 +212,78 @@ export function parseConsegnaText(
   return { values, hasOrphanText: Boolean(orphanText) }
 }
 
+type SectionMarker = { key: string; line: number }
+
+/**
+ * Righe che aprono una sezione, con la stessa regola di ambiguita' usata da
+ * `parseConsegnaText`: una sigla ripetuta (le due E di CEDEMA) va alla prima
+ * sezione candidata non ancora aperta.
+ */
+function scanMarkers(lines: string[], sections: ConsegnaSection[]) {
+  const seen = new Set<string>()
+  const markers: SectionMarker[] = []
+
+  lines.forEach((line, index) => {
+    const match = MARKER_LINE.exec(line)
+    if (!match) return
+    const token = normalizeToken(match[1])
+    const section = sections.find(
+      (candidate) =>
+        candidate.aliases.includes(token) && !seen.has(candidate.key),
+    )
+    if (!section) return
+    seen.add(section.key)
+    markers.push({ key: section.key, line: index })
+  })
+
+  return markers
+}
+
+/**
+ * Sostituisce **solo** le righe della sezione richiesta, lasciando il resto del
+ * testo identico. Serve ai riempimenti assistiti (quick fill, copia dalla
+ * consegna precedente): riserializzare tutto rimescolerebbe il testo orfano e
+ * riscriverebbe righe che l'utente non ha chiesto di toccare.
+ *
+ * Se la sigla non e' presente, la inserisce nella posizione d'ordine della
+ * sezione — cosi' i riempimenti materializzano lo scaffold come prima.
+ */
+export function replaceSection(
+  testo: string,
+  tipo: GenericConsegnaKind,
+  key: string,
+  value: string,
+) {
+  const sections = sectionsFor(tipo)
+  const orderOf = (sectionKey: string) =>
+    sections.findIndex((candidate) => candidate.key === sectionKey)
+
+  const order = orderOf(key)
+  if (order === -1) return testo
+
+  const section = sections[order]
+  const block = `${section.sigla}: ${value}`.trimEnd()
+  const lines = stripCarriageReturns(testo).split('\n')
+  const markers = scanMarkers(lines, sections)
+
+  const own = markers.find((marker) => marker.key === key)
+  if (own) {
+    const next = markers.find((marker) => marker.line > own.line)
+    const end = next ? next.line : lines.length
+    lines.splice(own.line, end - own.line, block)
+    return lines.join('\n')
+  }
+
+  const following = markers.find((marker) => orderOf(marker.key) > order)
+  if (following) {
+    lines.splice(following.line, 0, block)
+    return lines.join('\n')
+  }
+
+  const head = lines.join('\n').trimEnd()
+  return head ? `${head}\n${block}` : block
+}
+
 export function serializeToSigle(
   values: Record<string, string>,
   tipo: GenericConsegnaKind,

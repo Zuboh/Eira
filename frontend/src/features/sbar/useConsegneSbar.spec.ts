@@ -2,6 +2,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useConsegneSbar } from '@/features/sbar/useConsegneSbar'
 import { useAuthStore } from '@/stores/auth'
+import { ApiError } from '@/api/apiError'
 import * as consegneSbarApi from '@/api/consegneSbar'
 import * as diarioCedemaApi from '@/api/diarioCedema'
 import * as pazientiApi from '@/api/pazienti'
@@ -20,6 +21,7 @@ const infermiere = {
   cognome: 'Rossi',
   ruolo: 'infermiere' as const,
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
 }
 const paziente = {
   id: 1,
@@ -30,6 +32,7 @@ const paziente = {
   data_ricovero: '2026-07-01',
   diagnosi_ingresso: 'Osservazione',
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
   dimesso: false,
 }
 
@@ -189,7 +192,7 @@ describe('useConsegneSbar — salva', () => {
     await hook.salva()
 
     expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
-    expect(hook.error.value).toBe(
+    expect(hook.formError.value).toBe(
       'Completa le sezioni mancanti: Background, Recommendation.',
     )
   })
@@ -247,7 +250,9 @@ describe('useConsegneSbar — salva', () => {
     await hook.salva()
 
     expect(consegneSbarApi.updateConsegnaSbar).not.toHaveBeenCalled()
-    expect(hook.error.value).toBe('Completa le sezioni mancanti: Background.')
+    expect(hook.formError.value).toBe(
+      'Completa le sezioni mancanti: Background.',
+    )
   })
 
   it('sets an error on failure', async () => {
@@ -266,6 +271,56 @@ describe('useConsegneSbar — salva', () => {
 
     await hook.salva()
 
-    expect(hook.error.value).toBe('Impossibile salvare la consegna.')
+    expect(hook.formError.value).toBe('Impossibile salvare la consegna.')
+    // deve restare fuori da `error`: la pagina e' sotto la mask del dialog
+    expect(hook.error.value).toBe('')
+  })
+
+  it('shows the backend detail instead of the generic message', async () => {
+    vi.mocked(consegneSbarApi.createConsegnaSbar).mockRejectedValue(
+      new ApiError(
+        'createConsegnaSbar',
+        403,
+        'Non sei assegnata a questo turno',
+        'createConsegnaSbar failed',
+      ),
+    )
+    const hook = useConsegneSbar()
+    hook.form.value = {
+      paziente_id: 1,
+      tipo: 'sbar',
+      data: '2026-07-18',
+      turno_id: 5,
+      priorita: 'normale',
+      testo: 'S: dolore\nB: post-operatorio\nA: stabile\nR: rivalutare',
+    }
+
+    await hook.salva()
+
+    expect(hook.formError.value).toBe('Non sei assegnata a questo turno')
+  })
+
+  it('falls back to the generic message when the error carries no detail', async () => {
+    vi.mocked(consegneSbarApi.createConsegnaSbar).mockRejectedValue(
+      new ApiError(
+        'createConsegnaSbar',
+        500,
+        null,
+        'createConsegnaSbar failed',
+      ),
+    )
+    const hook = useConsegneSbar()
+    hook.form.value = {
+      paziente_id: 1,
+      tipo: 'sbar',
+      data: '2026-07-18',
+      turno_id: 5,
+      priorita: 'normale',
+      testo: 'S: dolore\nB: post-operatorio\nA: stabile\nR: rivalutare',
+    }
+
+    await hook.salva()
+
+    expect(hook.formError.value).toBe('Impossibile salvare la consegna.')
   })
 })

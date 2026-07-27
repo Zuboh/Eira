@@ -9,21 +9,44 @@ import { formatDateShortIt } from '@/utils/dateFormat'
 
 defineProps<{
   turni: DashboardCaposala['turni_scoperti']
+  total: number
+  giorni: number
   loading: boolean
 }>()
 
 const emit = defineEmits<{
   assign: [turno: Turno]
+  rangeChange: [giorni: number]
 }>()
+
+const RANGE_OPTIONS = [7, 14, 30] as const
 </script>
 
 <template>
-  <EiraCard flush title="Turni da coprire" class="dashboard-card">
+  <EiraCard flush class="dashboard-card">
+    <div class="card-header">
+      <div>
+        <h2>Turni da coprire</h2>
+        <p v-if="total > turni.length">{{ turni.length }} di {{ total }}</p>
+      </div>
+      <div class="range-filter" aria-label="Intervallo turni da coprire">
+        <button
+          v-for="option in RANGE_OPTIONS"
+          :key="option"
+          type="button"
+          :aria-pressed="giorni === option"
+          @click="emit('rangeChange', option)"
+        >
+          {{ option }} gg
+        </button>
+      </div>
+    </div>
     <EiraTable
       flush
+      max-height="28rem"
       :loading="loading"
       :empty="turni.length === 0"
-      empty-message="Tutti i turni hanno almeno 2 infermieri."
+      :empty-message="`Nessun turno scoperto nei prossimi ${giorni} giorni.`"
     >
       <table>
         <thead>
@@ -31,7 +54,7 @@ const emit = defineEmits<{
             <th>Data</th>
             <th>Turno</th>
             <th>Orario</th>
-            <th><span class="sr-only">Azioni</span></th>
+            <th>Azioni</th>
           </tr>
         </thead>
         <tbody>
@@ -60,13 +83,65 @@ const emit = defineEmits<{
 </template>
 
 <style scoped>
-.dashboard-card {
-  margin-top: 24px;
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.card-header p {
+  margin: 3px 0 0;
+  color: var(--steel);
+  font-size: 0.8125rem;
+}
+
+.range-filter {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.range-filter button {
+  min-height: var(--size-touch);
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--steel);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.range-filter button[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--surface));
+  color: var(--color-primary-on-tint);
+}
+
+.range-filter button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .actions {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+@media (max-width: 560px) {
+  .card-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 </style>

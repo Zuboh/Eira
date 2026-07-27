@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted } from 'vue'
 import InlineError from '@/components/ui/InlineError.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
 import BancaOreSection from '@/features/banca-ore/components/BancaOreSection.vue'
 import { useBancaOre } from '@/features/banca-ore/useBancaOre'
 import CarelloBassoStockCard from '@/features/dashboard/components/CarelloBassoStockCard.vue'
 import ConsegneRecentiCard from '@/features/dashboard/components/ConsegneRecentiCard.vue'
 import PazientiAttiviCard from '@/features/dashboard/components/PazientiAttiviCard.vue'
 import ProssimiTurniCard from '@/features/dashboard/components/ProssimiTurniCard.vue'
+import RichiesteCambioTurnoCard from '@/features/dashboard/components/RichiesteCambioTurnoCard.vue'
 import TurniCalendarCardSkeleton from '@/features/dashboard/components/TurniCalendarCardSkeleton.vue'
 import { useInfermiereDashboard } from '@/features/dashboard/useInfermiereDashboard'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 
 const TurniCalendarCard = defineAsyncComponent({
   loader: () => import('@/features/dashboard/components/TurniCalendarCard.vue'),
@@ -24,7 +29,9 @@ const {
   consegneRecenti,
   pazientiAttivi,
   farmaciCritici,
+  richiesteCambioTurno,
   nomePaziente,
+  nomeUtente,
   load,
 } = useInfermiereDashboard()
 
@@ -41,15 +48,27 @@ onMounted(load)
 
 <template>
   <div class="dashboard-infermiere">
+    <PageHeader title="Dashboard" :reparto="auth.repartoNome" />
+
     <InlineError :message="error" />
 
-    <div class="dashboard-row">
-      <TurniCalendarCard class="calendar-hero" :events="calendarEvents" />
+    <div class="dashboard-grid">
+      <div class="main-column">
+        <TurniCalendarCard class="calendar-hero" :events="calendarEvents" />
+
+        <PazientiAttiviCard :pazienti="pazientiAttivi" :loading="loading" />
+      </div>
 
       <div class="side-column">
         <ProssimiTurniCard
           :turni="prossimiTurniConColleghi"
           :loading="loading"
+        />
+
+        <RichiesteCambioTurnoCard
+          :richieste="richiesteCambioTurno"
+          :loading="loading"
+          :nome-utente="nomeUtente"
         />
 
         <BancaOreSection
@@ -60,13 +79,6 @@ onMounted(load)
           @previous-month="spostaBancaOreMese(-1)"
           @next-month="spostaBancaOreMese(1)"
         />
-      </div>
-    </div>
-
-    <div class="dashboard-row">
-      <PazientiAttiviCard :pazienti="pazientiAttivi" :loading="loading" />
-
-      <div class="side-column">
         <ConsegneRecentiCard
           :consegne="consegneRecenti"
           :loading="loading"
@@ -93,22 +105,24 @@ onMounted(load)
   width: 100%;
 }
 
-.dashboard-row {
+.dashboard-grid {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(20rem, 1fr);
   gap: 24px;
   align-items: start;
 }
 
+.main-column,
 .side-column {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-width: 0;
 }
 
 @media (max-width: 960px) {
-  .dashboard-row {
-    grid-template-columns: 1fr;
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 </style>

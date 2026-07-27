@@ -13,6 +13,7 @@ const caposala = {
   cognome: 'Caposala',
   ruolo: 'caposala' as const,
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
 }
 const infermiere = {
   id: 2,
@@ -21,6 +22,7 @@ const infermiere = {
   cognome: 'One',
   ruolo: 'infermiere' as const,
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
 }
 const pazienti = [
   {

@@ -25,6 +25,7 @@ const paziente = {
   data_ricovero: '2026-07-01',
   diagnosi_ingresso: 'Frattura femore',
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
   dimesso: false,
 }
 
@@ -54,6 +55,7 @@ describe('usePatientChart — load', () => {
       cognome: 'Y',
       ruolo: 'infermiere',
       reparto_id: 1,
+      reparto_nome: 'Cardiologia',
     }
 
     const chart = usePatientChart(1)
@@ -70,6 +72,7 @@ describe('usePatientChart — load', () => {
       cognome: 'Y',
       ruolo: 'caposala',
       reparto_id: 1,
+      reparto_nome: 'Cardiologia',
     }
 
     await chart.load()
@@ -133,6 +136,7 @@ describe('usePatientChart — role gating', () => {
       cognome: 'Y',
       ruolo: 'caposala',
       reparto_id: 1,
+      reparto_nome: 'Cardiologia',
     }
     const chartCaposala = usePatientChart(1)
     expect(chartCaposala.canEditPatient.value).toBe(true)
@@ -145,6 +149,7 @@ describe('usePatientChart — role gating', () => {
       cognome: 'Y',
       ruolo: 'infermiere',
       reparto_id: 1,
+      reparto_nome: 'Cardiologia',
     }
     const chartInfermiere = usePatientChart(1)
     expect(chartInfermiere.canEditPatient.value).toBe(false)

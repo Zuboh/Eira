@@ -16,6 +16,7 @@ const infermiere = {
   cognome: 'Rossi',
   ruolo: 'infermiere' as const,
   reparto_id: 1,
+  reparto_nome: 'Cardiologia',
 }
 
 function richiesta(overrides: Partial<RichiestaFerie> = {}): RichiestaFerie {

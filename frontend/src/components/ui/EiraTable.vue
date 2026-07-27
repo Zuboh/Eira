@@ -6,6 +6,7 @@ withDefaults(
     loading?: boolean
     loadingRows?: number
     flush?: boolean
+    maxHeight?: string
   }>(),
   {
     empty: false,
@@ -13,6 +14,7 @@ withDefaults(
     loading: false,
     loadingRows: 4,
     flush: false,
+    maxHeight: undefined,
   },
 )
 </script>
@@ -46,7 +48,12 @@ withDefaults(
       </slot>
     </div>
 
-    <div v-else class="eira-table__scroll">
+    <div
+      v-else
+      class="eira-table__scroll"
+      :class="{ 'eira-table__scroll--bounded': maxHeight }"
+      :style="{ maxHeight }"
+    >
       <slot />
     </div>
   </section>
@@ -72,6 +79,21 @@ withDefaults(
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+}
+
+.eira-table__scroll--bounded {
+  overflow-y: auto;
+}
+
+.eira-table__scroll--bounded :deep(th) {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.eira-table__scroll--bounded :deep(table) {
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .eira-table__scroll :deep(table) {
@@ -156,6 +178,11 @@ withDefaults(
 
 .eira-table--flush .eira-table__scroll :deep(th) {
   background: transparent;
+}
+
+.eira-table--flush .eira-table__scroll--bounded :deep(th) {
+  background: var(--surface);
+  box-shadow: 0 1px 0 var(--border);
 }
 
 .skeleton-row {

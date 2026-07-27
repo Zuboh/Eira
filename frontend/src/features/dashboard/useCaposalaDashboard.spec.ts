@@ -64,6 +64,35 @@ describe('useCaposalaDashboard — load', () => {
     expect(dash.pendingCount.value).toBe(1)
     expect(dash.infermieri.value.map((u) => u.id)).toEqual([1, 3])
     expect(dash.dashboard.value).toEqual(dashboard)
+    expect(dashboardApi.getDashboardCaposala).toHaveBeenCalledWith({
+      giorni: 7,
+      limit: 50,
+    })
+    expect(dashboardApi.getDashboardCaposala).toHaveBeenCalledWith({
+      giorni: 14,
+      limit: 50,
+    })
+    expect(dashboardApi.getDashboardCaposala).toHaveBeenCalledWith({
+      giorni: 30,
+      limit: 90,
+    })
+    expect(dashboardApi.getDashboardCaposala).toHaveBeenCalledTimes(3)
+    expect(turniApi.getCalendarioTurni).toHaveBeenCalledWith({
+      da: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      a: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+    })
+    const calendarioParams = vi.mocked(turniApi.getCalendarioTurni).mock
+      .calls[0][0]
+    expect(calendarioParams).toBeDefined()
+    if (!calendarioParams) throw new Error('Parametri calendario mancanti')
+    const calendarioCacheDa = new Date(`${calendarioParams.da}T00:00:00`)
+    const calendarioCacheA = new Date(`${calendarioParams.a}T00:00:00`)
+    expect(
+      Math.round(
+        (calendarioCacheA.getTime() - calendarioCacheDa.getTime()) /
+          (24 * 60 * 60 * 1000),
+      ),
+    ).toBe(34)
     expect(dash.error.value).toBe('')
     expect(dash.loading.value).toBe(false)
   })
@@ -77,6 +106,41 @@ describe('useCaposalaDashboard — load', () => {
     await dash.load()
 
     expect(dash.error.value).toBe('Impossibile caricare la dashboard.')
+    expect(dash.loading.value).toBe(false)
+  })
+
+  it('changes the uncovered-shift range locally without another API request', async () => {
+    const dash = useCaposalaDashboard()
+
+    await dash.load()
+    const requestsAfterLoad = vi.mocked(dashboardApi.getDashboardCaposala).mock
+      .calls.length
+    dash.setTurniScopertiGiorni(14)
+
+    expect(dash.turniScopertiGiorni.value).toBe(14)
+    expect(dashboardApi.getDashboardCaposala).toHaveBeenCalledTimes(
+      requestsAfterLoad,
+    )
+    expect(dash.loading.value).toBe(false)
+  })
+
+  it('moves the calendar window locally without another API request', async () => {
+    const dash = useCaposalaDashboard()
+
+    await dash.load()
+    const initialDate = dash.calendarioDa.value
+    dash.spostaSettimanaCalendario(1)
+
+    const expected = new Date(`${initialDate}T00:00:00`)
+    expected.setDate(expected.getDate() + 7)
+    expect(dash.calendarioDa.value).toBe(
+      [
+        expected.getFullYear(),
+        `${expected.getMonth() + 1}`.padStart(2, '0'),
+        `${expected.getDate()}`.padStart(2, '0'),
+      ].join('-'),
+    )
+    expect(turniApi.getCalendarioTurni).toHaveBeenCalledOnce()
     expect(dash.loading.value).toBe(false)
   })
 })

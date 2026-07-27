@@ -130,7 +130,7 @@ describe('usePatientChartDialogs — generic consegna', () => {
     await dialogs.salvaConsegna()
 
     expect(consegneSbarApi.createConsegnaSbar).not.toHaveBeenCalled()
-    expect(error.value).toBe(
+    expect(dialogs.consegnaError.value).toBe(
       'Completa le sezioni mancanti: Background, Recommendation.',
     )
   })

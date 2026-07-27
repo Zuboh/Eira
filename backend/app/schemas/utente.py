@@ -28,6 +28,14 @@ class UtenteRead(UtenteBase):
     model_config = {"from_attributes": True}
 
 
+class MeRead(UtenteRead):
+    """Sessione corrente: aggiunge il nome del reparto, che il client mostra
+    in sidebar e dashboard. Separato da UtenteRead per non caricare il join
+    anche sulle liste utenti."""
+
+    reparto_nome: str | None
+
+
 class UtenteTile(BaseModel):
     id: int
     nome: str

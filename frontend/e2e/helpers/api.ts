@@ -176,10 +176,15 @@ export async function createRichiestaCambioTurno(
   richiedenteToken: string,
   assegnazioneTurnoId: number,
   collegaId: number,
+  assegnazioneCollegaId: number,
 ): Promise<{ id: number }> {
   const res = await request.post(`${API_BASE}/cambi-turno/`, {
     headers: authHeaders(richiedenteToken),
-    data: { assegnazione_turno_id: assegnazioneTurnoId, collega_id: collegaId },
+    data: {
+      assegnazione_turno_id: assegnazioneTurnoId,
+      collega_id: collegaId,
+      assegnazione_collega_id: assegnazioneCollegaId,
+    },
   })
   if (!res.ok()) {
     throw new Error(

@@ -11,6 +11,7 @@ import { useCambiTurno } from '@/features/cambi-turno/useCambiTurno'
 const {
   richieste,
   assegnazioni,
+  assegnazioniScambiabili,
   loading,
   error,
   dialogOpen,
@@ -69,6 +70,7 @@ onMounted(load)
       v-model:visible="dialogOpen"
       v-model:form="form"
       :assegnazioni="assegnazioni"
+      :assegnazioni-colleghi="assegnazioniScambiabili"
       :colleghi="colleghi"
       :saving="saving"
       @save="salva"
