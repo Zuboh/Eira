@@ -234,6 +234,24 @@ p {
   margin-block: calc(-1 * var(--hit-area-pad, 0.85rem));
 }
 
+/* Touch target — PrimeVue Aura's stock size="small" button padding/width
+   resolves under --size-touch at this app's 15px root (~34px tall labeled,
+   ~30x34px icon-only). min-width/min-height only, never width/height: the
+   used box size is clamped by these regardless of PrimeVue's own literal
+   `width` on .p-button-icon-only, so no !important needed (same pattern
+   already used in TurniCalendarCard.vue's calendar-toolbar-nav buttons).
+   Scoped to mobile only (PageHeader.vue's own 640px breakpoint) so tablet/
+   desktop density set by Aura is untouched. */
+@media (max-width: 640px) {
+  .p-button-sm {
+    min-height: var(--size-touch);
+  }
+
+  .p-button-sm.p-button-icon-only {
+    min-width: var(--size-touch);
+  }
+}
+
 /* Scrollbar — sottile, tokenizzata, staccata dal bordo.
    Da Chromium 121 `scrollbar-width` sullo stesso elemento disattiva le
    pseudo `::-webkit-scrollbar`: i due rami restano quindi esclusivi. */
