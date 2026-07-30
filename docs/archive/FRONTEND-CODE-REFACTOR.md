@@ -429,10 +429,13 @@ al contratto HTTP.
   - sidebar fissa desktop;
   - top nav/collasso sotto soglia tablet;
   - contenuto con `min-width: 0` e niente overflow pagina.
-- [ ] Validare manualmente principali viewport:
+- [x] Validare manualmente principali viewport:
   - desktop;
   - tablet reparto;
   - mobile stretto.
+  - Verificato 2026-07-30 via Playwright a 375/1280px: trovato e fixato gap
+    touch-target su bottoni `.p-button-sm` (30.25px -> 44px su mobile,
+    invariati su desktop) — v. `frontend/src/style.css`.
 
 ### Implementato
 
@@ -502,5 +505,5 @@ Verifica manuale consigliata:
 - [ ] UI primitives comuni usate da più viste.
 - [ ] Routing/ruoli espliciti e nav coerente.
 - [ ] Accessibilità base corretta per link/bottoni/form.
-- [ ] Tabelle responsive con overflow interno, non di pagina.
+- [x] Tabelle responsive con overflow interno, non di pagina.
 - [ ] README frontend aggiornato.
