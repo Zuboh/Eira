@@ -3,10 +3,12 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 import app.models  # noqa: F401 — registra tutti i modelli su Base.metadata
+from app.core.avatars import AVATAR_DIR, DEFAULT_AVATAR_DIR
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.rate_limit import limiter
@@ -34,6 +36,14 @@ from app.routers import (
 )
 
 app = FastAPI(title="Consegne Infermieristiche API", version="0.1.0")
+
+AVATAR_DIR.mkdir(parents=True, exist_ok=True)
+app.mount(
+    "/static/avatars/default",
+    StaticFiles(directory=DEFAULT_AVATAR_DIR),
+    name="default-avatars",
+)
+app.mount("/static/avatars", StaticFiles(directory=AVATAR_DIR), name="avatars")
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)

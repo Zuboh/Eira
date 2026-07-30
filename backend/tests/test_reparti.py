@@ -42,6 +42,7 @@ def test_list_utenti_by_reparto(client, db_session, reparti):
     body = response.json()
     assert len(body) == 1
     assert body[0]["nome"] == "Mario"
+    assert body[0]["avatar_url"] == "/static/avatars/default/infermiere-uomo.webp"
     assert "email" not in body[0]
 
 

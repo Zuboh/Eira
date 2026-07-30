@@ -49,6 +49,9 @@ const {
     :subtitle="
       selectedUtente ? `${selectedUtente.nome} ${selectedUtente.cognome}` : null
     "
+    :nome="selectedUtente?.nome ?? null"
+    :cognome="selectedUtente?.cognome ?? null"
+    :avatar-url="selectedUtente?.avatar_url ?? null"
     :turno="turnoOggi"
     :reparto="repartoNome"
   >

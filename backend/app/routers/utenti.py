@@ -1,14 +1,24 @@
 import datetime
+from typing import Annotated
+from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.exc import IntegrityError
 
+from app.core.avatars import ALLOWED_AVATAR_CONTENT_TYPES, AVATAR_DIR, MAX_AVATAR_BYTES
 from app.core.security import generate_temporary_password, hash_password
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente, StatoUtente
 from app.models.password_reset import PasswordResetRequirement
 from app.models.utente import Utente
-from app.openapi_errors import CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
+from app.openapi_errors import (
+    BAD_REQUEST,
+    CONFLICT,
+    FORBIDDEN,
+    NOT_FOUND,
+    UNAUTHORIZED,
+    errors,
+)
 from app.schemas.utente import (
     TemporaryPasswordResponse,
     UtenteCreate,
@@ -69,6 +79,52 @@ def get_utente(utente_id: int, current_user: CurrentUserDep, db: DbDep) -> Utent
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Utente di un altro reparto"
         )
+    return UtenteRead.model_validate(utente)
+
+
+@router.post(
+    "/{utente_id}/avatar",
+    dependencies=[Depends(require_roles(RuoloUtente.caposala))],
+    responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, BAD_REQUEST),
+)
+async def upload_avatar(
+    utente_id: int,
+    current_user: CurrentUserDep,
+    db: DbDep,
+    file: Annotated[UploadFile, File()],
+) -> UtenteRead:
+    utente = db.get(Utente, utente_id)
+    if utente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Utente non trovato")
+    if utente.reparto_id != current_user.reparto_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Utente di un altro reparto"
+        )
+
+    ext = ALLOWED_AVATAR_CONTENT_TYPES.get(file.content_type or "")
+    if ext is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Formato immagine non supportato (jpeg/png/webp)",
+        )
+
+    contents = await file.read()
+    if len(contents) > MAX_AVATAR_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Immagine troppo grande (max 2MB)"
+        )
+
+    AVATAR_DIR.mkdir(parents=True, exist_ok=True)
+    filename = f"{uuid4().hex}{ext}"
+    (AVATAR_DIR / filename).write_bytes(contents)
+
+    old_path = utente.avatar_path
+    utente.avatar_path = filename
+    db.commit()
+    db.refresh(utente)
+    if old_path:
+        (AVATAR_DIR / old_path).unlink(missing_ok=True)
+
     return UtenteRead.model_validate(utente)
 
 

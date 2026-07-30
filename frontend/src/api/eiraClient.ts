@@ -9,7 +9,7 @@ function trimTrailingSlash(url: string) {
   return url.replace(/\/+$/, '')
 }
 
-function resolveBaseUrl() {
+export function resolveBaseUrl() {
   const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL as
     string | undefined
   const baseUrl = trimTrailingSlash(configuredBaseUrl ?? DEFAULT_API_ROOT_URL)

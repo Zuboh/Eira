@@ -4,6 +4,7 @@ import {
   createUtente,
   listUtenti,
   updateUtente,
+  uploadAvatar,
   type StatoUtente,
   type Utente,
 } from '@/api/utenti'
@@ -37,6 +38,8 @@ export function useStaffWorkflow() {
   const newDialogOpen = ref(false)
   const newSaving = ref(false)
   const newForm = ref<NewStaffForm>(createEmptyNewStaffForm())
+  const newAvatarFile = ref<File | null>(null)
+  const avatarWarning = ref('')
 
   const filtrati = computed(() =>
     utenti.value.filter((u) => u.stato === filtro.value),
@@ -57,21 +60,32 @@ export function useStaffWorkflow() {
 
   function apriNuovo() {
     newForm.value = createEmptyNewStaffForm()
+    newAvatarFile.value = null
     newDialogOpen.value = true
     temporaryPassword.value = null
     error.value = ''
+    avatarWarning.value = ''
   }
 
   async function salvaNuovo() {
     if (auth.user === null) return
 
     error.value = ''
+    avatarWarning.value = ''
     newSaving.value = true
     try {
-      await createUtente({
+      const { data: created } = await createUtente({
         ...newForm.value,
         reparto_id: auth.user.reparto_id,
       })
+      if (newAvatarFile.value) {
+        try {
+          await uploadAvatar(created.id, newAvatarFile.value)
+        } catch {
+          avatarWarning.value =
+            'Utente creato correttamente, ma il caricamento della foto non è riuscito.'
+        }
+      }
       newDialogOpen.value = false
       filtro.value = 'attivo'
       await load()
@@ -124,6 +138,8 @@ export function useStaffWorkflow() {
     newDialogOpen,
     newSaving,
     newForm,
+    newAvatarFile,
+    avatarWarning,
     filtri: staffFilters,
     filtrati,
     load,

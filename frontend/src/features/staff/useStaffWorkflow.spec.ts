@@ -105,6 +105,24 @@ describe('useStaffWorkflow — salvaNuovo', () => {
 
     expect(hook.error.value).toBe("Impossibile creare l'utente.")
   })
+
+  it('keeps the avatar upload warning visible after creating the user', async () => {
+    useAuthStore().user = caposala
+    vi.mocked(utentiApi.createUtente).mockResolvedValue({ data: utenti[1] })
+    vi.mocked(utentiApi.uploadAvatar).mockRejectedValue(new Error('down'))
+    const hook = useStaffWorkflow()
+    hook.newDialogOpen.value = true
+    hook.newAvatarFile.value = new File(['avatar'], 'profilo.png', {
+      type: 'image/png',
+    })
+
+    await hook.salvaNuovo()
+
+    expect(hook.newDialogOpen.value).toBe(false)
+    expect(hook.avatarWarning.value).toBe(
+      'Utente creato correttamente, ma il caricamento della foto non è riuscito.',
+    )
+  })
 })
 
 describe('useStaffWorkflow — approva', () => {

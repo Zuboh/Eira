@@ -3,10 +3,13 @@ import { computed } from 'vue'
 import type { TipoTurno } from '@/api/turni'
 import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
 import RepartoBadge from '@/components/ui/RepartoBadge.vue'
-import mockProfilePic from '@/assets/avatars/mock-profile.png'
+import UserAvatar from '@/components/ui/UserAvatar.vue'
 
 const props = defineProps<{
   subtitle?: string | null
+  nome?: string | null
+  cognome?: string | null
+  avatarUrl?: string | null
   turno?: TipoTurno | null
   reparto?: string | null
 }>()
@@ -26,10 +29,11 @@ const turnoLabel = computed(() =>
         <h1>Eira</h1>
         <RepartoBadge v-if="reparto" :nome="reparto" />
         <div v-if="subtitle" class="auth-identity">
-          <img
-            :src="mockProfilePic"
-            :alt="`Foto profilo di ${subtitle}`"
-            class="auth-avatar"
+          <UserAvatar
+            :nome="nome ?? ''"
+            :cognome="cognome ?? ''"
+            :avatar-url="avatarUrl"
+            size="2.75rem"
           />
           <p class="auth-name">{{ subtitle }}</p>
         </div>
@@ -88,15 +92,6 @@ const turnoLabel = computed(() =>
   justify-content: center;
   gap: 10px;
   margin-top: 12px;
-}
-
-.auth-avatar {
-  flex-shrink: 0;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--border);
 }
 
 .auth-name {

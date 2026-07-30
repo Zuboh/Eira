@@ -18,3 +18,10 @@ class Utente(Base):
     stato: Mapped[StatoUtente] = mapped_column(
         sa.Enum(StatoUtente), default=StatoUtente.attivo
     )
+    avatar_path: Mapped[str | None] = mapped_column(sa.String(255), default=None)
+
+    @property
+    def avatar_url(self) -> str:
+        from app.core.avatars import avatar_url as build_avatar_url
+
+        return build_avatar_url(self.avatar_path, ruolo=self.ruolo, nome=self.nome)

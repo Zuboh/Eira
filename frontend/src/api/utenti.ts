@@ -86,6 +86,24 @@ export async function updateUtente(
   return unwrapData(result, 'updateUtente')
 }
 
+export async function uploadAvatar(id: number, file: File): ApiResponse<Utente> {
+  const body = new FormData()
+  body.append('file', file)
+  const result = await eiraClient.POST('/api/v1/utenti/{utente_id}/avatar', {
+    params: {
+      path: {
+        utente_id: id,
+      },
+    },
+    // openapi-typescript generates the multipart body as { file: string }
+    // (no native Blob/File type for binary form fields) — the actual
+    // request is a real FormData with a File, cast to satisfy the type.
+    body: body as unknown as { file: string },
+  })
+
+  return unwrapData(result, 'uploadAvatar')
+}
+
 export async function createTemporaryPassword(
   id: number,
 ): ApiResponse<TemporaryPasswordResponse> {

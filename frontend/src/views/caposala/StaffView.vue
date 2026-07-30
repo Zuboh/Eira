@@ -18,6 +18,8 @@ const {
   newDialogOpen,
   newSaving,
   newForm,
+  newAvatarFile,
+  avatarWarning,
   filtri,
   filtrati,
   load,
@@ -48,6 +50,7 @@ onMounted(load)
     <StaffFilters v-model="filtro" :options="filtri" />
 
     <InlineError :message="error" />
+    <InlineError :message="avatarWarning" />
 
     <StaffTable
       v-if="!loading"
@@ -66,6 +69,7 @@ onMounted(load)
     <NewStaffDialog
       v-model:visible="newDialogOpen"
       v-model:form="newForm"
+      v-model:avatar-file="newAvatarFile"
       :saving="newSaving"
       @save="salvaNuovo"
     />

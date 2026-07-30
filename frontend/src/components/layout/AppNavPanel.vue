@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import type { TipoTurno } from '@/api/turni'
 import { getMieiProssimiTurni } from '@/api/turni'
+import UserAvatar from '@/components/ui/UserAvatar.vue'
 import { TIPO_TURNO_LABEL } from '@/features/turni/constants'
 import { useAuthStore } from '@/stores/auth'
 
@@ -32,12 +33,6 @@ const ROLE_LABEL: Record<string, string> = {
   infermiere: 'Infermiere',
   caposala: 'Caposala',
 }
-
-const initials = computed(() => {
-  const user = auth.user
-  if (!user) return ''
-  return `${user.nome.charAt(0)}${user.cognome.charAt(0)}`.toUpperCase()
-})
 
 const roleLabel = computed(() =>
   auth.ruolo ? (ROLE_LABEL[auth.ruolo] ?? auth.ruolo) : '',
@@ -106,7 +101,12 @@ function logout() {
       :title="`${auth.user.nome} ${auth.user.cognome} — ${roleLabel}${auth.repartoNome ? ` — ${auth.repartoNome}` : ''}`"
     >
       <div class="identity-person">
-        <span class="identity-avatar" aria-hidden="true">{{ initials }}</span>
+        <UserAvatar
+          :nome="auth.user.nome"
+          :cognome="auth.user.cognome"
+          :avatar-url="auth.user.avatar_url"
+          size="2.25rem"
+        />
         <div class="identity-info">
           <p class="identity-name">{{ auth.user.nome }}</p>
           <p class="identity-role">{{ roleLabel }}</p>
@@ -228,19 +228,6 @@ function logout() {
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
-}
-
-.identity-avatar {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: color-mix(in oklch, var(--color-primary) 14%, var(--surface));
-  color: var(--color-primary-on-tint);
-  font-size: 0.8125rem;
-  font-weight: 700;
 }
 
 .identity-info {

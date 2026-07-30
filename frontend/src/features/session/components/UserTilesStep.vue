@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { UtenteTile } from '@/api/reparti'
+import UserAvatar from '@/components/ui/UserAvatar.vue'
 
 defineProps<{
   utenti: UtenteTile[]
@@ -14,12 +15,13 @@ const emit = defineEmits<{
 
 const firstButton = ref<HTMLButtonElement | null>(null)
 
-function focusFirst() {
-  firstButton.value?.focus()
+const ROLE_LABEL: Record<string, string> = {
+  infermiere: 'Infermiere',
+  caposala: 'Caposala',
 }
 
-function utenteInitials(nome: string, cognome: string): string {
-  return `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase()
+function focusFirst() {
+  firstButton.value?.focus()
 }
 
 defineExpose({ focusFirst })
@@ -40,10 +42,14 @@ defineExpose({ focusFirst })
         :disabled="loading"
         @click="emit('select', utente)"
       >
-        <span class="tile-avatar" aria-hidden="true">{{
-          utenteInitials(utente.nome, utente.cognome)
-        }}</span>
+        <UserAvatar
+          :nome="utente.nome"
+          :cognome="utente.cognome"
+          :avatar-url="utente.avatar_url"
+          size="2.25rem"
+        />
         <span class="tile-name">{{ utente.nome }} {{ utente.cognome }}</span>
+        <span class="tile-role">{{ ROLE_LABEL[utente.ruolo] ?? utente.ruolo }}</span>
       </button>
     </div>
   </template>
@@ -88,23 +94,15 @@ defineExpose({ focusFirst })
     transform 0.15s ease;
 }
 
-.tile-avatar {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: color-mix(in oklch, var(--color-primary) 14%, var(--surface));
-  color: var(--color-primary-on-tint);
-  font-size: 0.8125rem;
-  font-weight: 700;
-}
-
 .tile-name {
   font-size: 0.9375rem;
   font-weight: 600;
   text-align: center;
+}
+
+.tile-role {
+  font-size: 0.8125rem;
+  color: var(--steel);
 }
 
 .tile:hover {

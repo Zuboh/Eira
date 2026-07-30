@@ -19,6 +19,7 @@ export interface UtenteResponse {
   cognome: UtenteReadSchema['cognome']
   ruolo: UtenteReadSchema['ruolo']
   reparto_id: UtenteReadSchema['reparto_id']
+  avatar_url?: UtenteReadSchema['avatar_url']
 }
 
 export interface MeResponse extends UtenteResponse {

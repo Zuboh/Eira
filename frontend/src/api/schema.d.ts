@@ -108,6 +108,23 @@ export interface paths {
         patch: operations["update_utente_api_v1_utenti__utente_id__patch"];
         trace?: never;
     };
+    "/api/v1/utenti/{utente_id}/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload Avatar */
+        post: operations["upload_avatar_api_v1_utenti__utente_id__avatar_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/utenti/{utente_id}/password-temporanea": {
         parameters: {
             query?: never;
@@ -861,6 +878,11 @@ export interface components {
              */
             client_secret?: string | null;
         };
+        /** Body_upload_avatar_api_v1_utenti__utente_id__avatar_post */
+        Body_upload_avatar_api_v1_utenti__utente_id__avatar_post: {
+            /** File */
+            file: string;
+        };
         /** CarelloFarmacoRead */
         CarelloFarmacoRead: {
             /** Id */
@@ -989,6 +1011,8 @@ export interface components {
             /** Id */
             id: number;
             stato: components["schemas"]["StatoUtente"];
+            /** Avatar Url */
+            avatar_url?: string | null;
             /** Reparto Nome */
             reparto_nome: string | null;
         };
@@ -1419,6 +1443,8 @@ export interface components {
             /** Id */
             id: number;
             stato: components["schemas"]["StatoUtente"];
+            /** Avatar Url */
+            avatar_url?: string | null;
         };
         /** UtenteRegister */
         UtenteRegister: {
@@ -1442,6 +1468,8 @@ export interface components {
             /** Cognome */
             cognome: string;
             ruolo: components["schemas"]["RuoloUtente"];
+            /** Avatar Url */
+            avatar_url?: string | null;
         };
         /** UtenteUpdate */
         UtenteUpdate: {
@@ -1927,6 +1955,69 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["UtenteRead"];
                 };
+            };
+            /** @description Token mancante o non valido */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Ruolo non autorizzato o risorsa di un altro reparto */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Risorsa non trovata */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_avatar_api_v1_utenti__utente_id__avatar_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                utente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_avatar_api_v1_utenti__utente_id__avatar_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtenteRead"];
+                };
+            };
+            /** @description Richiesta non valida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Token mancante o non valido */
             401: {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
@@ -6,6 +7,7 @@ import Password from 'primevue/password'
 import Select from 'primevue/select'
 import { dialogStyle } from '@/components/ui/dialogStyles'
 import FormField from '@/components/ui/FormField.vue'
+import AvatarFilePicker from '@/features/staff/components/AvatarFilePicker.vue'
 import { ruoloOptions } from '@/features/staff/constants'
 import type {
   NewStaffDialogProps,
@@ -15,10 +17,15 @@ import type {
 
 const visible = defineModel<boolean>('visible', { required: true })
 const form = defineModel<NewStaffForm>('form', { required: true })
+const avatarFile = defineModel<File | null>('avatarFile', { required: true })
 
 defineProps<NewStaffDialogProps>()
 
 const emit = defineEmits<StaffDialogEmits>()
+
+watch(visible, (isVisible) => {
+  if (!isVisible) avatarFile.value = null
+})
 </script>
 
 <template>
@@ -59,6 +66,9 @@ const emit = defineEmits<StaffDialogEmits>()
           optionLabel="label"
           optionValue="value"
         />
+      </FormField>
+      <FormField label="Foto profilo (opzionale)">
+        <AvatarFilePicker v-model="avatarFile" :disabled="saving" />
       </FormField>
       <Button type="submit" label="Crea" :loading="saving" />
     </form>

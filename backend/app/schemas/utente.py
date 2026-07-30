@@ -24,6 +24,7 @@ class UtenteUpdate(BaseModel):
 class UtenteRead(UtenteBase):
     id: int
     stato: StatoUtente
+    avatar_url: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -41,6 +42,7 @@ class UtenteTile(BaseModel):
     nome: str
     cognome: str
     ruolo: RuoloUtente
+    avatar_url: str | None = None
 
     model_config = {"from_attributes": True}
 
