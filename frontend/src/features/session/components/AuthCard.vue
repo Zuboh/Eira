@@ -26,7 +26,23 @@ const turnoLabel = computed(() =>
   <main class="auth-view">
     <section class="auth-card" aria-label="Eira">
       <div class="auth-header">
-        <h1>Eira</h1>
+        <h1 aria-label="Eira">
+          <svg class="auth-wordmark" viewBox="0 0 320 96" aria-hidden="true">
+            <g fill="currentColor">
+              <path
+                d="M18 16h58c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h31c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h37c5.5 0 10 4.5 10 10s-4.5 10-10 10H18V16z"
+              />
+              <rect x="104" y="38" width="22" height="48" rx="11" />
+              <circle cx="115" cy="24" r="11" />
+              <path
+                d="M143 49c0-6.1 4.9-11 11-11s11 4.9 11 11v2.8c5.2-9.2 13.5-14.8 24-14.8 6.1 0 11 4.9 11 11s-4.9 11-11 11c-14.2 0-24 8.7-24 24V86h-22V49z"
+              />
+              <path
+                d="M245 37c18.2 0 33 14.8 33 33v16h-21v-6.2c-5.5 5.4-12.7 8.2-21 8.2-16.6 0-30-11.4-30-27s13.4-27 30-27c7.7 0 14.6 2.6 20 7.4V37h-11zm-5 18c-7.7 0-14 5.8-14 13s6.3 13 14 13 14-5.8 14-13-6.3-13-14-13z"
+              />
+            </g>
+          </svg>
+        </h1>
         <RepartoBadge v-if="reparto" :nome="reparto" />
         <div v-if="subtitle" class="auth-identity">
           <UserAvatar
@@ -79,7 +95,14 @@ const turnoLabel = computed(() =>
 
 .auth-header h1 {
   margin: 0;
-  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  color: var(--color-primary-on-tint);
+}
+
+.auth-wordmark {
+  height: 2.5rem;
+  width: auto;
 }
 
 .auth-header h1 + * {

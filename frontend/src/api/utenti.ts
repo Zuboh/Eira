@@ -86,7 +86,10 @@ export async function updateUtente(
   return unwrapData(result, 'updateUtente')
 }
 
-export async function uploadAvatar(id: number, file: File): ApiResponse<Utente> {
+export async function uploadAvatar(
+  id: number,
+  file: File,
+): ApiResponse<Utente> {
   const body = new FormData()
   body.append('file', file)
   const result = await eiraClient.POST('/api/v1/utenti/{utente_id}/avatar', {

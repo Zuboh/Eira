@@ -32,14 +32,54 @@ watch(isCompact, (compact) => {
       >
         <i class="pi pi-bars" aria-hidden="true" />
       </button>
-      <RouterLink :to="auth.landingRoute" class="brand">
-        <span class="brand-label">Eira</span>
+      <RouterLink :to="auth.landingRoute" class="brand" aria-label="Eira">
+        <svg class="brand-wordmark" viewBox="0 0 320 96" aria-hidden="true">
+          <g fill="currentColor">
+            <path
+              d="M18 16h58c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h31c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h37c5.5 0 10 4.5 10 10s-4.5 10-10 10H18V16z"
+            />
+            <rect x="104" y="38" width="22" height="48" rx="11" />
+            <circle cx="115" cy="24" r="11" />
+            <path
+              d="M143 49c0-6.1 4.9-11 11-11s11 4.9 11 11v2.8c5.2-9.2 13.5-14.8 24-14.8 6.1 0 11 4.9 11 11s-4.9 11-11 11c-14.2 0-24 8.7-24 24V86h-22V49z"
+            />
+            <path
+              d="M245 37c18.2 0 33 14.8 33 33v16h-21v-6.2c-5.5 5.4-12.7 8.2-21 8.2-16.6 0-30-11.4-30-27s13.4-27 30-27c7.7 0 14.6 2.6 20 7.4V37h-11zm-5 18c-7.7 0-14 5.8-14 13s6.3 13 14 13 14-5.8 14-13-6.3-13-14-13z"
+            />
+          </g>
+        </svg>
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M8 7h15a3 3 0 1 1 0 6h-9v2h7a3 3 0 1 1 0 6h-7v2h9a3 3 0 1 1 0 6H8V7z"
+          />
+        </svg>
       </RouterLink>
     </header>
 
     <aside v-else class="sidebar">
-      <RouterLink :to="auth.landingRoute" class="brand">
-        <span class="brand-label">Eira</span>
+      <RouterLink :to="auth.landingRoute" class="brand" aria-label="Eira">
+        <svg class="brand-wordmark" viewBox="0 0 320 96" aria-hidden="true">
+          <g fill="currentColor">
+            <path
+              d="M18 16h58c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h31c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h37c5.5 0 10 4.5 10 10s-4.5 10-10 10H18V16z"
+            />
+            <rect x="104" y="38" width="22" height="48" rx="11" />
+            <circle cx="115" cy="24" r="11" />
+            <path
+              d="M143 49c0-6.1 4.9-11 11-11s11 4.9 11 11v2.8c5.2-9.2 13.5-14.8 24-14.8 6.1 0 11 4.9 11 11s-4.9 11-11 11c-14.2 0-24 8.7-24 24V86h-22V49z"
+            />
+            <path
+              d="M245 37c18.2 0 33 14.8 33 33v16h-21v-6.2c-5.5 5.4-12.7 8.2-21 8.2-16.6 0-30-11.4-30-27s13.4-27 30-27c7.7 0 14.6 2.6 20 7.4V37h-11zm-5 18c-7.7 0-14 5.8-14 13s6.3 13 14 13 14-5.8 14-13-6.3-13-14-13z"
+            />
+          </g>
+        </svg>
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M8 7h15a3 3 0 1 1 0 6h-9v2h7a3 3 0 1 1 0 6h-7v2h9a3 3 0 1 1 0 6H8V7z"
+          />
+        </svg>
       </RouterLink>
       <AppNavPanel />
     </aside>
@@ -85,13 +125,21 @@ watch(isCompact, (compact) => {
   display: flex;
   align-items: center;
   min-height: var(--size-touch);
-  font-family: var(--sans);
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--ink);
+  color: var(--color-primary-on-tint);
   text-decoration: none;
   padding: var(--space-2) var(--space-3) var(--space-5);
   border-radius: var(--radius-sm);
+}
+
+.brand-wordmark {
+  height: 1.75rem;
+  width: auto;
+}
+
+.brand-mark {
+  display: none;
+  height: 1.5rem;
+  width: 1.5rem;
 }
 
 .brand:focus-visible,
@@ -116,11 +164,15 @@ watch(isCompact, (compact) => {
     padding: var(--space-5) var(--space-2);
   }
 
-  .brand-label {
+  .brand-wordmark {
     display: none;
   }
 
-  /* senza label il link resta largo quanto il padding: sotto i 44px */
+  .brand-mark {
+    display: block;
+  }
+
+  /* senza wordmark il link resta largo quanto il padding: sotto i 44px */
   .brand {
     justify-content: center;
     min-width: var(--size-touch);

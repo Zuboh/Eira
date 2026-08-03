@@ -49,7 +49,9 @@ defineExpose({ focusFirst })
           size="2.25rem"
         />
         <span class="tile-name">{{ utente.nome }} {{ utente.cognome }}</span>
-        <span class="tile-role">{{ ROLE_LABEL[utente.ruolo] ?? utente.ruolo }}</span>
+        <span class="tile-role">{{
+          ROLE_LABEL[utente.ruolo] ?? utente.ruolo
+        }}</span>
       </button>
     </div>
   </template>
