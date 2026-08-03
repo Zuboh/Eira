@@ -111,3 +111,16 @@ export async function me(): ApiResponse<MeResponse> {
 
   return unwrapData(result, 'me')
 }
+
+export async function uploadMyAvatar(file: File): ApiResponse<MeResponse> {
+  const body = new FormData()
+  body.append('file', file)
+  const result = await eiraClient.POST('/api/v1/auth/me/avatar', {
+    // openapi-typescript generates the multipart body as { file: string }
+    // (no native Blob/File type for binary form fields) — the actual
+    // request is a real FormData with a File, cast to satisfy the type.
+    body: body as unknown as { file: string },
+  })
+
+  return unwrapData(result, 'uploadMyAvatar')
+}

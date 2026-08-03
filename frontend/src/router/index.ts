@@ -91,6 +91,12 @@ const router = createRouter({
       meta: { roles: ALL_ROLES },
     },
     {
+      path: '/profilo',
+      name: 'profilo',
+      component: () => import('@/views/ProfiloView.vue'),
+      meta: { roles: ALL_ROLES },
+    },
+    {
       path: '/consegne-sbar',
       name: 'consegne-sbar',
       component: () => import('@/views/ConsegneSbarView.vue'),

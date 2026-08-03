@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 
+from app.core.avatars import AVATAR_DIR, store_avatar_file
 from app.core.login_attempts import record_failure, record_success, seconds_until_retry
 from app.core.rate_limit import limiter
 from app.core.security import create_access_token, hash_password, verify_password
@@ -12,7 +13,7 @@ from app.models.enums import RuoloUtente, StatoUtente
 from app.models.password_reset import PasswordResetRequirement
 from app.models.reparto import Reparto
 from app.models.utente import Utente
-from app.openapi_errors import FORBIDDEN, UNAUTHORIZED, errors
+from app.openapi_errors import BAD_REQUEST, FORBIDDEN, UNAUTHORIZED, errors
 from app.schemas.auth import TemporaryPasswordChange, Token
 from app.schemas.utente import MeRead, UtenteRead, UtenteRegister
 
@@ -77,6 +78,28 @@ def login(
 
 @router.get("/me", responses=errors(UNAUTHORIZED))
 def read_me(current_user: CurrentUserDep, db: DbDep) -> MeRead:
+    reparto = db.get(Reparto, current_user.reparto_id)
+    return MeRead(
+        **UtenteRead.model_validate(current_user).model_dump(),
+        reparto_nome=reparto.nome if reparto else None,
+    )
+
+
+@router.post("/me/avatar", responses=errors(UNAUTHORIZED, BAD_REQUEST))
+async def upload_my_avatar(
+    current_user: CurrentUserDep,
+    db: DbDep,
+    file: Annotated[UploadFile, File()],
+) -> MeRead:
+    filename = await store_avatar_file(file)
+
+    old_path = current_user.avatar_path
+    current_user.avatar_path = filename
+    db.commit()
+    db.refresh(current_user)
+    if old_path:
+        (AVATAR_DIR / old_path).unlink(missing_ok=True)
+
     reparto = db.get(Reparto, current_user.reparto_id)
     return MeRead(
         **UtenteRead.model_validate(current_user).model_dump(),

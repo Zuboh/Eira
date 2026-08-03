@@ -1,5 +1,8 @@
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
+
+from fastapi import HTTPException, UploadFile, status
 
 AVATAR_DIR = Path(__file__).resolve().parent.parent.parent / "uploads" / "avatars"
 AVATAR_URL_PREFIX = "/static/avatars"
@@ -51,3 +54,24 @@ def avatar_url(avatar_path: str | None, *, ruolo: Any, nome: str) -> str:
     if ruolo_value not in {"infermiere", "caposala"}:
         ruolo_value = "infermiere"
     return f"{DEFAULT_AVATAR_URL_PREFIX}/{ruolo_value}-{_genere_avatar(nome)}.webp"
+
+
+async def store_avatar_file(file: UploadFile) -> str:
+    """Valida e salva un file avatar su disco, ritorna il filename salvato."""
+    ext = ALLOWED_AVATAR_CONTENT_TYPES.get(file.content_type or "")
+    if ext is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Formato immagine non supportato (jpeg/png/webp)",
+        )
+
+    contents = await file.read()
+    if len(contents) > MAX_AVATAR_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Immagine troppo grande (max 2MB)"
+        )
+
+    AVATAR_DIR.mkdir(parents=True, exist_ok=True)
+    filename = f"{uuid4().hex}{ext}"
+    (AVATAR_DIR / filename).write_bytes(contents)
+    return filename

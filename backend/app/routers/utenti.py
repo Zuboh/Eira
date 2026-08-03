@@ -1,11 +1,10 @@
 import datetime
 from typing import Annotated
-from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.exc import IntegrityError
 
-from app.core.avatars import ALLOWED_AVATAR_CONTENT_TYPES, AVATAR_DIR, MAX_AVATAR_BYTES
+from app.core.avatars import AVATAR_DIR, store_avatar_file
 from app.core.security import generate_temporary_password, hash_password
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente, StatoUtente
@@ -101,22 +100,7 @@ async def upload_avatar(
             status_code=status.HTTP_403_FORBIDDEN, detail="Utente di un altro reparto"
         )
 
-    ext = ALLOWED_AVATAR_CONTENT_TYPES.get(file.content_type or "")
-    if ext is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Formato immagine non supportato (jpeg/png/webp)",
-        )
-
-    contents = await file.read()
-    if len(contents) > MAX_AVATAR_BYTES:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Immagine troppo grande (max 2MB)"
-        )
-
-    AVATAR_DIR.mkdir(parents=True, exist_ok=True)
-    filename = f"{uuid4().hex}{ext}"
-    (AVATAR_DIR / filename).write_bytes(contents)
+    filename = await store_avatar_file(file)
 
     old_path = utente.avatar_path
     utente.avatar_path = filename

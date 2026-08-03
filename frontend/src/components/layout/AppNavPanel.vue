@@ -95,10 +95,12 @@ function logout() {
       </RouterLink>
     </nav>
 
-    <div
+    <RouterLink
       v-if="auth.user"
+      :to="{ name: 'profilo' }"
       class="identity"
       :title="`${auth.user.nome} ${auth.user.cognome} — ${roleLabel}${auth.repartoNome ? ` — ${auth.repartoNome}` : ''}`"
+      @click="emit('navigate')"
     >
       <div class="identity-person">
         <UserAvatar
@@ -128,7 +130,7 @@ function logout() {
           {{ turnoLabel }}
         </p>
       </div>
-    </div>
+    </RouterLink>
 
     <button
       type="button"
@@ -221,6 +223,16 @@ function logout() {
   margin-top: var(--space-2);
   margin-bottom: var(--space-4);
   border-top: 1px solid var(--border);
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 150ms ease-out;
+}
+
+.identity:hover,
+.identity:focus-visible {
+  background: var(--surface);
 }
 
 .identity-person {

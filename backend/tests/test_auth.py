@@ -1,5 +1,6 @@
 import datetime
 
+from app.core.avatars import AVATAR_DIR
 from app.core.security import hash_password
 from app.models.enums import RuoloUtente, StatoUtente
 from app.models.password_reset import PasswordResetRequirement
@@ -53,6 +54,110 @@ def test_me_returns_reparto_nome(client, caposala_a, reparti):
     body = response.json()
     assert body["reparto_id"] == reparto_a.id
     assert body["reparto_nome"] == "Cardiologia"
+
+
+def _create_infermiere(db_session, reparto, *, email="nurse.self@example.com"):
+    infermiere = Utente(
+        email=email,
+        password_hash=hash_password("password123"),
+        nome="Self",
+        cognome="Serve",
+        ruolo=RuoloUtente.infermiere,
+        reparto_id=reparto.id,
+        stato=StatoUtente.attivo,
+    )
+    db_session.add(infermiere)
+    db_session.commit()
+    db_session.refresh(infermiere)
+    return infermiere
+
+
+def test_upload_my_avatar_happy_path(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _create_infermiere(db_session, reparto_a)
+    headers = auth_headers(client, infermiere.email, "password123")
+
+    response = client.post(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        files={"file": ("foto.jpg", b"\xff\xd8\xff\xe0fake-jpeg-bytes", "image/jpeg")},
+    )
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["avatar_url"].startswith("/static/avatars/")
+
+    filename = body["avatar_url"].removeprefix("/static/avatars/")
+    saved_path = AVATAR_DIR / filename
+    assert saved_path.exists()
+    saved_path.unlink(missing_ok=True)
+
+
+def test_upload_my_avatar_rejects_unsupported_content_type(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _create_infermiere(db_session, reparto_a, email="nurse.badtype@example.com")
+    headers = auth_headers(client, infermiere.email, "password123")
+
+    response = client.post(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        files={"file": ("nota.txt", b"not an image", "text/plain")},
+    )
+
+    assert response.status_code == 400, response.text
+
+
+def test_upload_my_avatar_rejects_oversized_file(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _create_infermiere(db_session, reparto_a, email="nurse.big@example.com")
+    headers = auth_headers(client, infermiere.email, "password123")
+
+    oversized = b"\xff\xd8\xff\xe0" + b"0" * (2 * 1024 * 1024 + 1)
+    response = client.post(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        files={"file": ("grande.jpg", oversized, "image/jpeg")},
+    )
+
+    assert response.status_code == 400, response.text
+
+
+def test_upload_my_avatar_requires_auth(client):
+    response = client.post(
+        "/api/v1/auth/me/avatar",
+        files={"file": ("foto.jpg", b"\xff\xd8\xff\xe0fake", "image/jpeg")},
+    )
+
+    assert response.status_code == 401, response.text
+
+
+def test_upload_my_avatar_replaces_old_avatar_file(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _create_infermiere(db_session, reparto_a, email="nurse.replace@example.com")
+    headers = auth_headers(client, infermiere.email, "password123")
+
+    first = client.post(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        files={"file": ("foto1.jpg", b"\xff\xd8\xff\xe0first", "image/jpeg")},
+    )
+    assert first.status_code == 200, first.text
+    first_filename = first.json()["avatar_url"].removeprefix("/static/avatars/")
+    first_path = AVATAR_DIR / first_filename
+    assert first_path.exists()
+
+    second = client.post(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        files={"file": ("foto2.jpg", b"\xff\xd8\xff\xe0second", "image/jpeg")},
+    )
+    assert second.status_code == 200, second.text
+    second_filename = second.json()["avatar_url"].removeprefix("/static/avatars/")
+    second_path = AVATAR_DIR / second_filename
+
+    assert not first_path.exists()
+    assert second_path.exists()
+    second_path.unlink(missing_ok=True)
 
 
 def test_register_happy_path(client, reparti, db_session):
