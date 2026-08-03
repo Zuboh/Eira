@@ -127,6 +127,6 @@ describe('useBancaOre — spostaMese', () => {
     hook.spostaMese(1)
     await nextTick()
 
-    expect(bancaOreApi.getBancaOre).toHaveBeenCalledWith(9, '2026-08')
+    expect(bancaOreApi.getBancaOre).toHaveBeenCalledWith(9, hook.mese.value)
   })
 })
