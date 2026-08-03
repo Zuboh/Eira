@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
-  <title id="title">Eira favicon</title>
-  <rect width="32" height="32" rx="8" fill="#1D4ED8"/>
-  <path fill="#FFFFFF" d="M8 7h15a3 3 0 1 1 0 6h-9v2h7a3 3 0 1 1 0 6h-7v2h9a3 3 0 1 1 0 6H8V7z"/>
+  <title id="title">Eira</title>
+  <rect width="32" height="32" rx="7" fill="#000000"/>
+  <path d="M111 0H1180V264H419V624H1123V881H419V1226H1180V1490H111Z" fill="#FFFFFF" transform="translate(7.985 25.250) scale(0.012416 -0.012416)"/>
 </svg>

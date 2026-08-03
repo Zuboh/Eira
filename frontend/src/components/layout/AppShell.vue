@@ -33,25 +33,34 @@ watch(isCompact, (compact) => {
         <i class="pi pi-bars" aria-hidden="true" />
       </button>
       <RouterLink :to="auth.landingRoute" class="brand" aria-label="Eira">
-        <svg class="brand-wordmark" viewBox="0 0 320 96" aria-hidden="true">
-          <g fill="currentColor">
+        <svg
+          class="brand-wordmark"
+          viewBox="51 -1563 3384 1641"
+          aria-hidden="true"
+        >
+          <g fill="currentColor" transform="scale(1 -1)">
             <path
-              d="M18 16h58c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h31c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h37c5.5 0 10 4.5 10 10s-4.5 10-10 10H18V16z"
+              d="M111 0H1180V264H419V624H1123V881H419V1226H1180V1490H111Z"
             />
-            <rect x="104" y="38" width="22" height="48" rx="11" />
-            <circle cx="115" cy="24" r="11" />
             <path
-              d="M143 49c0-6.1 4.9-11 11-11s11 4.9 11 11v2.8c5.2-9.2 13.5-14.8 24-14.8 6.1 0 11 4.9 11 11s-4.9 11-11 11c-14.2 0-24 8.7-24 24V86h-22V49z"
+              d="M104 0H399V1056H104ZM251 1189C348 1189 419 1256 419 1346C419 1436 348 1503 251 1503C154 1503 83 1436 83 1346C83 1256 154 1189 251 1189Z"
+              transform="translate(1190 0)"
             />
             <path
-              d="M245 37c18.2 0 33 14.8 33 33v16h-21v-6.2c-5.5 5.4-12.7 8.2-21 8.2-16.6 0-30-11.4-30-27s13.4-27 30-27c7.7 0 14.6 2.6 20 7.4V37h-11zm-5 18c-7.7 0-14 5.8-14 13s6.3 13 14 13 14-5.8 14-13-6.3-13-14-13z"
+              d="M104 0H399V572C399 731 488 815 609 815C659 815 714 811 736 810V1061C712 1062 683 1063 649 1063C510 1063 430 1003 391 876H388V1056H104Z"
+              transform="translate(1638 0)"
+            />
+            <path
+              d="M427 -18C589 -18 680 46 736 149H740V0H1028V716C1028 942 862 1078 573 1078C283 1078 111 940 98 722H375C382 803 454 859 564 859C672 859 737 805 737 727V720C737 652 669 643 476 624C256 604 64 536 64 298C64 87 216 -18 427 -18ZM509 187C410 187 346 231 346 306C346 390 426 429 527 444C622 459 705 473 739 492V386C739 272 651 187 509 187Z"
+              transform="translate(2347 0)"
             />
           </g>
         </svg>
         <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
           <path
             fill="currentColor"
-            d="M8 7h15a3 3 0 1 1 0 6h-9v2h7a3 3 0 1 1 0 6h-7v2h9a3 3 0 1 1 0 6H8V7z"
+            d="M111 0H1180V264H419V624H1123V881H419V1226H1180V1490H111Z"
+            transform="translate(7.985 25.250) scale(0.012416 -0.012416)"
           />
         </svg>
       </RouterLink>
@@ -59,25 +68,34 @@ watch(isCompact, (compact) => {
 
     <aside v-else class="sidebar">
       <RouterLink :to="auth.landingRoute" class="brand" aria-label="Eira">
-        <svg class="brand-wordmark" viewBox="0 0 320 96" aria-hidden="true">
-          <g fill="currentColor">
+        <svg
+          class="brand-wordmark"
+          viewBox="51 -1563 3384 1641"
+          aria-hidden="true"
+        >
+          <g fill="currentColor" transform="scale(1 -1)">
             <path
-              d="M18 16h58c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h31c5.5 0 10 4.5 10 10s-4.5 10-10 10H40v10h37c5.5 0 10 4.5 10 10s-4.5 10-10 10H18V16z"
+              d="M111 0H1180V264H419V624H1123V881H419V1226H1180V1490H111Z"
             />
-            <rect x="104" y="38" width="22" height="48" rx="11" />
-            <circle cx="115" cy="24" r="11" />
             <path
-              d="M143 49c0-6.1 4.9-11 11-11s11 4.9 11 11v2.8c5.2-9.2 13.5-14.8 24-14.8 6.1 0 11 4.9 11 11s-4.9 11-11 11c-14.2 0-24 8.7-24 24V86h-22V49z"
+              d="M104 0H399V1056H104ZM251 1189C348 1189 419 1256 419 1346C419 1436 348 1503 251 1503C154 1503 83 1436 83 1346C83 1256 154 1189 251 1189Z"
+              transform="translate(1190 0)"
             />
             <path
-              d="M245 37c18.2 0 33 14.8 33 33v16h-21v-6.2c-5.5 5.4-12.7 8.2-21 8.2-16.6 0-30-11.4-30-27s13.4-27 30-27c7.7 0 14.6 2.6 20 7.4V37h-11zm-5 18c-7.7 0-14 5.8-14 13s6.3 13 14 13 14-5.8 14-13-6.3-13-14-13z"
+              d="M104 0H399V572C399 731 488 815 609 815C659 815 714 811 736 810V1061C712 1062 683 1063 649 1063C510 1063 430 1003 391 876H388V1056H104Z"
+              transform="translate(1638 0)"
+            />
+            <path
+              d="M427 -18C589 -18 680 46 736 149H740V0H1028V716C1028 942 862 1078 573 1078C283 1078 111 940 98 722H375C382 803 454 859 564 859C672 859 737 805 737 727V720C737 652 669 643 476 624C256 604 64 536 64 298C64 87 216 -18 427 -18ZM509 187C410 187 346 231 346 306C346 390 426 429 527 444C622 459 705 473 739 492V386C739 272 651 187 509 187Z"
+              transform="translate(2347 0)"
             />
           </g>
         </svg>
         <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
           <path
             fill="currentColor"
-            d="M8 7h15a3 3 0 1 1 0 6h-9v2h7a3 3 0 1 1 0 6h-7v2h9a3 3 0 1 1 0 6H8V7z"
+            d="M111 0H1180V264H419V624H1123V881H419V1226H1180V1490H111Z"
+            transform="translate(7.985 25.250) scale(0.012416 -0.012416)"
           />
         </svg>
       </RouterLink>
@@ -125,7 +143,7 @@ watch(isCompact, (compact) => {
   display: flex;
   align-items: center;
   min-height: var(--size-touch);
-  color: var(--color-primary-on-tint);
+  color: var(--ink);
   text-decoration: none;
   padding: var(--space-2) var(--space-3) var(--space-5);
   border-radius: var(--radius-sm);
