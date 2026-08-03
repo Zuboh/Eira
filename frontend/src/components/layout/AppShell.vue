@@ -160,6 +160,10 @@ watch(isCompact, (compact) => {
   width: 1.5rem;
 }
 
+.brand:hover {
+  color: var(--color-primary);
+}
+
 .brand:focus-visible,
 .topbar-toggle:focus-visible {
   outline: 2px solid var(--color-primary);
