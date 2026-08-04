@@ -25,8 +25,8 @@ const emit = defineEmits<CambioTurnoSubmitEmits>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Motivo">
-        <InputText v-model="motivo" />
+      <FormField label="Motivo" for-id="rifiuto-cambio-motivo">
+        <InputText id="rifiuto-cambio-motivo" v-model="motivo" />
       </FormField>
       <Button
         type="submit"

@@ -37,12 +37,19 @@ test('infermiere adjusts farmaco quantity and sees movement history', async ({
     .filter({ has: page.getByRole('button', { name: 'Aumenta quantità' }) })
     .first()
   await expect(firstRow).toBeVisible()
-  const farmacoName = (await firstRow.locator('td').first().textContent())
-    ?.trim()
-    .split('\n')[0]
+  const farmacoName = (await firstRow.locator('strong').textContent())?.trim()
   await firstRow.getByRole('button', { name: 'Aumenta quantità' }).click()
 
-  await page.getByRole('button', { name: 'Storico movimenti' }).click()
+  const storicoTab = page.getByRole('tab', { name: 'Storico movimenti' })
+  await storicoTab.focus()
+  await storicoTab.press('ArrowLeft')
+  await expect(page.getByRole('tab', { name: 'Stock' })).toBeFocused()
+  await page.getByRole('tab', { name: 'Stock' }).press('End')
+  await expect(storicoTab).toBeFocused()
+  await expect(storicoTab).toHaveAttribute('aria-selected', 'true')
+  await expect(
+    page.getByRole('tabpanel', { name: 'Storico movimenti' }),
+  ).toBeVisible()
   if (farmacoName) {
     await expect(
       page.getByRole('row', { name: new RegExp(farmacoName) }).first(),

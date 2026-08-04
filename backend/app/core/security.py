@@ -7,13 +7,36 @@ from jose import jwt
 
 from app.core.config import settings
 
+MIN_PASSWORD_CHARACTERS = 8
+MAX_PASSWORD_BYTES = 72
+
+
+def validate_password(password: str) -> str:
+    size = len(password.encode("utf-8"))
+    if len(password) < MIN_PASSWORD_CHARACTERS or size > MAX_PASSWORD_BYTES:
+        raise ValueError(
+            f"La password deve contenere almeno {MIN_PASSWORD_CHARACTERS} caratteri "
+            f"e non superare {MAX_PASSWORD_BYTES} byte UTF-8"
+        )
+    return password
+
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    validate_password(password)
+    encoded = password.encode("utf-8")
+    return bcrypt.hashpw(encoded, bcrypt.gensalt(rounds=settings.bcrypt_rounds)).decode("utf-8")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
+    try:
+        encoded = plain_password.encode("utf-8")
+        # Il minimo vale sui nuovi hash. Verificare password legacy corte evita
+        # di bloccare account creati prima dell'introduzione della policy.
+        if len(encoded) > MAX_PASSWORD_BYTES:
+            return False
+        return bcrypt.checkpw(encoded, hashed_password.encode("utf-8"))
+    except (TypeError, ValueError):
+        return False
 
 
 def generate_temporary_password(length: int = 12) -> str:

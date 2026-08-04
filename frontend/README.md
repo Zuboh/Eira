@@ -1,5 +1,28 @@
-# Vue 3 + TypeScript + Vite
+# Eira frontend
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Vue 3 + Vite + TypeScript + Pinia + PrimeVue. Le view sono composition
+root leggere; workflow e server state vivono nei moduli `src/features`.
+Le chiamate HTTP passano da `src/api/eiraClient.ts` e dai tipi generati
+da OpenAPI.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+Usare Node dalla `.nvmrc` nella root del repository.
+
+```bash
+npm ci
+npm run dev
+```
+
+Verifica completa frontend:
+
+```bash
+npm run lint
+npm run format:check
+npm run test
+npm run typecheck
+npm run build
+npm run openapi:check
+npm run test:e2e
+```
+
+Le regole architetturali canoniche sono in
+`../docs/FRONTEND-ARCHITECTURE.md` e `../CLAUDE.md`.

@@ -27,23 +27,47 @@ const emit = defineEmits<PatientChartSaveEmit>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Data" required
-        ><InputText v-model="form.data_valutazione" type="date" required
+      <FormField label="Data" for-id="norton-data" required
+        ><InputText
+          id="norton-data"
+          v-model="form.data_valutazione"
+          type="date"
+          required
       /></FormField>
-      <FormField label="Condizioni generali (1-4)"
-        ><InputNumber v-model="form.condizioni_generali" :min="1" :max="4"
+      <FormField label="Condizioni generali (1-4)" for-id="norton-condizioni"
+        ><InputNumber
+          v-model="form.condizioni_generali"
+          input-id="norton-condizioni"
+          :min="1"
+          :max="4"
       /></FormField>
-      <FormField label="Stato mentale (1-4)"
-        ><InputNumber v-model="form.stato_mentale" :min="1" :max="4"
+      <FormField label="Stato mentale (1-4)" for-id="norton-stato-mentale"
+        ><InputNumber
+          v-model="form.stato_mentale"
+          input-id="norton-stato-mentale"
+          :min="1"
+          :max="4"
       /></FormField>
-      <FormField label="Attività (1-4)"
-        ><InputNumber v-model="form.attivita" :min="1" :max="4"
+      <FormField label="Attività (1-4)" for-id="norton-attivita"
+        ><InputNumber
+          v-model="form.attivita"
+          input-id="norton-attivita"
+          :min="1"
+          :max="4"
       /></FormField>
-      <FormField label="Mobilità (1-4)"
-        ><InputNumber v-model="form.mobilita" :min="1" :max="4"
+      <FormField label="Mobilità (1-4)" for-id="norton-mobilita"
+        ><InputNumber
+          v-model="form.mobilita"
+          input-id="norton-mobilita"
+          :min="1"
+          :max="4"
       /></FormField>
-      <FormField label="Incontinenza (1-4)"
-        ><InputNumber v-model="form.incontinenza" :min="1" :max="4"
+      <FormField label="Incontinenza (1-4)" for-id="norton-incontinenza"
+        ><InputNumber
+          v-model="form.incontinenza"
+          input-id="norton-incontinenza"
+          :min="1"
+          :max="4"
       /></FormField>
       <Button type="submit" label="Salva" :loading="saving" />
     </form>

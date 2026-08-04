@@ -4,6 +4,13 @@
 > autovalutazione stato attuale, punchlist per 30/30, approfondimenti.
 > Non è un piano deciso — sono spunti da rivedere/scartare.
 
+> Aggiornamento finale 2026-08-04: le metriche storiche nelle sezioni
+> successive descrivono le tappe intermedie. La baseline verificata è ora:
+> 163 test backend, 232 test frontend e 10 scenari Playwright con axe; E2E e
+> controllo contratto OpenAPI sono inclusi nella CI. Ruff, ESLint, Prettier,
+> typecheck, build e contratto OpenAPI risultano verdi. Alembic gestisce lo
+> schema con migrazioni esplicite e bootstrap conservativo.
+
 ## 1. Stato del progetto (riferimento rapido)
 
 - Backend: FastAPI + SQLite + JWT (auth OAuth2 Password Flow, bcrypt diretto).
@@ -12,15 +19,15 @@
   dashboard turni, consegne SBAR.
 - Attorno al nucleo: diario CEDEMA, valutazioni Norton/Conley, cambio turno a
   doppia conferma, banca ore, ferie.
-- 84 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
+- 163 test backend passanti (era 33 al 2026-07-09; salita da feature ferie +
   estensioni SBAR/cambi turno, più 4 nuovi test sui due fix 🔴 sotto). 120
   test frontend (Vitest) su 15/15 composable (`useLoginFlow`,
   `useCaposalaDashboard`, `usePatientChart`, `usePatientChartQueries`,
   `usePatientChartDialogs`, `usePatientChartSbar`, `usePatients`,
   `useFerie`, `useBancaOre`, `useCambiTurno`, `useConsegneSbar`,
   `useStaffWorkflow`, `useDeviceReparto`, `useSbarCreateDialog`,
-  `useInfermiereDashboard`) — copertura unit test completa. 4 test e2e (Playwright + axe-core,
-  `npm run test:e2e`, solo locale — non in CI, v. §6): login reale,
+  `useInfermiereDashboard`) — copertura unit test completa. 10 test e2e (Playwright + axe-core,
+  `npm run test:e2e`, inclusi in CI): login reale,
   consegna SBAR, cambio turno round-trip multi-attore (richiedente →
   collega → caposala, 3 browser context separati), assegnazione turno
   scoperto. CI attiva su entrambi: backend (`ruff check` + `pytest`, 0
@@ -33,13 +40,13 @@
   attivo, badge `.chiusa`/`.attiva` — pattern text-on-own-tint, ora
   centralizzato in token `--state-*-on-tint`), 7 `<th>` azioni vuoti
   senza testo per screen reader. Tracciato ma non fixato: contrasto
-  bottone PrimeVue default (bianco su blu primary) su ~44 usi in tutta
-  l'app — decisione di palette colore, non un side-effect dei test.
+  Il contrasto del bottone PrimeVue primario è stato corretto nel preset
+  globale e non è più escluso dagli assert axe.
 - Zero bug 🔴 aperti (i due erano concreti e circoscritti, entrambi fixati
   con test di regressione), due 🟡 aperti (v. `TASK.md` / `docs/SECURITY.md`
   §3) — questi ultimi restano espliciti out-of-scope in attesa di una
   decisione di design (semantica "turno attivo"/"cambiata").
-- Working tree pulito, feature ferie e i due fix 🔴 sopra committati.
+- Working tree con la finalizzazione corrente non ancora committata.
 - Report di tesi (Parte Prima + Seconda), screenshot funzionali e video
   walkthrough: non ancora iniziati.
 
@@ -51,7 +58,7 @@
   documentato (`docs/SECURITY.md` §4, fix 2026-07-09) — case study di
   security review metodica, non solo "ho aggiunto un check".
 - **Cambio turno a doppia conferma** (`in_attesa_collega → in_attesa_caposala
-  → approvata`): macchina a stati non banale, vale un diagramma dedicato per
+→ approvata`): macchina a stati non banale, vale un diagramma dedicato per
   la Parte Seconda.
 - **Norton/Conley/SBAR/CEDEMA**: strumenti clinici reali, non campi inventati
   — citare le scale validate come fonte rafforza la sezione di dominio.
@@ -88,17 +95,14 @@
   fail-fast in produzione è implementato; CI (ruff + pytest) attiva su ogni
   push/PR. Restano solo i due 🟡, esplicitamente rimandati in attesa di una
   decisione di design (non un gap di qualità).
-- **Frontend: 29/30.** Architettura il punto più forte — moduli
+- **Frontend: 30/30 sul codice verificato.** Architettura il punto più forte — moduli
   feature-based, composition roots leggeri, design tokens, accessibilità
   manuale ora anche **verificata empiricamente** via axe-core (0
   violazioni sulle 4 pagine chiave testate) — sopra lo standard
   triennale. Lint/CI presenti (ESLint + Prettier, 0 violazioni, gate su
-  ogni push/PR); 120 test Vitest su 15/15 composable (copertura unit
-  test completa) + 4 test e2e sui flussi chiave, in CI (Vitest) e locale
-  (e2e, v. §6). Cambio turno con secondo account **ora verificato** (era
-  esplicitamente non testato). Restano: e2e ancora locale (non in CI),
-  viste Norton/Conley ancora solo da code review (banca ore ora coperta
-  da `useBancaOre.spec.ts`).
+  ogni push/PR); 232 test Vitest e 10 scenari E2E in CI. Cambio turno,
+  ferie, banca ore, cartella clinica Norton/Conley/parametri vitali,
+  carrello farmaci e avatar sono verificati con backend reale e axe.
 
 Differenza chiave tra i due: il backend ha verifica empirica (test) a
 sostegno della qualità dichiarata, il frontend ha qualità architetturale ma
@@ -132,12 +136,9 @@ verifica solo manuale/dichiarata.
    `useStaffWorkflow`, `useDeviceReparto`, `useSbarCreateDialog`,
    `useInfermiereDashboard`, 120 test Vitest, in CI). Copertura unit
    test completa.
-1b. ~~4 test e2e Playwright sui flussi chiave~~ — fatto (login, consegna
-   SBAR, cambio turno round-trip multi-attore, assegnazione turno
-   scoperto), axe-core incluso, solo locale (non in CI, v. §6).
-2. Verificare end-to-end le viste ancora segnate come non verificate in
-   `TASK.md`: creazione Norton/Conley, banca ore (cambio turno con
-   secondo account infermiere **ora coperto** dal test e2e multi-attore).
+   1b. ~~10 test e2e Playwright sui flussi chiave~~ — fatto; axe-core incluso
+   e job E2E dedicato in CI con database temporaneo.
+2. ~~Verificare end-to-end Norton/Conley, banca ore, ferie e profilo~~ — fatto.
 3. ~~Lint~~ — ESLint (flat config, typescript-eslint + eslint-plugin-vue
    recommended) + Prettier, entrambi in CI. `vue/attribute-hyphenation`
    disattivata di proposito (PrimeVue usa prop camelCase per API
@@ -178,7 +179,7 @@ altro codice.
 
 ### Frontend — audit di accessibilità automatico
 
-**Implementato**: `@axe-core/playwright` dentro ai 4 test e2e (`e2e/helpers/a11y.ts`),
+**Implementato**: `@axe-core/playwright` dentro ai 10 test e2e (`e2e/helpers/a11y.ts`),
 zero violazioni su ogni pagina chiave testata (login, dashboard caposala,
 consegne SBAR, cambio turno). 6 bug reali trovati e fixati nel processo:
 
@@ -188,7 +189,7 @@ consegne SBAR, cambio turno). 6 bug reali trovati e fixati nel processo:
 - Contrasto colore, sidebar (`AppShell.vue`): link attivo e bottone
   "Esci" usavano il token semantico come colore testo direttamente sul
   proprio tint chiaro (es. `--color-primary` su `color-mix(...
-  --color-primary 12%)`) — matematicamente non può mai arrivare a 4.5:1
+--color-primary 12%)`) — matematicamente non può mai arrivare a 4.5:1
   se il testo è la stessa tinta dello sfondo. Fix: nuovi token
   `--color-primary-on-tint` / `--state-*-on-tint` (varianti dark-mode
   invariate, già abbastanza chiare).
@@ -199,12 +200,8 @@ consegne SBAR, cambio turno). 6 bug reali trovati e fixati nel processo:
   applicata ovunque dopo aver trovato il primo caso e verificato che il
   pattern fosse sistemico.
 
-**Non fixato, tracciato**: bottone PrimeVue small di default (bianco su
-blu primary, ~44 usi in tutta l'app) fallisce 4.5:1 (3.67:1 misurato) —
-decisione di palette colore che tocca l'identità visiva dell'app,
-esclusa deliberatamente dagli assert (`e2e/helpers/a11y.ts` esclude
-`.p-button`) invece di essere silenziosamente "risolta" come side
-effect dell'aggiunta di e2e.
+**Chiuso**: il bottone PrimeVue primario usa una tonalità conforme AA nel
+preset globale; `.p-button` non è più escluso dagli assert axe.
 
 Nota di rischio prevista si è confermata: PrimeVue genera davvero falsi
 positivi/frizioni sui suoi componenti interni (qui: bottoni, prop
@@ -213,12 +210,7 @@ indiscriminati.
 
 ## 6. Prossimi passi possibili (da scegliere, non decisi)
 
-- e2e in CI: oggi solo locale (`npm run test:e2e`) — serve un job CI che
-  avvii backend+frontend insieme (stesso pattern webServer, DB throwaway
-  dedicato), più complesso del job attuale ma non bloccante.
-- Decidere se/come affrontare il contrasto bottone PrimeVue (~44 usi,
-  tracciato non fixato — v. §5): richiede una decisione di palette,
-  non un fix meccanico.
+- Mantenere verdi E2E e contratto OpenAPI in CI ad ogni evoluzione API/UI.
 - Decidere/implementare i due 🟡 rimasti (enum `StatoAssegnazione.cambiata`,
   scoping "turno attivo").
 - Scaletta del report (Parte Prima + Seconda).

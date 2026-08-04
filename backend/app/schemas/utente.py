@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 from app.models.enums import RuoloUtente, StatoUtente
+from app.schemas.auth import Password
 
 
 class UtenteBase(BaseModel):
@@ -12,7 +13,7 @@ class UtenteBase(BaseModel):
 
 
 class UtenteCreate(UtenteBase):
-    password: str
+    password: Password
 
 
 class UtenteUpdate(BaseModel):
@@ -49,7 +50,7 @@ class UtenteTile(BaseModel):
 
 class UtenteRegister(BaseModel):
     email: str
-    password: str
+    password: Password
     nome: str
     cognome: str
     reparto_id: int

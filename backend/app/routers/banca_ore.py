@@ -1,6 +1,7 @@
 import datetime
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 from app.deps import CurrentUserDep, DbDep
 from app.models.enums import RuoloUtente, StatoAssegnazione, TipoTurno
@@ -27,7 +28,10 @@ def _ore_turno(turno: Turno) -> float:
     "/{infermiere_id}", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND, BAD_REQUEST)
 )
 def get_banca_ore(
-    infermiere_id: int, mese: str, current_user: CurrentUserDep, db: DbDep
+    infermiere_id: int,
+    mese: Annotated[str, Query(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")],
+    current_user: CurrentUserDep,
+    db: DbDep,
 ) -> BancaOreRead:
     """Saldo ore mensile: ore effettuate (da turni assegnati attivi, dall'inizio del
     mese fino a oggi incluso) meno ore contrattuali.
@@ -48,11 +52,13 @@ def get_banca_ore(
                 detail="Infermiere di un altro reparto",
             )
 
+    anno, mese_num = (int(parte) for parte in mese.split("-", 1))
     try:
-        anno, mese_num = (int(parte) for parte in mese.split("-", 1))
+        inizio_mese = datetime.date(anno, mese_num, 1)
     except ValueError as exc:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Formato mese non valido, atteso YYYY-MM"
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Formato mese non valido, atteso YYYY-MM",
         ) from exc
 
     profilo = db.get(ProfiloInfermiere, infermiere_id)
@@ -62,7 +68,7 @@ def get_banca_ore(
         )
 
     oggi = datetime.date.today()
-    fine_mese = (datetime.date(anno, mese_num, 1) + datetime.timedelta(days=31)).replace(day=1)
+    fine_mese = (inizio_mese + datetime.timedelta(days=31)).replace(day=1)
     fine_periodo = min(oggi + datetime.timedelta(days=1), fine_mese)
 
     turni_mese = (
@@ -71,7 +77,7 @@ def get_banca_ore(
         .filter(
             AssegnazioneTurno.infermiere_id == infermiere_id,
             AssegnazioneTurno.stato == StatoAssegnazione.attiva,
-            Turno.data >= datetime.date(anno, mese_num, 1),
+            Turno.data >= inizio_mese,
             Turno.data < fine_periodo,
         )
         .all()

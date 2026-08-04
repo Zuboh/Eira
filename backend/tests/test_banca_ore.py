@@ -1,5 +1,7 @@
 import datetime
 
+import pytest
+
 from tests.conftest import auth_headers
 
 
@@ -61,3 +63,12 @@ def test_infermiere_cannot_view_others_banca_ore(client, db_session, reparti):
     response = client.get(f"/api/v1/banca-ore/{infermiere_b.id}?mese={mese}", headers=headers)
 
     assert response.status_code == 403
+
+
+@pytest.mark.parametrize("mese", ["2026-00", "2026-13", "26-01", "2026-1", "not-a-month"])
+def test_banca_ore_rejects_invalid_month(client, db_session, reparti, mese):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.get(f"/api/v1/banca-ore/{infermiere.id}?mese={mese}", headers=headers)
+    assert response.status_code == 422

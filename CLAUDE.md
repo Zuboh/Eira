@@ -60,13 +60,12 @@ If a command fails because of local environment, dependency, network, or sandbox
 const { data } = await someApiCall(...)
 ```
 
-- If a backend router/schema changes, regenerate:
+- If a backend router/schema changes, regenerate both artifacts atomically:
 
 ```bash
-cd backend
-uv run python -c "import json; from app.main import app; print(json.dumps(app.openapi()))" > ../frontend/src/api/openapi.json
-cd ../frontend
-npx openapi-typescript src/api/openapi.json -o src/api/schema.d.ts
+cd frontend
+npm run openapi:update
+npm run openapi:check
 ```
 
 - Note: this project currently uses TypeScript 6; `openapi-typescript@7.x` may need `--legacy-peer-deps` during install because its peer dependency advertises TypeScript 5.

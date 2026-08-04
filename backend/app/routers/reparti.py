@@ -1,8 +1,9 @@
 import datetime
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import BaseModel
 
+from app.core.rate_limit import limiter
 from app.deps import DbDep
 from app.models.enums import StatoAssegnazione, StatoUtente
 from app.models.reparto import Reparto
@@ -22,13 +23,15 @@ class RepartoRead(BaseModel):
 
 
 @router.get("/")
-def list_reparti(db: DbDep) -> list[RepartoRead]:
+@limiter.limit("30/minute")
+def list_reparti(request: Request, db: DbDep) -> list[RepartoRead]:
     reparti = db.query(Reparto).order_by(Reparto.nome).all()
     return [RepartoRead.model_validate(reparto) for reparto in reparti]
 
 
 @router.get("/{reparto_id}/utenti")
-def list_utenti_by_reparto(reparto_id: int, db: DbDep) -> list[UtenteTile]:
+@limiter.limit("30/minute")
+def list_utenti_by_reparto(request: Request, reparto_id: int, db: DbDep) -> list[UtenteTile]:
     reparto = db.get(Reparto, reparto_id)
     if reparto is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Reparto non trovato")
@@ -42,11 +45,16 @@ def list_utenti_by_reparto(reparto_id: int, db: DbDep) -> list[UtenteTile]:
 
 
 @router.get("/{reparto_id}/utenti/{utente_id}/turno-oggi")
+@limiter.limit("30/minute")
 def get_turno_oggi_utente(
-    reparto_id: int, utente_id: int, db: DbDep
+    request: Request, reparto_id: int, utente_id: int, db: DbDep
 ) -> TurnoOggiRead | None:
     utente = db.get(Utente, utente_id)
-    if utente is None or utente.reparto_id != reparto_id:
+    if (
+        utente is None
+        or utente.reparto_id != reparto_id
+        or utente.stato != StatoUtente.attivo
+    ):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Utente non trovato in questo reparto",

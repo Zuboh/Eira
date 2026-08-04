@@ -1,11 +1,15 @@
 import datetime
+from pathlib import Path
+
+import pytest
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.avatars import AVATAR_DIR
 from app.core.security import hash_password
 from app.models.enums import RuoloUtente, StatoUtente
 from app.models.password_reset import PasswordResetRequirement
 from app.models.utente import Utente
-from tests.conftest import auth_headers
+from tests.conftest import TEST_PNG, auth_headers
 
 
 def test_login_rejects_in_attesa(client, caposala_a, db_session):
@@ -80,7 +84,7 @@ def test_upload_my_avatar_happy_path(client, db_session, reparti):
     response = client.post(
         "/api/v1/auth/me/avatar",
         headers=headers,
-        files={"file": ("foto.jpg", b"\xff\xd8\xff\xe0fake-jpeg-bytes", "image/jpeg")},
+        files={"file": ("foto.png", TEST_PNG, "image/png")},
     )
 
     assert response.status_code == 200, response.text
@@ -88,6 +92,7 @@ def test_upload_my_avatar_happy_path(client, db_session, reparti):
     assert body["avatar_url"].startswith("/static/avatars/")
 
     filename = body["avatar_url"].removeprefix("/static/avatars/")
+    assert filename.endswith(".webp")
     saved_path = AVATAR_DIR / filename
     assert saved_path.exists()
     saved_path.unlink(missing_ok=True)
@@ -105,6 +110,30 @@ def test_upload_my_avatar_rejects_unsupported_content_type(client, db_session, r
     )
 
     assert response.status_code == 400, response.text
+
+
+def test_upload_my_avatar_rejects_corrupt_declared_image(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _create_infermiere(db_session, reparto_a, email="nurse.corrupt@example.com")
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.post(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        files={"file": ("foto.png", b"not-a-real-image", "image/png")},
+    )
+    assert response.status_code == 400
+
+
+def test_upload_my_avatar_rejects_empty_image(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _create_infermiere(db_session, reparto_a, email="nurse.empty@example.com")
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.post(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        files={"file": ("foto.png", b"", "image/png")},
+    )
+    assert response.status_code == 400
 
 
 def test_upload_my_avatar_rejects_oversized_file(client, db_session, reparti):
@@ -139,7 +168,7 @@ def test_upload_my_avatar_replaces_old_avatar_file(client, db_session, reparti):
     first = client.post(
         "/api/v1/auth/me/avatar",
         headers=headers,
-        files={"file": ("foto1.jpg", b"\xff\xd8\xff\xe0first", "image/jpeg")},
+        files={"file": ("foto1.png", TEST_PNG, "image/png")},
     )
     assert first.status_code == 200, first.text
     first_filename = first.json()["avatar_url"].removeprefix("/static/avatars/")
@@ -149,7 +178,7 @@ def test_upload_my_avatar_replaces_old_avatar_file(client, db_session, reparti):
     second = client.post(
         "/api/v1/auth/me/avatar",
         headers=headers,
-        files={"file": ("foto2.jpg", b"\xff\xd8\xff\xe0second", "image/jpeg")},
+        files={"file": ("foto2.png", TEST_PNG, "image/png")},
     )
     assert second.status_code == 200, second.text
     second_filename = second.json()["avatar_url"].removeprefix("/static/avatars/")
@@ -158,6 +187,63 @@ def test_upload_my_avatar_replaces_old_avatar_file(client, db_session, reparti):
     assert not first_path.exists()
     assert second_path.exists()
     second_path.unlink(missing_ok=True)
+
+
+def test_upload_my_avatar_removes_new_file_and_rolls_back_on_commit_failure(
+    client, db_session, reparti, monkeypatch
+):
+    reparto_a, _ = reparti
+    infermiere = _create_infermiere(db_session, reparto_a, email="nurse.rollback@example.com")
+    headers = auth_headers(client, infermiere.email, "password123")
+    files_before = {path.name for path in AVATAR_DIR.glob("*")}
+
+    def fail_commit():
+        raise SQLAlchemyError("simulated commit failure")
+
+    monkeypatch.setattr(db_session, "commit", fail_commit)
+    with pytest.raises(SQLAlchemyError, match="simulated commit failure"):
+        client.post(
+            "/api/v1/auth/me/avatar",
+            headers=headers,
+            files={"file": ("foto.png", TEST_PNG, "image/png")},
+        )
+
+    assert {path.name for path in AVATAR_DIR.glob("*")} == files_before
+    assert infermiere.avatar_path is None
+
+
+def test_upload_my_avatar_old_file_cleanup_failure_does_not_fail_request(
+    client, db_session, reparti, monkeypatch, caplog
+):
+    reparto_a, _ = reparti
+    infermiere = _create_infermiere(db_session, reparto_a, email="nurse.cleanup@example.com")
+    old_path = AVATAR_DIR / "old-cleanup-test.webp"
+    old_path.parent.mkdir(parents=True, exist_ok=True)
+    old_path.write_bytes(TEST_PNG)
+    infermiere.avatar_path = old_path.name
+    db_session.commit()
+    headers = auth_headers(client, infermiere.email, "password123")
+
+    original_unlink = Path.unlink
+
+    def fail_only_for_old(path: Path, *args, **kwargs):
+        if path == old_path:
+            raise PermissionError("simulated cleanup failure")
+        return original_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "unlink", fail_only_for_old)
+    response = client.post(
+        "/api/v1/auth/me/avatar",
+        headers=headers,
+        files={"file": ("foto.png", TEST_PNG, "image/png")},
+    )
+
+    assert response.status_code == 200, response.text
+    assert old_path.exists()
+    assert "Impossibile eliminare il file avatar" in caplog.text
+    new_path = AVATAR_DIR / response.json()["avatar_url"].removeprefix("/static/avatars/")
+    new_path.unlink(missing_ok=True)
+    original_unlink(old_path, missing_ok=True)
 
 
 def test_register_happy_path(client, reparti, db_session):
@@ -418,3 +504,26 @@ def test_login_per_account_backoff_after_single_failure(client, caposala_a):
         data={"username": str(caposala_a.id), "password": "password123"},
     )
     assert third.status_code == 429, third.text
+
+
+def test_register_rejects_password_over_72_utf8_bytes(client, reparti):
+    reparto_a, _ = reparti
+    response = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "unicode@example.com",
+            "password": "è" * 37,
+            "nome": "Unicode",
+            "cognome": "Test",
+            "reparto_id": reparto_a.id,
+        },
+    )
+    assert response.status_code == 422
+
+
+def test_login_with_oversized_password_fails_without_server_error(client, caposala_a):
+    response = client.post(
+        "/api/v1/auth/token",
+        data={"username": str(caposala_a.id), "password": "è" * 37},
+    )
+    assert response.status_code == 401

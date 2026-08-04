@@ -19,8 +19,8 @@ const emit = defineEmits<{ save: [] }>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Motivo">
-        <InputText v-model="motivo" />
+      <FormField label="Motivo" for-id="rifiuto-ferie-motivo">
+        <InputText id="rifiuto-ferie-motivo" v-model="motivo" />
       </FormField>
       <Button type="submit" label="Conferma rifiuto" severity="secondary" />
     </form>

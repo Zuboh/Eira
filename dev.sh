@@ -14,7 +14,7 @@ done
 
 trap 'echo "Arresto..."; kill 0' EXIT INT TERM
 
-(cd backend && uv run fastapi dev --port 8000) &
+(cd backend && uv run python -m app.cli.db bootstrap && uv run fastapi dev --port 8000) &
 (cd frontend && npm run dev -- --port 5173) &
 
 echo "Backend:  http://localhost:8000/docs"

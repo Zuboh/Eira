@@ -134,3 +134,9 @@ def test_turno_oggi_utente_wrong_reparto_404(client, db_session, reparti):
         f"/api/v1/reparti/{reparto_b.id}/utenti/{utente.id}/turno-oggi"
     )
     assert response.status_code == 404, response.text
+
+
+def test_public_reparti_endpoint_is_rate_limited(client, reparti):
+    for _ in range(30):
+        assert client.get("/api/v1/reparti/").status_code == 200
+    assert client.get("/api/v1/reparti/").status_code == 429

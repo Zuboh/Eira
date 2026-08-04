@@ -24,7 +24,12 @@ backend/app/
   models/              # SQLAlchemy ORM models + enums
   schemas/             # Pydantic request/response schemas
   routers/             # API endpoints per dominio
+  services/            # policy/workflow condivisi tra router
+  cli/db.py            # bootstrap Alembic non distruttivo
 ```
+
+Lo schema versionato vive in `backend/alembic/`; `create_all` non è un
+meccanismo di migrazione.
 
 ## Layer e responsabilità
 
@@ -36,10 +41,16 @@ Responsabilità:
 - configurare CORS;
 - collegare rate limiter;
 - registrare routers con prefisso `/api/v1`;
-- creare metadata DB e seed dati dev in startup;
+- costruire l'app tramite `create_app` e lifespan iniettabile;
+- validare configurazione e avviare il seed solo in development/E2E;
 - esporre `/health`.
 
 Non aggiungere business logic endpoint in `main.py`.
+
+Le migrazioni vengono applicate esplicitamente prima dell'avvio con
+`python -m app.cli.db bootstrap` è il comando canonico in locale, E2E e deploy:
+adotta una baseline legacy verificata oppure aggiorna un database versionato.
+`upgrade` è riservato a database che contengono già `alembic_version`.
 
 ### `deps.py`
 
@@ -123,6 +134,8 @@ Regole:
 - controllare sempre `reparto_id` quando una risorsa è legata al reparto;
 - infermiere può consultare solo risorse consentite dal suo contesto;
 - caposala può gestire solo risorse del proprio reparto.
+- per pazienti e dati clinici riusare `services/clinical_access.py`, senza
+  duplicare controlli reparto/turno nei singoli router.
 
 Esempi già presenti:
 

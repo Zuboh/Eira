@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 
-from app.core.avatars import AVATAR_DIR, store_avatar_file
+from app.core.avatars import commit_avatar_update, store_avatar_file
 from app.core.login_attempts import record_failure, record_success, seconds_until_retry
 from app.core.rate_limit import limiter
 from app.core.security import create_access_token, hash_password, verify_password
@@ -93,12 +93,7 @@ async def upload_my_avatar(
 ) -> MeRead:
     filename = await store_avatar_file(file)
 
-    old_path = current_user.avatar_path
-    current_user.avatar_path = filename
-    db.commit()
-    db.refresh(current_user)
-    if old_path:
-        (AVATAR_DIR / old_path).unlink(missing_ok=True)
+    commit_avatar_update(db, current_user, filename)
 
     reparto = db.get(Reparto, current_user.reparto_id)
     return MeRead(

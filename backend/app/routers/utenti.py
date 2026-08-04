@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.exc import IntegrityError
 
-from app.core.avatars import AVATAR_DIR, store_avatar_file
+from app.core.avatars import commit_avatar_update, store_avatar_file
 from app.core.security import generate_temporary_password, hash_password
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente, StatoUtente
@@ -102,12 +102,7 @@ async def upload_avatar(
 
     filename = await store_avatar_file(file)
 
-    old_path = utente.avatar_path
-    utente.avatar_path = filename
-    db.commit()
-    db.refresh(utente)
-    if old_path:
-        (AVATAR_DIR / old_path).unlink(missing_ok=True)
+    commit_avatar_update(db, utente, filename)
 
     return UtenteRead.model_validate(utente)
 

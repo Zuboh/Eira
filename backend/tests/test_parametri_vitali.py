@@ -49,13 +49,33 @@ def _infermiere(db_session, reparto_id, email="nurse.a@example.com"):
     db_session.add(utente)
     db_session.commit()
     db_session.refresh(utente)
+    from app.models.enums import StatoAssegnazione, TipoTurno
+    from app.models.turno import AssegnazioneTurno, Turno
+
+    turno = Turno(
+        data=datetime.date.today(),
+        tipo=TipoTurno.notte,
+        reparto_id=reparto_id,
+        ora_inizio=datetime.time(22, 0),
+        ora_fine=datetime.time(7, 0),
+    )
+    db_session.add(turno)
+    db_session.flush()
+    db_session.add(
+        AssegnazioneTurno(
+            turno_id=turno.id,
+            infermiere_id=utente.id,
+            stato=StatoAssegnazione.attiva,
+        )
+    )
+    db_session.commit()
     return utente
 
 
 def test_create_and_list_parametri_vitali(client, db_session, reparti):
     reparto_a, _ = reparti
-    from app.models.enums import TipoTurno
-    from app.models.turno import Turno
+    from app.models.enums import StatoAssegnazione, TipoTurno
+    from app.models.turno import AssegnazioneTurno, Turno
 
     infermiere = _infermiere(db_session, reparto_a.id)
     paziente = _paziente(reparto_a.id)
@@ -70,6 +90,14 @@ def test_create_and_list_parametri_vitali(client, db_session, reparti):
     db_session.commit()
     db_session.refresh(paziente)
     db_session.refresh(turno)
+    db_session.add(
+        AssegnazioneTurno(
+            turno_id=turno.id,
+            infermiere_id=infermiere.id,
+            stato=StatoAssegnazione.attiva,
+        )
+    )
+    db_session.commit()
 
     headers = auth_headers(client, infermiere.email, "password123")
     response = client.post(

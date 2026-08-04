@@ -1,4 +1,5 @@
 import { eiraClient } from '@/api/eiraClient'
+import { unwrapData } from '@/api/apiError'
 import type { components } from '@/api/schema'
 
 export type Paziente = components['schemas']['PazienteRead']
@@ -7,47 +8,9 @@ export type PazienteUpdatePayload = components['schemas']['PazienteUpdate']
 
 type ApiResponse<T> = Promise<{ data: T }>
 
-type OpenApiResult<TData, TError> = {
-  data?: TData
-  error?: TError
-  response: Response
-}
-
-function formatOpenApiError(error: unknown, response: Response) {
-  if (error === undefined) {
-    return `Request failed with status ${response.status}`
-  }
-
-  if (typeof error === 'string') {
-    return error
-  }
-
-  try {
-    return JSON.stringify(error)
-  } catch {
-    return `Request failed with status ${response.status}`
-  }
-}
-
-function unwrapData<TData, TError>(
-  result: OpenApiResult<TData, TError>,
-): { data: TData } {
-  if (result.error !== undefined) {
-    throw new Error(formatOpenApiError(result.error, result.response))
-  }
-
-  if (result.data === undefined) {
-    throw new Error(
-      `Response data is undefined for status ${result.response.status}`,
-    )
-  }
-
-  return { data: result.data }
-}
-
 export async function listPazienti(): ApiResponse<Paziente[]> {
   const result = await eiraClient.GET('/api/v1/pazienti/')
-  return unwrapData(result)
+  return unwrapData(result, 'listPazienti')
 }
 
 export async function getPaziente(id: number): ApiResponse<Paziente> {
@@ -58,7 +21,7 @@ export async function getPaziente(id: number): ApiResponse<Paziente> {
       },
     },
   })
-  return unwrapData(result)
+  return unwrapData(result, 'getPaziente')
 }
 
 export async function createPaziente(
@@ -67,7 +30,7 @@ export async function createPaziente(
   const result = await eiraClient.POST('/api/v1/pazienti/', {
     body: payload,
   })
-  return unwrapData(result)
+  return unwrapData(result, 'createPaziente')
 }
 
 export async function updatePaziente(
@@ -82,5 +45,5 @@ export async function updatePaziente(
     },
     body: payload,
   })
-  return unwrapData(result)
+  return unwrapData(result, 'updatePaziente')
 }

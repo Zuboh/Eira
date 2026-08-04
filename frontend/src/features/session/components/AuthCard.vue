@@ -26,6 +26,7 @@ const turnoLabel = computed(() =>
   <main class="auth-view">
     <section class="auth-card" aria-label="Eira">
       <div class="auth-header">
+        <h1 class="auth-title">Eira</h1>
         <RepartoBadge v-if="reparto" :nome="reparto" />
         <div v-if="subtitle" class="auth-identity">
           <UserAvatar
@@ -74,6 +75,10 @@ const turnoLabel = computed(() =>
 
 .auth-header {
   text-align: center;
+}
+
+.auth-title {
+  margin-bottom: 12px;
 }
 
 .auth-identity {

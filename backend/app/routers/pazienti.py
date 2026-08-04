@@ -1,29 +1,13 @@
-import datetime
-
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.deps import CurrentUserDep, DbDep, require_roles
-from app.models.enums import RuoloUtente, StatoAssegnazione
+from app.models.enums import RuoloUtente
 from app.models.paziente import Paziente
-from app.models.turno import AssegnazioneTurno, Turno
 from app.openapi_errors import FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.paziente import PazienteCreate, PazienteRead, PazienteUpdate
+from app.services.clinical_access import has_active_shift_today, require_patient_access
 
 router = APIRouter(prefix="/pazienti", tags=["pazienti"])
-
-
-def _infermiere_ha_turno_attivo(current_user, db) -> bool:
-    return (
-        db.query(AssegnazioneTurno)
-        .join(Turno, AssegnazioneTurno.turno_id == Turno.id)
-        .filter(
-            AssegnazioneTurno.infermiere_id == current_user.id,
-            AssegnazioneTurno.stato == StatoAssegnazione.attiva,
-            Turno.data == datetime.date.today(),
-        )
-        .first()
-        is not None
-    )
 
 
 @router.post(
@@ -45,8 +29,8 @@ def create_paziente(
 
 @router.get("/", responses=errors(UNAUTHORIZED))
 def list_pazienti(current_user: CurrentUserDep, db: DbDep) -> list[PazienteRead]:
-    if current_user.ruolo == RuoloUtente.infermiere and not _infermiere_ha_turno_attivo(
-        current_user, db
+    if current_user.ruolo == RuoloUtente.infermiere and not has_active_shift_today(
+        db, current_user.id, current_user.reparto_id
     ):
         return []
 
@@ -61,19 +45,7 @@ def list_pazienti(current_user: CurrentUserDep, db: DbDep) -> list[PazienteRead]
 
 @router.get("/{paziente_id}", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND))
 def get_paziente(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> PazienteRead:
-    paziente = db.get(Paziente, paziente_id)
-    if paziente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paziente non trovato")
-    if paziente.reparto_id != current_user.reparto_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Paziente di un altro reparto"
-        )
-    if current_user.ruolo == RuoloUtente.infermiere and not _infermiere_ha_turno_attivo(
-        current_user, db
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Nessun turno attivo assegnato"
-        )
+    paziente = require_patient_access(db, current_user, paziente_id)
     return PazienteRead.model_validate(paziente)
 
 

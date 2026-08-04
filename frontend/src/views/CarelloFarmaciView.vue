@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
@@ -13,6 +13,29 @@ import { useCarelloFarmaci } from '@/features/carello-farmaci/useCarelloFarmaci'
 import { formatDateTimeCompactIt } from '@/utils/dateFormat'
 
 const activeTab = ref<'stock' | 'movimenti'>('stock')
+type CarelloTab = typeof activeTab.value
+const tabs: CarelloTab[] = ['stock', 'movimenti']
+
+async function selectTab(tab: CarelloTab, focus = false) {
+  activeTab.value = tab
+  if (focus) {
+    await nextTick()
+    document.getElementById(`carello-tab-${tab}`)?.focus()
+  }
+}
+
+function onTabKeydown(event: KeyboardEvent, current: CarelloTab) {
+  const index = tabs.indexOf(current)
+  let next: CarelloTab | undefined
+  if (event.key === 'ArrowRight') next = tabs[(index + 1) % tabs.length]
+  else if (event.key === 'ArrowLeft') {
+    next = tabs[(index - 1 + tabs.length) % tabs.length]
+  } else if (event.key === 'Home') next = tabs[0]
+  else if (event.key === 'End') next = tabs[tabs.length - 1]
+  if (!next) return
+  event.preventDefault()
+  void selectTab(next, true)
+}
 
 const {
   movimenti,
@@ -44,24 +67,43 @@ onMounted(async () => {
 
     <div class="tabs" role="tablist" aria-label="Carello farmaci">
       <button
+        id="carello-tab-stock"
         type="button"
         class="tab"
+        role="tab"
+        aria-controls="carello-panel-stock"
+        :aria-selected="activeTab === 'stock'"
+        :tabindex="activeTab === 'stock' ? 0 : -1"
         :class="{ active: activeTab === 'stock' }"
-        @click="activeTab = 'stock'"
+        @click="selectTab('stock')"
+        @keydown="onTabKeydown($event, 'stock')"
       >
         Stock
       </button>
       <button
+        id="carello-tab-movimenti"
         type="button"
         class="tab"
+        role="tab"
+        aria-controls="carello-panel-movimenti"
+        :aria-selected="activeTab === 'movimenti'"
+        :tabindex="activeTab === 'movimenti' ? 0 : -1"
         :class="{ active: activeTab === 'movimenti' }"
-        @click="activeTab = 'movimenti'"
+        @click="selectTab('movimenti')"
+        @keydown="onTabKeydown($event, 'movimenti')"
       >
         Storico movimenti
       </button>
     </div>
 
-    <EiraCard v-if="activeTab === 'stock'" flush>
+    <EiraCard
+      v-if="activeTab === 'stock'"
+      id="carello-panel-stock"
+      flush
+      role="tabpanel"
+      aria-labelledby="carello-tab-stock"
+      tabindex="0"
+    >
       <div class="filters">
         <FormField label="Cerca farmaco" for-id="farmaco-search">
           <InputText
@@ -142,7 +184,15 @@ onMounted(async () => {
       </EiraTable>
     </EiraCard>
 
-    <EiraCard v-else flush title="Storico movimenti">
+    <EiraCard
+      v-else
+      id="carello-panel-movimenti"
+      flush
+      title="Storico movimenti"
+      role="tabpanel"
+      aria-labelledby="carello-tab-movimenti"
+      tabindex="0"
+    >
       <EiraTable
         flush
         :loading="movimentiLoading"

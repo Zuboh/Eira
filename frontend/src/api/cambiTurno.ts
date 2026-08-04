@@ -1,4 +1,5 @@
 import { eiraClient } from '@/api/eiraClient'
+import { unwrapData, unwrapVoid } from '@/api/apiError'
 import type { components } from '@/api/schema'
 
 export type StatoCambioTurno = components['schemas']['StatoCambioTurno']
@@ -30,39 +31,6 @@ export type RispostaCaposalaPayload =
 
 type ApiDataResponse<T> = Promise<{ data: T }>
 
-type EiraResult<T> = {
-  data?: T
-  error?: unknown
-}
-
-function formatApiError(error: unknown) {
-  if (error instanceof Error) {
-    return error.message
-  }
-
-  if (typeof error === 'string') {
-    return error
-  }
-
-  try {
-    return JSON.stringify(error)
-  } catch {
-    return 'Unknown API error'
-  }
-}
-
-function unwrapData<T>(result: EiraResult<T>, operation: string): T {
-  if (result.error !== undefined) {
-    throw new Error(`${operation} failed: ${formatApiError(result.error)}`)
-  }
-
-  if (result.data === undefined) {
-    throw new Error(`${operation} failed: response data is undefined`)
-  }
-
-  return result.data
-}
-
 export function normalizeRichiestaCambioTurno(
   richiesta: RichiestaCambioTurnoRead,
 ): RichiestaCambioTurno {
@@ -86,7 +54,7 @@ function wrapRichiestaCambioTurno(richiesta: RichiestaCambioTurnoRead): {
 export async function listCambiTurno(): ApiDataResponse<
   RichiestaCambioTurno[]
 > {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.GET('/api/v1/cambi-turno/'),
     'listCambiTurno',
   )
@@ -97,7 +65,7 @@ export async function listCambiTurno(): ApiDataResponse<
 export async function createRichiestaCambioTurno(
   payload: RichiestaCambioTurnoCreatePayload,
 ): ApiDataResponse<RichiestaCambioTurno> {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.POST('/api/v1/cambi-turno/', {
       body: payload,
     }),
@@ -111,7 +79,7 @@ export async function rispondiCollega(
   id: number,
   payload: RispostaCollegaPayload,
 ): ApiDataResponse<RichiestaCambioTurno> {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.POST(
       '/api/v1/cambi-turno/{richiesta_id}/risposta-collega',
       {
@@ -133,7 +101,7 @@ export async function rispondiCaposala(
   id: number,
   payload: RispostaCaposalaPayload,
 ): ApiDataResponse<RichiestaCambioTurno> {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.POST(
       '/api/v1/cambi-turno/{richiesta_id}/risposta-caposala',
       {
@@ -152,14 +120,9 @@ export async function rispondiCaposala(
 }
 
 export async function deleteCambioTurno(id: number): Promise<void> {
-  const { error } = await eiraClient.DELETE(
-    '/api/v1/cambi-turno/{richiesta_id}',
-    {
-      params: { path: { richiesta_id: id } },
-    },
-  )
+  const result = await eiraClient.DELETE('/api/v1/cambi-turno/{richiesta_id}', {
+    params: { path: { richiesta_id: id } },
+  })
 
-  if (error !== undefined) {
-    throw new Error(`deleteCambioTurno failed: ${formatApiError(error)}`)
-  }
+  unwrapVoid(result, 'deleteCambioTurno')
 }

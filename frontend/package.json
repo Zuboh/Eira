@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.18 <23",
+    "npm": ">=10"
+  },
   "scripts": {
     "dev": "vite",
     "typecheck": "vue-tsc --noEmit",
@@ -13,6 +17,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "openapi:update": "../scripts/update-openapi.sh",
+    "openapi:check": "../scripts/check-openapi.sh",
     "audit:a11y": "node scripts/a11y-audit.mjs"
   },
   "dependencies": {

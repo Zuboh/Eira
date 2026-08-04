@@ -1,4 +1,5 @@
 import { eiraClient } from '@/api/eiraClient'
+import { unwrapData } from '@/api/apiError'
 import type { components } from '@/api/schema'
 
 export type ValutazioneNortonCreatePayload =
@@ -11,39 +12,6 @@ export type ValutazioniAggregate =
   components['schemas']['ValutazioniAggregateRead']
 
 type ApiDataResponse<T> = Promise<{ data: T }>
-
-type EiraResult<T> = {
-  data?: T
-  error?: unknown
-}
-
-function formatApiError(error: unknown) {
-  if (error instanceof Error) {
-    return error.message
-  }
-
-  if (typeof error === 'string') {
-    return error
-  }
-
-  try {
-    return JSON.stringify(error)
-  } catch {
-    return 'Unknown API error'
-  }
-}
-
-function unwrapData<T>(result: EiraResult<T>, operation: string) {
-  if (result.error !== undefined) {
-    throw new Error(`${operation} failed: ${formatApiError(result.error)}`)
-  }
-
-  if (result.data === undefined) {
-    throw new Error(`${operation} failed: response data is undefined`)
-  }
-
-  return { data: result.data }
-}
 
 export async function getValutazioni(
   pazienteId: number,

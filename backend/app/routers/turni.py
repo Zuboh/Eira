@@ -9,7 +9,6 @@ from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.enums import (
     RuoloUtente,
     StatoAssegnazione,
-    StatoCambioTurno,
     StatoUtente,
 )
 from app.models.turno import AssegnazioneTurno, Turno
@@ -189,12 +188,17 @@ def assegna_turno(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Turno non trovato")
     if turno.reparto_id != current_user.reparto_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Turno di un altro reparto")
+    if turno.data < datetime.date.today():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Non è possibile assegnare un turno passato"
+        )
 
     infermiere = db.get(Utente, payload.infermiere_id)
     if (
         infermiere is None
         or infermiere.reparto_id != current_user.reparto_id
         or infermiere.ruolo != RuoloUtente.infermiere
+        or infermiere.stato != StatoUtente.attivo
     ):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Infermiere non assegnabile")
 
@@ -246,27 +250,31 @@ def rimuovi_assegnazione(
     if turno is None or turno.reparto_id != current_user.reparto_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Turno di un altro reparto")
 
-    richiesta_pendente = (
+    richiesta_collegata = (
         db.query(RichiestaCambioTurno)
         .filter(
             or_(
                 RichiestaCambioTurno.assegnazione_turno_id == assegnazione_id,
                 RichiestaCambioTurno.assegnazione_collega_id == assegnazione_id,
             ),
-            RichiestaCambioTurno.stato.in_(
-                (StatoCambioTurno.in_attesa_collega, StatoCambioTurno.in_attesa_caposala)
-            ),
         )
         .first()
     )
-    if richiesta_pendente is not None:
+    if richiesta_collegata is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Esiste una richiesta di cambio turno pendente su questa assegnazione",
+            detail="Esiste una richiesta di cambio turno collegata a questa assegnazione",
         )
 
     db.delete(assegnazione)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Assegnazione collegata a dati storici non eliminabili",
+        ) from exc
 
 
 @router.get(

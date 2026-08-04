@@ -15,6 +15,13 @@ export const SEED_INFERMIERE = {
   cognome: 'Bianchi',
   password: 'password',
 }
+export const E2E_CLINICAL_INFERMIERE = {
+  nome: 'Sara',
+  cognome: 'ConsegnaE2E',
+  email: 'consegna.sbar@eira.local',
+  ruolo: 'infermiere' as const,
+  password: 'password',
+}
 
 export type SeedUser = { id: number; nome: string; cognome: string }
 
@@ -100,6 +107,19 @@ export async function createUtente(
     password: string
   },
 ): Promise<SeedUser> {
+  const existingResponse = await request.get(`${API_BASE}/utenti/`, {
+    headers: authHeaders(caposalaToken),
+  })
+  if (!existingResponse.ok()) {
+    throw new Error(
+      `listUtenti failed: ${existingResponse.status()} ${await existingResponse.text()}`,
+    )
+  }
+  const existing = (
+    (await existingResponse.json()) as (SeedUser & { email: string })[]
+  ).find((utente) => utente.email === payload.email)
+  if (existing) return existing
+
   // reparto_id is required by the request schema but ignored server-side
   // (backend/app/routers/utenti.py forces current_user.reparto_id) — passed
   // through anyway for a valid, self-consistent payload.
@@ -110,6 +130,19 @@ export async function createUtente(
   if (!res.ok())
     throw new Error(`createUtente failed: ${res.status()} ${await res.text()}`)
   return res.json()
+}
+
+export function ensureClinicalInfermiere(
+  request: APIRequestContext,
+  caposalaToken: string,
+  repartoId: number,
+): Promise<SeedUser> {
+  return createUtente(
+    request,
+    caposalaToken,
+    repartoId,
+    E2E_CLINICAL_INFERMIERE,
+  )
 }
 
 export async function createTurno(
@@ -123,6 +156,30 @@ export async function createTurno(
     ora_fine: string
   },
 ): Promise<{ id: number }> {
+  const calendarResponse = await request.get(
+    `${API_BASE}/turni/calendario?da=${payload.data}&a=${payload.data}`,
+    { headers: authHeaders(caposalaToken) },
+  )
+  if (!calendarResponse.ok()) {
+    throw new Error(
+      `getCalendarioTurni failed: ${calendarResponse.status()} ${await calendarResponse.text()}`,
+    )
+  }
+  const existing = (
+    (await calendarResponse.json()) as {
+      id: number
+      data: string
+      tipo: string
+      reparto_id: number
+    }[]
+  ).find(
+    (turno) =>
+      turno.data === payload.data &&
+      turno.tipo === payload.tipo &&
+      turno.reparto_id === payload.reparto_id,
+  )
+  if (existing) return existing
+
   const res = await request.post(`${API_BASE}/turni/`, {
     headers: authHeaders(caposalaToken),
     data: payload,
@@ -138,6 +195,27 @@ export async function assegnaTurno(
   turnoId: number,
   infermiereId: number,
 ): Promise<{ id: number }> {
+  const turniResponse = await request.get(`${API_BASE}/turni/calendario`, {
+    headers: authHeaders(caposalaToken),
+  })
+  if (!turniResponse.ok()) {
+    throw new Error(
+      `getCalendarioTurni failed: ${turniResponse.status()} ${await turniResponse.text()}`,
+    )
+  }
+  const turno = (
+    (await turniResponse.json()) as {
+      id: number
+      assegnazioni: { id: number; infermiere_id: number; stato: string }[]
+    }[]
+  ).find((candidate) => candidate.id === turnoId)
+  const existing = turno?.assegnazioni.find(
+    (assegnazione) =>
+      assegnazione.infermiere_id === infermiereId &&
+      assegnazione.stato === 'attiva',
+  )
+  if (existing) return existing
+
   const res = await request.post(`${API_BASE}/turni/${turnoId}/assegnazioni`, {
     headers: authHeaders(caposalaToken),
     data: { infermiere_id: infermiereId },
@@ -160,6 +238,29 @@ export async function createPaziente(
     reparto_id: number
   },
 ): Promise<{ id: number; nome: string; cognome: string }> {
+  const pazientiResponse = await request.get(`${API_BASE}/pazienti/`, {
+    headers: authHeaders(caposalaToken),
+  })
+  if (!pazientiResponse.ok()) {
+    throw new Error(
+      `listPazienti failed: ${pazientiResponse.status()} ${await pazientiResponse.text()}`,
+    )
+  }
+  const existing = (
+    (await pazientiResponse.json()) as {
+      id: number
+      nome: string
+      cognome: string
+      letto: string
+    }[]
+  ).find(
+    (paziente) =>
+      paziente.nome === payload.nome &&
+      paziente.cognome === payload.cognome &&
+      paziente.letto === payload.letto,
+  )
+  if (existing) return existing
+
   const res = await request.post(`${API_BASE}/pazienti/`, {
     headers: authHeaders(caposalaToken),
     data: payload,

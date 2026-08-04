@@ -8,7 +8,7 @@ fare sul codice.
 
 - [x] `core/security.py` — `hash_password` rotto: passlib 1.7.4 +
       bcrypt 5.0.0 incompatibili (`password cannot be longer than 72
-      bytes` su qualsiasi input). Blocca login/creazione utenti.
+    bytes` su qualsiasi input). Blocca login/creazione utenti.
       Fix: rimosso passlib, `bcrypt` diretto (passlib inadatto,
       nessuna release supporta bcrypt 5.x).
 - [x] DB vuoto → app inutilizzabile: nessun endpoint crea `reparto`,
@@ -48,7 +48,7 @@ puri (dati finti, nessuna query DB):
 - [x] Dashboard caposala: turni scoperti + richieste cambio turno in attesa (`GET /dashboard/caposala`, aggregato con count; test in `tests/test_dashboard.py`)
 - [x] Scoping ruolo: infermiere vede pazienti reparto solo se ha almeno un'assegnazione turno attiva (gate, non filtro per turno specifico — pazienti non hanno turno_id); consegne_sbar già turno-scoped correttamente; test in `tests/test_pazienti.py`
 
-## Backend — findings code review (2026-07-11, non ancora fixati)
+## Backend — findings code review (2026-07-11, chiusi)
 
 Review via 2 agenti `feature-dev:code-reviewer` paralleli (auth/routing +
 data/schema layer). Solo review, nessun fix applicato.
@@ -59,10 +59,10 @@ data/schema layer). Solo review, nessun fix applicato.
       `AttributeError` non gestito (`turni.py:115-130`,
       `cambi_turno.py:129-131`). No FK `ondelete`, no
       `PRAGMA foreign_keys=ON`. Fix: `rimuovi_assegnazione` ora
-      controlla `RichiestaCambioTurno` con `stato` in
-      `in_attesa_collega`/`in_attesa_caposala` prima di cancellare,
-      ritorna 409 invece di procedere; test in
-      `tests/test_turni.py::test_rimuovi_assegnazione_con_cambio_pendente_ritorna_409`.
+      controlla qualsiasi `RichiestaCambioTurno` collegata, pendente o
+      storica e su entrambi i riferimenti, prima di cancellare; ritorna 409
+      e gestisce difensivamente anche `IntegrityError`. Copertura in
+      `tests/test_turni.py` per stati pendenti, approvati e rifiutati.
 - [x] 🔴 Test suite triggera `Base.metadata.create_all` sull'engine di
       produzione (file `.db` reale su disco) ad ogni run, non solo su
       DB in-memory isolato (`main.py:33-35`, `core/database.py:7`,
@@ -96,9 +96,9 @@ design su semantica "turno attivo").
 - [x] Dashboard infermiere — collegare a dati reali (turni via `mie-assegnazioni`, consegne SBAR, pazienti in carico) — `DashboardView.vue`, verificata end-to-end. CEDEMA non aggregato: nessun endpoint cross-paziente, resta accessibile per singolo paziente da `SchedaPazienteView`
 - [x] Dashboard caposala — calendario turni, assegnazione, scoperti, cambi turno in attesa — nuovo endpoint `GET /turni/calendario`, verificata end-to-end (assegna turno scoperto, approva/rifiuta cambio turno)
 - [x] Vista consegna SBAR (form + lettura) — `ConsegneSbarView.vue`, verificata end-to-end
-- [x] Vista valutazioni Norton/Conley (dashboard multidimensionale per paziente) — tab in `SchedaPazienteView.vue`, non ancora verificata end-to-end (creazione CEDEMA/Norton/Conley)
-- [x] Vista cambio turno (richiesta + risposta collega + approvazione caposala) — `CambioTurnoView.vue`, non ancora verificata end-to-end (serve secondo account infermiere)
-- [x] Vista banca ore (saldo mensile infermiere) — `BancaOreView.vue`, non ancora verificata end-to-end (solo code review)
+- [x] Vista valutazioni Norton/Conley (dashboard multidimensionale per paziente) — tab in `SchedaPazienteView.vue`, verificata end-to-end insieme ai parametri vitali
+- [x] Vista cambio turno (richiesta + risposta collega + approvazione caposala) — `CambioTurnoView.vue`, verificata end-to-end con tre attori
+- [x] Vista banca ore (saldo mensile infermiere) — `BancaOreView.vue`, verificata end-to-end per infermiere e caposala
 - [x] Applicare branding da `docs/DESIGN.md` (Google Stitch) — verificato:
       non serve `--logo-accent`; il design system usa `--color-primary`
       come unico accent swappabile.
@@ -109,20 +109,19 @@ Report visuale generato in
 `/private/var/folders/vw/wn7n954d21l5pwb74s8cwmj80000gn/T/architecture-review-20260714-155636.html`
 (file temp, non repo). Candidati di deepening:
 
-- [ ] **Eira data-fetching module** — riallineare frontend ad ADR-0003:
+- [x] **Eira data-fetching module** — riallineare frontend ad ADR-0003:
       sostituire axios/manual types con `openapi-fetch` +
       `openapi-typescript`; concentrare auth headers, 401 policy,
       response shape ed error mapping dietro un'unica interfaccia.
       Top recommendation.
-- [ ] **Reparto access module** — estrarre da `LoginView.vue` il flusso
+- [x] **Reparto access module** — estrarre da `LoginView.vue` il flusso
       reparto dispositivo → tile utente → login → cambio password
       temporanea; lasciare alla view solo presentazione/focus.
-- [ ] **Caposala staff workflow module** — concentrare caricamento
+- [x] **Caposala staff workflow module** — concentrare caricamento
       personale, filtri stato, approvazione utenti, reset password
       temporanea e pending count riusato dalla dashboard.
-- [ ] **Session module** (speculativo) — se auth/ruoli crescono,
-      concentrare token persistence, hydration, 401 e landing route per
-      ruolo fuori da router/store/client sparsi.
+- [x] **Session module** — concentrare token persistence, hydration,
+      401 e landing route per ruolo fuori da router/store/client sparsi.
 
 ### Frontend — code refactor plan (2026-07-16)
 
@@ -130,9 +129,9 @@ Piano operativo scritto in `docs/FRONTEND-CODE-REFACTOR.md`. Obiettivo:
 ridurre debito architetturale senza bloccare la demo, con fasi
 incrementali sempre compilabili.
 
-- [ ] **Fase 0 — baseline/guardrail**: script `typecheck`, README
+- [x] **Fase 0 — baseline/guardrail**: script `typecheck`, README
       frontend reale, pulizia file OS, build sempre verde.
-- [ ] **Fase 1 — quick wins accessibilità/performance**: link
+- [x] **Fase 1 — quick wins accessibilità/performance**: link
       accessibili nelle tabelle, doppio fetch banca ore, aria-label su
       icon button, wrapper responsive per tabelle larghe, lookup
       computed nel calendario caposala.
@@ -184,7 +183,7 @@ Avvio implementazione:
       tab cliniche paziente migrati a `EiraTable`/`EiraCard`/`PageHeader`
       dove applicabile, rimuovendo wrapper tabella locali.
 - [x] Vue best practices: aggiunta sezione `Vue component/view
-      architecture` in `CLAUDE.md`; verificato router già lazy-loaded.
+    architecture` in `CLAUDE.md`; verificato router già lazy-loaded.
 - [x] Dashboard caposala migrata a `PageHeader`, `EiraCard`, `EiraTable`,
       `InlineError` e `FormField`, riducendo CSS locale duplicato.
 - [x] Creati componenti UI comuni `InlineError`, `EmptyState`,

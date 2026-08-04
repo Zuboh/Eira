@@ -160,7 +160,7 @@ async function salvaAvatar() {
 
 .profilo-success {
   margin: 0 0 var(--space-3);
-  color: var(--state-attiva);
+  color: var(--state-attiva-on-tint);
   font-size: 0.8125rem;
 }
 

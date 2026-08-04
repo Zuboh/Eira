@@ -5,7 +5,7 @@ from sqlalchemy import or_
 
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.cambio_turno import RichiestaCambioTurno
-from app.models.enums import RuoloUtente, StatoAssegnazione, StatoCambioTurno
+from app.models.enums import RuoloUtente, StatoAssegnazione, StatoCambioTurno, StatoUtente
 from app.models.turno import AssegnazioneTurno, Turno
 from app.models.utente import Utente
 from app.openapi_errors import BAD_REQUEST, CONFLICT, FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
@@ -45,6 +45,12 @@ def create_richiesta(
         )
     if assegnazione.stato != StatoAssegnazione.attiva:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Assegnazione non più attiva")
+    turno_richiedente = db.get(Turno, assegnazione.turno_id)
+    if turno_richiedente is None or turno_richiedente.data < datetime.date.today():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Non è possibile cambiare un turno passato",
+        )
 
     if payload.collega_id == current_user.id:
         raise HTTPException(
@@ -55,6 +61,7 @@ def create_richiesta(
         collega is None
         or collega.reparto_id != current_user.reparto_id
         or collega.ruolo != RuoloUtente.infermiere
+        or collega.stato != StatoUtente.attivo
     ):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Collega di un altro reparto")
 
@@ -77,12 +84,12 @@ def create_richiesta(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Il turno scelto non appartiene al collega",
             )
-        turno_richiedente = db.get(Turno, assegnazione.turno_id)
         turno_collega = db.get(Turno, assegnazione_collega.turno_id)
         if (
             turno_richiedente is None
             or turno_collega is None
             or turno_collega.reparto_id != current_user.reparto_id
+            or turno_collega.data < datetime.date.today()
         ):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -228,12 +235,29 @@ def risposta_caposala(
         )
     if turno.reparto_id != current_user.reparto_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Richiesta di un altro reparto")
+    if turno.data < datetime.date.today():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Il turno della richiesta è ormai passato",
+        )
     if richiesta.stato != StatoCambioTurno.in_attesa_caposala:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Richiesta non in attesa di approvazione caposala"
         )
 
     if payload.accetta:
+        richiedente = db.get(Utente, richiesta.richiedente_id)
+        collega = db.get(Utente, richiesta.collega_id)
+        if (
+            richiedente is None
+            or collega is None
+            or richiedente.stato != StatoUtente.attivo
+            or collega.stato != StatoUtente.attivo
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Uno degli infermieri non è più attivo",
+            )
         if richiesta.assegnazione_collega_id is not None:
             assegnazione_collega = db.get(
                 AssegnazioneTurno,
@@ -254,6 +278,11 @@ def risposta_caposala(
                 raise HTTPException(
                     status_code=status.HTTP_409_CONFLICT,
                     detail="Turno del collega non più disponibile",
+                )
+            if turno_collega.data < datetime.date.today():
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Il turno del collega è ormai passato",
                 )
 
             ids_scambio = (assegnazione.id, assegnazione_collega.id)

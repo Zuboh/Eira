@@ -1,5 +1,7 @@
 import datetime
 
+import pytest
+
 from tests.conftest import auth_headers
 
 
@@ -156,7 +158,13 @@ def test_assegna_turno_accetta_solo_utenti_infermieri(client, db_session, caposa
     assert response.status_code == 403
 
 
-def test_rimuovi_assegnazione_con_cambio_pendente_ritorna_409(client, db_session, caposala_a, reparti):
+@pytest.mark.parametrize(
+    "stato",
+    ["in_attesa_collega", "approvata", "rifiutata_collega", "rifiutata_caposala"],
+)
+def test_rimuovi_assegnazione_con_qualsiasi_cambio_collegato_ritorna_409(
+    client, db_session, caposala_a, reparti, stato
+):
     from app.models.cambio_turno import RichiestaCambioTurno
     from app.models.enums import StatoAssegnazione, StatoCambioTurno
     from app.models.turno import AssegnazioneTurno
@@ -177,7 +185,7 @@ def test_rimuovi_assegnazione_con_cambio_pendente_ritorna_409(client, db_session
         assegnazione_turno_id=assegnazione.id,
         richiedente_id=infermiere_a.id,
         collega_id=infermiere_b.id,
-        stato=StatoCambioTurno.in_attesa_collega,
+        stato=StatoCambioTurno(stato),
     )
     db_session.add(richiesta)
     db_session.commit()
@@ -191,6 +199,53 @@ def test_rimuovi_assegnazione_con_cambio_pendente_ritorna_409(client, db_session
 
     assert response.status_code == 409, response.text
     assert db_session.get(AssegnazioneTurno, assegnazione.id) is not None
+
+
+def test_rimuovi_assegnazione_riferita_come_turno_collega_ritorna_409(
+    client, db_session, caposala_a, reparti
+):
+    from app.models.cambio_turno import RichiestaCambioTurno
+    from app.models.enums import StatoAssegnazione, StatoCambioTurno
+    from app.models.turno import AssegnazioneTurno
+
+    reparto_a, _ = reparti
+    infermiere_a = _infermiere(db_session, reparto_a.id, "nurse.a@example.com")
+    infermiere_b = _infermiere(db_session, reparto_a.id, "nurse.b@example.com")
+    turno_a = _turno(db_session, reparto_a.id)
+    turno_b = _turno(
+        db_session, reparto_a.id, data=datetime.date.today() + datetime.timedelta(days=1)
+    )
+    assegnazione_a = AssegnazioneTurno(
+        turno_id=turno_a.id,
+        infermiere_id=infermiere_a.id,
+        stato=StatoAssegnazione.attiva,
+    )
+    assegnazione_b = AssegnazioneTurno(
+        turno_id=turno_b.id,
+        infermiere_id=infermiere_b.id,
+        stato=StatoAssegnazione.attiva,
+    )
+    db_session.add_all([assegnazione_a, assegnazione_b])
+    db_session.flush()
+    db_session.add(
+        RichiestaCambioTurno(
+            assegnazione_turno_id=assegnazione_a.id,
+            assegnazione_collega_id=assegnazione_b.id,
+            richiedente_id=infermiere_a.id,
+            collega_id=infermiere_b.id,
+            stato=StatoCambioTurno.rifiutata_collega,
+        )
+    )
+    db_session.commit()
+
+    headers = auth_headers(client, caposala_a.email, "password123")
+    response = client.delete(
+        f"/api/v1/turni/{turno_b.id}/assegnazioni",
+        headers=headers,
+        params={"assegnazione_id": assegnazione_b.id},
+    )
+    assert response.status_code == 409
+    assert db_session.get(AssegnazioneTurno, assegnazione_b.id) is not None
 
 
 def test_assegnazioni_scambiabili_include_turni_degli_altri_infermieri(

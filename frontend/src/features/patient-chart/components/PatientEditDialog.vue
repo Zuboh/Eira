@@ -23,11 +23,19 @@ const emit = defineEmits<PatientChartSaveEmit>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Letto" required>
-        <InputText v-model="form.letto" required />
+      <FormField label="Letto" for-id="paziente-modifica-letto" required>
+        <InputText id="paziente-modifica-letto" v-model="form.letto" required />
       </FormField>
-      <FormField label="Diagnosi ingresso" required>
-        <InputText v-model="form.diagnosi_ingresso" required />
+      <FormField
+        label="Diagnosi ingresso"
+        for-id="paziente-modifica-diagnosi"
+        required
+      >
+        <InputText
+          id="paziente-modifica-diagnosi"
+          v-model="form.diagnosi_ingresso"
+          required
+        />
       </FormField>
       <label class="checkbox">
         <input v-model="form.dimesso" type="checkbox" /> Dimesso

@@ -59,15 +59,16 @@ watch(visible, (isVisible) => {
           required
         />
       </FormField>
-      <FormField label="Ruolo" required>
+      <FormField label="Ruolo" forId="staff-ruolo" required>
         <Select
           v-model="form.ruolo"
+          inputId="staff-ruolo"
           :options="ruoloOptions"
           optionLabel="label"
           optionValue="value"
         />
       </FormField>
-      <FormField label="Foto profilo (opzionale)">
+      <FormField label="Foto profilo (opzionale)" forId="staff-avatar">
         <AvatarFilePicker v-model="avatarFile" :disabled="saving" />
       </FormField>
       <Button type="submit" label="Crea" :loading="saving" />

@@ -13,24 +13,17 @@ U.O. Medicina Generale e Geriatria (fittizio, nessuna partnership reale).
 
 ## Stato
 
-Sett.2-5 in corso (piano Pegaso in `TASK.md`).
+Il flusso applicativo è collegato end-to-end a persistenza reale:
+autenticazione e gestione personale, pazienti, turni e assegnazioni,
+dashboard per ruolo, consegne SBAR/CEDEMA, parametri vitali,
+valutazioni Norton/Conley, cambi turno, ferie, banca ore e carrello
+farmaci.
 
-- **Backend**: tutti i router su persistenza reale — auth JWT, utenti,
-  pazienti, turni/assegnazioni, consegne SBAR, valutazioni
-  Norton/Conley, diario CEDEMA, cambi turno (doppia conferma
-  collega→caposala), banca ore, dashboard caposala. Audit IDOR fatto
-  (4 occorrenze trovate e fixate). Seed automatico di reparti,
-  caposala e infermiere di sviluppo — senza un caposala, nessun utente
-  potrebbe mai creare personale/reparti.
-  33+ test in `backend/tests/`.
-- **Frontend**: login (tile-picker dispositivo/reparto), registrazione
-  con approvazione caposala, gestione personale fatti. Dashboard
-  infermiere/caposala e viste operative (SBAR, valutazioni, cambio
-  turno, banca ore) ancora da collegare a dati reali.
-- **Bug noti aperti** (dettagli in `TASK.md`): crash su
-  `DELETE /turni/{id}/assegnazioni` con richieste cambio turno
-  pendenti; test suite tocca il DB SQLite reale su disco invece di
-  restare isolata in-memory.
+Il frontend usa tipi generati dall'OpenAPI del backend e mantiene la
+logica di autorizzazione sul server. La baseline di qualità comprende
+Ruff/pytest, ESLint/Prettier/Vitest/typecheck/build, controllo del
+contratto OpenAPI e flussi Playwright con axe-core. I risultati correnti
+si ottengono dai comandi sotto e dalla CI, evitando conteggi hardcoded.
 
 Checklist completa, per-router → `TASK.md`. Indice documentazione →
 `docs/README.md`. Setup dettagliato (env, DB, note migrazioni) →
@@ -43,11 +36,20 @@ Checklist completa, per-router → `TASK.md`. Indice documentazione →
 ```
 
 Avvia backend (`:8000`) + frontend (`:5173`) insieme, liberando le
-porte se occupate. All'avvio assicura i reparti di sviluppo, un
-caposala e un infermiere attivi (id di login stampati nel log come
-`[seed] ...`; password nei setting `seed_*_password`).
+porte se occupate. Il seed è riservato agli ambienti di sviluppo/E2E;
+non viene eseguito in produzione.
 
 Manuale:
 
-- Backend: `cd backend && uv run fastapi dev`
+- Backend: `cd backend && uv run python -m app.cli.db bootstrap && uv run fastapi dev`
 - Frontend: `cd frontend && npm run dev`
+
+## Verifica
+
+```bash
+cd backend && PYTHONPATH=. uv run pytest && uv run ruff check .
+cd ../frontend && npm run lint && npm run format:check
+npm run test && npm run typecheck && npm run build
+npm run openapi:check
+npm run test:e2e
+```

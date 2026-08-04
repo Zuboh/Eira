@@ -3,23 +3,14 @@ import {
   assegnaTurno,
   createPaziente,
   createTurno,
+  ensureClinicalInfermiere,
   findUtente,
   getSeedRepartoId,
   login,
   SEED_CAPOSALA,
-  SEED_INFERMIERE,
   storageStateForToken,
 } from './helpers/api'
 import { checkA11y } from './helpers/a11y'
-
-// FormField doesn't wire `for-id` on its Select/Textarea children (same
-// missing-label class as the PasswordStep bug fixed alongside login.spec.ts,
-// but widespread across dialogs) — tracked in docs/VALUTAZIONE-TESI.md.
-// getByLabel won't resolve here, so these locators scope by the FormField
-// wrapper's visible label text instead.
-function field(page: import('@playwright/test').Page, label: string) {
-  return page.locator('.form-field', { hasText: label })
-}
 
 test('infermiere creates a SBAR handoff for a patient on their assigned turno', async ({
   browser,
@@ -32,16 +23,15 @@ test('infermiere creates a SBAR handoff for a patient on their assigned turno', 
     SEED_CAPOSALA.nome,
     SEED_CAPOSALA.cognome,
   )
-  const infermiere = await findUtente(
-    request,
-    repartoId,
-    SEED_INFERMIERE.nome,
-    SEED_INFERMIERE.cognome,
-  )
   const caposalaToken = await login(
     request,
     caposala.id,
     SEED_CAPOSALA.password,
+  )
+  const infermiere = await ensureClinicalInfermiere(
+    request,
+    caposalaToken,
+    repartoId,
   )
 
   const oggi = new Date().toISOString().slice(0, 10)
@@ -63,11 +53,7 @@ test('infermiere creates a SBAR handoff for a patient on their assigned turno', 
     reparto_id: repartoId,
   })
 
-  const infermiereToken = await login(
-    request,
-    infermiere.id,
-    SEED_INFERMIERE.password,
-  )
+  const infermiereToken = await login(request, infermiere.id, 'password')
   const context = await browser.newContext({
     storageState: storageStateForToken(infermiereToken),
   })
@@ -84,16 +70,14 @@ test('infermiere creates a SBAR handoff for a patient on their assigned turno', 
     page.getByRole('dialog', { name: 'Nuova consegna' }),
   ).toBeVisible()
 
-  await field(page, 'Paziente').getByRole('combobox').click()
+  await page.getByLabel('Paziente').click()
   await page.getByRole('option', { name: paziente.cognome }).click()
 
-  await expect(
-    field(page, 'Data turno').getByText(/Turno rilevato:.*Mattina/),
-  ).toBeVisible()
+  await expect(page.getByText(/Turno rilevato:.*Mattina/)).toBeVisible()
 
   // Il dialog apre gia' con lo scaffold `S:\nB:\nA:\nR:`; la sigla a inizio
   // riga e' il marker di sezione.
-  const testo = field(page, 'Testo consegna').locator('textarea')
+  const testo = page.getByLabel('Testo consegna')
   await expect(testo).toHaveValue('S:\nB:\nA:\nR:')
   await testo.fill(
     [
@@ -120,7 +104,7 @@ test('infermiere creates a SBAR handoff for a patient on their assigned turno', 
   const editDialog = page.getByRole('dialog', { name: 'Modifica consegna' })
   await expect(editDialog).toBeVisible()
 
-  const testoEdit = field(page, 'Testo consegna').locator('textarea')
+  const testoEdit = page.getByLabel('Testo consegna')
   await expect(testoEdit).toHaveValue(
     [
       'S: Paziente stabile, parametri nella norma.',

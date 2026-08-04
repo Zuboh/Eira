@@ -1,8 +1,6 @@
 import { expect, test } from '@playwright/test'
 import {
-  assegnaTurno,
   createTurno,
-  createUtente,
   findUtente,
   getSeedRepartoId,
   login,
@@ -34,31 +32,16 @@ test('caposala assigns an uncovered turno to an infermiere', async ({
     caposala.id,
     SEED_CAPOSALA.password,
   )
-  const infermiereSupporto = await createUtente(
-    request,
-    caposalaToken,
-    repartoId,
-    {
-      nome: 'Luca',
-      cognome: 'Copertura',
-      email: 'copertura.turno@eira.local',
-      ruolo: 'infermiere',
-      password: 'password',
-    },
-  )
-
   const domani = new Date(Date.now() + 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10)
-  const turno = await createTurno(request, caposalaToken, {
+  await createTurno(request, caposalaToken, {
     data: domani,
     tipo: 'notte',
     reparto_id: repartoId,
     ora_inizio: '21:00:00',
     ora_fine: '07:00:00',
   })
-  await assegnaTurno(request, caposalaToken, turno.id, infermiereSupporto.id)
-
   const context = await browser.newContext({
     storageState: storageStateForToken(caposalaToken),
   })
@@ -83,8 +66,8 @@ test('caposala assigns an uncovered turno to an infermiere', async ({
     page.getByRole('dialog', { name: 'Assegna turno' }),
   ).toBeVisible()
   await page
-    .locator('.form-field', { hasText: 'Infermiere' })
-    .getByRole('combobox')
+    .getByRole('dialog', { name: 'Assegna turno' })
+    .getByRole('combobox', { name: 'Seleziona infermiere' })
     .click()
   await page.getByRole('option', { name: infermiere.cognome }).click()
   await page

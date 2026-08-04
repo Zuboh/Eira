@@ -5,6 +5,7 @@ withDefaults(
     flush?: boolean
   }>(),
   {
+    title: undefined,
     flush: false,
   },
 )

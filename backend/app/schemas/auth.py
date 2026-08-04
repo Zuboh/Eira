@@ -1,4 +1,10 @@
-from pydantic import BaseModel, Field
+from typing import Annotated
+
+from pydantic import AfterValidator, BaseModel
+
+from app.core.security import validate_password
+
+Password = Annotated[str, AfterValidator(validate_password)]
 
 
 class Token(BaseModel):
@@ -8,5 +14,5 @@ class Token(BaseModel):
 
 class TemporaryPasswordChange(BaseModel):
     utente_id: int
-    temporary_password: str
-    new_password: str = Field(min_length=8)
+    temporary_password: Password
+    new_password: Password

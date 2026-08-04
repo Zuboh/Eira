@@ -1,5 +1,7 @@
 import datetime
 
+import pytest
+
 from tests.conftest import auth_headers
 
 
@@ -33,6 +35,26 @@ def _infermiere(db_session, reparto_id, email="nurse.a@example.com"):
     db_session.add(utente)
     db_session.commit()
     db_session.refresh(utente)
+    from app.models.enums import StatoAssegnazione, TipoTurno
+    from app.models.turno import AssegnazioneTurno, Turno
+
+    turno = Turno(
+        data=datetime.date.today(),
+        tipo=TipoTurno.notte,
+        reparto_id=reparto_id,
+        ora_inizio=datetime.time(22, 0),
+        ora_fine=datetime.time(7, 0),
+    )
+    db_session.add(turno)
+    db_session.flush()
+    db_session.add(
+        AssegnazioneTurno(
+            turno_id=turno.id,
+            infermiere_id=utente.id,
+            stato=StatoAssegnazione.attiva,
+        )
+    )
+    db_session.commit()
     return utente
 
 
@@ -175,3 +197,32 @@ def test_valutazioni_aggregate_returns_both(client, db_session, reparti):
     body = response.json()
     assert len(body["norton"]) == 1
     assert len(body["conley"]) == 1
+
+
+@pytest.mark.parametrize("value", [0, 5])
+def test_norton_rejects_scores_outside_one_to_four(client, db_session, reparti, value):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    paziente = _paziente(reparto_a.id)
+    db_session.add(paziente)
+    db_session.commit()
+    payload = {**_norton_payload(), "mobilita": value}
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.post(
+        f"/api/v1/pazienti/{paziente.id}/norton", headers=headers, json=payload
+    )
+    assert response.status_code == 422
+
+
+def test_conley_rejects_negative_scores(client, db_session, reparti):
+    reparto_a, _ = reparti
+    infermiere = _infermiere(db_session, reparto_a.id)
+    paziente = _paziente(reparto_a.id)
+    db_session.add(paziente)
+    db_session.commit()
+    payload = {**_conley_payload(), "agitazione": -1}
+    headers = auth_headers(client, infermiere.email, "password123")
+    response = client.post(
+        f"/api/v1/pazienti/{paziente.id}/conley", headers=headers, json=payload
+    )
+    assert response.status_code == 422

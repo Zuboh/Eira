@@ -8,22 +8,27 @@ export default defineConfig({
   // All specs share one throwaway e2e.db for the run's lifetime (Q3) —
   // multiple workers would race against the same backend/DB state.
   workers: 1,
-  retries: 0,
+  retries: process.env.CI ? 1 : 0,
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:5174',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: [
     {
       command:
-        'sh -c "rm -f e2e.db && PYTHONPATH=. uv run fastapi dev --port 8001"',
+        'sh -c "rm -f e2e.db && PYTHONPATH=. uv run python -m app.cli.db bootstrap && PYTHONPATH=. uv run fastapi dev --port 8001"',
       cwd: '../backend',
       url: 'http://localhost:8001/api/v1/reparti/',
       reuseExistingServer: false,
       timeout: 30_000,
-      env: { DATABASE_URL: 'sqlite:///./e2e.db' },
+      env: {
+        DATABASE_URL: 'sqlite:///./e2e.db',
+        ENVIRONMENT: 'e2e',
+        SEED_ENABLED: 'true',
+        BCRYPT_ROUNDS: '4',
+      },
     },
     {
       command: 'npm run dev -- --port 5174 --strictPort',

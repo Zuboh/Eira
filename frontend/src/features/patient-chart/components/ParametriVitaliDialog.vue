@@ -3,6 +3,7 @@ import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import Dialog from 'primevue/dialog'
 import InputNumber from 'primevue/inputnumber'
+import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import { dialogStyle } from '@/components/ui/dialogStyles'
 import FormField from '@/components/ui/FormField.vue'
@@ -29,35 +30,73 @@ const emit = defineEmits<PatientChartSaveEmit>()
   >
     <form class="form" @submit.prevent="emit('save')">
       <div class="grid">
-        <FormField label="Temperatura" required>
+        <FormField label="Temperatura" for-id="parametri-temperatura" required>
           <InputNumber
             v-model="form.temperatura"
+            input-id="parametri-temperatura"
             :minFractionDigits="1"
             :maxFractionDigits="1"
           />
         </FormField>
-        <FormField label="FC" required>
-          <InputNumber v-model="form.frequenza_cardiaca" />
+        <FormField label="FC" for-id="parametri-fc" required>
+          <InputNumber
+            v-model="form.frequenza_cardiaca"
+            input-id="parametri-fc"
+          />
         </FormField>
-        <FormField label="PA sistolica" required>
-          <InputNumber v-model="form.pressione_sistolica" />
+        <FormField
+          label="PA sistolica"
+          for-id="parametri-pa-sistolica"
+          required
+        >
+          <InputNumber
+            v-model="form.pressione_sistolica"
+            input-id="parametri-pa-sistolica"
+          />
         </FormField>
-        <FormField label="PA diastolica" required>
-          <InputNumber v-model="form.pressione_diastolica" />
+        <FormField
+          label="PA diastolica"
+          for-id="parametri-pa-diastolica"
+          required
+        >
+          <InputNumber
+            v-model="form.pressione_diastolica"
+            input-id="parametri-pa-diastolica"
+          />
         </FormField>
-        <FormField label="FR" required>
-          <InputNumber v-model="form.frequenza_respiratoria" />
+        <FormField label="FR" for-id="parametri-fr" required>
+          <InputNumber
+            v-model="form.frequenza_respiratoria"
+            input-id="parametri-fr"
+          />
         </FormField>
-        <FormField label="SpO₂" required>
-          <InputNumber v-model="form.saturazione_o2" />
+        <FormField label="SpO₂" for-id="parametri-spo2" required>
+          <InputNumber
+            v-model="form.saturazione_o2"
+            input-id="parametri-spo2"
+          />
         </FormField>
-        <FormField label="Scala dolore (NRS)" required>
-          <InputNumber v-model="form.scala_dolore" :min="0" :max="10" />
+        <FormField
+          label="Scala dolore (NRS)"
+          for-id="parametri-dolore"
+          required
+        >
+          <InputNumber
+            v-model="form.scala_dolore"
+            input-id="parametri-dolore"
+            :min="0"
+            :max="10"
+          />
         </FormField>
       </div>
-      <FormField label="Stato di coscienza" required>
+      <FormField
+        label="Stato di coscienza"
+        for-id="parametri-coscienza"
+        required
+      >
         <Select
           v-model="form.stato_coscienza"
+          input-id="parametri-coscienza"
           :options="statoCoscienzaOptions"
           optionLabel="label"
           optionValue="value"
@@ -67,8 +106,8 @@ const emit = defineEmits<PatientChartSaveEmit>()
         <Checkbox v-model="form.ossigeno" inputId="ossigeno" binary />
         <label for="ossigeno">Ossigenoterapia in corso</label>
       </div>
-      <FormField label="Note">
-        <Textarea v-model="form.note" rows="3" autoResize />
+      <FormField label="Note" for-id="parametri-note">
+        <Textarea id="parametri-note" v-model="form.note" rows="3" autoResize />
       </FormField>
       <Button type="submit" label="Salva" :loading="saving" />
     </form>

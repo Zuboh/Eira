@@ -13,6 +13,11 @@ import { formatDateShortIt } from '@/utils/dateFormat'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
+const preferenceFieldIds = [
+  'ferie-preferenza-1',
+  'ferie-preferenza-2',
+  'ferie-preferenza-3',
+] as const
 
 const {
   richieste,
@@ -77,13 +82,15 @@ onMounted(load)
       </p>
       <FormField
         v-for="(_, index) in preferenzeSelezionate"
-        :key="index"
+        :key="preferenceFieldIds[index]"
+        :for-id="preferenceFieldIds[index]"
         :label="`${index + 1}ª scelta`"
         :required="index === 0"
       >
         <div class="slot-row">
           <Select
             v-model="preferenzeSelezionate[index]"
+            :input-id="preferenceFieldIds[index]"
             :options="slotOptionsFor(index)"
             optionLabel="label"
             optionValue="value"

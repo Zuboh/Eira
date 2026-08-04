@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   label: string
-  forId?: string
+  forId: string
   help?: string | null
   error?: string | null
   required?: boolean

@@ -19,11 +19,17 @@ npm i openapi-fetch
 npm i -D openapi-typescript
 ```
 
-Rigenerare i tipi ogni volta che un router backend cambia schema:
+Rigenerare atomicamente JSON e tipi ogni volta che un router backend cambia
+schema, poi verificare che non resti drift:
 
 ```bash
-npx openapi-typescript http://localhost:8000/openapi.json -o src/api/schema.d.ts
+cd frontend
+npm run openapi:update
+npm run openapi:check
 ```
+
+Non rigenerare il solo `schema.d.ts` da un server live: JSON e TypeScript
+devono provenire dalla stessa istanza di `app.openapi()`.
 
 ## Uso base
 

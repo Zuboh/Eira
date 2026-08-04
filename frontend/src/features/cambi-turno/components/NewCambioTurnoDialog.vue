@@ -53,9 +53,10 @@ function setCollega(collegaId: number | null) {
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Tuo turno" required>
+      <FormField label="Tuo turno" for-id="cambio-turno-mio" required>
         <Select
           v-model="form.assegnazione_turno_id"
+          input-id="cambio-turno-mio"
           :options="assegnazioniConLabel"
           optionLabel="label"
           optionValue="id"
@@ -63,9 +64,10 @@ function setCollega(collegaId: number | null) {
           required
         />
       </FormField>
-      <FormField label="Collega" required>
+      <FormField label="Collega" for-id="cambio-turno-collega" required>
         <Select
           :model-value="form.collega_id"
+          input-id="cambio-turno-collega"
           :options="colleghi"
           optionLabel="cognome"
           optionValue="id"
@@ -74,9 +76,14 @@ function setCollega(collegaId: number | null) {
           @update:model-value="setCollega"
         />
       </FormField>
-      <FormField label="Turno del collega" required>
+      <FormField
+        label="Turno del collega"
+        for-id="cambio-turno-collega-assegnazione"
+        required
+      >
         <Select
           v-model="form.assegnazione_collega_id"
+          input-id="cambio-turno-collega-assegnazione"
           :options="assegnazioniCollegaConLabel"
           optionLabel="label"
           optionValue="id"

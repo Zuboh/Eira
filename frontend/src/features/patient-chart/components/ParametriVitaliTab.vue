@@ -167,7 +167,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 
 .snapshot__timestamp {
   margin: 0 0 12px;
-  color: var(--steel);
+  color: var(--steel-on-tint);
   font-size: 0.8125rem;
 }
 
@@ -179,7 +179,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 }
 
 .snapshot__grid dt {
-  color: var(--steel);
+  color: var(--steel-on-tint);
   font-size: 0.75rem;
 }
 

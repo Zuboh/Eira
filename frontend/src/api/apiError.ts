@@ -6,7 +6,7 @@
  * fissa lascia chi compila il form senza sapere cosa correggere.
  */
 
-type OpenApiResult<TData> = {
+export type OpenApiResult<TData> = {
   data?: TData
   error?: unknown
   response: Response
@@ -112,6 +112,21 @@ export function unwrapData<TData>(
   }
 
   return { data: result.data }
+}
+
+/** Verifica una risposta senza body (tipicamente DELETE 204). */
+export function unwrapVoid(
+  result: OpenApiResult<unknown>,
+  operation: string,
+): void {
+  if (result.error !== undefined) {
+    throw new ApiError(
+      operation,
+      result.response.status,
+      extractDetail(result.error),
+      `${operation} failed: ${formatOpenApiError(result.error, result.response)}`,
+    )
+  }
 }
 
 /** Messaggio da mostrare all'utente: `detail` del backend, altrimenti `fallback`. */

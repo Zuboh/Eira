@@ -1,5 +1,7 @@
 import datetime
 import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,8 +11,8 @@ from slowapi.errors import RateLimitExceeded
 
 import app.models  # noqa: F401 — registra tutti i modelli su Base.metadata
 from app.core.avatars import AVATAR_DIR, DEFAULT_AVATAR_DIR
-from app.core.config import settings
-from app.core.database import Base, SessionLocal, engine
+from app.core.config import Settings, settings
+from app.core.database import SessionLocal
 from app.core.rate_limit import limiter
 from app.core.security import hash_password
 from app.models.enums import RuoloUtente, StatoUtente
@@ -35,59 +37,20 @@ from app.routers import (
     valutazioni,
 )
 
-app = FastAPI(title="Consegne Infermieristiche API", version="0.1.0")
-
-AVATAR_DIR.mkdir(parents=True, exist_ok=True)
-app.mount(
-    "/static/avatars/default",
-    StaticFiles(directory=DEFAULT_AVATAR_DIR),
-    name="default-avatars",
-)
-app.mount("/static/avatars", StaticFiles(directory=AVATAR_DIR), name="avatars")
-
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
-app.add_middleware(
-    CORSMiddleware,
-    # 5174 is the isolated frontend port used by the Playwright e2e suite
-    # (frontend/playwright.config.ts), kept separate from 5173 so e2e runs
-    # never collide with a manually-running dev session.
-    allow_origins=["http://localhost:5173", "http://localhost:5174"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 API_V1_PREFIX = "/api/v1"
-app.include_router(auth.router, prefix=API_V1_PREFIX)
-app.include_router(utenti.router, prefix=API_V1_PREFIX)
-app.include_router(pazienti.router, prefix=API_V1_PREFIX)
-app.include_router(turni.router, prefix=API_V1_PREFIX)
-app.include_router(cambi_turno.router, prefix=API_V1_PREFIX)
-app.include_router(ferie.router, prefix=API_V1_PREFIX)
-app.include_router(carello_farmaci.router, prefix=API_V1_PREFIX)
-app.include_router(consegne_sbar.router, prefix=API_V1_PREFIX)
-app.include_router(diario_cedema.router, prefix=API_V1_PREFIX)
-app.include_router(parametri_vitali.router, prefix=API_V1_PREFIX)
-app.include_router(valutazioni.router, prefix=API_V1_PREFIX)
-app.include_router(banca_ore.router, prefix=API_V1_PREFIX)
-app.include_router(dashboard.router, prefix=API_V1_PREFIX)
-app.include_router(reparti.router, prefix=API_V1_PREFIX)
-
 logger = logging.getLogger("uvicorn.error")
 
 
-def _check_jwt_secret() -> None:
+def _check_jwt_secret(config: Settings = settings) -> None:
     """Rifiuta l'avvio in produzione se il JWT secret è ancora il default.
 
     In ambienti non-production il default di sviluppo resta accettato,
     con solo un warning: token forgeabili da chiunque conosca il codice
     sorgente, ma non un rischio in locale/CI.
     """
-    if settings.jwt_secret_key != "dev-secret-change-in-production":
+    if config.jwt_secret_key != "dev-secret-change-in-production":
         return
-    if settings.environment == "production":
+    if config.environment.casefold() == "production":
         raise RuntimeError(
             "JWT_SECRET_KEY non impostata in ambiente production: rifiuto "
             "l'avvio. Impostare JWT_SECRET_KEY prima di qualunque deploy."
@@ -99,27 +62,20 @@ def _check_jwt_secret() -> None:
     )
 
 
-@app.on_event("startup")
-def on_startup() -> None:
-    _check_jwt_secret()
-    Base.metadata.create_all(bind=engine)
-    _seed_dev_data()
-
-
-def _seed_dev_data() -> None:
+def _seed_dev_data(config: Settings = settings) -> None:
     """Garantisce dati minimi di sviluppo senza duplicare record esistenti."""
     db = SessionLocal()
     try:
-        reparto_seed = _get_or_create_reparto(db, settings.seed_reparto_nome)
-        _get_or_create_reparto(db, settings.seed_secondo_reparto_nome)
+        reparto_seed = _get_or_create_reparto(db, config.seed_reparto_nome)
+        _get_or_create_reparto(db, config.seed_secondo_reparto_nome)
 
         caposala = db.query(Utente).filter(Utente.ruolo == RuoloUtente.caposala).first()
         if caposala is None:
             caposala = Utente(
                 email="caposala@eira.local",
-                password_hash=hash_password(settings.seed_caposala_password),
-                nome=settings.seed_caposala_nome,
-                cognome=settings.seed_caposala_cognome,
+                password_hash=hash_password(config.seed_caposala_password),
+                nome=config.seed_caposala_nome,
+                cognome=config.seed_caposala_cognome,
                 ruolo=RuoloUtente.caposala,
                 reparto_id=reparto_seed.id,
                 stato=StatoUtente.attivo,
@@ -131,15 +87,15 @@ def _seed_dev_data() -> None:
 
         infermiere = (
             db.query(Utente)
-            .filter(Utente.email == settings.seed_infermiere_email)
+            .filter(Utente.email == config.seed_infermiere_email)
             .first()
         )
         if infermiere is None:
             infermiere = Utente(
-                email=settings.seed_infermiere_email,
-                password_hash=hash_password(settings.seed_infermiere_password),
-                nome=settings.seed_infermiere_nome,
-                cognome=settings.seed_infermiere_cognome,
+                email=config.seed_infermiere_email,
+                password_hash=hash_password(config.seed_infermiere_password),
+                nome=config.seed_infermiere_nome,
+                cognome=config.seed_infermiere_cognome,
                 ruolo=RuoloUtente.infermiere,
                 reparto_id=reparto_principale.id,
                 stato=StatoUtente.attivo,
@@ -156,7 +112,7 @@ def _seed_dev_data() -> None:
                 ProfiloInfermiere(
                     utente_id=infermiere.id,
                     ore_contrattuali_mensili=(
-                        settings.seed_infermiere_ore_contrattuali_mensili
+                        config.seed_infermiere_ore_contrattuali_mensili
                     ),
                 )
             )
@@ -228,6 +184,57 @@ def _get_or_create_reparto(db, nome: str) -> Reparto:
     return reparto
 
 
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+def create_app(*, config: Settings = settings, run_startup: bool = True) -> FastAPI:
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+        if run_startup:
+            _check_jwt_secret(config)
+            if config.should_seed:
+                _seed_dev_data(config)
+        yield
+
+    application = FastAPI(
+        title="Consegne Infermieristiche API", version="0.1.0", lifespan=lifespan
+    )
+    AVATAR_DIR.mkdir(parents=True, exist_ok=True)
+    application.mount(
+        "/static/avatars/default",
+        StaticFiles(directory=DEFAULT_AVATAR_DIR),
+        name="default-avatars",
+    )
+    application.mount("/static/avatars", StaticFiles(directory=AVATAR_DIR), name="avatars")
+    application.state.limiter = limiter
+    application.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=config.parsed_cors_origins,
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    for api_router in (
+        auth.router,
+        utenti.router,
+        pazienti.router,
+        turni.router,
+        cambi_turno.router,
+        ferie.router,
+        carello_farmaci.router,
+        consegne_sbar.router,
+        diario_cedema.router,
+        parametri_vitali.router,
+        valutazioni.router,
+        banca_ore.router,
+        dashboard.router,
+        reparti.router,
+    ):
+        application.include_router(api_router, prefix=API_V1_PREFIX)
+
+    @application.get("/health")
+    def health() -> dict[str, str]:
+        return {"status": "ok"}
+
+    return application
+
+
+app = create_app()

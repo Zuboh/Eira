@@ -4,6 +4,29 @@ Modello di autorizzazione e scoping. Documento derivato da audit reale
 sul codice (v. `TASK.md` per il log completo), non da design teorico —
 riflette lo stato attuale, incluse le lacune note.
 
+## Stato della finalizzazione
+
+- Password validate con policy unica di 8–72 byte UTF-8; bcrypt non tronca
+  input e la verifica fallisce in modo chiuso su valori malformati.
+- Seed e credenziali dimostrative sono limitati a development/E2E e sempre
+  disabilitati in production; il secret JWT di default continua a bloccare
+  l'avvio production.
+- L'accesso clinico usa una policy condivisa: reparto coerente, utente attivo,
+  turno odierno assegnato e controllo dell'eventuale `turno_id` dell'autore.
+- SQLite applica le foreign key su ogni connessione e lo schema è gestito con
+  Alembic e bootstrap non distruttivo.
+- Gli avatar vengono decodificati e normalizzati server-side prima della
+  persistenza; MIME dichiarato, dimensione e contenuto corrotto non bastano a
+  superare la validazione.
+- Gli endpoint pubblici reparto/tile sono rate-limited e restituiscono solo i
+  dati necessari al flusso. Restano una scelta deliberata per tablet su rete
+  di reparto fidata, non un meccanismo adatto a esposizione Internet pubblica.
+
+Rischi residui accettati: il JWT vive in `localStorage` e richiede quindi una
+rigorosa prevenzione XSS; il rate limiter è in-memory e andrebbe sostituito con
+uno store condiviso in un deployment multi-processo. Le sezioni storiche più
+sotto documentano bug e decisioni precedenti, non lo stato aperto corrente.
+
 ---
 
 ## 1. Autenticazione
@@ -129,12 +152,11 @@ della data — quindi una singola assegnazione passata o futura, purché
 mai rimossa/cambiata, basta a sbloccare l'accesso ai pazienti del
 reparto a tempo indeterminato. V. §3 per lo stato di questo finding.
 
-## 3. Problemi noti aperti (findings 2026-07-11, non fixati)
+## 3. Snapshot storico dei findings 2026-07-11
 
-Da code review via 2 agenti `feature-dev:code-reviewer` paralleli
-(layer auth/routing + layer data/schema). **Solo review, nessun fix
-applicato** — checkbox in `TASK.md` non spuntate, riportati qui come
-OPEN, non come risolti.
+Questa sezione conserva il testo della review originale per tracciabilità.
+I finding descritti sono stati successivamente corretti e coperti da test;
+non vanno interpretati come backlog corrente.
 
 - 🔴 **Crash su cancellazione assegnazione turno.**
   `DELETE /turni/{id}/assegnazioni` (`turni.py:115-130`) cancella

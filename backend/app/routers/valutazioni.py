@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 
 from app.deps import CurrentUserDep, DbDep, require_roles
 from app.models.enums import RuoloUtente
-from app.models.paziente import Paziente
 from app.models.valutazione import ValutazioneConley, ValutazioneNorton
 from app.openapi_errors import FORBIDDEN, NOT_FOUND, UNAUTHORIZED, errors
 from app.schemas.valutazione import (
@@ -12,19 +11,9 @@ from app.schemas.valutazione import (
     ValutazioneNortonRead,
     ValutazioniAggregateRead,
 )
+from app.services.clinical_access import require_patient_access
 
 router = APIRouter(prefix="/pazienti", tags=["valutazioni"])
-
-
-def _get_paziente_same_reparto(paziente_id: int, current_user, db) -> Paziente:
-    paziente = db.get(Paziente, paziente_id)
-    if paziente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paziente non trovato")
-    if paziente.reparto_id != current_user.reparto_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Paziente di un altro reparto"
-        )
-    return paziente
 
 
 @router.post(
@@ -36,7 +25,7 @@ def _get_paziente_same_reparto(paziente_id: int, current_user, db) -> Paziente:
 def create_norton(
     paziente_id: int, payload: ValutazioneNortonCreate, current_user: CurrentUserDep, db: DbDep
 ) -> ValutazioneNortonRead:
-    _get_paziente_same_reparto(paziente_id, current_user, db)
+    require_patient_access(db, current_user, paziente_id)
 
     punteggio = (
         payload.condizioni_generali
@@ -59,7 +48,7 @@ def create_norton(
 
 @router.get("/{paziente_id}/norton", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND))
 def list_norton(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> list[ValutazioneNortonRead]:
-    _get_paziente_same_reparto(paziente_id, current_user, db)
+    require_patient_access(db, current_user, paziente_id)
 
     valutazioni = (
         db.query(ValutazioneNorton)
@@ -79,7 +68,7 @@ def list_norton(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> li
 def create_conley(
     paziente_id: int, payload: ValutazioneConleyCreate, current_user: CurrentUserDep, db: DbDep
 ) -> ValutazioneConleyRead:
-    _get_paziente_same_reparto(paziente_id, current_user, db)
+    require_patient_access(db, current_user, paziente_id)
 
     punteggio = (
         payload.storia_cadute
@@ -103,7 +92,7 @@ def create_conley(
 
 @router.get("/{paziente_id}/conley", responses=errors(UNAUTHORIZED, FORBIDDEN, NOT_FOUND))
 def list_conley(paziente_id: int, current_user: CurrentUserDep, db: DbDep) -> list[ValutazioneConleyRead]:
-    _get_paziente_same_reparto(paziente_id, current_user, db)
+    require_patient_access(db, current_user, paziente_id)
 
     valutazioni = (
         db.query(ValutazioneConley)

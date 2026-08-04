@@ -111,9 +111,10 @@ onMounted(load)
           {{ formatDateShortIt(assegnaTarget.data) }} ·
           {{ TIPO_TURNO_LABEL[assegnaTarget.tipo] }}
         </p>
-        <FormField label="Infermiere" required>
+        <FormField label="Infermiere" for-id="assegna-infermiere" required>
           <Select
             v-model="assegnaInfermiereId"
+            input-id="assegna-infermiere"
             :options="infermieri"
             optionLabel="cognome"
             optionValue="id"
@@ -132,8 +133,11 @@ onMounted(load)
       :style="dialogStyle.sm"
     >
       <form class="form" @submit.prevent="confermaRifiutoCambioTurno">
-        <FormField label="Motivo">
-          <InputText v-model="cambioTurnoMotivoRifiuto" />
+        <FormField label="Motivo" for-id="cambio-turno-motivo">
+          <InputText
+            id="cambio-turno-motivo"
+            v-model="cambioTurnoMotivoRifiuto"
+          />
         </FormField>
         <Button type="submit" label="Conferma rifiuto" severity="secondary" />
       </form>

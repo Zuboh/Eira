@@ -1,4 +1,5 @@
 import { eiraClient } from '@/api/eiraClient'
+import { unwrapData } from '@/api/apiError'
 import type { components } from '@/api/schema'
 
 export type StatoUtente = components['schemas']['StatoUtente']
@@ -10,49 +11,6 @@ type TemporaryPasswordResponse =
   components['schemas']['TemporaryPasswordResponse']
 type UpdateUtentePayload = Partial<Pick<Utente, 'stato'>>
 type ApiResponse<T> = Promise<{ data: T }>
-
-type OpenApiResult<TData, TError> = {
-  data?: TData
-  error?: TError
-  response: Response
-}
-
-function formatApiError(error: unknown, response: Response) {
-  if (error instanceof Error) {
-    return error.message
-  }
-
-  if (typeof error === 'string') {
-    return error
-  }
-
-  if (error === undefined) {
-    return `Request failed with status ${response.status}`
-  }
-
-  try {
-    return JSON.stringify(error)
-  } catch {
-    return `Request failed with status ${response.status}`
-  }
-}
-
-function unwrapData<TData, TError>(
-  result: OpenApiResult<TData, TError>,
-  operation: string,
-): { data: TData } {
-  if (result.error !== undefined) {
-    throw new Error(
-      `${operation} failed: ${formatApiError(result.error, result.response)}`,
-    )
-  }
-
-  if (result.data === undefined) {
-    throw new Error(`${operation} failed: response data is undefined`)
-  }
-
-  return { data: result.data }
-}
 
 export async function createUtente(
   payload: UtenteCreatePayload,

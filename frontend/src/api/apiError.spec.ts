@@ -1,5 +1,58 @@
 import { describe, expect, it } from 'vitest'
-import { ApiError, apiErrorMessage, extractDetail } from '@/api/apiError'
+import {
+  ApiError,
+  apiErrorMessage,
+  extractDetail,
+  unwrapData,
+  unwrapVoid,
+} from '@/api/apiError'
+
+function response(status: number) {
+  return new Response(null, { status })
+}
+
+describe('OpenAPI response helpers', () => {
+  it('keeps the public data wrapper on success', () => {
+    expect(
+      unwrapData({ data: { id: 7 }, response: response(200) }, 'load'),
+    ).toEqual({ data: { id: 7 } })
+  })
+
+  it('preserves status and backend detail on errors', () => {
+    expect(() =>
+      unwrapData(
+        {
+          error: { detail: 'Sessione scaduta' },
+          response: response(401),
+        },
+        'me',
+      ),
+    ).toThrowError(
+      expect.objectContaining({
+        name: 'ApiError',
+        operation: 'me',
+        status: 401,
+        detail: 'Sessione scaduta',
+      }),
+    )
+  })
+
+  it('rejects a successful response without the expected body', () => {
+    expect(() => unwrapData({ response: response(200) }, 'load')).toThrowError(
+      'load failed: response data is undefined',
+    )
+  })
+
+  it('accepts an empty success and rejects an empty-operation error', () => {
+    expect(unwrapVoid({ response: response(204) }, 'remove')).toBeUndefined()
+    expect(() =>
+      unwrapVoid(
+        { error: { detail: 'Non consentito' }, response: response(403) },
+        'remove',
+      ),
+    ).toThrowError(expect.objectContaining({ status: 403 }))
+  })
+})
 
 describe('extractDetail', () => {
   it('reads the string detail of an HTTPException', () => {

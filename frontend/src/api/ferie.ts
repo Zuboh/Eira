@@ -1,4 +1,5 @@
 import { eiraClient } from '@/api/eiraClient'
+import { unwrapData, unwrapVoid } from '@/api/apiError'
 import type { components } from '@/api/schema'
 
 export type StatoRichiestaFerie = components['schemas']['StatoRichiestaFerie']
@@ -16,39 +17,6 @@ export type RichiestaFerieCreatePayload =
 export type RispostaFeriePayload = components['schemas']['RispostaFerieRequest']
 
 type ApiDataResponse<T> = Promise<{ data: T }>
-
-type EiraResult<T> = {
-  data?: T
-  error?: unknown
-}
-
-function formatApiError(error: unknown) {
-  if (error instanceof Error) {
-    return error.message
-  }
-
-  if (typeof error === 'string') {
-    return error
-  }
-
-  try {
-    return JSON.stringify(error)
-  } catch {
-    return 'Unknown API error'
-  }
-}
-
-function unwrapData<T>(result: EiraResult<T>, operation: string): T {
-  if (result.error !== undefined) {
-    throw new Error(`${operation} failed: ${formatApiError(result.error)}`)
-  }
-
-  if (result.data === undefined) {
-    throw new Error(`${operation} failed: response data is undefined`)
-  }
-
-  return result.data
-}
 
 function normalizeRichiestaFerie(
   richiesta: RichiestaFerieRead,
@@ -68,7 +36,7 @@ function wrapRichiestaFerie(richiesta: RichiestaFerieRead): {
 }
 
 export async function listSlotFerieDisponibili(): ApiDataResponse<string[]> {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.GET('/api/v1/ferie/slot-disponibili'),
     'listSlotFerieDisponibili',
   )
@@ -77,7 +45,7 @@ export async function listSlotFerieDisponibili(): ApiDataResponse<string[]> {
 }
 
 export async function listRichiesteFerie(): ApiDataResponse<RichiestaFerie[]> {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.GET('/api/v1/ferie/richieste'),
     'listRichiesteFerie',
   )
@@ -88,7 +56,7 @@ export async function listRichiesteFerie(): ApiDataResponse<RichiestaFerie[]> {
 export async function createRichiestaFerie(
   payload: RichiestaFerieCreatePayload,
 ): ApiDataResponse<RichiestaFerie> {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.POST('/api/v1/ferie/richieste', { body: payload }),
     'createRichiestaFerie',
   )
@@ -100,7 +68,7 @@ export async function rispondiFerie(
   id: number,
   payload: RispostaFeriePayload,
 ): ApiDataResponse<RichiestaFerie> {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.POST('/api/v1/ferie/richieste/{richiesta_id}/rispondi', {
       params: { path: { richiesta_id: id } },
       body: payload,
@@ -115,7 +83,7 @@ export async function updateRichiestaFerie(
   id: number,
   payload: RichiestaFerieCreatePayload,
 ): ApiDataResponse<RichiestaFerie> {
-  const data = unwrapData(
+  const { data } = unwrapData(
     await eiraClient.PATCH('/api/v1/ferie/richieste/{richiesta_id}', {
       params: { path: { richiesta_id: id } },
       body: payload,
@@ -127,14 +95,12 @@ export async function updateRichiestaFerie(
 }
 
 export async function deleteRichiestaFerie(id: number): Promise<void> {
-  const { error } = await eiraClient.DELETE(
+  const result = await eiraClient.DELETE(
     '/api/v1/ferie/richieste/{richiesta_id}',
     {
       params: { path: { richiesta_id: id } },
     },
   )
 
-  if (error !== undefined) {
-    throw new Error(`deleteRichiestaFerie failed: ${formatApiError(error)}`)
-  }
+  unwrapVoid(result, 'deleteRichiestaFerie')
 }

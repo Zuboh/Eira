@@ -26,6 +26,24 @@ const EiraPreset = definePreset(Aura, {
       900: '#1e3a8a',
       950: '#172554',
     },
+    colorScheme: {
+      light: {
+        primary: {
+          color: '{primary.700}',
+          contrastColor: '#ffffff',
+          hoverColor: '{primary.800}',
+          activeColor: '{primary.900}',
+        },
+      },
+      dark: {
+        primary: {
+          color: '{primary.600}',
+          contrastColor: '#ffffff',
+          hoverColor: '{primary.700}',
+          activeColor: '{primary.800}',
+        },
+      },
+    },
     focusRing: {
       // width 0 kills PrimeVue's own hardcoded outline on Button (and
       // anything else keyed off {focus.ring.*}) — the visible ring is the

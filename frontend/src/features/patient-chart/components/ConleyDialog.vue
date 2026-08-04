@@ -27,26 +27,48 @@ const emit = defineEmits<PatientChartSaveEmit>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Data" required
-        ><InputText v-model="form.data_valutazione" type="date" required
+      <FormField label="Data" for-id="conley-data" required
+        ><InputText
+          id="conley-data"
+          v-model="form.data_valutazione"
+          type="date"
+          required
       /></FormField>
-      <FormField label="Storia cadute"
-        ><InputNumber v-model="form.storia_cadute" :min="0"
+      <FormField label="Storia cadute" for-id="conley-storia-cadute"
+        ><InputNumber
+          v-model="form.storia_cadute"
+          input-id="conley-storia-cadute"
+          :min="0"
       /></FormField>
-      <FormField label="Deficit visivo"
-        ><InputNumber v-model="form.deficit_visivo" :min="0"
+      <FormField label="Deficit visivo" for-id="conley-deficit-visivo"
+        ><InputNumber
+          v-model="form.deficit_visivo"
+          input-id="conley-deficit-visivo"
+          :min="0"
       /></FormField>
-      <FormField label="Alterazione eliminazione"
-        ><InputNumber v-model="form.alterazione_eliminazione" :min="0"
+      <FormField label="Alterazione eliminazione" for-id="conley-eliminazione"
+        ><InputNumber
+          v-model="form.alterazione_eliminazione"
+          input-id="conley-eliminazione"
+          :min="0"
       /></FormField>
-      <FormField label="Agitazione"
-        ><InputNumber v-model="form.agitazione" :min="0"
+      <FormField label="Agitazione" for-id="conley-agitazione"
+        ><InputNumber
+          v-model="form.agitazione"
+          input-id="conley-agitazione"
+          :min="0"
       /></FormField>
-      <FormField label="Deficit vista osservato"
-        ><InputNumber v-model="form.deficit_vista_osservato" :min="0"
+      <FormField label="Deficit vista osservato" for-id="conley-vista-osservato"
+        ><InputNumber
+          v-model="form.deficit_vista_osservato"
+          input-id="conley-vista-osservato"
+          :min="0"
       /></FormField>
-      <FormField label="Andatura alterata"
-        ><InputNumber v-model="form.andatura_alterata" :min="0"
+      <FormField label="Andatura alterata" for-id="conley-andatura"
+        ><InputNumber
+          v-model="form.andatura_alterata"
+          input-id="conley-andatura"
+          :min="0"
       /></FormField>
       <Button type="submit" label="Salva" :loading="saving" />
     </form>

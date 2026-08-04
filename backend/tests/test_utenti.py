@@ -1,5 +1,5 @@
 from app.core.avatars import AVATAR_DIR
-from tests.conftest import auth_headers
+from tests.conftest import TEST_PNG, auth_headers
 
 
 def test_create_utente_forces_reparto_from_current_user(client, caposala_a, reparti):
@@ -49,7 +49,7 @@ def test_list_utenti_only_returns_same_reparto(client, db_session, caposala_a, r
     reparto_a, reparto_b = reparti
     utente_a = Utente(
         email="nurse.a@example.com",
-        password_hash=hash_password("x"),
+        password_hash=hash_password("password123"),
         nome="Nurse",
         cognome="A",
         ruolo=RuoloUtente.infermiere,
@@ -57,7 +57,7 @@ def test_list_utenti_only_returns_same_reparto(client, db_session, caposala_a, r
     )
     utente_b = Utente(
         email="nurse.b@example.com",
-        password_hash=hash_password("x"),
+        password_hash=hash_password("password123"),
         nome="Nurse",
         cognome="B",
         ruolo=RuoloUtente.infermiere,
@@ -82,7 +82,7 @@ def test_get_utente_other_reparto_forbidden(client, db_session, caposala_a, repa
     _, reparto_b = reparti
     utente_b = Utente(
         email="nurse.b@example.com",
-        password_hash=hash_password("x"),
+        password_hash=hash_password("password123"),
         nome="Nurse",
         cognome="B",
         ruolo=RuoloUtente.infermiere,
@@ -106,7 +106,7 @@ def test_update_utente_other_reparto_forbidden(client, db_session, caposala_a, r
     _, reparto_b = reparti
     utente_b = Utente(
         email="nurse.b@example.com",
-        password_hash=hash_password("x"),
+        password_hash=hash_password("password123"),
         nome="Nurse",
         cognome="B",
         ruolo=RuoloUtente.infermiere,
@@ -210,7 +210,7 @@ def test_upload_avatar_happy_path(client, db_session, caposala_a, reparti):
     response = client.post(
         f"/api/v1/utenti/{utente.id}/avatar",
         headers=headers,
-        files={"file": ("foto.jpg", b"\xff\xd8\xff\xe0fake-jpeg-bytes", "image/jpeg")},
+        files={"file": ("foto.png", TEST_PNG, "image/png")},
     )
 
     assert response.status_code == 200, response.text

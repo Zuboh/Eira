@@ -1,3 +1,5 @@
+import base64
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -5,14 +7,19 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.core import login_attempts
+from app.core.config import settings
 from app.core.database import Base
 from app.core.rate_limit import limiter
 from app.core.security import hash_password
 from app.deps import get_db
-from app.main import app
+from app.main import create_app
 from app.models.enums import RuoloUtente
 from app.models.reparto import Reparto
 from app.models.utente import Utente
+
+TEST_PNG = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+)
 
 
 @pytest.fixture(autouse=True)
@@ -22,6 +29,11 @@ def _reset_rate_limit_state():
     yield
     limiter.reset()
     login_attempts.reset()
+
+
+@pytest.fixture(autouse=True)
+def _fast_bcrypt(monkeypatch):
+    monkeypatch.setattr(settings, "bcrypt_rounds", 4)
 
 
 @pytest.fixture()
@@ -43,11 +55,8 @@ def client(db_session):
     def override_get_db():
         yield db_session
 
+    app = create_app(run_startup=False)
     app.dependency_overrides[get_db] = override_get_db
-    # Evita che l'handler di startup reale (create_all + seed dev data)
-    # giri contro l'engine di produzione: i fixture db_session/reparti/
-    # caposala_a già preparano tutto il necessario sull'engine in-memory.
-    app.router.on_startup.clear()
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
