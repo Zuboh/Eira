@@ -1,275 +1,139 @@
 <mxfile host="app.diagrams.net">
   <diagram id="er-page-1" name="ER - Consegne Infermieristiche">
-    <mxGraphModel dx="2934" dy="1489" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1250" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="2934" dy="1489" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2220" pageHeight="960" math="0" shadow="0">
       <root>
-        <mxCell id="0" />
+                <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" parent="1" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="Modello ER — Consegne Infermieristiche" vertex="1">
-          <mxGeometry height="30" width="600" x="40" y="40" as="geometry" />
-        </mxCell>
-        <mxCell id="reparto" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Reparto" vertex="1">
-          <mxGeometry height="90" width="220" x="610" y="10" as="geometry" />
-        </mxCell>
-        <mxCell id="reparto-r1" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="reparto-r2" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="nome" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="reparto-r3" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="descrizione" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="utente" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Utente" vertex="1">
-          <mxGeometry height="110" width="220" x="130" y="130" as="geometry" />
-        </mxCell>
-        <mxCell id="utente-r1" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="utente-r2" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="email" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="utente-r3" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ruolo (infermiere|caposala)" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="utente-r4" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="profiloinf" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ProfiloInfermiere" vertex="1">
-          <mxGeometry height="70" width="220" x="10" y="300" as="geometry" />
-        </mxCell>
-        <mxCell id="profiloinf-r1" parent="profiloinf" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="utente_id (PK/FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="profiloinf-r2" parent="profiloinf" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ore_contrattuali_mensili" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="paziente" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Paziente" vertex="1">
-          <mxGeometry height="130" width="220" x="850" y="120" as="geometry" />
-        </mxCell>
-        <mxCell id="paziente-r1" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="paziente-r2" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="nome, cognome, eta" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="paziente-r3" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="letto, data_ricovero" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="paziente-r4" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="paziente-r5" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="dimesso" vertex="1">
-          <mxGeometry height="20" width="220" y="110" as="geometry" />
-        </mxCell>
-        <mxCell id="turno" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Turno" vertex="1">
-          <mxGeometry height="110" width="220" x="1090" y="130" as="geometry" />
-        </mxCell>
-        <mxCell id="turno-r1" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="turno-r2" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="data, tipo (mattina|pom.|notte)" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="turno-r3" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="turno-r4" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ora_inizio, ora_fine" vertex="1">
-          <mxGeometry height="20" width="220" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="assegnazione" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="AssegnazioneTurno" vertex="1">
-          <mxGeometry height="110" width="220" x="250" y="280" as="geometry" />
-        </mxCell>
-        <mxCell id="assegnazione-r1" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="assegnazione-r2" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="assegnazione-r3" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="infermiere_id (FK -&gt; Utente)" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="assegnazione-r4" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato (attiva|cambiata)" vertex="1">
-          <mxGeometry height="20" width="220" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="richiestacambio" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="RichiestaCambioTurno" vertex="1">
-          <mxGeometry height="150" width="260" x="230" y="420" as="geometry" />
-        </mxCell>
-        <mxCell id="richiestacambio-r1" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="260" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="richiestacambio-r2" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="assegnazione_turno_id (FK)" vertex="1">
-          <mxGeometry height="20" width="260" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="richiestacambio-r3" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="richiedente_id (FK -&gt; Utente)" vertex="1">
-          <mxGeometry height="20" width="260" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="richiestacambio-r4" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="collega_id (FK -&gt; Utente)" vertex="1">
-          <mxGeometry height="20" width="260" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="richiestacambio-r5" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="risposta_caposala_id (FK -&gt; Utente)" vertex="1">
-          <mxGeometry height="20" width="260" y="110" as="geometry" />
-        </mxCell>
-        <mxCell id="richiestacambio-r6" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato (5 valori, v. bozza ER)" vertex="1">
-          <mxGeometry height="20" width="260" y="130" as="geometry" />
-        </mxCell>
-        <mxCell id="consegnasbar" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ConsegnaSbar" vertex="1">
-          <mxGeometry height="130" width="220" x="490" y="270" as="geometry" />
-        </mxCell>
-        <mxCell id="consegnasbar-r1" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="consegnasbar-r2" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="consegnasbar-r3" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="consegnasbar-r4" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1">
-          <mxGeometry height="20" width="220" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="consegnasbar-r5" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="S/B/A/R, priorita" vertex="1">
-          <mxGeometry height="20" width="220" y="110" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="VoceDiarioCedema" vertex="1">
-          <mxGeometry height="110" width="220" x="730" y="280" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario-r1" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario-r2" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario-r3" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="vocediario-r4" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK, opzionale)" vertex="1">
-          <mxGeometry height="20" width="220" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ValutazioneNorton" vertex="1">
-          <mxGeometry height="110" width="220" x="970" y="280" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton-r1" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton-r2" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton-r3" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="valnorton-r4" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="5 sottoscale, punteggio_totale" vertex="1">
-          <mxGeometry height="20" width="220" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ValutazioneConley" vertex="1">
-          <mxGeometry height="110" width="220" x="1210" y="280" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley-r1" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1">
-          <mxGeometry height="20" width="220" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley-r2" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1">
-          <mxGeometry height="20" width="220" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley-r3" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1">
-          <mxGeometry height="20" width="220" y="70" as="geometry" />
-        </mxCell>
-        <mxCell id="valconley-r4" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="6 sottovoci, punteggio_totale" vertex="1">
-          <mxGeometry height="20" width="220" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="e-reparto-utente" edge="1" parent="1" source="reparto" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="utente" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="720" y="110" />
-              <mxPoint x="240" y="110" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-reparto-paziente" edge="1" parent="1" source="reparto" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="paziente" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="720" y="110" />
-              <mxPoint x="960" y="118.68" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-reparto-turno" edge="1" parent="1" source="reparto" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="turno" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="720" y="110" />
-              <mxPoint x="1200" y="110" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-utente-profiloinf" edge="1" parent="1" source="utente" style="html=1;startArrow=ERone;endArrow=ERone;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="profiloinf" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="240" y="260" />
-              <mxPoint x="120" y="260" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-turno-assegnazione" edge="1" parent="1" source="turno" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.6667;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="assegnazione" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1200" y="260" />
-              <mxPoint x="396.67" y="260" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-utente-assegnazione" edge="1" parent="1" source="utente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.3333;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="assegnazione" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="240" y="260" />
-              <mxPoint x="323.33" y="260" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-assegnazione-cambio" edge="1" parent="1" source="assegnazione" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="richiestacambio" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="360" y="410" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-paziente-consegna" edge="1" parent="1" source="paziente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.3492;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="consegnasbar" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="960" y="260" />
-              <mxPoint x="566.83" y="268.68" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-turno-consegna" edge="1" parent="1" source="turno" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.6826;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="consegnasbar" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1200" y="260" />
-              <mxPoint x="640.17" y="268.68" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-paziente-diario" edge="1" parent="1" source="paziente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="vocediario" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="960" y="260" />
-              <mxPoint x="840" y="260" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-paziente-norton" edge="1" parent="1" source="paziente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="valnorton" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="960" y="260" />
-              <mxPoint x="1080" y="260" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e-paziente-conley" edge="1" parent="1" source="paziente" style="html=1;startArrow=ERone;endArrow=ERmany;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;edgeStyle=orthogonalEdgeStyle;" target="valconley" value="">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="960" y="260" />
-              <mxPoint x="1320" y="260" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
+        <mxCell id="title" parent="1" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;" value="Modello ER — Consegne Infermieristiche (18 entità)" vertex="1"><mxGeometry height="30" width="600" x="40" y="20" as="geometry" /></mxCell>
+        <mxCell id="reparto" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Reparto" vertex="1"><mxGeometry height="90" width="220" x="900" y="90" as="geometry" /></mxCell>
+        <mxCell id="reparto-r1" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="reparto-r2" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="nome" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="reparto-r3" parent="reparto" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="descrizione" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="farmaco" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Farmaco" vertex="1"><mxGeometry height="110" width="200" x="1680" y="90" as="geometry" /></mxCell>
+        <mxCell id="farmaco-r1" parent="farmaco" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="200" y="30" as="geometry" /></mxCell>
+        <mxCell id="farmaco-r2" parent="farmaco" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="nome (unique)" vertex="1"><mxGeometry height="20" width="200" y="50" as="geometry" /></mxCell>
+        <mxCell id="farmaco-r3" parent="farmaco" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="unita_misura" vertex="1"><mxGeometry height="20" width="200" y="70" as="geometry" /></mxCell>
+        <mxCell id="farmaco-r4" parent="farmaco" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="categoria" vertex="1"><mxGeometry height="20" width="200" y="90" as="geometry" /></mxCell>
+        <mxCell id="utente" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Utente" vertex="1"><mxGeometry height="170" width="240" x="380" y="250" as="geometry" /></mxCell>
+        <mxCell id="utente-r1" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="240" y="30" as="geometry" /></mxCell>
+        <mxCell id="utente-r2" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="email, password_hash" vertex="1"><mxGeometry height="20" width="240" y="50" as="geometry" /></mxCell>
+        <mxCell id="utente-r3" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="nome, cognome" vertex="1"><mxGeometry height="20" width="240" y="70" as="geometry" /></mxCell>
+        <mxCell id="utente-r4" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ruolo (infermiere / caposala)" vertex="1"><mxGeometry height="20" width="240" y="90" as="geometry" /></mxCell>
+        <mxCell id="utente-r5" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato (in_attesa / attivo / disattivato)" vertex="1"><mxGeometry height="20" width="240" y="110" as="geometry" /></mxCell>
+        <mxCell id="utente-r6" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1"><mxGeometry height="20" width="240" y="130" as="geometry" /></mxCell>
+        <mxCell id="utente-r7" parent="utente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="avatar_path" vertex="1"><mxGeometry height="20" width="240" y="150" as="geometry" /></mxCell>
+        <mxCell id="paziente" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Paziente" vertex="1"><mxGeometry height="150" width="220" x="900" y="250" as="geometry" /></mxCell>
+        <mxCell id="paziente-r1" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="paziente-r2" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="nome, cognome, eta" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="paziente-r3" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="letto, data_ricovero" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="paziente-r4" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="diagnosi_ingresso" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="paziente-r5" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="paziente-r6" parent="paziente" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="dimesso" vertex="1"><mxGeometry height="20" width="220" y="130" as="geometry" /></mxCell>
+        <mxCell id="turno" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Turno" vertex="1"><mxGeometry height="150" width="220" x="1220" y="250" as="geometry" /></mxCell>
+        <mxCell id="turno-r1" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="turno-r2" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="data, tipo (mattina / pom. / notte /" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="turno-r3" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="riposo / ferie / ferie_estive)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="turno-r4" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="turno-r5" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ora_inizio, ora_fine" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="turno-r6" parent="turno" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;fontColor=#666666;" value="UNIQUE(data, tipo, reparto_id)" vertex="1"><mxGeometry height="20" width="220" y="130" as="geometry" /></mxCell>
+        <mxCell id="carello" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="CarelloFarmaco" vertex="1"><mxGeometry height="150" width="220" x="1680" y="250" as="geometry" /></mxCell>
+        <mxCell id="carello-r1" parent="carello" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="carello-r2" parent="carello" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="farmaco_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="carello-r3" parent="carello" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="reparto_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="carello-r4" parent="carello" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="quantita, soglia_minima" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="carello-r5" parent="carello" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="prossima_scadenza" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="carello-r6" parent="carello" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;fontColor=#666666;" value="UNIQUE(farmaco_id, reparto_id)" vertex="1"><mxGeometry height="20" width="220" y="130" as="geometry" /></mxCell>
+        <mxCell id="profiloinf" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ProfiloInfermiere" vertex="1"><mxGeometry height="70" width="220" x="60" y="500" as="geometry" /></mxCell>
+        <mxCell id="profiloinf-r1" parent="profiloinf" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="utente_id (PK/FK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="profiloinf-r2" parent="profiloinf" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="ore_contrattuali_mensili" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="pwreset" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="PasswordResetRequirement" vertex="1"><mxGeometry height="90" width="240" x="380" y="500" as="geometry" /></mxCell>
+        <mxCell id="pwreset-r1" parent="pwreset" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="utente_id (PK/FK)" vertex="1"><mxGeometry height="20" width="240" y="30" as="geometry" /></mxCell>
+        <mxCell id="pwreset-r2" parent="pwreset" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="created_by_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="240" y="50" as="geometry" /></mxCell>
+        <mxCell id="pwreset-r3" parent="pwreset" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="created_at" vertex="1"><mxGeometry height="20" width="240" y="70" as="geometry" /></mxCell>
+        <mxCell id="assegnazione" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="AssegnazioneTurno" vertex="1"><mxGeometry height="130" width="220" x="900" y="500" as="geometry" /></mxCell>
+        <mxCell id="assegnazione-r1" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="assegnazione-r2" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="assegnazione-r3" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="infermiere_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="assegnazione-r4" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato (attiva)" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="assegnazione-r5" parent="assegnazione" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;fontColor=#666666;" value="UNIQUE(turno_id, infermiere_id)" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="richiestacambio" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="RichiestaCambioTurno" vertex="1"><mxGeometry height="170" width="260" x="1220" y="500" as="geometry" /></mxCell>
+        <mxCell id="richiestacambio-r1" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="260" y="30" as="geometry" /></mxCell>
+        <mxCell id="richiestacambio-r2" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="assegnazione_turno_id (FK)" vertex="1"><mxGeometry height="20" width="260" y="50" as="geometry" /></mxCell>
+        <mxCell id="richiestacambio-r3" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="assegnazione_collega_id (FK, opz.)" vertex="1"><mxGeometry height="20" width="260" y="70" as="geometry" /></mxCell>
+        <mxCell id="richiestacambio-r4" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="richiedente_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="260" y="90" as="geometry" /></mxCell>
+        <mxCell id="richiestacambio-r5" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="collega_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="260" y="110" as="geometry" /></mxCell>
+        <mxCell id="richiestacambio-r6" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="risposta_caposala_id (FK -&gt; Utente, opz.)" vertex="1"><mxGeometry height="20" width="260" y="130" as="geometry" /></mxCell>
+        <mxCell id="richiestacambio-r7" parent="richiestacambio" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato (5 valori, v. bozza ER)" vertex="1"><mxGeometry height="20" width="260" y="150" as="geometry" /></mxCell>
+        <mxCell id="movimento" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="MovimentoFarmaco" vertex="1"><mxGeometry height="130" width="220" x="1680" y="500" as="geometry" /></mxCell>
+        <mxCell id="movimento-r1" parent="movimento" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="movimento-r2" parent="movimento" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="carello_farmaco_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="movimento-r3" parent="movimento" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="movimento-r4" parent="movimento" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="delta, quantita_dopo" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="movimento-r5" parent="movimento" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="timestamp" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="richiestaferie" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="RichiestaFerie" vertex="1"><mxGeometry height="130" width="220" x="60" y="730" as="geometry" /></mxCell>
+        <mxCell id="richiestaferie-r1" parent="richiestaferie" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="richiestaferie-r2" parent="richiestaferie" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="infermiere_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="richiestaferie-r3" parent="richiestaferie" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="data_inizio, data_fine" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="richiestaferie-r4" parent="richiestaferie" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato (in_attesa / approvata / rifiutata)" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="richiestaferie-r5" parent="richiestaferie" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="risposta_caposala_id (FK -&gt; Utente, opz.)" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="feriepref" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="RichiestaFeriePreferenza" vertex="1"><mxGeometry height="130" width="220" x="340" y="730" as="geometry" /></mxCell>
+        <mxCell id="feriepref-r1" parent="feriepref" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="feriepref-r2" parent="feriepref" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="richiesta_id (FK -&gt; RichiestaFerie)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="feriepref-r3" parent="feriepref" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="rank" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="feriepref-r4" parent="feriepref" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="data_inizio, data_fine" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="feriepref-r5" parent="feriepref" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;fontColor=#666666;" value="UNIQUE(richiesta_id, rank)" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="consegnasbar" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ConsegnaSbar" vertex="1"><mxGeometry height="150" width="220" x="900" y="730" as="geometry" /></mxCell>
+        <mxCell id="consegnasbar-r1" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="consegnasbar-r2" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="consegnasbar-r3" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="consegnasbar-r4" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="consegnasbar-r5" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="S/B/A/R, priorita" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="consegnasbar-r6" parent="consegnasbar" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;fontColor=#666666;" value="UNIQUE(paziente_id, turno_id)" vertex="1"><mxGeometry height="20" width="220" y="130" as="geometry" /></mxCell>
+        <mxCell id="vocediario" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="VoceDiarioCedema" vertex="1"><mxGeometry height="110" width="220" x="1160" y="730" as="geometry" /></mxCell>
+        <mxCell id="vocediario-r1" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="vocediario-r2" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="vocediario-r3" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="vocediario-r4" parent="vocediario" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK, opzionale)" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="valnorton" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ValutazioneNorton" vertex="1"><mxGeometry height="110" width="220" x="1420" y="730" as="geometry" /></mxCell>
+        <mxCell id="valnorton-r1" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="valnorton-r2" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="valnorton-r3" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="valnorton-r4" parent="valnorton" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="5 sottoscale, punteggio_totale" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="valconley" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ValutazioneConley" vertex="1"><mxGeometry height="110" width="220" x="1680" y="730" as="geometry" /></mxCell>
+        <mxCell id="valconley-r1" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="valconley-r2" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="valconley-r3" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="valconley-r4" parent="valconley" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="6 sottovoci, punteggio_totale" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="parametrivitali" parent="1" style="swimlane;fontStyle=1;align=center;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="ParametriVitali" vertex="1"><mxGeometry height="170" width="220" x="1940" y="730" as="geometry" /></mxCell>
+        <mxCell id="parametrivitali-r1" parent="parametrivitali" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="id (PK)" vertex="1"><mxGeometry height="20" width="220" y="30" as="geometry" /></mxCell>
+        <mxCell id="parametrivitali-r2" parent="parametrivitali" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="paziente_id (FK)" vertex="1"><mxGeometry height="20" width="220" y="50" as="geometry" /></mxCell>
+        <mxCell id="parametrivitali-r3" parent="parametrivitali" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="autore_id (FK -&gt; Utente)" vertex="1"><mxGeometry height="20" width="220" y="70" as="geometry" /></mxCell>
+        <mxCell id="parametrivitali-r4" parent="parametrivitali" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="turno_id (FK, opzionale)" vertex="1"><mxGeometry height="20" width="220" y="90" as="geometry" /></mxCell>
+        <mxCell id="parametrivitali-r5" parent="parametrivitali" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="stato_coscienza (vigile / verbale /" vertex="1"><mxGeometry height="20" width="220" y="110" as="geometry" /></mxCell>
+        <mxCell id="parametrivitali-r6" parent="parametrivitali" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="dolore / coma)" vertex="1"><mxGeometry height="20" width="220" y="130" as="geometry" /></mxCell>
+        <mxCell id="parametrivitali-r7" parent="parametrivitali" style="text;align=left;verticalAlign=middle;spacingLeft=6;fontSize=11;" value="temp, FC, PA, FR, SpO2, dolore, ossigeno" vertex="1"><mxGeometry height="20" width="220" y="150" as="geometry" /></mxCell>
+        <mxCell id="e1-reparto-utente" edge="1" parent="1" source="reparto" target="utente" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2-reparto-paziente" edge="1" parent="1" source="reparto" target="paziente" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3-reparto-turno" edge="1" parent="1" source="reparto" target="turno" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4-reparto-carello" edge="1" parent="1" source="reparto" target="carello" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5-utente-profiloinf" edge="1" parent="1" source="utente" target="profiloinf" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERzeroToOne;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6-utente-pwreset" edge="1" parent="1" source="utente" target="pwreset" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERzeroToOne;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7-utente-assegnazione" edge="1" parent="1" source="utente" target="assegnazione" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e8-turno-assegnazione" edge="1" parent="1" source="turno" target="assegnazione" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9-assegnazione-richiestacambio" edge="1" parent="1" source="assegnazione" target="richiestacambio" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=1;exitY=0.2;entryX=0;entryY=0.15;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10-assegnazione-richiestacambio" edge="1" parent="1" source="assegnazione" target="richiestacambio" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERzeroToMany;exitX=1;exitY=0.35;entryX=0;entryY=0.3;" value="collega (opz.)"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11-farmaco-carello" edge="1" parent="1" source="farmaco" target="carello" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e12-carello-movimento" edge="1" parent="1" source="carello" target="movimento" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e13-richiestaferie-feriepref" edge="1" parent="1" source="richiestaferie" target="feriepref" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" value=""><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e14-paziente-valnorton" edge="1" parent="1" source="paziente" target="valnorton" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1530" y="460" /></Array></mxGeometry></mxCell>
+        <mxCell id="e15-paziente-parametrivitali" edge="1" parent="1" source="paziente" target="parametrivitali" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="2050" y="460" /></Array></mxGeometry></mxCell>
+        <mxCell id="e16-turno-parametrivitali" edge="1" parent="1" source="turno" target="parametrivitali" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERzeroToMany;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="2050" y="460" /></Array></mxGeometry></mxCell>
+        <mxCell id="e17-utente-richiestaferie" edge="1" parent="1" source="utente" target="richiestaferie" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="330" y="335" /><mxPoint x="330" y="700" /></Array></mxGeometry></mxCell>
+        <mxCell id="e18-paziente-consegnasbar" edge="1" parent="1" source="paziente" target="consegnasbar" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=1;entryY=0.4;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1170" y="460" /><mxPoint x="1170" y="690" /></Array></mxGeometry></mxCell>
+        <mxCell id="e19-turno-consegnasbar" edge="1" parent="1" source="turno" target="consegnasbar" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=1;entryY=0.6;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1170" y="460" /><mxPoint x="1170" y="690" /></Array></mxGeometry></mxCell>
+        <mxCell id="e20-paziente-vocediario" edge="1" parent="1" source="paziente" target="vocediario" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0;entryY=0.4;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1170" y="460" /><mxPoint x="1170" y="690" /></Array></mxGeometry></mxCell>
+        <mxCell id="e21-turno-vocediario" edge="1" parent="1" source="turno" target="vocediario" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERzeroToMany;exitX=0.5;exitY=1;entryX=0;entryY=0.6;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1170" y="460" /><mxPoint x="1170" y="690" /></Array></mxGeometry></mxCell>
+        <mxCell id="e22-paziente-valconley" edge="1" parent="1" source="paziente" target="valconley" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=ERone;endArrow=ERmany;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" value=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1580" y="460" /><mxPoint x="1580" y="690" /></Array></mxGeometry></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
