@@ -131,7 +131,7 @@ def list_miei_prossimi_turni(
     current_user: CurrentUserDep, db: DbDep, limit: int = 4
 ) -> list[ProssimoTurnoConColleghiRead]:
     oggi = datetime.date.today()
-    limite = max(1, min(limit, 10))
+    limite = max(1, min(limit, 60))
     miei_turni = (
         db.query(Turno)
         .join(AssegnazioneTurno, AssegnazioneTurno.turno_id == Turno.id)

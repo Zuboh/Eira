@@ -16,6 +16,7 @@ from faker import Faker
 import app.models  # noqa: F401 — registra tutti i modelli su Base.metadata
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
+from app.core.ferie_slots import DURATA_SLOT_GIORNI, slot_ferie_estive
 from app.core.security import hash_password
 from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.consegna_sbar import ConsegnaSbar
@@ -25,10 +26,14 @@ from app.models.enums import (
     RuoloUtente,
     StatoAssegnazione,
     StatoCambioTurno,
+    StatoCoscienza,
+    StatoRichiestaFerie,
     StatoUtente,
     TipoTurno,
 )
-from app.models.farmaco import CarelloFarmaco, Farmaco
+from app.models.farmaco import CarelloFarmaco, Farmaco, MovimentoFarmaco
+from app.models.ferie import RichiestaFerie, RichiestaFeriePreferenza
+from app.models.parametri_vitali import ParametriVitali
 from app.models.paziente import Paziente
 from app.models.profilo_infermiere import ProfiloInfermiere
 from app.models.reparto import Reparto
@@ -160,6 +165,13 @@ def crea_infermieri(db, reparti: list[Reparto], per_reparto: int = 5) -> list[Ut
                     stato=StatoUtente.attivo,
                 )
             )
+    # 1-2 infermieri extra del reparto principale iniziano con stato in_attesa
+    # invece di attivo, cosi' la vista Personale della caposala (filtro default
+    # 'in_attesa') non e' vuota al primo accesso.
+    candidati_in_attesa = [i for i in infermieri[1:] if i.reparto_id == reparti[0].id]
+    for infermiere in random.sample(candidati_in_attesa, min(2, len(candidati_in_attesa))):
+        infermiere.stato = StatoUtente.in_attesa
+
     db.add_all(infermieri)
     db.flush()
 
@@ -447,6 +459,78 @@ def crea_diario_cedema(
     db.flush()
 
 
+def crea_parametri_vitali(
+    db, turni: list[Turno], assegnazioni: list[AssegnazioneTurno], pazienti: list[Paziente]
+) -> None:
+    infermieri_per_turno: dict[int, list[int]] = {}
+    for assegnazione in assegnazioni:
+        infermieri_per_turno.setdefault(assegnazione.turno_id, []).append(assegnazione.infermiere_id)
+
+    turni_passati_per_reparto: dict[int, list[Turno]] = {}
+    for turno in turni:
+        if turno.data <= OGGI:
+            turni_passati_per_reparto.setdefault(turno.reparto_id, []).append(turno)
+
+    NOTE_VITALI = [
+        "Paziente riferisce lieve dispnea da sforzo.",
+        "Cute normocolorita, nessun segno di distress.",
+        "Lieve tachicardia post-mobilizzazione, da rivalutare.",
+        "Paziente sonnolento ma facilmente risvegliabile.",
+    ]
+
+    voci = []
+    for paziente in pazienti:
+        if paziente.dimesso:
+            continue
+        turni_reparto = turni_passati_per_reparto.get(paziente.reparto_id, [])
+        turni_recenti = sorted(turni_reparto, key=lambda t: t.data)[-12:]
+        if not turni_recenti:
+            continue
+        n_rilevazioni = random.randint(4, 8)
+        for turno in random.sample(turni_recenti, min(n_rilevazioni, len(turni_recenti))):
+            autori = infermieri_per_turno.get(turno.id)
+            if not autori:
+                continue
+
+            sistolica = random.randint(104, 148)
+            diastolica = random.randint(62, 94)
+            if diastolica > sistolica - 20:
+                diastolica = sistolica - 20 - random.randint(0, 8)
+
+            saturazione = random.randint(92, 99)
+            stato_coscienza = random.choices(
+                [StatoCoscienza.vigile, StatoCoscienza.verbale, StatoCoscienza.dolore, StatoCoscienza.coma],
+                weights=[85, 9, 4, 2],
+            )[0]
+            ossigeno = saturazione < 95 or random.random() < 0.12
+            note = random.choice(NOTE_VITALI) if random.random() < 0.25 else None
+
+            timestamp = datetime.datetime.combine(
+                turno.data, turno.ora_inizio, tzinfo=UTC
+            ) + datetime.timedelta(minutes=random.randint(15, 95))
+
+            voci.append(
+                ParametriVitali(
+                    paziente_id=paziente.id,
+                    autore_id=random.choice(autori),
+                    turno_id=turno.id,
+                    timestamp=timestamp,
+                    temperatura=round(random.uniform(36.1, 38.4), 1),
+                    frequenza_cardiaca=random.randint(58, 110),
+                    pressione_sistolica=sistolica,
+                    pressione_diastolica=diastolica,
+                    frequenza_respiratoria=random.randint(12, 24),
+                    saturazione_o2=saturazione,
+                    scala_dolore=random.randint(0, 8),
+                    stato_coscienza=stato_coscienza,
+                    ossigeno=ossigeno,
+                    note=note,
+                )
+            )
+    db.add_all(voci)
+    db.flush()
+
+
 def crea_valutazioni(db, pazienti: list[Paziente], infermieri: list[Utente]) -> None:
     infermieri_per_reparto: dict[int, list[Utente]] = {}
     for infermiere in infermieri:
@@ -513,7 +597,7 @@ FARMACI_CATALOGO = [
 ]
 
 
-def crea_carello_farmaci(db, reparti: list[Reparto]) -> None:
+def crea_carello_farmaci(db, reparti: list[Reparto]) -> list[CarelloFarmaco]:
     farmaci = [
         Farmaco(nome=nome, unita_misura=unita_misura, categoria=categoria)
         for nome, unita_misura, categoria in FARMACI_CATALOGO
@@ -541,6 +625,148 @@ def crea_carello_farmaci(db, reparti: list[Reparto]) -> None:
             )
     db.add_all(carello)
     db.flush()
+    return carello
+
+
+def crea_movimenti_farmaco(
+    db, carelli: list[CarelloFarmaco], infermieri: list[Utente], caposale: list[Utente]
+) -> None:
+    """Costruisce in avanti una storia plausibile di prelievi/rifornimenti per ogni
+    carrello: ogni delta resta in un range realistico (somministrazioni -1..-5,
+    rifornimenti +8..+30), e lo scarto residuo verso la quantita' gia' fissata da
+    crea_carello_farmaci viene chiuso con altri movimenti bounded (mai un singolo
+    delta implausibile tipo -80 in una sola somministrazione).
+    """
+    autori_per_reparto: dict[int, list[Utente]] = {}
+    for utente in infermieri + caposale:
+        autori_per_reparto.setdefault(utente.reparto_id, []).append(utente)
+
+    movimenti = []
+    for carello in carelli:
+        pool = autori_per_reparto.get(carello.reparto_id)
+        if not pool:
+            continue
+
+        quantita_finale = carello.quantita
+        n_eventi = random.randint(3, 5)
+        giorni_fa = sorted(random.sample(range(3, 22), n_eventi), reverse=True)
+
+        quantita_corrente = max(0, quantita_finale + random.randint(-10, 10))
+        for giorno in giorni_fa:
+            if random.random() < 0.25 or quantita_corrente == 0:
+                delta = random.randint(8, 30)
+            else:
+                delta = -random.randint(1, min(5, quantita_corrente))
+            quantita_corrente = max(0, quantita_corrente + delta)
+            timestamp = datetime.datetime.now(UTC) - datetime.timedelta(
+                days=giorno, hours=random.randint(0, 23), minutes=random.randint(0, 59)
+            )
+            movimenti.append(
+                MovimentoFarmaco(
+                    carello_farmaco_id=carello.id,
+                    autore_id=random.choice(pool).id,
+                    timestamp=timestamp,
+                    delta=delta,
+                    quantita_dopo=quantita_corrente,
+                )
+            )
+
+        # Chiude lo scarto residuo verso quantita_finale con movimenti bounded
+        # (mai piu' grandi dei range sopra), a granularita' di minuti nelle
+        # ultime 48h cosi' anche molti passi non collidono sullo stesso timestamp.
+        minuti_rimanenti = 48 * 60
+        while quantita_corrente != quantita_finale:
+            scarto = quantita_finale - quantita_corrente
+            if scarto > 0:
+                delta = min(scarto, random.randint(8, 30))
+            else:
+                delta = -min(-scarto, random.randint(1, 5))
+            quantita_corrente = max(0, quantita_corrente + delta)
+            minuti_rimanenti = max(1, minuti_rimanenti - random.randint(20, 90))
+            timestamp = datetime.datetime.now(UTC) - datetime.timedelta(minutes=minuti_rimanenti)
+            movimenti.append(
+                MovimentoFarmaco(
+                    carello_farmaco_id=carello.id,
+                    autore_id=random.choice(pool).id,
+                    timestamp=timestamp,
+                    delta=delta,
+                    quantita_dopo=quantita_corrente,
+                )
+            )
+    db.add_all(movimenti)
+    db.flush()
+
+
+def crea_richieste_ferie(db, infermieri: list[Utente], caposale: list[Utente]) -> None:
+    caposala_per_reparto = {c.reparto_id: c for c in caposale}
+    infermiere_principale = infermieri[0]
+    reparto_principale_id = infermiere_principale.reparto_id
+
+    candidati_reparto_principale = [
+        i for i in infermieri[1:] if i.reparto_id == reparto_principale_id
+    ]
+    altri_candidati = [i for i in infermieri[1:] if i.reparto_id != reparto_principale_id]
+
+    slot = slot_ferie_estive()
+
+    def crea(infermiere, stato, giorni_creazione_fa):
+        n_pref = random.randint(1, 3)
+        preferenze_date = sorted(random.sample(slot, min(n_pref, len(slot))))
+        creata_il = datetime.datetime.now(UTC) - datetime.timedelta(days=giorni_creazione_fa)
+
+        richiesta = RichiestaFerie(infermiere_id=infermiere.id, stato=stato, creata_il=creata_il)
+        db.add(richiesta)
+        db.flush()
+
+        for rank, data_inizio in enumerate(preferenze_date, start=1):
+            db.add(
+                RichiestaFeriePreferenza(
+                    richiesta_id=richiesta.id,
+                    rank=rank,
+                    data_inizio=data_inizio,
+                    data_fine=data_inizio + datetime.timedelta(days=DURATA_SLOT_GIORNI - 1),
+                )
+            )
+
+        caposala = caposala_per_reparto.get(infermiere.reparto_id)
+        if stato == StatoRichiestaFerie.approvata and caposala is not None:
+            rank_scelto = random.randint(1, len(preferenze_date))
+            data_scelta = preferenze_date[rank_scelto - 1]
+            richiesta.data_inizio = data_scelta
+            richiesta.data_fine = data_scelta + datetime.timedelta(days=DURATA_SLOT_GIORNI - 1)
+            richiesta.risposta_caposala_id = caposala.id
+            richiesta.risposta_caposala_il = creata_il + datetime.timedelta(days=random.randint(1, 5))
+        elif stato == StatoRichiestaFerie.rifiutata and caposala is not None:
+            richiesta.risposta_caposala_id = caposala.id
+            richiesta.risposta_caposala_il = creata_il + datetime.timedelta(days=random.randint(1, 5))
+            richiesta.motivo_rifiuto = random.choice(
+                [
+                    "Periodo gia' coperto da altre richieste approvate nello stesso reparto.",
+                    "Copertura minima del reparto non garantita in quel periodo.",
+                    "Richiesta pervenuta oltre i termini per lo slot selezionato.",
+                ]
+            )
+        db.flush()
+
+    crea(infermiere_principale, StatoRichiestaFerie.in_attesa, random.randint(1, 15))
+
+    piano = [
+        (StatoRichiestaFerie.in_attesa, candidati_reparto_principale),
+        (StatoRichiestaFerie.approvata, candidati_reparto_principale),
+        (StatoRichiestaFerie.approvata, altri_candidati),
+        (StatoRichiestaFerie.rifiutata, candidati_reparto_principale),
+        (StatoRichiestaFerie.rifiutata, altri_candidati),
+    ]
+    usati = {infermiere_principale.id}
+    for stato, pool in piano:
+        candidati = [i for i in pool if i.id not in usati] or [
+            i for i in infermieri if i.id not in usati
+        ]
+        if not candidati:
+            continue
+        scelto = random.choice(candidati)
+        usati.add(scelto.id)
+        crea(scelto, stato, random.randint(1, 20))
 
 
 def main() -> None:
@@ -551,13 +777,16 @@ def main() -> None:
         caposale = crea_caposale(db, reparti)
         infermieri = crea_infermieri(db, reparti)
         pazienti = crea_pazienti(db, reparti)
-        turni = crea_turni(db, reparti, settimane_passate=8, settimane_future=8)
+        turni = crea_turni(db, reparti, settimane_passate=8, settimane_future=9)
         assegnazioni = crea_assegnazioni(db, turni, infermieri)
         crea_richieste_cambio_turno(db, assegnazioni, infermieri, caposale)
         crea_consegne_sbar(db, turni, assegnazioni, pazienti)
         crea_diario_cedema(db, turni, assegnazioni, pazienti)
+        crea_parametri_vitali(db, turni, assegnazioni, pazienti)
         crea_valutazioni(db, pazienti, infermieri)
-        crea_carello_farmaci(db, reparti)
+        carelli = crea_carello_farmaci(db, reparti)
+        crea_movimenti_farmaco(db, carelli, infermieri, caposale)
+        crea_richieste_ferie(db, infermieri, caposale)
         db.commit()
 
         print("[seed] Dati mock creati:")
@@ -570,10 +799,16 @@ def main() -> None:
         print(f"  richieste cambio turno: {db.query(RichiestaCambioTurno).count()}")
         print(f"  consegne SBAR: {db.query(ConsegnaSbar).count()}")
         print(f"  voci diario CEDEMA: {db.query(VoceDiarioCedema).count()}")
+        print(f"  parametri vitali: {db.query(ParametriVitali).count()}")
         print(f"  valutazioni Norton: {db.query(ValutazioneNorton).count()}")
         print(f"  valutazioni Conley: {db.query(ValutazioneConley).count()}")
         print(f"  farmaci catalogo: {db.query(Farmaco).count()}")
         print(f"  carello farmaci: {db.query(CarelloFarmaco).count()}")
+        print(f"  movimenti farmaco: {db.query(MovimentoFarmaco).count()}")
+        print(f"  richieste ferie: {db.query(RichiestaFerie).count()}")
+        print(f"  preferenze ferie: {db.query(RichiestaFeriePreferenza).count()}")
+        n_in_attesa = db.query(Utente).filter(Utente.stato == StatoUtente.in_attesa).count()
+        print(f"  utenti in_attesa: {n_in_attesa}")
         print()
         print("[seed] Login di prova (username = id utente):")
         print(f"  caposala: username={caposale[0].id} password={settings.seed_caposala_password}")
