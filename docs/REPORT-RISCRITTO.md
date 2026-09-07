@@ -17,16 +17,21 @@
 > sottosezioni pertinenti (non in appendice), con didascalia sotto
 > ogni immagine.
 >
-> **Gap ancora aperti prima del travaso nel template Word
-> (`~/Downloads/1759995480.docx`, non ancora toccato in questa
-> riscrittura):**
-> - nomenclatura file upload finale: `Cognome_Nome_Matricola.pdf`
-> - campi copertina e template Word: risultavano già compilati/mappati
->   da lavoro precedente su `REPORT.md`, da verificare comunque prima
->   del travaso definitivo
-> - travaso vero e proprio nel `.docx`: testo + immagini vanno
->   incollati manualmente nel template (path immagini qui sono
->   relativi a `docs/`, nel Word vanno incorporate come figure)
+> **Nomenclatura file upload finale:** `Zubani_Lorenzo_0312302120.pdf`
+> (Cognome_Nome_Matricola, dati da `REPORT.md:35-36`).
+>
+> **Gap ancora aperti prima del travaso nel template Word:** la copia
+> attualmente in `~/Downloads/1759995480.docx` (verificata il
+> 2026-09-07) è la **traccia ufficiale vuota** — 14 placeholder
+> "Inserisci qui il testo", nessun campo compilato — non la versione
+> con copertina già mappata descritta in `REPORT.md:30-36`. Quella
+> copia risulta persa. Il travaso è quindi **interamente da fare**:
+> - compilare i campi di copertina nel template vuoto (Nome e Cognome,
+>   Numero di matricola, titolo elaborato — etichette esatte in
+>   `REPORT.md:30-36`)
+> - incollare testo e immagini di questo file nel `.docx` (path
+>   immagini qui sono relativi a `docs/`, nel Word vanno incorporate
+>   come figure, non linkate)
 
 ## PARTE PRIMA – DESCRIZIONE DEL PROCESSO
 
