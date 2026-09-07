@@ -2,8 +2,6 @@
   <img src="frontend/src/assets/logo/eira-wordmark.svg" alt="Eira" width="220">
 </p>
 
-<h1 align="center">Eira</h1>
-
 <p align="center">
   <strong>Consegne infermieristiche strutturate, dal cambio turno alla cartella paziente.</strong>
 </p>
