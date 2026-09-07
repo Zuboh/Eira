@@ -3,8 +3,33 @@
 > Riscrittura a mano, sezione per sezione, del report Pegaso —
 > metodo fact-sheet (design in `docs/superpowers/specs/
 > 2026-08-16-report-riscrittura-design.md`). `REPORT.md`/
-> `REPORT-BOZZA.md` restano come riferimento fino a riscrittura
-> completa, non toccati.
+> `REPORT-BOZZA.md` restano come riferimento, non toccati.
+>
+> **Stato (2026-09-07):** riscrittura completa, tutte 8 sezioni
+> (Parte Prima §1-3, Parte Seconda §1-5), 9034 parole — dentro il
+> target 6.000-10.000 della checklist in fondo a `REPORT.md`. Passata
+> `humanizer` fatta: testo pulito, zero pattern AI-writing rilevanti
+> (unico fix: un em dash in prosa reale, riga 15). Riferimento
+> incrociato IDOR in §5 corretto (era "sezione precedente", ora
+> "sezione 3").
+>
+> **Gap ancora aperti prima del travaso nel template Word
+> (`~/Downloads/1759995480.docx`, non ancora toccato in questa
+> riscrittura):**
+> - manca sezione Bibliografia/Fonti citate in questo file — le fonti
+>   esistono già in `REPORT.md` sotto "Fonti citate" (Joint Commission,
+>   Norton/SCIRE, studio Conley, OWASP IDOR, articolo SBAR, articolo
+>   infermiere coordinatore), da trasferire e formattare qui
+> - figure non ancora inserite: diagramma ER
+>   (`docs/diagrams/er-consegne-infermieristiche.drawio.png`, esiste)
+>   e screenshot selezionati (17 in `docs/screenshots/`, esistono) —
+>   da posizionare inline nelle sottosezioni pertinenti, non in appendice
+> - conteggio parole da riverificare a documento finito (bibliografia +
+>   didascalie aumenteranno il totale)
+> - nomenclatura file upload finale: `Cognome_Nome_Matricola.pdf`
+> - campi copertina e template Word: risultavano già compilati/mappati
+>   da lavoro precedente su `REPORT.md`, da verificare comunque prima
+>   del travaso definitivo
 
 ## PARTE PRIMA – DESCRIZIONE DEL PROCESSO
 
