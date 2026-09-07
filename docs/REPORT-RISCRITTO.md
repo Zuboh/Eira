@@ -164,7 +164,39 @@ Infine, ho cercato di definire il successo della consegna guidata in modo verifi
 
 ### 2. Contestualizzazione
 
-_[da scrivere]_
+Il progetto è ambientato in una U.O. di Medicina Generale e Geriatria fittizia, costruita prendendo come riferimento l'organizzazione di strutture ospedaliere reali del settore, in particolare la Fondazione Poliambulanza di Brescia. Non esiste però alcuna collaborazione o partnership con la struttura: nel progetto non sono stati utilizzati dati, loghi, marchi o altri elementi riconducibili direttamente all'ospedale.
+
+Il punto centrale del dominio applicativo è la consegna infermieristica, cioè il passaggio delle informazioni rilevanti tra operatori durante il cambio turno. In un reparto ospedaliero questo passaggio deve permettere a chi entra in servizio di comprendere rapidamente la situazione dei pazienti e le attività che richiedono attenzione.
+
+Per strutturare questo processo ho utilizzato principalmente il metodo SBAR, acronimo di Situation, Background, Assessment, Recommendation. Il metodo non nasce originariamente in ambito sanitario, ma in contesti militari e aeronautici, nei quali una comunicazione poco chiara tra operatori può produrre conseguenze immediate. Successivamente è stato adottato anche in sanità come modello standardizzato per il trasferimento delle informazioni ed è stato raccomandato anche dall'Organizzazione Mondiale della Sanità.
+
+La rilevanza della comunicazione nel contesto sanitario emerge anche dai dati raccolti dalla Joint Commission negli Stati Uniti: nell'analisi dei sentinel event tra il 1995 e il 2005, circa due terzi degli eventi risultavano associati a problemi di comunicazione tra il personale, molti dei quali verificatisi durante il passaggio delle consegne. Questo è uno dei motivi per cui nel progetto ho preferito una struttura guidata come SBAR rispetto a una consegna lasciata completamente alla memoria o alle abitudini del singolo operatore.
+
+Accanto alla consegna SBAR ho inserito altri strumenti utilizzati nella valutazione infermieristica, tra cui le scale Norton e Conley.
+
+La scala Norton, sviluppata da Doreen Norton nel 1962, è stata la prima scala validata per la valutazione del rischio di lesioni da pressione. Prende in considerazione cinque dimensioni: condizioni generali, stato mentale, attività, mobilità e incontinenza. Ogni voce viene valutata con un punteggio compreso tra 1 e 4, ottenendo quindi un totale compreso tra 5 e 20. Convenzionalmente, il valore 14 viene utilizzato come soglia di riferimento per individuare una condizione di rischio.
+
+L'implementazione presente in Eira riproduce questa struttura anche a livello di validazione. I cinque valori vengono controllati server-side e devono essere compresi tra 1 e 4; un valore esterno a questo intervallo viene quindi rifiutato prima ancora di raggiungere la logica applicativa. Il punteggio complessivo viene calcolato sul server come somma delle cinque voci.
+
+La scala Conley viene invece utilizzata per la valutazione del rischio di caduta, un aspetto particolarmente rilevante in un reparto con una componente geriatrica importante. È uno degli strumenti diffusi in ambito ospedaliero per questo tipo di valutazione, ma presenta anche limiti documentati. Uno studio multicentrico condotto su pazienti geriatrici acuti ha rilevato una consistenza interna debole, con un alfa di Cronbach pari a 0,465, insieme a una capacità predittiva limitata rispetto alle cadute effettivamente osservate.
+
+Ho tenuto conto di questi limiti anche nell'implementazione. Il punteggio Conley viene calcolato sul server sommando le sei sotto-voci, ma per i singoli campi viene imposto soltanto un limite minimo pari a zero. Non ho introdotto un limite massimo uniforme perché gli item della scala reale non hanno tutti lo stesso peso e imporre arbitrariamente lo stesso intervallo a ogni voce avrebbe prodotto una rappresentazione clinicamente scorretta.
+
+Per entrambe le scale non ho inoltre trasformato automaticamente il punteggio numerico in una categoria clinica come "rischio basso", "medio" o "alto". Questa parte rimane fuori dallo scope corrente del progetto. In particolare per la scala Conley, automatizzare una classificazione clinica sulla base di uno strumento la cui capacità predittiva è discussa avrebbe potuto dare una falsa sensazione di precisione. Ho quindi preferito limitare il sistema alla raccolta strutturata dei valori e al calcolo deterministico del punteggio.
+
+Un ulteriore elemento della consegna è il diario CEDEMA, articolato in sei campi: coscienza, emotività, dolore, emodinamica, mobilizzazione e allert. In questo caso la struttura non deriva da una mia interpretazione del formato, ma riproduce quella osservata in uno screenshot di una nota infermieristica reale che mi è stato mostrato durante un colloquio informale con un'infermiera. L'ho utilizzato come esempio concreto per mantenere il progetto vicino a modalità operative realmente utilizzate.
+
+Lo stesso confronto informale ha fornito spunti anche per alcune funzionalità aggiuntive, in particolare cambio turno, banca ore e gestione della priorità delle consegne, rappresentata nell'applicazione come un campo specifico della consegna SBAR. Non ho trattato queste informazioni come requisiti formali né come indicazioni provenienti da una struttura sanitaria specifica, ma semplicemente come riferimenti utili per rendere più realistici alcuni flussi del prodotto.
+
+Dal punto di vista operativo, Eira è pensata per essere utilizzata su un tablet o desktop condiviso di reparto, e non principalmente su dispositivi personali associati al singolo operatore. L'utilizzo può avvenire anche durante un turno notturno o in condizioni di pressione operativa. Per questo motivo l'interfaccia è stata progettata privilegiando la possibilità di individuare rapidamente le informazioni importanti, piuttosto che un'esperienza basata sull'esplorazione di molte schermate o livelli di navigazione.
+
+Il sistema distingue due ruoli principali.
+
+L'infermiere può consultare e compilare le consegne SBAR relative ai turni a cui è assegnato, visualizzare i pazienti collegati al proprio turno e inviare una richiesta di cambio turno a un collega.
+
+Il caposala, o coordinatore, ha invece una visione più ampia dell'organizzazione del reparto. Può assegnare gli infermieri ai turni tramite una dashboard a calendario, mentre alcune validazioni impediscono assegnazioni incompatibili, come il doppio turno, e permettono di individuare eventuali slot ancora scoperti. Può inoltre consultare tutte le consegne del reparto, senza però inserirne direttamente di cliniche, e gestisce la fase finale delle richieste di cambio turno.
+
+Il cambio turno utilizza infatti una doppia conferma: prima il collega coinvolto deve accettare la proposta, successivamente il caposala può approvarla o rifiutarla. In questo modo una modifica alla pianificazione non può essere completata unilateralmente da uno dei due infermieri.
 
 ### 3. Descrizione dei principali aspetti progettuali
 
