@@ -12,7 +12,7 @@
 
 Essendo già programmatore e sviluppatore web, alcune delle conoscenze affrontate durante il percorso universitario facevano già parte del mio lavoro quotidiano. I vari corsi mi hanno però permesso di consolidarle, approfondirle e applicarle in modo più strutturato all'interno del progetto.
 
-Il corso di Basi di Dati mi ha permesso di riprendere e approfondire i database relazionali, i diagrammi entità-relazione, le cardinalità tra le entità — ad esempio relazioni uno-a-uno, uno-a-molti e molti-a-molti — e il linguaggio SQL, comprese le principali operazioni di interrogazione e manipolazione dei dati come SELECT, WHERE, JOIN, BETWEEN e altre.
+Il corso di Basi di Dati mi ha permesso di riprendere e approfondire i database relazionali, i diagrammi entità-relazione, le cardinalità tra le entità (ad esempio relazioni uno-a-uno, uno-a-molti e molti-a-molti) e il linguaggio SQL, comprese le principali operazioni di interrogazione e manipolazione dei dati come SELECT, WHERE, JOIN, BETWEEN e altre.
 
 Nel progetto ho utilizzato SQLite, scelto perché è un database file-based che non richiede la gestione di un server separato. Questa soluzione è risultata adeguata allo scope dell'applicazione, pensata per l'utilizzo all'interno di un singolo reparto e senza un carico elevato di scritture concorrenti.
 
@@ -415,7 +415,7 @@ Uno dei risultati più utili è emerso proprio dagli audit dedicati. Il controll
 
 Dopo la correzione, alcuni colori di stato sono stati inoltre centralizzati in token comuni, in modo da evitare di ripetere lo stesso problema in componenti diversi.
 
-Anche l'audit di sicurezza ha prodotto un risultato concreto: ha permesso di individuare il problema di accesso cross-reparto sulla banca ore descritto nel case study IDOR della sezione precedente.
+Anche l'audit di sicurezza ha prodotto un risultato concreto: ha permesso di individuare il problema di accesso cross-reparto sulla banca ore descritto nel case study IDOR della sezione 3.
 
 Alla chiusura dello sviluppo non risultano **bug critici aperti**. Rimangono due problemi minori, legati alla semantica di alcuni stati dei turni. Non sono stati rinviati per mancanza di tempo, ma perché richiedono prima una decisione più chiara a livello di design e dominio.
 
