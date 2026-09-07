@@ -268,7 +268,96 @@ L'aspetto più utile di questo episodio è stato però il cambiamento nel metodo
 
 Da quel momento ho adottato una pratica più sistematica: dopo il completamento di un router che introduce un endpoint GET /{id}, eseguo una ricerca esplicita su reparto_id e sugli identificativi sensibili all'interno dell'intera cartella routers/, invece di limitarmi a rileggere soltanto il file appena modificato. In questo modo il controllo dello scoping viene trattato come un'invariante trasversale dell'applicazione e non come un dettaglio locale del singolo endpoint.
 
-_[da scrivere — sotto-blocchi restanti: 4 snippet commentati, documentazione API]_
+La traccia richiede di descrivere il processo di sviluppo anche attraverso alcuni degli snippet più significativi. Ho scelto quattro esempi appartenenti ad aree diverse del progetto: dominio clinico, sicurezza, hardening del deploy e logica di business.
+
+**Calcolo del punteggio Norton**
+
+```python
+punteggio = (
+    payload.condizioni_generali
+    + payload.stato_mentale
+    + payload.attivita
+    + payload.mobilita
+    + payload.incontinenza
+)
+```
+
+Questo frammento appartiene alla creazione di una valutazione Norton.
+
+Il calcolo in sé è semplice, perché il punteggio totale corrisponde alla somma delle cinque voci della scala. La scelta importante riguarda però dove viene eseguito il calcolo.
+
+Il punteggio viene calcolato direttamente dal backend e il payload inviato dal frontend non contiene un campo punteggio_totale. Il client invia quindi solamente i valori delle singole voci, mentre il server ricava autonomamente il risultato complessivo.
+
+In questo modo il frontend non può inviare un punteggio totale arbitrario o incoerente rispetto ai dati inseriti. Non è quindi necessario aggiungere una validazione che confronti un totale fornito dal client con quello effettivamente calcolato, perché quel valore non viene mai accettato come input.
+
+**Controllo IDOR sulla banca ore**
+
+```python
+if current_user.ruolo == RuoloUtente.caposala:
+    infermiere = db.get(Utente, infermiere_id)
+    if infermiere is None or infermiere.reparto_id != current_user.reparto_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Infermiere di un altro reparto",
+        )
+```
+
+Questo controllo è stato aggiunto all'endpoint della banca ore dopo l'audit di sicurezza descritto in precedenza.
+
+Nella prima versione del router esisteva già un controllo per impedire a un infermiere di leggere il saldo di un altro utente, ma non era stato implementato lo stesso livello di verifica per il ruolo caposala.
+
+Il blocco recupera quindi l'infermiere richiesto e controlla esplicitamente che appartenga allo stesso reparto del caposala autenticato. Se l'utente non esiste oppure appartiene a un reparto diverso, la richiesta viene rifiutata con un errore 403.
+
+Il problema non era stato individuato perché un test esistente aveva fallito, ma attraverso un audit dedicato sugli identificativi e sullo scoping dei reparti. Questo episodio mi ha mostrato che, per gli endpoint basati su un identificativo, il controllo delle autorizzazioni deve essere verificato separatamente per ogni ruolo che può accedere all'endpoint.
+
+**Controllo fail-fast della chiave JWT**
+
+```python
+def _check_jwt_secret(config: Settings = settings) -> None:
+    if config.jwt_secret_key != "dev-secret-change-in-production":
+        return
+    if config.environment.casefold() == "production":
+        raise RuntimeError(
+            "JWT_SECRET_KEY non impostata in ambiente production: rifiuto "
+            "l'avvio. Impostare JWT_SECRET_KEY prima di qualunque deploy."
+        )
+    logger.warning("JWT_SECRET_KEY non impostata: uso il default di sviluppo.")
+```
+
+Questo snippet riguarda l'hardening della configurazione di deploy.
+
+Durante lo sviluppo locale e nella CI può essere utilizzato il secret predefinito senza conseguenze rilevanti, quindi in questi ambienti viene prodotto solamente un warning. In produzione, invece, il comportamento cambia completamente.
+
+Se l'applicazione rileva che il secret JWT è ancora quello di default, solleva un'eccezione e rifiuta di avviarsi.
+
+Ho preferito questo approccio perché una semplice nota nella documentazione avrebbe lasciato comunque aperta la possibilità di dimenticare la configurazione durante il deploy. Il controllo fail-fast trasforma invece questa indicazione in un vincolo applicativo: una configurazione considerata non accettabile in produzione impedisce fisicamente l'avvio del server.
+
+**Controllo del doppio turno durante uno scambio**
+
+```python
+ids_scambio = (assegnazione.id, assegnazione_collega.id)
+conflitto_richiedente = (
+    db.query(AssegnazioneTurno)
+    .join(Turno, AssegnazioneTurno.turno_id == Turno.id)
+    .filter(
+        AssegnazioneTurno.infermiere_id == richiesta.richiedente_id,
+        AssegnazioneTurno.stato == StatoAssegnazione.attiva,
+        Turno.data == turno_collega.data,
+        AssegnazioneTurno.id.notin_(ids_scambio),
+    )
+    .first()
+)
+```
+
+Questo frammento viene eseguito durante la fase finale di approvazione di una richiesta di cambio turno.
+
+Prima di effettuare realmente lo scambio, il sistema verifica che il richiedente non abbia già un'altra assegnazione attiva nella stessa giornata. Le due assegnazioni coinvolte nello scambio vengono escluse dalla ricerca tramite notin_, perché sono proprio quelle che stanno per essere modificate.
+
+La stessa regola di controllo viene utilizzata anche durante l'assegnazione manuale dei turni dalla dashboard del caposala. Ho quindi riutilizzato la stessa logica anche nel cambio turno, evitando che due percorsi diversi dell'applicazione potessero applicare regole differenti.
+
+Questo permette di mantenere un unico criterio per una regola di dominio importante: un'operazione di cambio turno non deve poter creare una situazione che il sistema impedirebbe durante la normale pianificazione dei turni.
+
+_[da scrivere — sotto-blocco restante: documentazione API]_
 
 ### 4. Campi di applicazione
 
