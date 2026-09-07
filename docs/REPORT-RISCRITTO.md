@@ -70,7 +70,7 @@ Dal 19 luglio al 3 agosto il lavoro si è concentrato maggiormente su integrazio
 
 Il 4 agosto è stata completata anche la documentazione visiva dell'applicazione, realizzando 17 screenshot relativi ai principali flussi funzionali e a entrambi i ruoli previsti dal sistema.
 
-Nella stessa data è stata realizzata anche una prima bozza del report con supporto di strumenti AI e un successivo passaggio di humanization. Il 16 agosto ho però deciso di non utilizzare quella versione come testo definitivo e di procedere con una riscrittura manuale completa. Da quel momento la redazione è rimasta sostanzialmente ferma per circa tre settimane, soprattutto per la necessità di dedicare tempo alla preparazione di due esami universitari. La stesura manuale è stata quindi ripresa il 7 settembre 2026.
+La fase successiva è stata dedicata alla scrittura e revisione del report. Questa attività ha subito un rallentamento rispetto alla pianificazione iniziale a causa della necessità di preparare contemporaneamente due esami universitari, ed è stata ripresa in modo continuativo il 7 settembre 2026.
 
 Nel complesso, quindi, lo sviluppo tecnico è stato completato con largo anticipo rispetto al target personale del 20 agosto. Il principale scostamento temporale ha riguardato la fase finale di redazione e revisione del report, non lo sviluppo dell'applicazione.
 
@@ -96,7 +96,49 @@ Infine, una delle difficoltà principali è stata l'utilizzo di Vue, che non ave
 
 ### 3. Risorse e strumenti impiegati
 
-_[da scrivere]_
+Per la realizzazione del progetto sono stati utilizzati strumenti differenti per backend, frontend, progettazione, testing e controllo della qualità del codice. Le tecnologie non sono state scelte solamente in base alla familiarità precedente, ma anche in funzione dei requisiti richiesti dalla traccia e degli obiettivi formativi del progetto.
+
+Il backend è stato sviluppato con Python e FastAPI, utilizzando SQLite come database, SQLAlchemy per l'accesso ai dati e Alembic per la gestione delle migrazioni dello schema.
+
+La scelta di FastAPI è stata legata anche a un requisito della traccia, che richiedeva la documentazione delle API tramite uno strumento come Swagger. FastAPI genera automaticamente una specifica OpenAPI a partire dagli endpoint definiti nell'applicazione e mette a disposizione una documentazione interattiva delle API senza doverla mantenere separatamente dal codice.
+
+Per la definizione e validazione dei dati sono stati utilizzati i modelli Pydantic, che permettono di dichiarare in modo esplicito i tipi e la struttura dei dati scambiati attraverso le API. Questa organizzazione si integra con la separazione della logica applicativa in un service layer e con l'approccio a oggetti utilizzato nel backend.
+
+Per la gestione dell'evoluzione del database è stato scelto Alembic. Rispetto alla semplice creazione automatica delle tabelle tramite create_all, le migrazioni permettono di registrare e applicare in modo controllato le modifiche allo schema nel corso dello sviluppo.
+
+Prima di scegliere definitivamente FastAPI avevo valutato anche un backend basato su Kotlin e Ktor. Kotlin avrebbe offerto una tipizzazione forte e Ktor un buon supporto alla programmazione asincrona tramite coroutine. La soluzione è stata però scartata principalmente per una questione di tempo e rischio progettuale: non avevo esperienza produttiva con l'ecosistema JVM e avrei dovuto imparare contemporaneamente strumenti come Gradle, la gestione delle dipendenze e il sistema di testing di Ktor. Python era invece un linguaggio che conoscevo già parzialmente, rendendo FastAPI una scelta più sostenibile per i tempi del progetto.
+
+Il frontend è stato sviluppato con Vue 3, Vite e TypeScript, utilizzando Pinia per la gestione dello stato e PrimeVue come libreria di componenti.
+
+La scelta di Vue non è stata fatta per ridurre i tempi di sviluppo. Lavorando già professionalmente con React, ho deciso volontariamente di utilizzare un framework che non conoscevo per ampliare le mie competenze e confrontarmi con un modello di sviluppo frontend differente.
+
+PrimeVue è stato utilizzato soprattutto per componenti di interfaccia ricorrenti, come tabelle, finestre di dialogo e form. In questo modo è stato possibile concentrarsi maggiormente sulla logica e sui flussi dell'applicazione senza dover implementare da zero componenti UI standard.
+
+Un aspetto importante dell'integrazione tra frontend e backend è stato il contratto API tipizzato. Nelle prime fasi era stato utilizzato un normale client basato su Axios. Dopo che il contratto delle API si è stabilizzato, questo approccio è stato sostituito con openapi-fetch e openapi-typescript.
+
+I tipi TypeScript utilizzati dal frontend vengono generati direttamente dalla specifica OpenAPI prodotta dal backend. In questo modo le modifiche alla struttura delle richieste e delle risposte possono essere rilevate anche durante lo sviluppo del frontend, riducendo la possibilità che client e server utilizzino definizioni differenti dello stesso dato.
+
+Per la realizzazione dei diagrammi entità-relazione e UML è stato utilizzato draw.io.
+
+La scelta è stata anche pratica: il template Word fornito dall'università non permette di mantenere diagrammi renderizzati dinamicamente all'interno del documento. I diagrammi sono stati quindi realizzati separatamente ed esportati come immagini PNG statiche da inserire nel report.
+
+Durante lo sviluppo sono stati introdotti diversi strumenti automatici per controllare la qualità del codice.
+
+Sul backend è stato utilizzato Ruff per il linting del codice Python. Sul frontend sono stati utilizzati ESLint per il controllo statico del codice TypeScript e Prettier per mantenere una formattazione uniforme.
+
+Il backend dispone inoltre di una suite automatica basata su pytest, utilizzata per verificare il comportamento delle API e della logica applicativa.
+
+Per il frontend sono presenti 232 test Vitest distribuiti su 27 file, dedicati alla verifica di componenti e logica applicativa.
+
+A questi si aggiungono 10 scenari end-to-end realizzati con Playwright, utilizzati per verificare i principali flussi dell'applicazione dal punto di vista dell'utente. Nei test end-to-end è stato integrato anche axe-core, utilizzato per eseguire controlli automatici di accessibilità sulle schermate.
+
+L'esecuzione di questi controlli è stata integrata in GitHub Actions. La pipeline CI viene eseguita automaticamente a ogni push e pull request, permettendo di individuare errori di linting o test falliti durante l'evoluzione del progetto anziché soltanto al termine dello sviluppo.
+
+Il codice sorgente del progetto è pubblicato in un repository pubblico GitHub, Zuboh/Eira.
+
+Lo sviluppo è stato registrato attraverso commit incrementali e datati durante tutto il periodo di realizzazione. Considerando la fase di sviluppo tecnico compresa tra il 4 luglio e il 4 agosto 2026, sono stati effettuati 128 commit; i commit successivi riguardano invece attività svolte dopo il completamento tecnico del progetto, tra cui la documentazione.
+
+La scelta di mantenere il repository pubblico e uno storico incrementale non è stata fatta solamente per il versionamento del codice. Lo storico permette anche di rendere verificabile l'evoluzione del progetto nel tempo e di fornire, qualora fosse necessario un controllo successivo, un'ulteriore evidenza del processo di sviluppo e dell'autorialità del lavoro.
 
 ---
 
