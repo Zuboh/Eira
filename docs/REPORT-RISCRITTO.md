@@ -54,7 +54,45 @@ Imparare Vue mi ha quindi richiesto non semplicemente di apprendere una nuova si
 
 ### 2. Fasi di lavoro e relativi tempi di implementazione per la predisposizione dell'elaborato
 
-_[da scrivere — prossima sessione]_
+Il piano iniziale prevedeva circa 7 settimane di lavoro, con un target personale fissato al 20 agosto 2026 e un ulteriore margine di sicurezza fino alla scadenza ufficiale della piattaforma del 21 settembre 2026.
+
+Lo sviluppo effettivo dell'applicazione si è però concentrato in un periodo molto più breve, dal 4 luglio al 4 agosto 2026, durante il quale sono stati prodotti 128 commit.
+
+La prima fase, avviata il 4 luglio, è stata dedicata alla progettazione iniziale: definizione del diagramma entità-relazione con 11 entità, creazione dello scaffold del progetto FastAPI e Vue e impostazione del primo contratto API attraverso router inizialmente definiti come stub.
+
+Tra il 4 e il 18 luglio si è sviluppata gran parte del backend: modelli dati, autenticazione tramite JWT, operazioni CRUD relative a consegne, turni, pazienti e valutazioni e alcune funzionalità aggiuntive, tra cui cambio turno, banca ore e gestione delle ferie. Durante questa fase sono stati inoltre eseguiti i primi interventi di sicurezza, compresa la correzione di un problema di autorizzazione IDOR tra reparti.
+
+Contrariamente a quanto previsto dal piano iniziale, lo sviluppo frontend non è iniziato dopo il completamento del backend, ma è proceduto in parallelo. Nello stesso periodo sono quindi state realizzate le schermate di login, selezione utente e reparto, le dashboard per infermiere e caposala e le principali sezioni applicative dedicate a pazienti, consegne SBAR, cambio turno e banca ore.
+
+Il 18 luglio è stata introdotta anche una pipeline di qualità del codice, comprendente Ruff per Python, ESLint e Prettier per il frontend e una pipeline GitHub Actions eseguita automaticamente a ogni push. Nello stesso periodo sono stati introdotti i primi test automatici.
+
+Dal 19 luglio al 3 agosto il lavoro si è concentrato maggiormente su integrazione, refactoring e hardening. Il frontend è stato sottoposto a un processo di refactoring architetturale articolato in 17 fasi. Sono stati inoltre introdotti test end-to-end con Playwright, controlli automatici di accessibilità tramite axe-core e ulteriori interventi di hardening sull'autenticazione JWT e sulla configurazione di deploy. L'audit di accessibilità ha permesso di individuare e correggere sei problemi reali nell'interfaccia.
+
+Il 4 agosto è stata completata anche la documentazione visiva dell'applicazione, realizzando 17 screenshot relativi ai principali flussi funzionali e a entrambi i ruoli previsti dal sistema.
+
+Nella stessa data è stata realizzata anche una prima bozza del report con supporto di strumenti AI e un successivo passaggio di humanization. Il 16 agosto ho però deciso di non utilizzare quella versione come testo definitivo e di procedere con una riscrittura manuale completa. Da quel momento la redazione è rimasta sostanzialmente ferma per circa tre settimane, soprattutto per la necessità di dedicare tempo alla preparazione di due esami universitari. La stesura manuale è stata quindi ripresa il 7 settembre 2026.
+
+Nel complesso, quindi, lo sviluppo tecnico è stato completato con largo anticipo rispetto al target personale del 20 agosto. Il principale scostamento temporale ha riguardato la fase finale di redazione e revisione del report, non lo sviluppo dell'applicazione.
+
+Lo scostamento più significativo dal piano iniziale ha riguardato l'organizzazione delle fasi di backend e frontend.
+
+Nel piano queste erano previste in sequenza: prima backend nelle settimane 2 e 3, successivamente frontend nelle settimane 4 e 5. Durante lo sviluppo ho invece scelto di portarle avanti in parallelo.
+
+Questa scelta si è rivelata positiva perché ha permesso di individuare molto prima eventuali problemi di integrazione e incongruenze nel contratto tra frontend e backend. Proprio durante questa fase ho deciso di sostituire l'utilizzo diretto di Axios con openapi-fetch, sfruttando la specifica OpenAPI generata dal backend per rendere più coerente e tipizzata la comunicazione tra client e API.
+
+Un secondo scostamento ha riguardato la documentazione. Sebbene l'applicazione fosse sostanzialmente completata il 4 agosto, la prima bozza prodotta in quella data è stata successivamente scartata come versione definitiva. Il 16 agosto è stata quindi avviata una riscrittura manuale, interrotta per circa tre settimane a causa della sovrapposizione con la preparazione di due esami. Il buffer previsto fino alla scadenza ufficiale si è quindi rivelato utile per assorbire questo rallentamento senza incidere sul completamento tecnico del progetto.
+
+Durante lo sviluppo ho incontrato alcune difficoltà tecniche, soprattutto legate alla sicurezza, ai test e all'utilizzo di tecnologie che conoscevo meno.
+
+Una prima difficoltà ha riguardato i controlli di accesso ai dati. In un endpoint della banca ore mancava un controllo che verificasse correttamente che il caposala potesse accedere solo ai dati del proprio reparto. Il problema è stato individuato durante una revisione sistematica degli endpoint ed è stato corretto aggiungendo il controllo mancante. Da quel momento ho iniziato a verificare in modo più sistematico questo tipo di controllo ogni volta che aggiungevo nuovi endpoint.
+
+Un secondo problema è stato causato da una incompatibilità tra bcrypt e Passlib, due librerie utilizzate per la gestione delle password. Il problema non produceva inizialmente un errore molto chiaro ed è stato individuato grazie ai test automatici. Ho risolto utilizzando una versione compatibile della libreria e aggiungendo un test per evitare che lo stesso problema potesse ripresentarsi in futuro.
+
+Un'altra difficoltà ha riguardato i test del backend. In una prima configurazione, alcuni test utilizzavano accidentalmente il database reale dell'applicazione invece di un ambiente separato. Ho quindi modificato la configurazione dei test in modo da isolare completamente il database utilizzato durante l'esecuzione della suite automatica.
+
+Durante i controlli di accessibilità con axe-core sono comparsi anche alcuni errori legati direttamente ai componenti della libreria PrimeVue e non al codice scritto da me. In questi casi ho verificato singolarmente le segnalazioni e ho escluso solamente quelle che non potevano essere corrette a livello applicativo, documentando le eccezioni nei test.
+
+Infine, una delle difficoltà principali è stata l'utilizzo di Vue, che non avevo mai usato prima in un progetto completo. All'inizio questo ha rallentato leggermente lo sviluppo perché ho dovuto imparare il funzionamento del framework e alcune differenze rispetto a React. Ho comunque scelto di continuare con Vue, perché imparare una nuova tecnologia era uno degli obiettivi formativi del progetto.
 
 ### 3. Risorse e strumenti impiegati
 
