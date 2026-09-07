@@ -200,7 +200,53 @@ Il cambio turno utilizza infatti una doppia conferma: prima il collega coinvolto
 
 ### 3. Descrizione dei principali aspetti progettuali
 
-_[da scrivere — sotto-blocchi: architettura, case study IDOR, 4 snippet, documentazione API]_
+Durante lo sviluppo il modello dati si è ampliato rispetto alla prima versione progettata. Il diagramma entità-relazione iniziale comprendeva 11 entità, mentre quello finale ne comprende 18. Tra le entità aggiunte nel corso del progetto rientrano quelle dedicate a cambio turno, banca ore, ferie, parametri vitali e valutazioni Norton e Conley.
+
+Per Norton e Conley ho scelto di utilizzare entità separate, invece di memorizzare solamente l'ultimo valore disponibile. In questo modo è possibile mantenere uno storico delle valutazioni e non perdere quelle precedenti quando ne viene registrata una nuova. Il diagramma completo è stato mantenuto anche nella documentazione tecnica del progetto.
+
+A livello applicativo, l'architettura segue un flusso abbastanza lineare. Il frontend è sviluppato con Vue 3 e PrimeVue e comunica con il backend attraverso openapi-fetch. Il backend, realizzato con FastAPI, gestisce autenticazione JWT, autorizzazione, logica di dominio e accesso al database SQLite, la cui evoluzione viene gestita tramite Alembic.
+
+Un elemento importante dell'architettura è che lo schema OpenAPI prodotto da FastAPI viene utilizzato anche per generare i tipi TypeScript del frontend. Lo stesso schema costituisce quindi sia la base della documentazione Swagger sia la fonte di verità per il contratto tra client e server. In questo modo una modifica alle API non richiede di mantenere manualmente due definizioni separate.
+
+Per l'autorizzazione ho scelto di concentrare i controlli nel backend. Ogni endpoint verifica il ruolo dell'utente, l'appartenenza al reparto e, quando necessario, anche l'identità specifica dell'utente coinvolto nell'operazione. Ad esempio, in una richiesta di cambio turno soltanto il collega direttamente interpellato può rispondere alla prima fase della richiesta.
+
+I controlli presenti nel frontend servono quindi soprattutto a guidare l'esperienza utente e a non mostrare azioni che non dovrebbero essere disponibili, ma non vengono considerati una misura di sicurezza sufficiente. La decisione finale sull'accesso a una risorsa viene sempre presa dal server.
+
+Anche il flusso di autenticazione è stato adattato al contesto d'uso. Eira è pensata per un dispositivo condiviso di reparto, quindi al login l'utente seleziona il proprio nome da una lista e inserisce soltanto la password, invece di utilizzare il classico flusso email e password.
+
+La scelta è stata principalmente legata all'usabilità: su un tablet condiviso in corsia non volevo costringere l'operatore a digitare ogni volta un indirizzo email completo all'inizio del turno. Non si tratta quindi di una scelta nata con un obiettivo di sicurezza specifico.
+
+Un effetto secondario positivo è che, in caso di credenziali errate, il sistema utilizza un messaggio generico e non distingue chiaramente tra utente inesistente e password sbagliata, limitando così l'enumerazione degli utenti. Rimane però un problema simmetrico sull'endpoint pubblico di registrazione, che attualmente consente la registrazione libera e che considero un limite ancora aperto del progetto.
+
+Prima di implementare alcune misure di hardening ho raccolto le alternative in un documento di analisi, in particolare per quanto riguarda rate limiting e durata delle password temporanee. Nel sistema finale il login e il reset della password sono limitati a 5 richieste al minuto, mentre la registrazione è limitata a 3 richieste al minuto. Le password temporanee hanno invece una validità di 48 ore.
+
+Un altro elemento modellato esplicitamente è il flusso del cambio turno, che segue una macchina a stati a doppia conferma.
+
+Quando un infermiere invia una richiesta, questa entra nello stato in_attesa_collega. Il collega può rifiutarla, portandola nello stato terminale rifiutata_collega, oppure accettarla, facendo avanzare la richiesta a in_attesa_caposala.
+
+A quel punto interviene il caposala, che può rifiutare la richiesta portandola a rifiutata_caposala, oppure approvarla. Solo in quest'ultimo caso lo stato diventa approvata e lo scambio dei turni viene effettivamente applicato alle assegnazioni.
+
+L'approvazione finale riutilizza inoltre la stessa validazione già impiegata per l'assegnazione manuale dei turni, evitando quindi che il cambio possa produrre un doppio turno incompatibile.
+
+Per la comunicazione tra frontend e backend ho inizialmente valutato diverse alternative. La soluzione scelta è stata openapi-fetch, utilizzata insieme a openapi-typescript per generare i tipi direttamente dallo schema OpenAPI.
+
+La decisione è stata documentata in un ADR dedicato. Tra le alternative considerate c'erano Axios, che non offriva direttamente una pipeline schema-tipi; ky, più leggero e moderno ma privo di un'integrazione nativa equivalente con openapi-typescript; e useFetch di VueUse, che avrebbe comunque richiesto un ulteriore livello di wrapping per utilizzare in modo coerente i tipi generati.
+
+Nel progetto Axios era stato introdotto inizialmente, ma dopo la stabilizzazione del contratto API è stato sostituito da openapi-fetch. Oltre alla maggiore integrazione con OpenAPI, la libreria ha anche un peso inferiore: circa 6 KB contro circa 32 KB di Axios.
+
+Sul frontend ho eseguito anche un refactoring architetturale incrementale articolato in 17 fasi. Le viste principali sono state progressivamente alleggerite e trasformate in composition root, spostando logica e componenti nelle rispettive feature.
+
+La struttura risultante è organizzata in moduli dedicati, tra cui banca ore, cambi turno, dashboard, scheda paziente, farmaci, ferie, pazienti, SBAR, sessione, staff e turni. Ogni feature può contenere i propri tipi, composable e componenti presentazionali.
+
+Ho scelto questo approccio anche come occasione per fare esperienza diretta con un pattern architetturale che volevo approfondire, oltre che per rendere il codice più leggibile e più semplice da modificare successivamente. Il refactoring è stato svolto progressivamente e verificato fase per fase, senza riscrivere l'intero frontend in un'unica passata.
+
+Infine, per l'autenticazione JWT ho scelto di non introdurre refresh token. Il token di accesso ha una durata di 8 ore, pensata per coprire la durata tipica di un turno ospedaliero, normalmente compresa tra 6 e 8 ore.
+
+Il compromesso ha però un limite concreto: se un turno si prolunga oltre la durata prevista, ad esempio per un'emergenza o per una consegna particolarmente lunga, l'infermiere può essere costretto a effettuare nuovamente il login durante un momento operativo delicato.
+
+Ho comunque accettato questo limite per evitare di introdurre nel progetto la complessità aggiuntiva della rotazione, revoca e gestione server-side dei refresh token. È quindi una scelta consapevole di scope, non un caso non considerato durante la progettazione.
+
+_[da scrivere — sotto-blocchi restanti: case study IDOR, 4 snippet commentati, documentazione API]_
 
 ### 4. Campi di applicazione
 
