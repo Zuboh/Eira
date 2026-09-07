@@ -405,4 +405,118 @@ Infine, il sistema potrebbe essere esteso con notifiche push reali. Attualmente 
 
 ### 5. Valutazione dei risultati
 
-_[da scrivere]_
+La valutazione del progetto non si basa soltanto sul fatto che l'applicazione sia funzionante, ma anche sui controlli eseguiti durante lo sviluppo e sulla capacità del sistema di reggere verifiche più sistematiche.
+
+Dal punto di vista dei test automatici, il backend dispone di **163 test**, mentre il frontend comprende **232 test**. A questi si aggiungono **10 scenari end-to-end realizzati con Playwright**, nei quali è integrato anche axe-core per i controlli automatici di accessibilità.
+
+Questi test non sono stati eseguiti soltanto una volta al termine del progetto, ma fanno parte della pipeline CI e vengono lanciati automaticamente a ogni push.
+
+Uno dei risultati più utili è emerso proprio dagli audit dedicati. Il controllo di accessibilità ha individuato **sei problemi reali** che non erano emersi né dal linting né dai test unitari. Tra questi c'erano una label PrimeVue non correttamente associata all'input, due problemi isolati di contrasto dei colori e alcune intestazioni di tabella prive di testo utile per gli screen reader.
+
+Dopo la correzione, alcuni colori di stato sono stati inoltre centralizzati in token comuni, in modo da evitare di ripetere lo stesso problema in componenti diversi.
+
+Anche l'audit di sicurezza ha prodotto un risultato concreto: ha permesso di individuare il problema di accesso cross-reparto sulla banca ore descritto nel case study IDOR della sezione precedente.
+
+Alla chiusura dello sviluppo non risultano **bug critici aperti**. Rimangono due problemi minori, legati alla semantica di alcuni stati dei turni. Non sono stati rinviati per mancanza di tempo, ma perché richiedono prima una decisione più chiara a livello di design e dominio.
+
+Un altro controllo sistematico ha riguardato le valutazioni **Norton e Conley**.
+
+Entrambe vengono ora validate dal backend prima di essere accettate. Per Norton, ogni valore deve essere compreso tra 1 e 4; per Conley non sono ammessi valori negativi. Un payload che non rispetta questi vincoli viene quindi respinto con errore **422**.
+
+Per entrambi i casi sono stati aggiunti test di regressione specifici, così che una modifica futura non possa rimuovere accidentalmente queste validazioni.
+
+#### Performance
+
+Ho verificato anche il comportamento dell'applicazione dal punto di vista delle prestazioni utilizzando Lighthouse sulla build di produzione.
+
+Il risultato ottenuto è stato uno score di **0,96**, con:
+
+* **LCP:** 2,5 secondi
+* **TBT:** 40 ms
+* **CLS:** 0,005
+
+L'audit ha individuato due problemi principali.
+
+Il primo riguardava la dashboard dell'infermiere, che caricava **FullCalendar** immediatamente anche quando non era necessario. Prima della correzione il chunk interessato pesava circa **233,70 KB**; dopo aver reso il caricamento lazy, il codice direttamente caricato dalla dashboard è sceso a circa **5,81 KB**, mentre FullCalendar è stato isolato in un chunk separato.
+
+Il secondo problema era un caso di **over-fetching**. La dashboard richiedeva tutte le consegne SBAR e successivamente ne mostrava soltanto cinque lato client. Il backend supportava già un parametro `limit`, quindi ho modificato la chiamata affinché venissero richiesti direttamente soltanto i dati necessari.
+
+#### Valutazione personale del risultato
+
+Dal punto di vista personale considero il progetto importante soprattutto perché, pur lavorando già come sviluppatore, è stato il primo progetto interamente mio nel quale ho gestito dall'inizio la pianificazione, le decisioni architetturali, il refactoring e successivamente la revisione critica delle mie stesse scelte.
+
+Non considero il risultato come qualcosa di livello senior. Mi riconosco più realisticamente in un livello **mid**, con aree nelle quali ho maggiore esperienza e altre nelle quali ho ancora molto da imparare.
+
+L'aspetto che considero positivo è che il progetto non è stato valutato soltanto attraverso la mia revisione personale. Gli audit dedicati di accessibilità, sicurezza e performance hanno effettivamente trovato problemi che non avevo individuato nella prima implementazione. Questo per me è un risultato più significativo rispetto al semplice fatto che i test fossero verdi.
+
+#### Obiettivo didattico: Vue
+
+Uno degli obiettivi secondari era utilizzare **Vue** per confrontarlo con React, che utilizzo già professionalmente.
+
+Questo obiettivo è stato raggiunto solo in parte.
+
+Il confronto è stato reale e mi ha permesso di lavorare direttamente con il sistema di reattività, il lifecycle, i composable e l'organizzazione tipica di un'applicazione Vue. Allo stesso tempo, un singolo progetto non può darmi lo stesso livello di giudizio critico che ho maturato in anni di utilizzo di React.
+
+Dire che oggi conosco Vue allo stesso livello sarebbe quindi poco realistico. Il progetto mi ha dato una base concreta e mi ha permesso di capire meglio le differenze tra i due framework, ma considero questo percorso ancora da approfondire.
+
+#### Design e interfaccia
+
+Il divario più evidente rispetto alle mie competenze tecniche rimane il **design dell'interfaccia utente**.
+
+Non parto dallo stesso livello di esperienza che ho nello sviluppo frontend e molte delle scelte presenti in Eira derivano dall'applicazione di principi che ho studiato e documentato, come leggibilità, riduzione degli elementi decorativi e priorità delle informazioni, più che da un giudizio visivo maturato attraverso anni di lavoro specifico nel design.
+
+Le decisioni sono state raccolte nella documentazione di prodotto e di design, ma non considero l'interfaccia uno dei punti nei quali possiedo maggiore esperienza. La considero piuttosto una delle aree sulle quali il progetto mi ha mostrato più chiaramente la necessità di crescere.
+
+#### Backend come area di crescita
+
+Anche il backend rappresentava per me un'area meno consolidata rispetto al frontend.
+
+La mia esperienza professionale è soprattutto legata a React e allo sviluppo frontend, quindi ho affrontato il backend con un livello più vicino a quello junior. Proprio per questo il progetto è stato un'occasione utile per lavorare in modo più completo su API, autenticazione, autorizzazione, database, migrazioni e testing server-side.
+
+La scelta di FastAPI è stata utile anche in questo senso. Il framework mi ha permesso di lavorare con Python, che conoscevo già parzialmente, e contemporaneamente mi ha guidato verso strumenti coerenti con i requisiti del progetto, in particolare la generazione automatica della documentazione OpenAPI/Swagger richiesta dalla traccia.
+
+Non considero quindi il backend come un mio punto di forza storico, ma probabilmente è l'area nella quale il progetto mi ha permesso di crescere maggiormente.
+
+#### Cosa cambierei rifacendo il progetto
+
+Se dovessi ripartire da zero, il cambiamento principale non sarebbe una tecnologia.
+
+Dedicherei più tempo alla fase iniziale di **ricerca, domande e definizione delle decisioni**, prima di iniziare a implementare.
+
+Durante buona parte dello sviluppo ho utilizzato un approccio abbastanza reattivo: implementare una soluzione, verificarla e successivamente correggerla o approfondirla attraverso audit e refactoring. Nel contesto di un progetto individuale questo metodo è rimasto gestibile, perché avevo sempre una visione completa delle decisioni prese e delle parti coinvolte.
+
+Non lo considererei però un metodo ideale in un progetto sviluppato da un team, dove le informazioni sono distribuite tra più persone e correggere una scelta in ritardo può avere un costo molto maggiore.
+
+Se lo rifacessi, cercherei quindi di spostare una parte del lavoro di analisi che ho svolto successivamente verso l'inizio del progetto, senza però eliminare gli audit finali, che si sono dimostrati utili.
+
+#### Limiti ancora presenti
+
+Alcuni limiti erano noti fin dalla fase iniziale.
+
+I **parametri vitali** utilizzati nel progetto sono dati mock e non provengono da dispositivi fisici reali. Un'evoluzione naturale sarebbe quindi collegare il sistema a strumenti di monitoraggio effettivi, idealmente con aggiornamento in tempo reale. Il modello dati potrebbe rimanere sostanzialmente invariato: cambierebbe soprattutto la sorgente delle informazioni.
+
+Non ho inoltre completato una validazione sistematica dell'interfaccia su dispositivi fisici e viewport reali diversi dal browser utilizzato durante lo sviluppo. È quindi un'attività che considererei necessaria prima di qualsiasi utilizzo operativo.
+
+Anche la scelta di Vue ha avuto un costo reale in termini di velocità nelle prime settimane. Questo rischio era previsto, ma non avevo quantificato precisamente quanto avrebbe inciso sul ritmo di sviluppo.
+
+#### Limite aperto sulla registrazione
+
+Rimane anche un limite di sicurezza minore nell'endpoint pubblico `/register`.
+
+Attualmente il server restituisce **201** quando un indirizzo email può essere registrato e **409** quando risulta già presente. In teoria questo permette a un utente esterno di verificare se una determinata email del personale è già associata a un account.
+
+Non ho cercato di nascondere semplicemente il problema attraverso un messaggio di errore generico, perché non sarebbe stato sufficiente: anche mantenendo lo stesso testo, la differenza nello status HTTP continuerebbe a rivelare l'informazione.
+
+Una soluzione più completa richiederebbe un vero flusso di **verifica dell'email**, ma il progetto non dispone di un'infrastruttura esterna per email o notifiche e questa funzionalità è rimasta fuori scope.
+
+Il rischio è quindi stato accettato consapevolmente e parzialmente mitigato dal rate limiting già presente sull'endpoint, impostato a **3 richieste al minuto**. L'informazione esposta riguarda inoltre solamente l'esistenza dell'account e non permette direttamente l'accesso a dati clinici.
+
+#### Valutazione complessiva
+
+Dal punto di vista strettamente tecnico, Eira utilizza molte soluzioni consolidate: API CRUD, dashboard, autenticazione JWT, database relazionale e un frontend SPA non sono elementi originali di per sé.
+
+Il contributo più specifico del progetto si trova soprattutto nella **modellazione del dominio**.
+
+L'utilizzo di SBAR come struttura centrale della consegna e l'integrazione delle valutazioni Norton e Conley non sono stati trattati come semplici campi aggiunti a una schermata, ma come scelte metodologiche che influenzano la struttura dei dati, le validazioni e il flusso dell'applicazione.
+
+Per questo motivo considero il valore principale del progetto meno legato all'originalità delle tecnologie utilizzate e più al modo in cui strumenti tecnici convenzionali sono stati applicati a un problema concreto di organizzazione della consegna infermieristica.
