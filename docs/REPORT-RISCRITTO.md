@@ -246,7 +246,29 @@ Il compromesso ha però un limite concreto: se un turno si prolunga oltre la dur
 
 Ho comunque accettato questo limite per evitare di introdurre nel progetto la complessità aggiuntiva della rotazione, revoca e gestione server-side dei refresh token. È quindi una scelta consapevole di scope, non un caso non considerato durante la progettazione.
 
-_[da scrivere — sotto-blocchi restanti: case study IDOR, 4 snippet commentati, documentazione API]_
+Un problema di sicurezza emerso durante lo sviluppo ha riguardato il controllo degli accessi ai dati tra reparti diversi.
+
+L'invariante che avevo definito per il backend era semplice: nessun utente deve poter leggere o modificare dati appartenenti a un reparto diverso dal proprio, indipendentemente dal ruolo. Per gli endpoint che recuperano una risorsa tramite identificativo, il pattern previsto consisteva nel caricare l'entità dal database e verificare poi esplicitamente che il suo reparto_id coincidesse con quello dell'utente autenticato. In caso contrario, la richiesta doveva essere rifiutata con errore 403.
+
+Il 9 luglio 2026, dopo aver completato la prima fase di persistenza su database reale, ho eseguito un audit mirato su tutti i router cercando le occorrenze di reparto_id e infermiere_id. L'obiettivo era controllare che ogni accesso a una risorsa fosse effettivamente limitato al reparto corretto.
+
+Durante questa verifica ho individuato un problema nell'endpoint GET /banca-ore/{infermiere_id}.
+
+Per il ruolo infermiere esisteva già un controllo che impediva di richiedere il saldo ore di un altro utente. Per il ruolo caposala, invece, mancava il controllo equivalente sul reparto del destinatario. Di conseguenza, un caposala avrebbe potuto passare manualmente l'identificativo di un infermiere appartenente a un altro reparto e ottenere il relativo saldo della banca ore.
+
+Il problema rientra nella categoria Broken Access Control e, più nello specifico, nel pattern IDOR: l'applicazione accettava un identificativo fornito dal client senza verificare completamente che l'utente autenticato fosse autorizzato ad accedere alla risorsa corrispondente.
+
+Non era inoltre la prima volta che incontravo questa classe di rischio nel progetto. Era la quarta occorrenza analizzata durante lo sviluppo: nei router relativi a pazienti, utenti e consegne SBAR lo scoping sul reparto era già stato introdotto correttamente, mentre in banca_ore.py il controllo era stato omesso.
+
+La correzione è consistita nel caricare l'utente destinatario quando la richiesta proviene da un caposala e verificare esplicitamente che il suo reparto_id coincida con quello dell'utente autenticato prima di restituire i dati.
+
+Dopo la correzione ho aggiunto anche un test di regressione dedicato, in modo che una futura modifica non potesse reintrodurre lo stesso comportamento. Al momento del fix, nel luglio 2026, la suite backend comprendeva 33 test, tutti passanti.
+
+L'aspetto più utile di questo episodio è stato però il cambiamento nel metodo di revisione. Il bug era riuscito a superare quattro iterazioni di router perché ogni file veniva scritto e testato principalmente in isolamento.
+
+Da quel momento ho adottato una pratica più sistematica: dopo il completamento di un router che introduce un endpoint GET /{id}, eseguo una ricerca esplicita su reparto_id e sugli identificativi sensibili all'interno dell'intera cartella routers/, invece di limitarmi a rileggere soltanto il file appena modificato. In questo modo il controllo dello scoping viene trattato come un'invariante trasversale dell'applicazione e non come un dettaglio locale del singolo endpoint.
+
+_[da scrivere — sotto-blocchi restanti: 4 snippet commentati, documentazione API]_
 
 ### 4. Campi di applicazione
 
