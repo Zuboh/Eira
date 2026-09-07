@@ -357,7 +357,25 @@ La stessa regola di controllo viene utilizzata anche durante l'assegnazione manu
 
 Questo permette di mantenere un unico criterio per una regola di dominio importante: un'operazione di cambio turno non deve poter creare una situazione che il sistema impedirebbe durante la normale pianificazione dei turni.
 
-_[da scrivere — sotto-blocco restante: documentazione API]_
+La documentazione delle API viene generata automaticamente da FastAPI ed è disponibile all'endpoint /docs. La pagina utilizza lo schema OpenAPI prodotto direttamente dal backend, quindi rimane allineata agli endpoint effettivamente presenti nell'applicazione senza dover mantenere una documentazione separata.
+
+Nello stato attuale del progetto lo schema comprende 45 percorsi e 59 operazioni. I router sono organizzati attraverso tag di dominio, tra cui banca ore, cambi turno, pazienti, turni, utenti, ferie, carrello farmaci, reparti, consegne SBAR, dashboard e autenticazione. Questo rende la documentazione più leggibile e permette di individuare rapidamente gli endpoint relativi a una specifica area funzionale.
+
+Ho documentato esplicitamente anche le principali risposte d'errore utilizzate dal backend, in particolare i codici 400, 401, 403, 404 e 409. Per evitare di ridefinire ogni volta gli stessi schemi, queste risposte sono centralizzate in una funzione condivisa e poi riutilizzate dagli endpoint che ne hanno bisogno.
+
+Ho cercato inoltre di mantenere coerenti i codici HTTP con il significato delle operazioni REST. Gli endpoint di creazione restituiscono 201 Created, mentre le cancellazioni che non devono restituire contenuto utilizzano 204 No Content.
+
+La documentazione Swagger costituisce quindi non solo un supporto per consultare le API, ma anche una rappresentazione aggiornata del contratto tra frontend e backend. Lo stesso schema OpenAPI viene infatti utilizzato per generare i tipi TypeScript consumati dal client.
+
+Uno screenshot della documentazione completa è stato incluso tra le immagini del progetto e può essere inserito direttamente nella sezione del report dedicata alle API.
+
+Per documentare anche il funzionamento dell'interfaccia ho realizzato 17 screenshot relativi ai principali flussi applicativi.
+
+Le immagini coprono entrambi i ruoli previsti dal sistema, infermiere e caposala, e comprendono il login, le rispettive dashboard, la gestione dei pazienti, la scheda del paziente con diario e valutazioni, il diario clinico, il cambio turno, la banca ore, il personale, le ferie, il carrello farmaci, la creazione di una nuova consegna SBAR, il profilo utente e la documentazione delle API.
+
+Ho scelto di non considerare questi screenshot soltanto come materiale da appendice. Nella versione finale del report verranno selezionati e inseriti direttamente nelle sottosezioni pertinenti, in modo che la descrizione di un flusso o di una funzionalità possa essere accompagnata immediatamente dalla relativa schermata.
+
+In questo modo la documentazione non descrive soltanto l'architettura e il comportamento del backend, ma mostra anche come le funzionalità vengono effettivamente presentate e utilizzate dai due ruoli all'interno dell'applicazione.
 
 ### 4. Campi di applicazione
 
