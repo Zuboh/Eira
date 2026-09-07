@@ -146,7 +146,21 @@ La scelta di mantenere il repository pubblico e uno storico incrementale non è 
 
 ### 1. Obiettivi del progetto
 
-_[da scrivere]_
+L'obiettivo principale del progetto è stato rendere la consegna di turno più semplice, strutturata e guidata. In un contesto ospedaliero, soprattutto al termine di un turno impegnativo o durante il lavoro notturno, non volevo che la completezza della consegna dipendesse soltanto dalla memoria o dalla disciplina del singolo infermiere.
+
+Per questo motivo ho progettato il sistema in modo che fosse l'applicazione stessa a guidare quali informazioni comunicare. Il flusso si basa principalmente sul metodo SBAR, affiancato dal diario CEDEMA e dalle valutazioni Norton e Conley, così da fornire una struttura precisa per l'inserimento e la consultazione delle informazioni rilevanti.
+
+Fin dall'inizio ho individuato un nucleo di funzionalità che consideravo indispensabile: la gestione dei ruoli, la visualizzazione dei turni tramite dashboard e soprattutto la gestione delle consegne SBAR. In caso di problemi di tempo, tutte le funzionalità aggiuntive avrebbero potuto essere ridotte o eliminate prima di intervenire su questo nucleo centrale.
+
+L'applicazione è stata pensata per infermieri e caposala di un reparto ospedaliero, con utilizzo principalmente da desktop o tablet di reparto. L'obiettivo pratico è permettere di consultare e gestire rapidamente turni, consegne, pazienti, richieste di cambio turno e banca ore, evitando per quanto possibile passaggi ambigui o informazioni difficili da trovare. Un criterio importante nella progettazione dell'interfaccia è stato quindi rendere le informazioni facilmente individuabili anche in una situazione di stanchezza o stress operativo, come può accadere alla fine di un turno notturno.
+
+Accanto all'obiettivo funzionale ho scelto anche un obiettivo didattico personale: sviluppare il frontend con Vue, framework che non avevo mai utilizzato prima. Avendo già esperienza professionale con React, potevo usarlo come punto di riferimento per comprendere le differenze tra i due approcci e ampliare le mie competenze frontend.
+
+Questo secondo obiettivo non doveva però mettere a rischio il completamento dell'applicazione. Avevo quindi previsto che, nel caso in cui la curva di apprendimento fosse risultata troppo lenta, avrei proseguito con quanto appreso fino a quel momento senza cambiare nuovamente framework a metà sviluppo. Nella pratica non è stato necessario fare questa scelta, perché l'apprendimento di Vue non ha creato un conflitto reale con l'obiettivo principale del progetto.
+
+Ho inoltre mantenuto volutamente uno scope limitato a un singolo reparto, utilizzando solamente i dati clinici strettamente necessari alle funzionalità previste e lasciando fuori dallo scope una gestione estesa dei dati sanitari riconducibili all'art. 9 del GDPR, oltre a qualsiasi integrazione con dispositivi medici reali. La scelta è stata fatta per concentrare il lavoro sulla qualità del flusso di consegna, invece di ampliare il progetto a più reparti, integrazioni e categorie di dati che avrebbero aumentato molto la complessità senza migliorare direttamente il nucleo dell'applicazione.
+
+Infine, ho cercato di definire il successo della consegna guidata in modo verificabile e non soltanto sulla base della percezione dell'interfaccia. Nei form relativi a SBAR, CEDEMA e alle scale Norton e Conley, i dati clinici considerati essenziali vengono definiti come obbligatori negli schemi di validazione. In questo modo è possibile verificare direttamente a livello applicativo quali informazioni non possono essere omesse, invece di basarsi solamente su un giudizio soggettivo su quanto l'interfaccia possa sembrare guidata.
 
 ### 2. Contestualizzazione
 
