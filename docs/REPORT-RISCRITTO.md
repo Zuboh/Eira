@@ -6,30 +6,27 @@
 > `REPORT-BOZZA.md` restano come riferimento, non toccati.
 >
 > **Stato (2026-09-07):** riscrittura completa, tutte 8 sezioni
-> (Parte Prima §1-3, Parte Seconda §1-5), 9034 parole — dentro il
+> (Parte Prima §1-3, Parte Seconda §1-5), 9459 parole — dentro il
 > target 6.000-10.000 della checklist in fondo a `REPORT.md`. Passata
 > `humanizer` fatta: testo pulito, zero pattern AI-writing rilevanti
 > (unico fix: un em dash in prosa reale, riga 15). Riferimento
 > incrociato IDOR in §5 corretto (era "sezione precedente", ora
-> "sezione 3").
+> "sezione 3"). Bibliografia aggiunta in fondo al documento (6 fonti,
+> stile nome-in-prosa già usato nel testo, nessun marcatore `[n]`).
+> Tutte le 17 screenshot e il diagramma ER inseriti inline nelle
+> sottosezioni pertinenti (non in appendice), con didascalia sotto
+> ogni immagine.
 >
 > **Gap ancora aperti prima del travaso nel template Word
 > (`~/Downloads/1759995480.docx`, non ancora toccato in questa
 > riscrittura):**
-> - manca sezione Bibliografia/Fonti citate in questo file — le fonti
->   esistono già in `REPORT.md` sotto "Fonti citate" (Joint Commission,
->   Norton/SCIRE, studio Conley, OWASP IDOR, articolo SBAR, articolo
->   infermiere coordinatore), da trasferire e formattare qui
-> - figure non ancora inserite: diagramma ER
->   (`docs/diagrams/er-consegne-infermieristiche.drawio.png`, esiste)
->   e screenshot selezionati (17 in `docs/screenshots/`, esistono) —
->   da posizionare inline nelle sottosezioni pertinenti, non in appendice
-> - conteggio parole da riverificare a documento finito (bibliografia +
->   didascalie aumenteranno il totale)
 > - nomenclatura file upload finale: `Cognome_Nome_Matricola.pdf`
 > - campi copertina e template Word: risultavano già compilati/mappati
 >   da lavoro precedente su `REPORT.md`, da verificare comunque prima
 >   del travaso definitivo
+> - travaso vero e proprio nel `.docx`: testo + immagini vanno
+>   incollati manualmente nel template (path immagini qui sono
+>   relativi a `docs/`, nel Word vanno incorporate come figure)
 
 ## PARTE PRIMA – DESCRIZIONE DEL PROCESSO
 
@@ -211,6 +208,18 @@ Per entrambe le scale non ho inoltre trasformato automaticamente il punteggio nu
 
 Un ulteriore elemento della consegna è il diario CEDEMA, articolato in sei campi: coscienza, emotività, dolore, emodinamica, mobilizzazione e allert. In questo caso la struttura non deriva da una mia interpretazione del formato, ma riproduce quella osservata in uno screenshot di una nota infermieristica reale che mi è stato mostrato durante un colloquio informale con un'infermiera. L'ho utilizzato come esempio concreto per mantenere il progetto vicino a modalità operative realmente utilizzate.
 
+![Scheda paziente — tab diario CEDEMA](screenshots/04-scheda-paziente-diario.png)
+*Scheda paziente, tab diario CEDEMA.*
+
+![Scheda paziente — tab valutazioni Norton e Conley](screenshots/05-scheda-paziente-valutazioni.png)
+*Scheda paziente, tab valutazioni Norton e Conley.*
+
+![Diario clinico — vista caposala](screenshots/06-diario-clinico.png)
+*Diario clinico, vista caposala.*
+
+![Diario clinico — vista infermiere](screenshots/13-diario-clinico-infermiere.png)
+*Diario clinico, vista infermiere.*
+
 Lo stesso confronto informale ha fornito spunti anche per alcune funzionalità aggiuntive, in particolare cambio turno, banca ore e gestione della priorità delle consegne, rappresentata nell'applicazione come un campo specifico della consegna SBAR. Non ho trattato queste informazioni come requisiti formali né come indicazioni provenienti da una struttura sanitaria specifica, ma semplicemente come riferimenti utili per rendere più realistici alcuni flussi del prodotto.
 
 Dal punto di vista operativo, Eira è pensata per essere utilizzata su un tablet o desktop condiviso di reparto, e non principalmente su dispositivi personali associati al singolo operatore. L'utilizzo può avvenire anche durante un turno notturno o in condizioni di pressione operativa. Per questo motivo l'interfaccia è stata progettata privilegiando la possibilità di individuare rapidamente le informazioni importanti, piuttosto che un'esperienza basata sull'esplorazione di molte schermate o livelli di navigazione.
@@ -219,7 +228,16 @@ Il sistema distingue due ruoli principali.
 
 L'infermiere può consultare e compilare le consegne SBAR relative ai turni a cui è assegnato, visualizzare i pazienti collegati al proprio turno e inviare una richiesta di cambio turno a un collega.
 
+![Dialog di creazione nuova consegna SBAR](screenshots/14-nuova-consegna-sbar-dialog.png)
+*Dialog di creazione di una nuova consegna SBAR.*
+
 Il caposala, o coordinatore, ha invece una visione più ampia dell'organizzazione del reparto. Può assegnare gli infermieri ai turni tramite una dashboard a calendario, mentre alcune validazioni impediscono assegnazioni incompatibili, come il doppio turno, e permettono di individuare eventuali slot ancora scoperti. Può inoltre consultare tutte le consegne del reparto, senza però inserirne direttamente di cliniche, e gestisce la fase finale delle richieste di cambio turno.
+
+![Dashboard caposala](screenshots/02-dashboard-caposala.png)
+*Dashboard caposala.*
+
+![Dashboard infermiere](screenshots/12-dashboard-infermiere.png)
+*Dashboard infermiere.*
 
 Il cambio turno utilizza infatti una doppia conferma: prima il collega coinvolto deve accettare la proposta, successivamente il caposala può approvarla o rifiutarla. In questo modo una modifica alla pianificazione non può essere completata unilateralmente da uno dei due infermieri.
 
@@ -228,6 +246,9 @@ Il cambio turno utilizza infatti una doppia conferma: prima il collega coinvolto
 Durante lo sviluppo il modello dati si è ampliato rispetto alla prima versione progettata. Il diagramma entità-relazione iniziale comprendeva 11 entità, mentre quello finale ne comprende 18. Tra le entità aggiunte nel corso del progetto rientrano quelle dedicate a cambio turno, banca ore, ferie, parametri vitali e valutazioni Norton e Conley.
 
 Per Norton e Conley ho scelto di utilizzare entità separate, invece di memorizzare solamente l'ultimo valore disponibile. In questo modo è possibile mantenere uno storico delle valutazioni e non perdere quelle precedenti quando ne viene registrata una nuova. Il diagramma completo è stato mantenuto anche nella documentazione tecnica del progetto.
+
+![Diagramma entità-relazione completo](diagrams/er-consegne-infermieristiche.drawio.png)
+*Diagramma ER completo, 18 entità.*
 
 A livello applicativo, l'architettura segue un flusso abbastanza lineare. Il frontend è sviluppato con Vue 3 e PrimeVue e comunica con il backend attraverso openapi-fetch. Il backend, realizzato con FastAPI, gestisce autenticazione JWT, autorizzazione, logica di dominio e accesso al database SQLite, la cui evoluzione viene gestita tramite Alembic.
 
@@ -241,6 +262,9 @@ Anche il flusso di autenticazione è stato adattato al contesto d'uso. Eira è p
 
 La scelta è stata principalmente legata all'usabilità: su un tablet condiviso in corsia non volevo costringere l'operatore a digitare ogni volta un indirizzo email completo all'inizio del turno. Non si tratta quindi di una scelta nata con un obiettivo di sicurezza specifico.
 
+![Schermata di login](screenshots/01-login.png)
+*Login: selezione utente da lista, poi sola password.*
+
 Un effetto secondario positivo è che, in caso di credenziali errate, il sistema utilizza un messaggio generico e non distingue chiaramente tra utente inesistente e password sbagliata, limitando così l'enumerazione degli utenti. Rimane però un problema simmetrico sull'endpoint pubblico di registrazione, che attualmente consente la registrazione libera e che considero un limite ancora aperto del progetto.
 
 Prima di implementare alcune misure di hardening ho raccolto le alternative in un documento di analisi, in particolare per quanto riguarda rate limiting e durata delle password temporanee. Nel sistema finale il login e il reset della password sono limitati a 5 richieste al minuto, mentre la registrazione è limitata a 3 richieste al minuto. Le password temporanee hanno invece una validità di 48 ore.
@@ -253,6 +277,12 @@ A quel punto interviene il caposala, che può rifiutare la richiesta portandola 
 
 L'approvazione finale riutilizza inoltre la stessa validazione già impiegata per l'assegnazione manuale dei turni, evitando quindi che il cambio possa produrre un doppio turno incompatibile.
 
+![Cambio turno — vista caposala](screenshots/07-cambio-turno.png)
+*Gestione cambio turno, vista caposala.*
+
+![Cambio turno — vista infermiere](screenshots/15-cambio-turno-infermiere.png)
+*Richiesta cambio turno, vista infermiere.*
+
 Per la comunicazione tra frontend e backend ho inizialmente valutato diverse alternative. La soluzione scelta è stata openapi-fetch, utilizzata insieme a openapi-typescript per generare i tipi direttamente dallo schema OpenAPI.
 
 La decisione è stata documentata in un ADR dedicato. Tra le alternative considerate c'erano Axios, che non offriva direttamente una pipeline schema-tipi; ky, più leggero e moderno ma privo di un'integrazione nativa equivalente con openapi-typescript; e useFetch di VueUse, che avrebbe comunque richiesto un ulteriore livello di wrapping per utilizzare in modo coerente i tipi generati.
@@ -262,6 +292,24 @@ Nel progetto Axios era stato introdotto inizialmente, ma dopo la stabilizzazione
 Sul frontend ho eseguito anche un refactoring architetturale incrementale articolato in 17 fasi. Le viste principali sono state progressivamente alleggerite e trasformate in composition root, spostando logica e componenti nelle rispettive feature.
 
 La struttura risultante è organizzata in moduli dedicati, tra cui banca ore, cambi turno, dashboard, scheda paziente, farmaci, ferie, pazienti, SBAR, sessione, staff e turni. Ogni feature può contenere i propri tipi, composable e componenti presentazionali.
+
+![Gestione pazienti](screenshots/03-pazienti.png)
+*Elenco pazienti del reparto.*
+
+![Banca ore](screenshots/08-banca-ore.png)
+*Modulo banca ore.*
+
+![Gestione personale](screenshots/09-personale.png)
+*Modulo personale, vista caposala.*
+
+![Gestione ferie](screenshots/10-ferie.png)
+*Modulo ferie.*
+
+![Carrello farmaci](screenshots/11-carello-farmaci.png)
+*Modulo carrello farmaci.*
+
+![Profilo utente](screenshots/16-profilo.png)
+*Profilo utente.*
 
 Ho scelto questo approccio anche come occasione per fare esperienza diretta con un pattern architetturale che volevo approfondire, oltre che per rendere il codice più leggibile e più semplice da modificare successivamente. Il refactoring è stato svolto progressivamente e verificato fase per fase, senza riscrivere l'intero frontend in un'unica passata.
 
@@ -394,11 +442,14 @@ La documentazione Swagger costituisce quindi non solo un supporto per consultare
 
 Uno screenshot della documentazione completa è stato incluso tra le immagini del progetto e può essere inserito direttamente nella sezione del report dedicata alle API.
 
+![Documentazione API Swagger](screenshots/17-swagger-api-docs.png)
+*Documentazione API generata automaticamente da FastAPI (/docs).*
+
 Per documentare anche il funzionamento dell'interfaccia ho realizzato 17 screenshot relativi ai principali flussi applicativi.
 
 Le immagini coprono entrambi i ruoli previsti dal sistema, infermiere e caposala, e comprendono il login, le rispettive dashboard, la gestione dei pazienti, la scheda del paziente con diario e valutazioni, il diario clinico, il cambio turno, la banca ore, il personale, le ferie, il carrello farmaci, la creazione di una nuova consegna SBAR, il profilo utente e la documentazione delle API.
 
-Ho scelto di non considerare questi screenshot soltanto come materiale da appendice. Nella versione finale del report verranno selezionati e inseriti direttamente nelle sottosezioni pertinenti, in modo che la descrizione di un flusso o di una funzionalità possa essere accompagnata immediatamente dalla relativa schermata.
+Ho scelto di non considerare questi screenshot soltanto come materiale da appendice, ma di inserirli direttamente nelle sottosezioni pertinenti, in modo che la descrizione di un flusso o di una funzionalità sia accompagnata immediatamente dalla relativa schermata.
 
 In questo modo la documentazione non descrive soltanto l'architettura e il comportamento del backend, ma mostra anche come le funzionalità vengono effettivamente presentate e utilizzate dai due ruoli all'interno dell'applicazione.
 
@@ -545,3 +596,12 @@ Il contributo più specifico del progetto si trova soprattutto nella **modellazi
 L'utilizzo di SBAR come struttura centrale della consegna e l'integrazione delle valutazioni Norton e Conley non sono stati trattati come semplici campi aggiunti a una schermata, ma come scelte metodologiche che influenzano la struttura dei dati, le validazioni e il flusso dell'applicazione.
 
 Per questo motivo considero il valore principale del progetto meno legato all'originalità delle tecnologie utilizzate e più al modo in cui strumenti tecnici convenzionali sono stati applicati a un problema concreto di organizzazione della consegna infermieristica.
+
+## Fonti citate
+
+- The Joint Commission, *Sentinel Event Alert 58 — Inadequate hand-off communication*: <https://www.jointcommission.org/en-us/knowledge-library/newsletters/sentinel-event-alert/issue-58>
+- SCIRE Professional, *Norton Pressure Ulcer Risk Scale* (sintesi della scala originale di Norton, McLaren, Exton-Smith, 1962): <https://scireproject.com/outcome/norton-pressure-ulcer-risk-scale/>
+- *Post-hoc validation of the Conley Scale in predicting the risk of falling with older in-hospital medical patients*, Aging Clinical and Experimental Research (2015): <https://pubmed.ncbi.nlm.nih.gov/26025462/>
+- OWASP Foundation, *Insecure Direct Object Reference (IDOR)*: <https://owasp.org/www-community/attacks/insecure_direct_object_reference>
+- *Il passaggio di consegne SBAR: storia e metodo*, Infermieristicamente.it: <https://www.infermieristicamente.it/articolo/11270/infermieri-il-passaggio-di-consegne-sbar-storia-e-metodo>
+- *L'infermiere coordinatore: funzioni, ruolo e responsabilità*, APSI: <https://www.apsilef.it/linfermiere-coordinatore-funzioni-ruolo-e-responsabilita/>
