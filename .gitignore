@@ -22,3 +22,11 @@ dist/
 
 # Claude Code brainstorming companion
 .superpowers/
+
+# Personal/academic docs — local only, not for the public repo
+docs/REPORT.md
+docs/REPORT-BOZZA.md
+docs/REPORT-RISCRITTO.md
+docs/VALUTAZIONE-TESI.md
+docs/screenshots/
+docs/superpowers/
