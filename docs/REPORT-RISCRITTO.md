@@ -379,7 +379,29 @@ In questo modo la documentazione non descrive soltanto l'architettura e il compo
 
 ### 4. Campi di applicazione
 
-_[da scrivere]_
+Il progetto è stato sviluppato e dimostrato su un solo reparto, Medicina Generale e Geriatria, ma il modello dati è stato costruito prevedendo esplicitamente l'entità Reparto come elemento separato e generico. Questo rende possibile, almeno dal punto di vista strutturale, estendere in futuro l'applicazione a più reparti senza dover ripensare completamente il modello.
+
+Considererei però questa possibilità come una ipotesi progettuale, non come una caratteristica già validata sul campo. Non ho esperienza diretta come infermiere o caposala e non ho osservato in modo completo il funzionamento reale di una struttura ospedaliera multi-reparto. Posso quindi dire che l'architettura è compatibile con un'estensione verso reparti di degenza ordinaria organizzati su tre turni, ma non che il prodotto sia già pronto per essere adottato senza adattamenti in contesti ospedalieri differenti.
+
+Il vantaggio principale dell'applicazione rimane la consegna guidata. L'infermiere non deve affidarsi soltanto alla memoria o alle proprie abitudini per decidere quali informazioni riportare, perché il sistema propone una struttura basata su SBAR, diario CEDEMA e valutazioni Norton e Conley. L'obiettivo è ridurre il rischio di dimenticare informazioni importanti durante il passaggio di consegne, soprattutto nei momenti di maggiore stanchezza o pressione operativa.
+
+Un beneficio ulteriore è la tracciabilità. Consegne e valutazioni vengono registrate nel sistema, associate all'utente che le ha create e mantenute nello storico. Questo permette di ricostruire nel tempo l'evoluzione delle informazioni, anche se la tracciabilità non rappresentava il punto di partenza principale del progetto.
+
+Rimangono diversi limiti che impediscono di considerare Eira una soluzione pronta per un utilizzo sanitario reale.
+
+L'anagrafica del paziente è volutamente ridotta e il sistema non vuole sostituire una cartella clinica completa. Questa scelta di scope ha permesso di evitare una gestione estesa di dati sanitari riconducibili all'art. 9 del GDPR e di concentrarsi sulle funzionalità centrali del progetto.
+
+Anche i parametri vitali presenti nell'applicazione hanno oggi un valore dimostrativo: vengono generati come dati mock e non provengono da dispositivi medici certificati. Un utilizzo reale richiederebbe quindi un'integrazione con sistemi di monitoraggio effettivi e con i relativi requisiti tecnici e normativi.
+
+Un altro limite riguarda la gestione della sessione. Il token JWT dura otto ore e non sono presenti refresh token. Questa scelta è coerente con il caso d'uso di un dispositivo condiviso di reparto e con sessioni che normalmente coincidono con la durata del turno, ma sarebbe meno adatta a contesti con sessioni più lunghe o utilizzo continuativo su dispositivi personali.
+
+Tra le possibili evoluzioni, la priorità più alta sarebbe l'introduzione di un audit log degli accessi ai dati clinici. Attualmente il sistema conserva chi ha creato determinate informazioni, ma un'applicazione realmente utilizzata in ambito sanitario dovrebbe poter registrare anche chi ha visualizzato o modificato una consegna o una valutazione. Questo tipo di tracciamento sarebbe particolarmente importante dal punto di vista della compliance e della gestione degli accessi ai dati.
+
+Una seconda evoluzione naturale sarebbe il supporto multi-reparto. Il modello dati è già predisposto in questa direzione, ma servirebbe una validazione concreta dei flussi organizzativi dei diversi reparti prima di considerare questa estensione realmente pronta.
+
+Un'ulteriore evoluzione sarebbe l'integrazione con dispositivi di monitoraggio reali per acquisire automaticamente i parametri vitali, sostituendo i dati mock utilizzati nel progetto.
+
+Infine, il sistema potrebbe essere esteso con notifiche push reali. Attualmente le informazioni che richiedono attenzione vengono segnalate attraverso badge all'interno dell'applicazione, ma non esiste un sistema di notifiche esterne. L'introduzione di notifiche push potrebbe rendere più immediata la gestione di richieste come cambi turno o altre attività che richiedono una risposta.
 
 ### 5. Valutazione dei risultati
 
