@@ -295,17 +295,22 @@ rispettivi feature modules.
 
 ## Test funzionale (deliverable traccia, no unit test richiesti)
 
-- [ ] Screenshot flussi principali per report (login, dashboard, consegna SBAR, cambio turno, banca ore)
+- [x] Screenshot flussi principali per report (login, dashboard, consegna SBAR, cambio turno, banca ore) — 17 screenshot in `docs/screenshots/` (entrambi i ruoli: caposala e infermiere, + valutazioni Norton/Conley, CEDEMA, Swagger `/docs`)
 
 ## Report (Parte Prima + Seconda, template Pegaso)
 
 - [ ] Parte Prima: conoscenze/abilità, fasi+tempi, risorse/strumenti (citare alternativa Kotlin+Ktor scartata)
 - [ ] Parte Seconda: obiettivi, contesto ospedaliero, UML/ER/API, valutazione risultati
 
-## Video walkthrough (collaterale, post sett.6 — primo taglio se nucleo slitta)
+## Video walkthrough (collaterale — TAGLIATO, 2026-08-04)
 
-- [ ] Screen recording app reale (Playwright MCP o recorder nativo)
-- [ ] `design-md` storyboard overlay → `stitch-design-taste` → `hyperframes-animation` GSAP → `remotion-best-practices` composizione finale
+Deciso di non farlo: non era una richiesta della traccia, solo un
+collaterale per la discussione, e Lorenzo non è convinto valga il
+tempo rispetto a rifinire report/screenshot. Coerente con la cutline
+già scritta (primo taglio se il tempo stringe).
+
+- [~] ~~Screen recording app reale~~ — non fatto, deciso di saltarlo.
+- [~] ~~Storyboard/animazione~~ — non fatto, deciso di saltarlo.
 
 ## Review per fase (self-check)
 
