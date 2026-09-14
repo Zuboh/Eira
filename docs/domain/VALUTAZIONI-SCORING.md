@@ -23,11 +23,13 @@ differenza è segnalata esplicitamente sotto **Nota clinica**.
 Più `data_valutazione` (data), `paziente_id`/`autore_id` (FK), `id`.
 
 I 5 sotto-punteggi corrispondono ai nomi delle 5 sotto-scale Norton
-classiche, ma **nello schema Pydantic (`ValutazioneNortonCreate`) sono
-semplici `int` senza `ge`/`le`** — nessun vincolo di range (la scala
-reale usa 1–4 per item). Il client può inviare qualunque intero,
-incluso negativo; non c'è validazione server-side sui valori dei
-singoli item.
+classiche. Dal fix del 2026-08-04 (commit `484f213`), lo schema
+Pydantic (`ValutazioneNortonCreate`) vincola ciascun campo con
+`Field(ge=1, le=4)` — combacia esattamente con il range 1–4 per item
+della scala Norton reale. Un payload fuori range (es. `0` o `5`)
+restituisce `422` prima ancora di arrivare al router (test:
+`test_norton_rejects_scores_outside_one_to_four`, parametrizzato su
+`0` e `5`).
 
 ### Calcolo `punteggio_totale`
 
@@ -98,7 +100,13 @@ allo stesso modo (alcuni item valgono 2 punti, altri 1, con range
 totale tipico 0–10). Il codice tratta tutti e 6 i campi come pesi
 identici a 1 — è compito del client inviare già il valore "pesato"
 per item se si vuole rispecchiare la scala reale; il server si limita
-a sommare quello che riceve.
+a sommare quello che riceve. Dal fix del 2026-08-04 (commit
+`484f213`), ogni campo ha comunque `Field(ge=0)` — un valore negativo
+è rifiutato con `422` (test: `test_conley_rejects_negative_scores`).
+Non c'è un `le=` uniforme, deliberatamente: dato che gli item non
+sono pesati allo stesso modo, un limite superiore unico per tutti e 6
+sarebbe clinicamente scorretto senza conoscere il peso reale che il
+client ha applicato a ciascun item.
 
 ### Soglie di rischio
 
@@ -172,6 +180,7 @@ l'aggregato) non hanno restrizione di ruolo oltre l'autenticazione.
   `len(conley) == 1` — nessun altro comportamento testato (niente
   soglie di rischio, niente merge per data).
 
-Nessun test copre range invalidi dei singoli item (es. valori
-negativi o fuori scala 1–4/0–2), coerente col fatto che lo schema
-Pydantic non li vincola.
+- `test_norton_rejects_scores_outside_one_to_four` (parametrizzato su
+  `0` e `5`) e `test_conley_rejects_negative_scores`: coprono i range
+  invalidi introdotti dal fix del 2026-08-04 — non più un gap di
+  copertura.
