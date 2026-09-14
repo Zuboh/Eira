@@ -128,7 +128,7 @@ describe('validateConsegnaForm', () => {
         formWith({ testo: 'Paziente tranquillo.', tipo: 'cedema' }),
       ),
     ).toBe(
-      'Completa le sezioni mancanti: Emotività, Dolore, Emodinamica, Mobilizzazione, Allert.',
+      'Completa le sezioni mancanti: Emotività, Dolore, Emodinamica, Mobilizzazione, Alert.',
     )
   })
 })

@@ -300,8 +300,7 @@ rispettivi feature modules.
 ## Report (Parte Prima + Seconda, template Pegaso)
 
 - [ ] Parte Prima: conoscenze/abilità, fasi+tempi, risorse/strumenti (citare alternativa Kotlin+Ktor scartata)
-- [ ] Parte Seconda: obiettivi, contesto Poliambulanza-ispirato, UML/ER/API, valutazione risultati
-- [ ] Passare sezioni narrative da skill `humanizer` prima di consegna (vedi nota AI-detection in vault)
+- [ ] Parte Seconda: obiettivi, contesto ospedaliero, UML/ER/API, valutazione risultati
 
 ## Video walkthrough (collaterale, post sett.6 — primo taglio se nucleo slitta)
 

@@ -103,7 +103,7 @@ const CEDEMA_SECTIONS: ConsegnaSection[] = [
   {
     key: 'allert',
     sigla: 'A',
-    label: 'Allert',
+    label: 'Alert',
     hint: 'segnalazioni da non perdere: allergie, cadute, isolamento',
     required: true,
     copyForward: false,

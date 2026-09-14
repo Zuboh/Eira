@@ -195,7 +195,7 @@ export function cedemaToNarrative(entry: CedemaNarrativeSource) {
     ['Dolore', entry.dolore],
     ['Emodinamica', entry.emodinamica],
     ['Mobilizzazione', entry.mobilizzazione],
-    ['Allert', entry.allert],
+    ['Alert', entry.allert],
   ] as const
   const values = uniqueNonEmpty(sections.map(([, value]) => value))
   if (values.length === 0) return ''

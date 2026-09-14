@@ -10,7 +10,7 @@ import type {
  *
  * SBAR e CEDEMA non sono due formattazioni dello stesso testo: 4 sezioni contro
  * 6, contenuti clinici diversi, e le sigle si sovrappongono (la A di Assessment
- * e' la A di Allert). Riparsare lo stesso testo col modello dell'altro tipo
+ * e' la A di Alert). Riparsare lo stesso testo col modello dell'altro tipo
  * ricollocherebbe contenuto clinico in sezioni sbagliate, in silenzio.
  *
  * Quindi il cambio tipo non converte — ma non butta: il testo del tipo che si
