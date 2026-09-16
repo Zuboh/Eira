@@ -4,13 +4,13 @@ import { useConsegneSbar } from '@/features/sbar/useConsegneSbar'
 import { useAuthStore } from '@/stores/auth'
 import { ApiError } from '@/api/apiError'
 import * as consegneSbarApi from '@/api/consegneSbar'
-import * as diarioCedemaApi from '@/api/diarioCedema'
+import * as diarioSoapieApi from '@/api/diarioSoapie'
 import * as pazientiApi from '@/api/pazienti'
 import * as turniApi from '@/api/turni'
 import type { ConsegnaSbar } from '@/api/consegneSbar'
 
 vi.mock('@/api/consegneSbar')
-vi.mock('@/api/diarioCedema')
+vi.mock('@/api/diarioSoapie')
 vi.mock('@/api/pazienti')
 vi.mock('@/api/turni')
 
@@ -158,14 +158,14 @@ describe('useConsegneSbar — salva', () => {
     expect(hook.dialogOpen.value).toBe(false)
   })
 
-  it('creates a CEDEMA consegna from the generic dialog, then reloads', async () => {
-    vi.mocked(diarioCedemaApi.createVoceDiarioCedema).mockResolvedValue({
+  it('creates a SOAPIE consegna from the generic dialog, then reloads', async () => {
+    vi.mocked(diarioSoapieApi.createVoceDiarioSoapie).mockResolvedValue({
       data: {} as never,
     })
     const hook = useConsegneSbar()
     hook.form.value = {
       paziente_id: 1,
-      tipo: 'cedema',
+      tipo: 'soapie',
       data: '2026-07-18',
       turno_id: null,
       priorita: 'normale',
@@ -175,7 +175,7 @@ describe('useConsegneSbar — salva', () => {
 
     await hook.salva()
 
-    expect(diarioCedemaApi.createVoceDiarioCedema).toHaveBeenCalledOnce()
+    expect(diarioSoapieApi.createVoceDiarioSoapie).toHaveBeenCalledOnce()
   })
 
   it('blocks a consegna with empty sections and says which ones', async () => {

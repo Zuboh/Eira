@@ -20,7 +20,7 @@ const STATE_MAP: Record<string, 'urgente' | 'pending' | 'attiva' | 'chiusa'> = {
   attiva: 'attiva',
   approvata: 'attiva',
   sbar: 'pending',
-  cedema: 'attiva',
+  soapie: 'attiva',
   cambiata: 'chiusa',
   disattivato: 'chiusa',
   dimesso: 'chiusa',

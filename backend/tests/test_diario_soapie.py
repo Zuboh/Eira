@@ -78,7 +78,7 @@ def test_create_voce_other_reparto_forbidden(client, db_session, reparti):
 
     headers = auth_headers(client, infermiere.email, "password123")
     response = client.post(
-        f"/api/v1/pazienti/{paziente_b.id}/diario-cedema", headers=headers, json=_voce_payload()
+        f"/api/v1/pazienti/{paziente_b.id}/diario-soapie", headers=headers, json=_voce_payload()
     )
 
     assert response.status_code == 403
@@ -94,12 +94,12 @@ def test_create_and_list_voce_same_reparto_succeeds(client, db_session, reparti)
 
     headers = auth_headers(client, infermiere.email, "password123")
     created = client.post(
-        f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers, json=_voce_payload()
+        f"/api/v1/pazienti/{paziente.id}/diario-soapie", headers=headers, json=_voce_payload()
     )
     assert created.status_code == 201, created.text
     assert created.json()["autore_id"] == infermiere.id
 
-    listed = client.get(f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers)
+    listed = client.get(f"/api/v1/pazienti/{paziente.id}/diario-soapie", headers=headers)
     assert listed.status_code == 200
     assert len(listed.json()) == 1
 
@@ -116,11 +116,11 @@ def test_create_voce_rejects_empty_sections(client, db_session, reparti):
     for campo in ("coscienza", "emotivita", "dolore", "emodinamica", "mobilizzazione", "allert"):
         payload = _voce_payload()
         payload[campo] = "   "
-        response = client.post(f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers, json=payload)
+        response = client.post(f"/api/v1/pazienti/{paziente.id}/diario-soapie", headers=headers, json=payload)
         assert response.status_code == 422, f"{campo}: {response.text}"
 
 
-def test_ultima_voce_cedema(client, db_session, reparti):
+def test_ultima_voce_soapie(client, db_session, reparti):
     reparto_a, _ = reparti
     infermiere = _infermiere(db_session, reparto_a.id)
     paziente = _paziente(reparto_a.id)
@@ -129,18 +129,18 @@ def test_ultima_voce_cedema(client, db_session, reparti):
     db_session.refresh(paziente)
 
     headers = auth_headers(client, infermiere.email, "password123")
-    vuoto = client.get(f"/api/v1/pazienti/{paziente.id}/diario-cedema/ultima", headers=headers)
+    vuoto = client.get(f"/api/v1/pazienti/{paziente.id}/diario-soapie/ultima", headers=headers)
     assert vuoto.status_code == 200
     assert vuoto.json() is None
 
     for suffisso in ("1", "2"):
         payload = _voce_payload()
         payload["coscienza"] = f"vigile {suffisso}"
-        client.post(f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers, json=payload)
+        client.post(f"/api/v1/pazienti/{paziente.id}/diario-soapie", headers=headers, json=payload)
 
-    ultima = client.get(f"/api/v1/pazienti/{paziente.id}/diario-cedema/ultima", headers=headers)
+    ultima = client.get(f"/api/v1/pazienti/{paziente.id}/diario-soapie/ultima", headers=headers)
     assert ultima.status_code == 200
-    listed = client.get(f"/api/v1/pazienti/{paziente.id}/diario-cedema", headers=headers)
+    listed = client.get(f"/api/v1/pazienti/{paziente.id}/diario-soapie", headers=headers)
     assert ultima.json()["id"] == listed.json()[0]["id"]
 
 
@@ -153,7 +153,7 @@ def test_ultima_voce_other_reparto_forbidden(client, db_session, reparti):
     db_session.refresh(paziente_b)
 
     headers = auth_headers(client, infermiere.email, "password123")
-    response = client.get(f"/api/v1/pazienti/{paziente_b.id}/diario-cedema/ultima", headers=headers)
+    response = client.get(f"/api/v1/pazienti/{paziente_b.id}/diario-soapie/ultima", headers=headers)
     assert response.status_code == 403
 
 
@@ -166,7 +166,7 @@ def test_list_voci_other_reparto_forbidden(client, db_session, reparti):
     db_session.refresh(paziente_b)
 
     headers = auth_headers(client, infermiere.email, "password123")
-    response = client.get(f"/api/v1/pazienti/{paziente_b.id}/diario-cedema", headers=headers)
+    response = client.get(f"/api/v1/pazienti/{paziente_b.id}/diario-soapie", headers=headers)
     assert response.status_code == 403
 
 
@@ -191,7 +191,7 @@ def test_create_voce_with_turno_other_reparto_forbidden(client, db_session, repa
 
     headers = auth_headers(client, infermiere.email, "password123")
     response = client.post(
-        f"/api/v1/pazienti/{paziente.id}/diario-cedema",
+        f"/api/v1/pazienti/{paziente.id}/diario-soapie",
         headers=headers,
         json=_voce_payload(turno_id=turno_b.id),
     )

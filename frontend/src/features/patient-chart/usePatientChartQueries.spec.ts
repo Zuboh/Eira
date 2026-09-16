@@ -2,14 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { usePatientChartQueries } from '@/features/patient-chart/usePatientChartQueries'
 import * as pazientiApi from '@/api/pazienti'
 import * as turniApi from '@/api/turni'
-import * as diarioCedemaApi from '@/api/diarioCedema'
+import * as diarioSoapieApi from '@/api/diarioSoapie'
 import * as valutazioniApi from '@/api/valutazioni'
 import * as consegneSbarApi from '@/api/consegneSbar'
 import * as parametriVitaliApi from '@/api/parametriVitali'
 
 vi.mock('@/api/pazienti')
 vi.mock('@/api/turni')
-vi.mock('@/api/diarioCedema')
+vi.mock('@/api/diarioSoapie')
 vi.mock('@/api/valutazioni')
 vi.mock('@/api/consegneSbar')
 vi.mock('@/api/parametriVitali')
@@ -25,7 +25,7 @@ const paziente = {
   reparto_id: 1,
   dimesso: false,
 }
-const cedema = [
+const soapie = [
   {
     id: 1,
     paziente_id: 1,
@@ -43,8 +43,8 @@ const cedema = [
 
 beforeEach(() => {
   vi.mocked(pazientiApi.getPaziente).mockResolvedValue({ data: paziente })
-  vi.mocked(diarioCedemaApi.listDiarioCedema).mockResolvedValue({
-    data: cedema,
+  vi.mocked(diarioSoapieApi.listDiarioSoapie).mockResolvedValue({
+    data: soapie,
   })
   vi.mocked(consegneSbarApi.listConsegneSbarByPaziente).mockResolvedValue({
     data: [],
@@ -66,7 +66,7 @@ describe('usePatientChartQueries — load', () => {
     await queries.load()
 
     expect(queries.paziente.value).toEqual(paziente)
-    expect(queries.cedema.value).toEqual(cedema)
+    expect(queries.soapie.value).toEqual(soapie)
     expect(queries.sbar.value).toEqual([])
     expect(queries.parametriVitali.value).toEqual([])
     expect(queries.loading.value).toBe(false)
@@ -94,7 +94,7 @@ describe('usePatientChartQueries — load', () => {
 })
 
 describe('usePatientChartQueries — reload helpers', () => {
-  it('reloadTimeline refreshes cedema and sbar', async () => {
+  it('reloadTimeline refreshes soapie and sbar', async () => {
     vi.mocked(consegneSbarApi.listConsegneSbarByPaziente).mockResolvedValue({
       data: [{ id: 2 } as never],
     })
@@ -102,7 +102,7 @@ describe('usePatientChartQueries — reload helpers', () => {
 
     await queries.reloadTimeline()
 
-    expect(queries.cedema.value).toEqual(cedema)
+    expect(queries.soapie.value).toEqual(soapie)
     expect(queries.sbar.value).toEqual([{ id: 2 }])
   })
 

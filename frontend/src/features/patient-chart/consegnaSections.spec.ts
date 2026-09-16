@@ -25,8 +25,8 @@ describe('sectionsFor', () => {
     ])
   })
 
-  it('describes the six CEDEMA sections with both E labelled distinctly', () => {
-    const sections = sectionsFor('cedema')
+  it('describes the six SOAPIE sections, with emotivita and emodinamica sharing sigla E', () => {
+    const sections = sectionsFor('soapie')
     expect(sections.map((section) => section.key)).toEqual([
       'coscienza',
       'emotivita',
@@ -48,24 +48,24 @@ describe('sectionsFor', () => {
   })
 
   it('marks only time-insensitive sections as copy-forward', () => {
-    const copyForward = (tipo: 'sbar' | 'cedema') =>
+    const copyForward = (tipo: 'sbar' | 'soapie') =>
       sectionsFor(tipo)
         .filter((section) => section.copyForward)
         .map((section) => section.key)
 
     expect(copyForward('sbar')).toEqual(['background'])
-    expect(copyForward('cedema')).toEqual(['coscienza', 'mobilizzazione'])
+    expect(copyForward('soapie')).toEqual(['coscienza', 'mobilizzazione'])
   })
 
   it('requires every section of both types', () => {
     expect(sectionsFor('sbar').every((section) => section.required)).toBe(true)
-    expect(sectionsFor('cedema').every((section) => section.required)).toBe(
+    expect(sectionsFor('soapie').every((section) => section.required)).toBe(
       true,
     )
   })
 
   it('gives every section a non-empty hint', () => {
-    const sections = [...sectionsFor('sbar'), ...sectionsFor('cedema')]
+    const sections = [...sectionsFor('sbar'), ...sectionsFor('soapie')]
     expect(sections.every((section) => section.hint.trim().length > 0)).toBe(
       true,
     )
@@ -75,7 +75,7 @@ describe('sectionsFor', () => {
 describe('buildScaffold', () => {
   it('writes one sigla marker per section', () => {
     expect(buildScaffold('sbar')).toBe('S:\nB:\nA:\nR:')
-    expect(buildScaffold('cedema')).toBe('C:\nE:\nD:\nE:\nM:\nA:')
+    expect(buildScaffold('soapie')).toBe('C:\nE:\nD:\nE:\nM:\nA:')
   })
 
   it('round-trips to empty sections', () => {
@@ -98,7 +98,7 @@ describe('isPristineScaffold', () => {
 
   it('treats an untouched scaffold of either type as pristine', () => {
     expect(isPristineScaffold(buildScaffold('sbar'))).toBe(true)
-    expect(isPristineScaffold(buildScaffold('cedema'))).toBe(true)
+    expect(isPristineScaffold(buildScaffold('soapie'))).toBe(true)
   })
 
   it('is not pristine once any section has content', () => {
@@ -163,7 +163,7 @@ describe('parseConsegnaText', () => {
   it('does not treat a marker word in the middle of a line as a boundary', () => {
     const parsed = parseConsegnaText(
       'C: vigile, riferisce dolore: 7/10\nE: sereno\nD: addominale\nE: pressione stabile\nM: allettato\nA: nessuna',
-      'cedema',
+      'soapie',
     )
 
     expect(parsed.values.coscienza).toBe('vigile, riferisce dolore: 7/10')
@@ -198,20 +198,20 @@ describe('parseConsegnaText', () => {
     expect(parsed.hasOrphanText).toBe(false)
   })
 
-  it('resolves the two CEDEMA E markers by position', () => {
+  it('resolves the two E markers (emotivita/emodinamica) by position', () => {
     const parsed = parseConsegnaText(
       'C: vigile\nE: tranquillo\nD: assente\nE: PA 120/80\nM: autonomo\nA: nessuna',
-      'cedema',
+      'soapie',
     )
 
     expect(parsed.values.emotivita).toBe('tranquillo')
     expect(parsed.values.emodinamica).toBe('PA 120/80')
   })
 
-  it('prefers the extended CEDEMA label over positional order', () => {
+  it('prefers the extended SOAPIE label over positional order', () => {
     const parsed = parseConsegnaText(
       'C: vigile\nEmodinamica: PA 120/80\nD: assente\nEmotività: tranquillo\nM: autonomo\nA: nessuna',
-      'cedema',
+      'soapie',
     )
 
     expect(parsed.values.emodinamica).toBe('PA 120/80')
@@ -273,7 +273,7 @@ describe('serializeToSigle', () => {
     }
 
     expect(
-      parseConsegnaText(serializeToSigle(values, 'cedema'), 'cedema'),
+      parseConsegnaText(serializeToSigle(values, 'soapie'), 'soapie'),
     ).toEqual({ values, hasOrphanText: false })
   })
 })
@@ -357,10 +357,10 @@ describe('replaceSection', () => {
     expect(replaceSection('S: dolore', 'sbar', 'situation', '')).toBe('S:')
   })
 
-  it('targets the second E of CEDEMA without touching the first', () => {
+  it('targets the second E marker (emodinamica) without touching the first', () => {
     const testo = ['E: tranquillo', 'D: assente', 'E: stabile'].join('\n')
 
-    expect(replaceSection(testo, 'cedema', 'emodinamica', 'PA 120/80')).toBe(
+    expect(replaceSection(testo, 'soapie', 'emodinamica', 'PA 120/80')).toBe(
       ['E: tranquillo', 'D: assente', 'E: PA 120/80'].join('\n'),
     )
   })

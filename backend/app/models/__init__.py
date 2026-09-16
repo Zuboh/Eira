@@ -1,6 +1,6 @@
 from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.consegna_sbar import ConsegnaSbar
-from app.models.diario_cedema import VoceDiarioCedema
+from app.models.diario_soapie import VoceDiarioSoapie
 from app.models.farmaco import CarelloFarmaco, Farmaco, MovimentoFarmaco
 from app.models.ferie import RichiestaFerie
 from app.models.parametri_vitali import ParametriVitali
@@ -20,7 +20,7 @@ __all__ = [
     "Turno",
     "AssegnazioneTurno",
     "ConsegnaSbar",
-    "VoceDiarioCedema",
+    "VoceDiarioSoapie",
     "ParametriVitali",
     "PasswordResetRequirement",
     "ValutazioneNorton",

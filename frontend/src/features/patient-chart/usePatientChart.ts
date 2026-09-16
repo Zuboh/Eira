@@ -23,7 +23,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
   const canEditPatient = computed(() => ruolo.value === 'caposala')
   const canCreateClinicalEntries = computed(() => ruolo.value === 'infermiere')
   const timeline = computed(() =>
-    buildClinicalTimeline(chart.cedema.value, chart.sbar.value),
+    buildClinicalTimeline(chart.soapie.value, chart.sbar.value),
   )
 
   return {

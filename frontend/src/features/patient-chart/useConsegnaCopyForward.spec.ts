@@ -1,13 +1,13 @@
 import { ref } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as consegneSbarApi from '@/api/consegneSbar'
-import * as diarioCedemaApi from '@/api/diarioCedema'
+import * as diarioSoapieApi from '@/api/diarioSoapie'
 import { useConsegnaCopyForward } from '@/features/patient-chart/useConsegnaCopyForward'
 import { createEmptyGenericConsegnaForm } from '@/features/patient-chart/form'
 import type { GenericConsegnaForm } from '@/features/patient-chart/types'
 
 vi.mock('@/api/consegneSbar')
-vi.mock('@/api/diarioCedema')
+vi.mock('@/api/diarioSoapie')
 
 const ultimaSbar = {
   id: 1,
@@ -88,8 +88,8 @@ describe('useConsegnaCopyForward', () => {
     expect(form.value.testo).toBe('S:\nB:\nA:\nR:')
   })
 
-  it('legge il diario CEDEMA quando il tipo e cedema', async () => {
-    vi.mocked(diarioCedemaApi.getUltimaVoceDiarioCedema).mockResolvedValue({
+  it('legge il diario SOAPIE quando il tipo e soapie', async () => {
+    vi.mocked(diarioSoapieApi.getUltimaVoceDiarioSoapie).mockResolvedValue({
       data: {
         id: 3,
         paziente_id: 7,
@@ -105,7 +105,7 @@ describe('useConsegnaCopyForward', () => {
       },
     })
     const { form, hook } = setup({
-      tipo: 'cedema',
+      tipo: 'soapie',
       testo: 'C:\nE:\nD:\nE:\nM:\nA:',
     })
 

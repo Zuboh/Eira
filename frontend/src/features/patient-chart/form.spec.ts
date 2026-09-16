@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   createEmptyGenericConsegnaForm,
-  toCedemaPayload,
+  toSoapiePayload,
   toSbarPayload,
   validateConsegnaForm,
 } from '@/features/patient-chart/form'
@@ -12,7 +12,7 @@ function formWith(overrides: Partial<GenericConsegnaForm>) {
 }
 
 const sbarTesto = 'S: dolore\nB: appendicectomia\nA: stabile\nR: rivalutare'
-const cedemaTesto =
+const soapieTesto =
   'C: vigile\nE: tranquillo\nD: assente\nE: PA 120/80\nM: autonomo\nA: nessuna'
 
 describe('toSbarPayload', () => {
@@ -54,10 +54,10 @@ describe('toSbarPayload', () => {
   })
 })
 
-describe('toCedemaPayload', () => {
+describe('toSoapiePayload', () => {
   it('maps the parsed sections onto the payload', () => {
-    const payload = toCedemaPayload(
-      formWith({ testo: cedemaTesto, tipo: 'cedema', turno_id: 5 }),
+    const payload = toSoapiePayload(
+      formWith({ testo: soapieTesto, tipo: 'soapie', turno_id: 5 }),
     )
 
     expect(payload).toEqual({
@@ -72,8 +72,8 @@ describe('toCedemaPayload', () => {
   })
 
   it('no longer dumps unparsed text into allert', () => {
-    const payload = toCedemaPayload(
-      formWith({ testo: 'Paziente tranquillo.', tipo: 'cedema' }),
+    const payload = toSoapiePayload(
+      formWith({ testo: 'Paziente tranquillo.', tipo: 'soapie' }),
     )
 
     expect(payload.coscienza).toBe('Paziente tranquillo.')
@@ -88,10 +88,10 @@ describe('validateConsegnaForm', () => {
     ).toBeNull()
   })
 
-  it('accepts a fully filled CEDEMA consegna without a turno', () => {
+  it('accepts a fully filled SOAPIE consegna without a turno', () => {
     expect(
       validateConsegnaForm(
-        formWith({ testo: cedemaTesto, tipo: 'cedema', turno_id: null }),
+        formWith({ testo: soapieTesto, tipo: 'soapie', turno_id: null }),
       ),
     ).toBeNull()
   })
@@ -122,10 +122,10 @@ describe('validateConsegnaForm', () => {
     ).toBe('Completa le sezioni mancanti: Background, Recommendation.')
   })
 
-  it('names the CEDEMA sections still to fill', () => {
+  it('names the SOAPIE sections still to fill', () => {
     expect(
       validateConsegnaForm(
-        formWith({ testo: 'Paziente tranquillo.', tipo: 'cedema' }),
+        formWith({ testo: 'Paziente tranquillo.', tipo: 'soapie' }),
       ),
     ).toBe(
       'Completa le sezioni mancanti: Emotività, Dolore, Emodinamica, Mobilizzazione, Alert.',

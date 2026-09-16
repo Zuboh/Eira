@@ -21,13 +21,14 @@ valori: `normale` | `urgente`. Non esiste una variante "I" (Identify)
 distinta a schema: la "I" di ISBAR non è modellata come campo proprio,
 la consegna parte direttamente da `situation`.
 
-### CEDEMA
+### SOAPIE
 
-Acronimo per le 6 aree di osservazione infermieristica registrate nel
-diario paziente: **C**oscienza, **E**motività, **D**olore,
-**E**modinamica, **M**obilizzazione, **A**llert. Corrisponde
-all'entità `VoceDiarioCedema`
-(`backend/app/models/diario_cedema.py`), con un campo `Text` per
+Nome del diario osservazionale infermieristico (le lettere "SOAPIE"
+non corrispondono alle aree registrate — sono solo l'etichetta del
+diario). Registra 6 aree di osservazione per ogni voce: coscienza,
+emotività, dolore, emodinamica, mobilizzazione, allert. Corrisponde
+all'entità `VoceDiarioSoapie`
+(`backend/app/models/diario_soapie.py`), con un campo `Text` per
 ciascuna delle 6 aree. Collegata a `paziente_id` e `autore_id`
 (obbligatori) e a `turno_id` (opzionale — una voce può non essere
 legata a un turno specifico). Non ha priorità né stato: è un log

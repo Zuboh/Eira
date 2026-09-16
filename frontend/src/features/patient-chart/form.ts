@@ -12,7 +12,7 @@ import {
   serializeToSigle,
 } from '@/features/patient-chart/consegnaSections'
 import type {
-  CedemaNarrativeSource,
+  SoapieNarrativeSource,
   GenericConsegnaForm,
   NortonForm,
   ConleyForm,
@@ -89,8 +89,8 @@ export function createPatientEditForm(paziente: Paziente): PatientEditForm {
   }
 }
 
-export function toCedemaPayload(form: GenericConsegnaForm) {
-  const { values } = parseConsegnaText(form.testo, 'cedema')
+export function toSoapiePayload(form: GenericConsegnaForm) {
+  const { values } = parseConsegnaText(form.testo, 'soapie')
 
   return {
     turno_id: form.turno_id,
@@ -188,7 +188,7 @@ function uniqueNonEmpty(values: string[]) {
   return [...new Set(values.map((value) => value.trim()).filter(Boolean))]
 }
 
-export function cedemaToNarrative(entry: CedemaNarrativeSource) {
+export function soapieToNarrative(entry: SoapieNarrativeSource) {
   const sections = [
     ['Coscienza', entry.coscienza],
     ['Emotività', entry.emotivita],

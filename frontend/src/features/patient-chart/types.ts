@@ -2,7 +2,7 @@ import type { PazienteUpdatePayload } from '@/api/pazienti'
 import type { ConsegnaSbar, PrioritaConsegna } from '@/api/consegneSbar'
 import type { Paziente } from '@/api/pazienti'
 import type { AssegnazioneTurnoOption } from '@/features/sbar/turnoOptions'
-import type { VoceDiarioCedema } from '@/api/diarioCedema'
+import type { VoceDiarioSoapie } from '@/api/diarioSoapie'
 import type {
   ParametriVitali,
   ParametriVitaliCreatePayload,
@@ -22,7 +22,7 @@ export type PatientEditForm = Required<
   Pick<PazienteUpdatePayload, 'letto' | 'diagnosi_ingresso' | 'dimesso'>
 >
 
-export type GenericConsegnaKind = 'sbar' | 'cedema'
+export type GenericConsegnaKind = 'sbar' | 'soapie'
 
 export type GenericConsegnaForm = {
   paziente_id: number | null
@@ -107,8 +107,8 @@ export type ParametriVitaliTabEmits = {
   newEntry: []
 }
 
-export type CedemaNarrativeSource = Pick<
-  VoceDiarioCedema,
+export type SoapieNarrativeSource = Pick<
+  VoceDiarioSoapie,
   | 'coscienza'
   | 'emotivita'
   | 'dolore'

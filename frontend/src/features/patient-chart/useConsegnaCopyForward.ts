@@ -1,6 +1,6 @@
 import { computed, ref, type Ref } from 'vue'
 import { getUltimaConsegnaSbar } from '@/api/consegneSbar'
-import { getUltimaVoceDiarioCedema } from '@/api/diarioCedema'
+import { getUltimaVoceDiarioSoapie } from '@/api/diarioSoapie'
 import {
   parseConsegnaText,
   replaceSection,
@@ -57,7 +57,7 @@ export function useConsegnaCopyForward({ form, error }: CopyForwardOptions) {
     const values =
       tipo === 'sbar'
         ? sbarValues((await getUltimaConsegnaSbar(pazienteId)).data)
-        : cedemaValues((await getUltimaVoceDiarioCedema(pazienteId)).data)
+        : soapieValues((await getUltimaVoceDiarioSoapie(pazienteId)).data)
 
     cache.set(cacheKey, values)
     return values
@@ -129,7 +129,7 @@ function sbarValues(
   }
 }
 
-function cedemaValues(
+function soapieValues(
   voce: {
     coscienza: string
     emotivita: string

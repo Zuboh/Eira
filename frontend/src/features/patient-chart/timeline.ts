@@ -1,22 +1,22 @@
 import type { ConsegnaSbar } from '@/api/consegneSbar'
-import type { VoceDiarioCedema } from '@/api/diarioCedema'
+import type { VoceDiarioSoapie } from '@/api/diarioSoapie'
 import {
-  cedemaToNarrative,
+  soapieToNarrative,
   sbarToNarrative,
 } from '@/features/patient-chart/form'
 import type { ClinicalTimelineEntry } from '@/features/patient-chart/types'
 
-export function normalizeCedemaEntry(
-  entry: VoceDiarioCedema,
+export function normalizeSoapieEntry(
+  entry: VoceDiarioSoapie,
 ): ClinicalTimelineEntry {
   return {
-    id: `cedema-${entry.id}`,
+    id: `soapie-${entry.id}`,
     sourceId: entry.id,
-    tipo: 'cedema',
+    tipo: 'soapie',
     timestamp: entry.timestamp,
     autoreId: entry.autore_id,
-    title: 'Consegna CEDEMA',
-    body: cedemaToNarrative(entry),
+    title: 'Consegna SOAPIE',
+    body: soapieToNarrative(entry),
   }
 }
 
@@ -34,11 +34,11 @@ export function normalizeSbarEntry(entry: ConsegnaSbar): ClinicalTimelineEntry {
 }
 
 export function buildClinicalTimeline(
-  cedema: VoceDiarioCedema[],
+  soapie: VoceDiarioSoapie[],
   sbar: ConsegnaSbar[],
 ): ClinicalTimelineEntry[] {
   return [
-    ...cedema.map(normalizeCedemaEntry),
+    ...soapie.map(normalizeSoapieEntry),
     ...sbar.map(normalizeSbarEntry),
   ].sort(
     (left, right) =>

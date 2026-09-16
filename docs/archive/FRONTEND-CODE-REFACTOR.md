@@ -314,7 +314,7 @@ frontend/src/features/
 
   patient-chart/
     usePatientChart.ts
-    CedemaTab.vue
+    SoapieTab.vue
     ValutazioniTab.vue
     StoricoSbarTab.vue
     EditPatientDialog.vue
@@ -345,7 +345,7 @@ frontend/src/features/
   - `TemporaryPasswordStep`.
 - [ ] Estrarre `usePatientChart(pazienteId)` da `SchedaPazienteView.vue`.
 - [ ] Estrarre tab scheda paziente:
-  - CEDEMA;
+  - SOAPIE;
   - Valutazioni;
   - Storico SBAR.
 - [ ] Estrarre `useCambiTurno` e riusarlo tra `CambioTurnoView.vue` e dashboard caposala.

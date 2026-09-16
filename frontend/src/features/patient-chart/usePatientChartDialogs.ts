@@ -1,7 +1,7 @@
 import { ref, unref, type MaybeRef, type Ref } from 'vue'
 import { apiErrorMessage } from '@/api/apiError'
 import { updatePaziente, type Paziente } from '@/api/pazienti'
-import { createVoceDiarioCedema } from '@/api/diarioCedema'
+import { createVoceDiarioSoapie } from '@/api/diarioSoapie'
 import { createConsegnaSbar } from '@/api/consegneSbar'
 import { createParametriVitali } from '@/api/parametriVitali'
 import { createConley, createNorton } from '@/api/valutazioni'
@@ -13,7 +13,7 @@ import {
   createEmptyNortonForm,
   createEmptyParametriVitaliForm,
   createPatientEditForm,
-  toCedemaPayload,
+  toSoapiePayload,
   toSbarPayload,
   validateConsegnaForm,
 } from '@/features/patient-chart/form'
@@ -126,9 +126,9 @@ export function usePatientChartDialogs({
           }),
         )
       } else {
-        await createVoceDiarioCedema(
+        await createVoceDiarioSoapie(
           unref(pazienteId),
-          toCedemaPayload(consegnaForm.value),
+          toSoapiePayload(consegnaForm.value),
         )
       }
       consegnaDrawer.value = false

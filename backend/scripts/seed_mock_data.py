@@ -2,7 +2,7 @@
 
 Esegue un wipe completo delle tabelle e le ripopola con reparti, personale,
 pazienti, turni, assegnazioni, richieste di cambio turno, consegne SBAR,
-diario CEDEMA, valutazioni Norton/Conley e carello farmaci.
+diario SOAPIE, valutazioni Norton/Conley e carello farmaci.
 
 Uso: da backend/  ->  uv run python scripts/seed_mock_data.py
 """
@@ -20,7 +20,7 @@ from app.core.ferie_slots import DURATA_SLOT_GIORNI, slot_ferie_estive
 from app.core.security import hash_password
 from app.models.cambio_turno import RichiestaCambioTurno
 from app.models.consegna_sbar import ConsegnaSbar
-from app.models.diario_cedema import VoceDiarioCedema
+from app.models.diario_soapie import VoceDiarioSoapie
 from app.models.enums import (
     PrioritaConsegna,
     RuoloUtente,
@@ -405,7 +405,7 @@ def crea_consegne_sbar(
     db.flush()
 
 
-def crea_diario_cedema(
+def crea_diario_soapie(
     db, turni: list[Turno], assegnazioni: list[AssegnazioneTurno], pazienti: list[Paziente]
 ) -> None:
     infermieri_per_turno: dict[int, list[int]] = {}
@@ -430,7 +430,7 @@ def crea_diario_cedema(
             if not autori:
                 continue
             voci.append(
-                VoceDiarioCedema(
+                VoceDiarioSoapie(
                     paziente_id=paziente.id,
                     autore_id=random.choice(autori),
                     turno_id=turno.id,
@@ -781,7 +781,7 @@ def main() -> None:
         assegnazioni = crea_assegnazioni(db, turni, infermieri)
         crea_richieste_cambio_turno(db, assegnazioni, infermieri, caposale)
         crea_consegne_sbar(db, turni, assegnazioni, pazienti)
-        crea_diario_cedema(db, turni, assegnazioni, pazienti)
+        crea_diario_soapie(db, turni, assegnazioni, pazienti)
         crea_parametri_vitali(db, turni, assegnazioni, pazienti)
         crea_valutazioni(db, pazienti, infermieri)
         carelli = crea_carello_farmaci(db, reparti)
@@ -798,7 +798,7 @@ def main() -> None:
         print(f"  assegnazioni turno: {db.query(AssegnazioneTurno).count()}")
         print(f"  richieste cambio turno: {db.query(RichiestaCambioTurno).count()}")
         print(f"  consegne SBAR: {db.query(ConsegnaSbar).count()}")
-        print(f"  voci diario CEDEMA: {db.query(VoceDiarioCedema).count()}")
+        print(f"  voci diario SOAPIE: {db.query(VoceDiarioSoapie).count()}")
         print(f"  parametri vitali: {db.query(ParametriVitali).count()}")
         print(f"  valutazioni Norton: {db.query(ValutazioneNorton).count()}")
         print(f"  valutazioni Conley: {db.query(ValutazioneConley).count()}")

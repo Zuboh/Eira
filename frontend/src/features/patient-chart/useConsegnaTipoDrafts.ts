@@ -8,7 +8,7 @@ import type {
 /**
  * Tiene una bozza di testo per ciascun tipo di consegna.
  *
- * SBAR e CEDEMA non sono due formattazioni dello stesso testo: 4 sezioni contro
+ * SBAR e SOAPIE non sono due formattazioni dello stesso testo: 4 sezioni contro
  * 6, contenuti clinici diversi, e le sigle si sovrappongono (la A di Assessment
  * e' la A di Alert). Riparsare lo stesso testo col modello dell'altro tipo
  * ricollocherebbe contenuto clinico in sezioni sbagliate, in silenzio.
@@ -20,7 +20,7 @@ import type {
 export function useConsegnaTipoDrafts(form: Ref<GenericConsegnaForm>) {
   const bozze = ref<Record<GenericConsegnaKind, string | null>>({
     sbar: null,
-    cedema: null,
+    soapie: null,
   })
 
   function cambiaTipo(tipo: GenericConsegnaKind) {
@@ -34,7 +34,7 @@ export function useConsegnaTipoDrafts(form: Ref<GenericConsegnaForm>) {
   /** Da chiamare a ogni apertura del dialog: una bozza ereditata riapparirebbe
    *  sulla consegna di un altro paziente. */
   function resetBozze() {
-    bozze.value = { sbar: null, cedema: null }
+    bozze.value = { sbar: null, soapie: null }
   }
 
   return { cambiaTipo, resetBozze }

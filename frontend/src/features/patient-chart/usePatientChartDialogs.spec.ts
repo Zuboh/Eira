@@ -2,13 +2,13 @@ import { ref } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { usePatientChartDialogs } from '@/features/patient-chart/usePatientChartDialogs'
 import * as pazientiApi from '@/api/pazienti'
-import * as diarioCedemaApi from '@/api/diarioCedema'
+import * as diarioSoapieApi from '@/api/diarioSoapie'
 import * as consegneSbarApi from '@/api/consegneSbar'
 import * as parametriVitaliApi from '@/api/parametriVitali'
 import * as valutazioniApi from '@/api/valutazioni'
 
 vi.mock('@/api/pazienti')
-vi.mock('@/api/diarioCedema')
+vi.mock('@/api/diarioSoapie')
 vi.mock('@/api/consegneSbar')
 vi.mock('@/api/parametriVitali')
 vi.mock('@/api/valutazioni')
@@ -78,19 +78,19 @@ describe('usePatientChartDialogs — generic consegna', () => {
     expect(reloadTimeline).toHaveBeenCalledOnce()
   })
 
-  it('salvaConsegna saves CEDEMA and reloads timeline on success', async () => {
-    vi.mocked(diarioCedemaApi.createVoceDiarioCedema).mockResolvedValue({
+  it('salvaConsegna saves SOAPIE and reloads timeline on success', async () => {
+    vi.mocked(diarioSoapieApi.createVoceDiarioSoapie).mockResolvedValue({
       data: {} as never,
     })
     const { dialogs, reloadTimeline } = makeDialogs()
     dialogs.apriConsegna()
-    dialogs.consegnaForm.value.tipo = 'cedema'
+    dialogs.consegnaForm.value.tipo = 'soapie'
     dialogs.consegnaForm.value.testo =
       'C: vigile\nE: tranquillo\nD: assente\nE: PA 120/80\nM: autonomo\nA: nessuna'
 
     await dialogs.salvaConsegna()
 
-    expect(diarioCedemaApi.createVoceDiarioCedema).toHaveBeenCalledOnce()
+    expect(diarioSoapieApi.createVoceDiarioSoapie).toHaveBeenCalledOnce()
     expect(reloadTimeline).toHaveBeenCalledOnce()
   })
 

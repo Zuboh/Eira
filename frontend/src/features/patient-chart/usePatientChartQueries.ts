@@ -1,7 +1,7 @@
 import { ref, unref, type MaybeRef } from 'vue'
 import { getPaziente, type Paziente } from '@/api/pazienti'
 import { getMieAssegnazioni, listTurni } from '@/api/turni'
-import { listDiarioCedema, type VoceDiarioCedema } from '@/api/diarioCedema'
+import { listDiarioSoapie, type VoceDiarioSoapie } from '@/api/diarioSoapie'
 import {
   listParametriVitali,
   type ParametriVitali,
@@ -28,7 +28,7 @@ export function usePatientChartQueries(
   const error = ref('')
   const loading = ref(false)
 
-  const cedema = ref<VoceDiarioCedema[]>([])
+  const soapie = ref<VoceDiarioSoapie[]>([])
   const sbar = ref<ConsegnaSbar[]>([])
   const norton = ref<ValutazioneNorton[]>([])
   const conley = ref<ValutazioneConley[]>([])
@@ -36,11 +36,11 @@ export function usePatientChartQueries(
   const assegnazioni = ref<AssegnazioneTurnoOption[]>([])
 
   async function reloadTimeline() {
-    const [cedemaResponse, sbarResponse] = await Promise.all([
-      listDiarioCedema(unref(pazienteId)),
+    const [soapieResponse, sbarResponse] = await Promise.all([
+      listDiarioSoapie(unref(pazienteId)),
       listConsegneSbarByPaziente(unref(pazienteId)),
     ])
-    cedema.value = cedemaResponse.data
+    soapie.value = soapieResponse.data
     sbar.value = sbarResponse.data
   }
 
@@ -62,14 +62,14 @@ export function usePatientChartQueries(
       const [p, timelineData, v, pv] = await Promise.all([
         getPaziente(unref(pazienteId)),
         Promise.all([
-          listDiarioCedema(unref(pazienteId)),
+          listDiarioSoapie(unref(pazienteId)),
           listConsegneSbarByPaziente(unref(pazienteId)),
         ]),
         getValutazioni(unref(pazienteId)),
         listParametriVitali(unref(pazienteId)),
       ])
       paziente.value = p.data
-      cedema.value = timelineData[0].data
+      soapie.value = timelineData[0].data
       sbar.value = timelineData[1].data
       norton.value = v.data.norton
       conley.value = v.data.conley
@@ -95,7 +95,7 @@ export function usePatientChartQueries(
     paziente,
     error,
     loading,
-    cedema,
+    soapie,
     sbar,
     norton,
     conley,

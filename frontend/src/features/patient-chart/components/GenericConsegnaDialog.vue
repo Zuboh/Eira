@@ -70,7 +70,7 @@ const errorStale = ref(false)
 
 const tipoOptions = [
   { label: 'SBAR', value: 'sbar' },
-  { label: 'CEDEMA', value: 'cedema' },
+  { label: 'SOAPIE', value: 'soapie' },
 ]
 
 // Il cambio tipo e' libero e immediato: il testo dell'altro modello non viene

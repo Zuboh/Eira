@@ -30,7 +30,7 @@ puri (dati finti, nessuna query DB):
 - [x] `utenti.py` — create/list/update utente (DB reale, password hash, scoping reparto su create/list/get/update; test in `tests/test_utenti.py`)
 - [x] `pazienti.py` — create/list/get/update paziente (DB reale, scoping reparto; test in `tests/test_pazienti.py`)
 - [x] `consegne_sbar.py` — create/list/update consegna SBAR (DB reale; create richiede assegnazione attiva al turno + paziente/turno stesso reparto; list scoping infermiere=propri turni assegnati / caposala=tutto il reparto; update solo autrice; test in `tests/test_consegne_sbar.py`)
-- [x] `diario_cedema.py` — create/list voce diario CEDEMA (scoping reparto via paziente + turno_id opzionale verificato stesso reparto); test in `tests/test_diario_cedema.py`
+- [x] `diario_soapie.py` — create/list voce diario SOAPIE (scoping reparto via paziente + turno_id opzionale verificato stesso reparto); test in `tests/test_diario_soapie.py`
 - [x] `valutazioni.py` — create/list Norton + Conley (scoping reparto via paziente, punteggio_totale calcolato server-side); aggregate `/{paziente_id}/valutazioni` dashboard multidimensionale; test in `tests/test_valutazioni.py`
 - [x] `cambi_turno.py` — flusso doppia conferma (collega → caposala): stati `in_attesa_collega → in_attesa_caposala → approvata` (swap `infermiere_id` su assegnazione esistente) o `rifiutata_collega`/`rifiutata_caposala`; riusa check niente-doppio-turno su approvazione; test in `tests/test_cambi_turno.py`
 
@@ -38,7 +38,7 @@ puri (dati finti, nessuna query DB):
 
 ## Feature core (da requisiti progetto)
 
-- [x] **Parametri vitali** (stretch/mock, v. Note) — nuova entità `ParametriVitali`, stesso pattern di `diario_cedema.py` (paziente-scoped, `turno_id` opzionale verificato stesso reparto, `autore_id`, `timestamp`):
+- [x] **Parametri vitali** (stretch/mock, v. Note) — nuova entità `ParametriVitali`, stesso pattern di `diario_soapie.py` (paziente-scoped, `turno_id` opzionale verificato stesso reparto, `autore_id`, `timestamp`):
   - `temperatura` (°C), `frequenza_cardiaca` (bpm), `pressione_sistolica`/`pressione_diastolica` (mmHg), `frequenza_respiratoria` (atti/min), `saturazione_o2` (%)
   - `stato_coscienza`: nuovo enum AVPU `StatoCoscienza` — `vigile | verbale | dolore | coma`
   - `ossigeno`: bool (ossigenoterapia in corso)
@@ -93,7 +93,7 @@ design su semantica "turno attivo").
 - [x] Performance audit (frontend + backend) — Lighthouse su build produzione + `EXPLAIN QUERY PLAN` su indici mancanti; batch 🟡 fixato stesso giorno (lazy-load FullCalendar dashboard infermiere, indici FK mancanti, N+1 in `ferie.py`, over-fetch consegne SBAR), batch 🟢 resta backlog. Dettaglio in `docs/PERFORMANCE-AUDIT.md`.
 - [x] Route guard (`router/index.ts`) — reale: redirect non-autenticati a `/login`, `fetchMe` con fallback logout, redirect per ruolo
 - [x] `LoginView` → collegato a `POST /auth/token` reale via `stores/auth.ts` + `api/auth.ts` (bug hash sopra fixato)
-- [x] Dashboard infermiere — collegare a dati reali (turni via `mie-assegnazioni`, consegne SBAR, pazienti in carico) — `DashboardView.vue`, verificata end-to-end. CEDEMA non aggregato: nessun endpoint cross-paziente, resta accessibile per singolo paziente da `SchedaPazienteView`
+- [x] Dashboard infermiere — collegare a dati reali (turni via `mie-assegnazioni`, consegne SBAR, pazienti in carico) — `DashboardView.vue`, verificata end-to-end. SOAPIE non aggregato: nessun endpoint cross-paziente, resta accessibile per singolo paziente da `SchedaPazienteView`
 - [x] Dashboard caposala — calendario turni, assegnazione, scoperti, cambi turno in attesa — nuovo endpoint `GET /turni/calendario`, verificata end-to-end (assegna turno scoperto, approva/rifiuta cambio turno)
 - [x] Vista consegna SBAR (form + lettura) — `ConsegneSbarView.vue`, verificata end-to-end
 - [x] Vista valutazioni Norton/Conley (dashboard multidimensionale per paziente) — tab in `SchedaPazienteView.vue`, verificata end-to-end insieme ai parametri vitali
@@ -159,7 +159,7 @@ Avvio implementazione:
 - [x] `BancaOreView`: aggiunti `aria-label` ai bottoni mese
       precedente/successivo.
 - [x] `SchedaPazienteView`: aggiunti wrapper responsive alle tabelle
-      CEDEMA, Norton, Conley e storico SBAR.
+      SOAPIE, Norton, Conley e storico SBAR.
 - [x] `ConsegneSbarView`: aggiunto wrapper responsive alla tabella
       consegne.
 - [x] `DashboardView` caposala: normalizzato calendario in computed
@@ -209,13 +209,13 @@ Avvio implementazione:
       `bancaOre`, `reparti`, `pazienti`.
 - [x] Migrati a OpenAPI client mantenendo shape `{ data }`:
       `auth`, `turni`, `consegneSbar`, `cambiTurno`, `utenti`,
-      `dashboard`, `diarioCedema`, `valutazioni`.
+      `dashboard`, `diarioSoapie`, `valutazioni`.
 - [x] Rimosso vecchio `api/client.ts` axios e rimossa dependency
       `axios` da `package.json`/lock.
 - [x] `LoginView`: logica reparto/tile/login/password temporanea
       estratta in `features/session/useLoginFlow`.
 - [x] `SchedaPazienteView`: server-state/workflow estratto in
-      `features/patient-chart/usePatientChart`; tab CEDEMA,
+      `features/patient-chart/usePatientChart`; tab SOAPIE,
       valutazioni e storico SBAR estratti in componenti feature.
 - [x] `CambioTurnoView` + dashboard caposala: workflow cambio turno
       estratto in `features/cambi-turno/useCambiTurno`.
@@ -290,12 +290,12 @@ rispettivi feature modules.
 - [x] Swagger/OpenAPI (`/docs`) — verificata copertura tutte le entità una volta router reali: 21 path/32 operazioni, tutti gli 8 router entità + auth taggati, `/docs`+`/openapi.json` rispondono 200, Authorize (OAuth2 Bearer) funzionante
   - [x] Aggiunte `description` sugli endpoint con logica non ovvia (`cambi_turno.py`: flusso doppia conferma; `banca_ore.py`: calcolo saldo)
   - [x] Documentate risposte d'errore (400/401/403/404/409) nello schema via `responses={...}` (helper `app/openapi_errors.py`) su tutti i router
-  - [x] POST di creazione ora ritornano 201 Created (`utenti`, `pazienti`, `turni`, `turni/assegnazioni`, `cambi-turno`, `consegne-sbar`, `diario-cedema`, `norton`, `conley`); test aggiornati (33 test passano)
+  - [x] POST di creazione ora ritornano 201 Created (`utenti`, `pazienti`, `turni`, `turni/assegnazioni`, `cambi-turno`, `consegne-sbar`, `diario-soapie`, `norton`, `conley`); test aggiornati (33 test passano)
   - [x] `DELETE /turni/{id}/assegnazioni` ora ritorna 204 No Content
 
 ## Test funzionale (deliverable traccia, no unit test richiesti)
 
-- [x] Screenshot flussi principali per report (login, dashboard, consegna SBAR, cambio turno, banca ore) — 17 screenshot in `docs/screenshots/` (entrambi i ruoli: caposala e infermiere, + valutazioni Norton/Conley, CEDEMA, Swagger `/docs`)
+- [x] Screenshot flussi principali per report (login, dashboard, consegna SBAR, cambio turno, banca ore) — 17 screenshot in `docs/screenshots/` (entrambi i ruoli: caposala e infermiere, + valutazioni Norton/Conley, SOAPIE, Swagger `/docs`)
 
 ## Report (Parte Prima + Seconda, template Pegaso)
 

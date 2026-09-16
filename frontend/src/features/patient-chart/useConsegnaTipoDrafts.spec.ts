@@ -23,17 +23,17 @@ describe('useConsegnaTipoDrafts', () => {
     const form = makeForm()
     const { cambiaTipo } = useConsegnaTipoDrafts(form)
 
-    cambiaTipo('cedema')
+    cambiaTipo('soapie')
 
-    expect(form.value.tipo).toBe('cedema')
-    expect(form.value.testo).toBe(buildScaffold('cedema'))
+    expect(form.value.tipo).toBe('soapie')
+    expect(form.value.testo).toBe(buildScaffold('soapie'))
   })
 
   it('gives the previous text back when switching back', () => {
     const form = makeForm()
     const { cambiaTipo } = useConsegnaTipoDrafts(form)
 
-    cambiaTipo('cedema')
+    cambiaTipo('soapie')
     cambiaTipo('sbar')
 
     expect(form.value.testo).toBe(SBAR_TESTO)
@@ -43,11 +43,11 @@ describe('useConsegnaTipoDrafts', () => {
     const form = makeForm()
     const { cambiaTipo } = useConsegnaTipoDrafts(form)
 
-    cambiaTipo('cedema')
+    cambiaTipo('soapie')
     form.value.testo = 'C: vigile\nE:\nD:\nE:\nM:\nA:'
     cambiaTipo('sbar')
     form.value.testo = `${SBAR_TESTO} entro le 22`
-    cambiaTipo('cedema')
+    cambiaTipo('soapie')
 
     expect(form.value.testo).toBe('C: vigile\nE:\nD:\nE:\nM:\nA:')
 
@@ -69,7 +69,7 @@ describe('useConsegnaTipoDrafts', () => {
     const form = makeForm()
     const { cambiaTipo, resetBozze } = useConsegnaTipoDrafts(form)
 
-    cambiaTipo('cedema')
+    cambiaTipo('soapie')
     resetBozze()
     cambiaTipo('sbar')
 

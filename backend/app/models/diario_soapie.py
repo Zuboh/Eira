@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.core.database import Base
 
 
-class VoceDiarioCedema(Base):
-    __tablename__ = "voce_diario_cedema"
+class VoceDiarioSoapie(Base):
+    __tablename__ = "voce_diario_soapie"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     paziente_id: Mapped[int] = mapped_column(sa.ForeignKey("paziente.id"), index=True)

@@ -33,7 +33,7 @@ strutture sanitarie reali.
 | ---------------------------------------- | :--------: | :------: |
 | Dashboard e consultazione turni          |     ✓      |    ✓     |
 | Cartella paziente e parametri vitali     |     ✓      |    ✓     |
-| Consegne SBAR/ISBAR e diario CEDEMA      |     ✓      |    ✓     |
+| Consegne SBAR/ISBAR e diario SOAPIE      |     ✓      |    ✓     |
 | Valutazioni Norton e Conley              |     ✓      |    ✓     |
 | Richieste di cambio turno e ferie        |     ✓      |    ✓     |
 | Carrello farmaci                         |     ✓      |    ✓     |
@@ -44,7 +44,7 @@ strutture sanitarie reali.
 Le principali funzionalità includono:
 
 - handover strutturato con metodo **SBAR/ISBAR**, priorità e storico;
-- cartella paziente con parametri vitali, diario CEDEMA e valutazioni del
+- cartella paziente con parametri vitali, diario SOAPIE e valutazioni del
   rischio Norton/Conley;
 - pianificazione dei turni, assegnazioni e rilevamento dei turni scoperti;
 - cambio turno con doppia conferma: collega e caposala;

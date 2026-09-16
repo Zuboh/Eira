@@ -617,7 +617,7 @@ export interface paths {
         patch: operations["update_consegna_api_v1_consegne_sbar__consegna_id__patch"];
         trace?: never;
     };
-    "/api/v1/pazienti/{paziente_id}/diario-cedema": {
+    "/api/v1/pazienti/{paziente_id}/diario-soapie": {
         parameters: {
             query?: never;
             header?: never;
@@ -625,17 +625,17 @@ export interface paths {
             cookie?: never;
         };
         /** List Voci */
-        get: operations["list_voci_api_v1_pazienti__paziente_id__diario_cedema_get"];
+        get: operations["list_voci_api_v1_pazienti__paziente_id__diario_soapie_get"];
         put?: never;
         /** Create Voce */
-        post: operations["create_voce_api_v1_pazienti__paziente_id__diario_cedema_post"];
+        post: operations["create_voce_api_v1_pazienti__paziente_id__diario_soapie_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/pazienti/{paziente_id}/diario-cedema/ultima": {
+    "/api/v1/pazienti/{paziente_id}/diario-soapie/ultima": {
         parameters: {
             query?: never;
             header?: never;
@@ -644,12 +644,12 @@ export interface paths {
         };
         /**
          * Get Ultima Voce
-         * @description Ultima voce CEDEMA del paziente, o `null` se il diario e' vuoto.
+         * @description Ultima voce SOAPIE del paziente, o `null` se il diario e' vuoto.
          *
          *     Simmetrico a `/consegne-sbar/pazienti/{id}/ultima`: alimenta il
          *     copy-forward del dialog consegna.
          */
-        get: operations["get_ultima_voce_api_v1_pazienti__paziente_id__diario_cedema_ultima_get"];
+        get: operations["get_ultima_voce_api_v1_pazienti__paziente_id__diario_soapie_ultima_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1613,8 +1613,8 @@ export interface components {
             /** Conley */
             conley: components["schemas"]["ValutazioneConleyRead"][];
         };
-        /** VoceDiarioCedemaCreate */
-        VoceDiarioCedemaCreate: {
+        /** VoceDiarioSoapieCreate */
+        VoceDiarioSoapieCreate: {
             /** Turno Id */
             turno_id?: number | null;
             /** Coscienza */
@@ -1630,8 +1630,8 @@ export interface components {
             /** Allert */
             allert: string;
         };
-        /** VoceDiarioCedemaRead */
-        VoceDiarioCedemaRead: {
+        /** VoceDiarioSoapieRead */
+        VoceDiarioSoapieRead: {
             /** Turno Id */
             turno_id?: number | null;
             /** Coscienza */
@@ -3747,7 +3747,7 @@ export interface operations {
             };
         };
     };
-    list_voci_api_v1_pazienti__paziente_id__diario_cedema_get: {
+    list_voci_api_v1_pazienti__paziente_id__diario_soapie_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -3764,7 +3764,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["VoceDiarioCedemaRead"][];
+                    "application/json": components["schemas"]["VoceDiarioSoapieRead"][];
                 };
             };
             /** @description Token mancante o non valido */
@@ -3799,7 +3799,7 @@ export interface operations {
             };
         };
     };
-    create_voce_api_v1_pazienti__paziente_id__diario_cedema_post: {
+    create_voce_api_v1_pazienti__paziente_id__diario_soapie_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -3810,7 +3810,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["VoceDiarioCedemaCreate"];
+                "application/json": components["schemas"]["VoceDiarioSoapieCreate"];
             };
         };
         responses: {
@@ -3820,7 +3820,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["VoceDiarioCedemaRead"];
+                    "application/json": components["schemas"]["VoceDiarioSoapieRead"];
                 };
             };
             /** @description Token mancante o non valido */
@@ -3855,7 +3855,7 @@ export interface operations {
             };
         };
     };
-    get_ultima_voce_api_v1_pazienti__paziente_id__diario_cedema_ultima_get: {
+    get_ultima_voce_api_v1_pazienti__paziente_id__diario_soapie_ultima_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -3872,7 +3872,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["VoceDiarioCedemaRead"] | null;
+                    "application/json": components["schemas"]["VoceDiarioSoapieRead"] | null;
                 };
             };
             /** @description Token mancante o non valido */

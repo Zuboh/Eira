@@ -81,7 +81,7 @@ richiesta cambio turno (`risposta-caposala`), `GET /turni/scoperti`,
 `GET /dashboard/caposala`.
 
 Endpoint solo-infermiere: create `consegne-sbar`, update `consegne-sbar`
-(più check autore, v. sotto), create diario CEDEMA, create
+(più check autore, v. sotto), create diario SOAPIE, create
 Norton/Conley, create richiesta cambio turno, `risposta-collega`,
 `GET /turni/mie-assegnazioni`.
 
@@ -112,7 +112,7 @@ Pattern applicato in ogni router (list/get/create/update):
   client forgi un reparto arbitrario in creazione.
 - **Cross-reparto su relazioni:** ovunque un payload referenzi
   un'altra entità per id (es. `consegne_sbar` referenzia `turno_id` e
-  `paziente_id`, `diario_cedema` referenzia `turno_id` opzionale,
+  `paziente_id`, `diario_soapie` referenzia `turno_id` opzionale,
   `cambi_turno` referenzia `collega_id`), il router verifica che
   l'entità referenziata sia dello stesso reparto dell'utente corrente
   prima di procedere — altrimenti sarebbe possibile agganciare dati di

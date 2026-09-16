@@ -38,7 +38,7 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
   <EmptyState
     v-if="entries.length === 0"
     title="Nessuna consegna presente"
-    message="Le consegne SBAR e CEDEMA compariranno qui in ordine cronologico."
+    message="Le consegne SBAR e SOAPIE compariranno qui in ordine cronologico."
   />
 
   <div v-else class="timeline">

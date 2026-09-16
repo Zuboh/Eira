@@ -4,14 +4,14 @@ import { usePatientChart } from '@/features/patient-chart/usePatientChart'
 import { useAuthStore } from '@/stores/auth'
 import * as pazientiApi from '@/api/pazienti'
 import * as turniApi from '@/api/turni'
-import * as diarioCedemaApi from '@/api/diarioCedema'
+import * as diarioSoapieApi from '@/api/diarioSoapie'
 import * as parametriVitaliApi from '@/api/parametriVitali'
 import * as valutazioniApi from '@/api/valutazioni'
 import * as consegneSbarApi from '@/api/consegneSbar'
 
 vi.mock('@/api/pazienti')
 vi.mock('@/api/turni')
-vi.mock('@/api/diarioCedema')
+vi.mock('@/api/diarioSoapie')
 vi.mock('@/api/parametriVitali')
 vi.mock('@/api/valutazioni')
 vi.mock('@/api/consegneSbar')
@@ -32,7 +32,7 @@ const paziente = {
 beforeEach(() => {
   setActivePinia(createPinia())
   vi.mocked(pazientiApi.getPaziente).mockResolvedValue({ data: paziente })
-  vi.mocked(diarioCedemaApi.listDiarioCedema).mockResolvedValue({ data: [] })
+  vi.mocked(diarioSoapieApi.listDiarioSoapie).mockResolvedValue({ data: [] })
   vi.mocked(consegneSbarApi.listConsegneSbarByPaziente).mockResolvedValue({
     data: [],
   })
@@ -80,8 +80,8 @@ describe('usePatientChart — load', () => {
     expect(turniApi.getMieAssegnazioni).not.toHaveBeenCalled()
   })
 
-  it('builds a unified timeline from cedema and sbar', async () => {
-    vi.mocked(diarioCedemaApi.listDiarioCedema).mockResolvedValue({
+  it('builds a unified timeline from soapie and sbar', async () => {
+    vi.mocked(diarioSoapieApi.listDiarioSoapie).mockResolvedValue({
       data: [
         {
           id: 2,
@@ -120,7 +120,7 @@ describe('usePatientChart — load', () => {
 
     expect(chart.timeline.value.map((entry) => entry.tipo)).toEqual([
       'sbar',
-      'cedema',
+      'soapie',
     ])
   })
 })

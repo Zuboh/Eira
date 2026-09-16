@@ -344,7 +344,7 @@ def upgrade() -> None:
         batch_op.create_index(batch_op.f("ix_valutazione_norton_paziente_id"), ["paziente_id"], unique=False)
 
     op.create_table(
-        "voce_diario_cedema",
+        "voce_diario_soapie",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("paziente_id", sa.Integer(), nullable=False),
         sa.Column("autore_id", sa.Integer(), nullable=False),
@@ -370,8 +370,8 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    with op.batch_alter_table("voce_diario_cedema", schema=None) as batch_op:
-        batch_op.create_index(batch_op.f("ix_voce_diario_cedema_paziente_id"), ["paziente_id"], unique=False)
+    with op.batch_alter_table("voce_diario_soapie", schema=None) as batch_op:
+        batch_op.create_index(batch_op.f("ix_voce_diario_soapie_paziente_id"), ["paziente_id"], unique=False)
 
     op.create_table(
         "richiesta_cambio_turno",
@@ -466,10 +466,10 @@ def downgrade() -> None:
         batch_op.drop_index(batch_op.f("ix_richiesta_cambio_turno_assegnazione_collega_id"))
 
     op.drop_table("richiesta_cambio_turno")
-    with op.batch_alter_table("voce_diario_cedema", schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f("ix_voce_diario_cedema_paziente_id"))
+    with op.batch_alter_table("voce_diario_soapie", schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f("ix_voce_diario_soapie_paziente_id"))
 
-    op.drop_table("voce_diario_cedema")
+    op.drop_table("voce_diario_soapie")
     with op.batch_alter_table("valutazione_norton", schema=None) as batch_op:
         batch_op.drop_index(batch_op.f("ix_valutazione_norton_paziente_id"))
 

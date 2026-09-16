@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { apiErrorMessage } from '@/api/apiError'
-import { createVoceDiarioCedema } from '@/api/diarioCedema'
+import { createVoceDiarioSoapie } from '@/api/diarioSoapie'
 import {
   createConsegnaSbar,
   listConsegneSbar,
@@ -13,7 +13,7 @@ import { prioritaOptions } from '@/features/sbar/form'
 import {
   createEmptyGenericConsegnaForm,
   createFormFromConsegnaSbar,
-  toCedemaPayload,
+  toSoapiePayload,
   toSbarPayload,
   toSbarUpdatePayload,
   validateConsegnaForm,
@@ -159,7 +159,7 @@ export function useConsegneSbar() {
             }),
           )
         } else {
-          await createVoceDiarioCedema(pazienteId, toCedemaPayload(form.value))
+          await createVoceDiarioSoapie(pazienteId, toSoapiePayload(form.value))
         }
       }
       dialogOpen.value = false

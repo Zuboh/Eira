@@ -54,7 +54,7 @@ const SBAR_SECTIONS: ConsegnaSection[] = [
   },
 ]
 
-const CEDEMA_SECTIONS: ConsegnaSection[] = [
+const SOAPIE_SECTIONS: ConsegnaSection[] = [
   {
     key: 'coscienza',
     sigla: 'C',
@@ -119,7 +119,7 @@ const CEDEMA_SECTIONS: ConsegnaSection[] = [
 const MARKER_LINE = /^[ \t]*([A-Za-zÀ-ÖØ-öø-ÿ]+)[ \t]*[:\-)][ \t]?(.*)$/
 
 export function sectionsFor(tipo: GenericConsegnaKind): ConsegnaSection[] {
-  return tipo === 'sbar' ? SBAR_SECTIONS : CEDEMA_SECTIONS
+  return tipo === 'sbar' ? SBAR_SECTIONS : SOAPIE_SECTIONS
 }
 
 function normalizeToken(token: string) {
@@ -153,7 +153,7 @@ export function isPristineScaffold(testo: string) {
   if (lines.length === 0) return true
 
   const knownAliases = new Set(
-    [...SBAR_SECTIONS, ...CEDEMA_SECTIONS].flatMap(
+    [...SBAR_SECTIONS, ...SOAPIE_SECTIONS].flatMap(
       (section) => section.aliases,
     ),
   )
@@ -177,8 +177,9 @@ export function parseConsegnaText(
   for (const line of stripCarriageReturns(testo).split('\n')) {
     const match = MARKER_LINE.exec(line)
     const token = match ? normalizeToken(match[1]) : null
-    // Una sigla ambigua (le due E di CEDEMA) va alla prima sezione candidata
-    // non ancora aperta; un'etichetta estesa è già univoca.
+    // Una sigla ambigua (la "E" condivisa da emotività ed emodinamica) va
+    // alla prima sezione candidata non ancora aperta; un'etichetta estesa
+    // è già univoca.
     const section = token
       ? sections.find(
           (candidate) =>
@@ -216,8 +217,8 @@ type SectionMarker = { key: string; line: number }
 
 /**
  * Righe che aprono una sezione, con la stessa regola di ambiguita' usata da
- * `parseConsegnaText`: una sigla ripetuta (le due E di CEDEMA) va alla prima
- * sezione candidata non ancora aperta.
+ * `parseConsegnaText`: una sigla ripetuta (la "E" condivisa da emotività ed
+ * emodinamica) va alla prima sezione candidata non ancora aperta.
  */
 function scanMarkers(lines: string[], sections: ConsegnaSection[]) {
   const seen = new Set<string>()
