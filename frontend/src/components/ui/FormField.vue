@@ -24,13 +24,13 @@ defineProps<{
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-2);
 }
 
 .form-field__label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--steel);
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--ink);
 }
 
 .form-field__error {

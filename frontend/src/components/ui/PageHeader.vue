@@ -31,8 +31,10 @@ defineProps<{
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 20px;
+  margin-bottom: 28px;
+  padding-bottom: 1.125rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .page-header__copy {
@@ -41,6 +43,12 @@ defineProps<{
 
 .page-header__title {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: clamp(1.75rem, 2vw, 2rem);
+  font-weight: 750;
+  letter-spacing: -0.045em;
 }
 
 .page-header__reparto {
@@ -48,7 +56,7 @@ defineProps<{
 }
 
 .page-header__subtitle {
-  margin-top: 4px;
+  margin-top: 8px;
   color: var(--steel);
   font-size: 0.9375rem;
 }

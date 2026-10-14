@@ -26,12 +26,11 @@ const hasContent = computed(() =>
 <style scoped>
 .empty-state {
   width: 100%;
-  padding: 24px;
-  margin-top: 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  padding: var(--space-6);
+  margin-top: var(--space-4);
+  background: var(--surface-inset);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
   text-align: center;
 }
 

@@ -77,8 +77,10 @@ withDefaults(
   overflow-x: auto;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-sm);
+  box-shadow:
+    var(--shadow),
+    inset 0 1px 0 var(--surface-highlight);
 }
 
 .eira-table__scroll--bounded {
@@ -103,23 +105,35 @@ withDefaults(
 }
 
 .eira-table__scroll :deep(th) {
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1rem;
   text-align: left;
   /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.045em;
   text-transform: uppercase;
   white-space: nowrap;
   color: var(--steel);
-  background: color-mix(in srgb, var(--canvas) 72%, var(--surface));
+  background: var(--surface-muted);
   border-bottom: 1px solid var(--border);
 }
 
 .eira-table__scroll :deep(td) {
-  padding: 0.85rem 1rem;
+  padding: 0.75rem 1rem;
   color: var(--ink);
   border-bottom: 1px solid var(--border);
+}
+
+.eira-table__scroll :deep(tbody tr) {
+  transition: background 140ms ease-out;
+}
+
+.eira-table__scroll :deep(tbody tr:hover) {
+  background: color-mix(
+    in srgb,
+    var(--color-primary-bright) 6%,
+    var(--surface)
+  );
 }
 
 .eira-table__scroll :deep(tbody tr:last-child td) {
@@ -149,10 +163,9 @@ withDefaults(
   padding: 2rem;
   text-align: center;
   color: var(--steel);
-  background: var(--surface);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  background: var(--surface-inset);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
 }
 
 .eira-table__empty :deep(p) {
@@ -160,24 +173,14 @@ withDefaults(
 }
 
 .eira-table__skeleton {
-  background: var(--surface);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
-.eira-table--flush .eira-table__scroll,
-.eira-table--flush .eira-table__empty,
-.eira-table--flush .eira-table__skeleton {
-  border: none;
-  box-shadow: none;
-  background: transparent;
-  border-radius: 0;
-}
-
 .eira-table--flush .eira-table__scroll :deep(th) {
-  background: transparent;
+  background: var(--surface-muted);
 }
 
 .eira-table--flush .eira-table__scroll--bounded :deep(th) {

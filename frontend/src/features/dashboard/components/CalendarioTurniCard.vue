@@ -44,7 +44,7 @@ function tooltipText(cella: CalendarioCella) {
 </script>
 
 <template>
-  <EiraCard flush class="dashboard-card">
+  <EiraCard class="dashboard-card">
     <div class="card-header">
       <h2>Calendario turni</h2>
       <div class="settimana-picker">

@@ -61,12 +61,16 @@ const turnoLabel = computed(() =>
 }
 
 .auth-card {
+  position: relative;
+  overflow: hidden;
   width: 100%;
   max-width: 480px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    var(--shadow-raised),
+    inset 0 1px 0 var(--surface-highlight);
   padding: clamp(2rem, 5vw, 3rem);
   display: flex;
   flex-direction: column;
@@ -79,6 +83,9 @@ const turnoLabel = computed(() =>
 
 .auth-title {
   margin-bottom: 12px;
+  color: var(--color-primary-on-tint);
+  font-size: 2rem;
+  letter-spacing: -0.045em;
 }
 
 .auth-identity {

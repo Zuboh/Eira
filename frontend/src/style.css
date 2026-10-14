@@ -1,12 +1,4 @@
 @font-face {
-  font-family: 'Geist';
-  src: url('./assets/fonts/Geist-Variable.woff2') format('woff2');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: 'Geist Mono';
   src: url('./assets/fonts/GeistMono-Variable.woff2') format('woff2');
   font-weight: 100 900;
@@ -15,23 +7,36 @@
 }
 
 :root {
-  /* Light mode — docs/DESIGN.md sez. 2 */
-  --canvas: #f9fafb;
+  /* Atomize-inspired neutral surfaces, with Eira's clinical accent. */
+  --canvas: #f6f8f8;
   --surface: #ffffff;
-  --ink: #18181b;
-  --steel: #71717a;
-  /* Same reasoning as --color-primary-on-tint: --steel su un fondo tintato
-     (es. il pannello anteprima consegna) scende a 4.21:1. */
-  --steel-on-tint: #52525b;
-  --muted: #94a3b8;
-  --border: rgba(226, 232, 240, 0.5);
+  --surface-muted: #f0f4f3;
+  --surface-inset: #f8faf9;
+  --surface-highlight: rgba(255, 255, 255, 0.8);
+  --ink: #172724;
+  --steel: #526760;
+  --steel-on-tint: #3b554d;
+  --muted: #6a7e77;
+  --border: rgba(27, 65, 56, 0.14);
+  --border-strong: rgba(27, 65, 56, 0.22);
 
-  --color-primary: #3b82f6;
+  /* NHS aqua-teal #00a499 is the brand reference; actions use accessible teal-700. */
+  --color-primary: #00786f;
+  --color-primary-bright: #00a499;
   --color-on-primary: #ffffff;
   --color-on-danger: #ffffff;
-  /* Text-on-tinted-background variant — --color-primary itself fails 4.5:1
-     contrast on its own light tint (axe: 3.2:1), only used as bg elsewhere. */
-  --color-primary-on-tint: #1d4ed8;
+  --color-primary-on-tint: #005b54;
+
+  --sidebar-background: #edf4f1;
+  --sidebar-foreground: #1d3932;
+  --sidebar-muted: #4e6860;
+  --sidebar-hover: rgba(0, 107, 99, 0.07);
+  --sidebar-active: rgba(0, 164, 153, 0.14);
+  --sidebar-border: rgba(28, 78, 70, 0.1);
+  --sidebar-icon-background: rgba(255, 255, 255, 0.72);
+  --sidebar-icon-border: rgba(28, 78, 70, 0.12);
+  --sidebar-icon-active: transparent;
+  --sidebar-icon-active-foreground: #006b63;
 
   /* Stati semantici — docs/DESIGN.md sez. 3 */
   --state-urgente: #dc2626;
@@ -73,9 +78,16 @@
   --turno-riposo-on-tint: #115e59;
   --turno-ferie-on-tint: #52525b;
 
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --radius: 0.625rem;
-  --radius-sm: 0.5rem;
+  --shadow:
+    0 1px 2px rgba(18, 48, 41, 0.04), 0 10px 26px rgba(18, 48, 41, 0.055);
+  --shadow-raised:
+    0 2px 6px rgba(18, 48, 41, 0.06), 0 22px 56px rgba(18, 48, 41, 0.12);
+  --shadow-lg: var(--shadow-raised);
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.75rem;
+  --radius: 1.125rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.5rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -104,7 +116,7 @@
   --scrollbar-thumb-hover: color-mix(in srgb, var(--steel) 55%, transparent);
   --scrollbar-track: transparent;
 
-  --sans: 'Geist', system-ui, sans-serif;
+  --sans: 'Manrope Variable', system-ui, sans-serif;
   --mono: 'Geist Mono', ui-monospace, monospace;
 
   font: 15px/1.6 var(--sans);
@@ -119,19 +131,36 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --canvas: #18181b;
-    --surface: #27272a;
-    --ink: #f4f4f5;
-    --steel: #a1a1aa;
-    --steel-on-tint: #a1a1aa;
-    --muted: #71717a;
-    --border: rgba(255, 255, 255, 0.08);
+    --canvas: #121b19;
+    --surface: #1c2825;
+    --surface-muted: #263530;
+    --surface-inset: #17221f;
+    --surface-highlight: rgba(255, 255, 255, 0.045);
+    --ink: #f1f7f4;
+    --steel: #b7cbc2;
+    --steel-on-tint: #c7d8d0;
+    --muted: #9db5aa;
+    --border: rgba(217, 244, 230, 0.13);
+    --border-strong: rgba(217, 244, 230, 0.22);
 
-    --color-primary: #60a5fa;
-    --color-primary-on-tint: #60a5fa;
+    --color-primary: #6bc2b6;
+    --color-primary-bright: #51c5b2;
+    --color-on-primary: #07332f;
+    --color-primary-on-tint: #91e2d4;
+
+    --sidebar-background: #192521;
+    --sidebar-foreground: #edf5f2;
+    --sidebar-muted: #b2c5bf;
+    --sidebar-hover: rgba(255, 255, 255, 0.07);
+    --sidebar-active: rgba(98, 203, 185, 0.16);
+    --sidebar-border: rgba(203, 236, 228, 0.12);
+    --sidebar-icon-background: rgba(255, 255, 255, 0.06);
+    --sidebar-icon-border: rgba(203, 236, 228, 0.14);
+    --sidebar-icon-active: transparent;
+    --sidebar-icon-active-foreground: #72d5c4;
 
     --state-urgente: #f87171;
-    --state-urgente-on-tint: #f87171;
+    --state-urgente-on-tint: #fca5a5;
     --state-pending: #fbbf24;
     --state-pending-on-tint: #fbbf24;
     --state-attiva: #4ade80;
@@ -150,11 +179,13 @@
        tint al 15% su --canvas, nessuna variante piu' scura serve. */
     --turno-mattina-on-tint: #f59e0b;
     --turno-pomeriggio-on-tint: #60a5fa;
-    --turno-notte-on-tint: #818cf8;
+    --turno-notte-on-tint: #a5b4fc;
     --turno-riposo-on-tint: #2dd4bf;
     --turno-ferie-on-tint: #a1a1aa;
 
-    /* --steel al 32% sparisce su --canvas #18181b: serve piu' opacita' */
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 12px 30px rgba(0, 0, 0, 0.16);
+    --shadow-raised:
+      0 2px 8px rgba(0, 0, 0, 0.18), 0 24px 56px rgba(0, 0, 0, 0.32);
     --scrollbar-thumb: color-mix(in srgb, var(--steel) 40%, transparent);
     --scrollbar-thumb-hover: color-mix(in srgb, var(--steel) 62%, transparent);
   }
@@ -164,9 +195,15 @@
   box-sizing: border-box;
 }
 
+html {
+  min-width: 320px;
+  background: var(--canvas);
+}
+
 body {
   margin: 0;
   min-height: 100dvh;
+  background: var(--canvas);
 }
 
 h1,
@@ -178,14 +215,16 @@ h3 {
 }
 
 h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: 1.75rem;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
 }
 
 h2 {
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 p {
@@ -199,7 +238,147 @@ p {
 }
 
 :focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
   outline: none;
+}
+
+.p-button,
+.p-inputtext,
+.p-select,
+.p-textarea,
+.p-paginator-page,
+.p-tab {
+  border-radius: var(--radius-sm);
+}
+
+.p-button {
+  font-weight: 650;
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out,
+    color 150ms ease-out,
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.p-button:not(.p-button-text):not(.p-button-outlined) {
+  box-shadow: var(--shadow);
+}
+
+.p-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.p-button:active {
+  transform: translateY(1px);
+}
+
+.p-inputtext,
+.p-select,
+.p-textarea {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink);
+  transition:
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out;
+}
+
+.p-inputtext::placeholder,
+.p-textarea::placeholder,
+.p-select-label.p-placeholder {
+  color: var(--muted);
+}
+
+.p-inputtext:hover,
+.p-select:hover,
+.p-textarea:hover {
+  border-color: var(--border-strong);
+}
+
+.p-inputtext:focus,
+.p-select:focus-within,
+.p-textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-primary) 16%, transparent);
+}
+
+.p-dialog {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-raised);
+}
+
+.p-select-overlay,
+.p-popover,
+.p-menu {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-raised);
+}
+
+.p-select-option,
+.p-menu-item-content {
+  border-radius: var(--radius-xs);
+}
+
+.p-select-option.p-focus,
+.p-menu-item-content:hover {
+  background: var(--surface-muted);
+}
+
+.p-dialog .p-dialog-header {
+  padding: 1.25rem 1.5rem 0.875rem;
+}
+
+.p-dialog .p-dialog-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.p-tablist-tab-list {
+  border-color: var(--border);
+  gap: var(--space-1);
+}
+
+.p-tab {
+  font-weight: 600;
+  transition:
+    color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.p-tab:hover {
+  background: var(--surface-muted);
+}
+
+.p-tab[aria-selected='true'] {
+  color: var(--color-primary);
+}
+
+.p-paginator-page.p-paginator-page-selected {
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--surface));
+  color: var(--color-primary-on-tint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 .sr-only {

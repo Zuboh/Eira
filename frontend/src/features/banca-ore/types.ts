@@ -9,6 +9,7 @@ export type BancaOreSectionProps = {
   infermieri?: UtenteTile[]
   infermiereId?: number | null
   showInfermiereSelect?: boolean
+  compact?: boolean
 }
 
 export type BancaOreSectionEmits = {

@@ -15,7 +15,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 </script>
 
 <template>
-  <EiraCard flush>
+  <EiraCard>
     <div class="panel-header">
       <div>
         <h2 class="title">Parametri vitali</h2>

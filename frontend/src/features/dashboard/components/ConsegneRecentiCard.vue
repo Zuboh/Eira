@@ -10,7 +10,7 @@ defineProps<ConsegneRecentiCardProps>()
 </script>
 
 <template>
-  <EiraCard flush class="dashboard-card">
+  <EiraCard class="dashboard-card">
     <DashboardSectionHeader
       title="Diario Clinico recenti"
       route-name="consegne-sbar"

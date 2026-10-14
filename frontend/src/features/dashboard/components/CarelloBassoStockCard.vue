@@ -25,7 +25,7 @@ function isLowStock(riga: CarelloFarmaco) {
 </script>
 
 <template>
-  <EiraCard flush class="dashboard-card">
+  <EiraCard class="dashboard-card">
     <DashboardSectionHeader
       title="Carello farmaci"
       route-name="carello-farmaci"

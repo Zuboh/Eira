@@ -201,7 +201,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 </script>
 
 <template>
-  <EiraCard flush class="turni-calendar-card">
+  <EiraCard class="turni-calendar-card">
     <div class="calendar-toolbar">
       <h2 class="calendar-toolbar-title-wrap">
         <button

@@ -23,7 +23,7 @@ const RANGE_OPTIONS = [7, 14, 30] as const
 </script>
 
 <template>
-  <EiraCard flush class="dashboard-card">
+  <EiraCard class="dashboard-card">
     <div class="card-header">
       <div>
         <h2>Turni da coprire</h2>

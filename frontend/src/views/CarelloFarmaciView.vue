@@ -235,7 +235,7 @@ onMounted(async () => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .tabs,
@@ -274,7 +274,11 @@ onMounted(async () => {
 }
 
 .tab.active {
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-primary-bright) 14%,
+    var(--surface)
+  );
   color: var(--color-primary-on-tint);
 }
 

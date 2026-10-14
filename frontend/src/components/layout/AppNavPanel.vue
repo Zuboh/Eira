@@ -170,7 +170,7 @@ function logout() {
   padding: 0 var(--space-2);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  color: var(--steel);
+  color: var(--sidebar-muted);
   text-decoration: none;
   font-size: 0.9375rem;
   font-weight: 500;
@@ -182,7 +182,7 @@ function logout() {
 
 .nav-link:focus-visible,
 .logout:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-primary-bright);
   outline-offset: 2px;
 }
 
@@ -192,9 +192,10 @@ function logout() {
   flex-shrink: 0;
   width: 1.75rem;
   height: 1.75rem;
-  border: 1px solid var(--border);
+  border: 1px solid var(--sidebar-icon-border);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: var(--sidebar-icon-background);
+  color: var(--sidebar-foreground);
 }
 
 .nav-link-icon i {
@@ -202,16 +203,26 @@ function logout() {
 }
 
 .nav-link:hover {
-  background: var(--surface);
-  color: var(--color-primary);
+  background: var(--sidebar-hover);
+  color: var(--sidebar-foreground);
 }
 
 .nav-link.active {
-  background: var(--surface);
-  border-color: var(--border);
-  box-shadow: var(--shadow);
-  color: var(--ink);
-  font-weight: 600;
+  background: var(--sidebar-active);
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary) 20%,
+    var(--sidebar-border)
+  );
+  color: var(--sidebar-foreground);
+  font-weight: 650;
+  box-shadow: inset 0 1px 0 var(--surface-highlight);
+}
+
+.nav-link.active .nav-link-icon {
+  border-color: transparent;
+  background: var(--sidebar-icon-active);
+  color: var(--sidebar-icon-active-foreground);
 }
 
 .identity {
@@ -222,7 +233,8 @@ function logout() {
   padding: var(--space-3);
   margin-top: var(--space-2);
   margin-bottom: var(--space-4);
-  border-top: 1px solid var(--border);
+  border: 1px solid var(--sidebar-border);
+  background: var(--sidebar-icon-background);
   color: inherit;
   text-decoration: none;
   border-radius: var(--radius-sm);
@@ -232,7 +244,7 @@ function logout() {
 
 .identity:hover,
 .identity:focus-visible {
-  background: var(--surface);
+  background: var(--sidebar-hover);
 }
 
 .identity-person {
@@ -250,7 +262,7 @@ function logout() {
   margin: 0;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--sidebar-foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -259,7 +271,7 @@ function logout() {
 .identity-role {
   margin: 0;
   font-size: 0.8125rem;
-  color: var(--steel);
+  color: var(--sidebar-muted);
 }
 
 .identity-details {
@@ -276,7 +288,7 @@ function logout() {
   min-width: 0;
   margin: 0;
   font-size: 0.8125rem;
-  color: var(--steel);
+  color: var(--sidebar-muted);
 }
 
 .identity-reparto-name {
@@ -309,7 +321,7 @@ function logout() {
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--steel);
+  color: var(--sidebar-muted);
   font-size: 0.9375rem;
   font-weight: 500;
   text-align: left;
@@ -324,7 +336,7 @@ function logout() {
    gesto, colore diverso perche' l'azione lo e'. */
 .logout:hover {
   background: color-mix(in srgb, var(--state-urgente) 18%, transparent);
-  color: var(--state-urgente-on-tint);
+  color: var(--state-urgente);
 }
 
 .logout:active {

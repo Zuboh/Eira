@@ -128,22 +128,23 @@ watch(isCompact, (compact) => {
 .sidebar {
   position: sticky;
   top: 0;
-  width: 13.75rem;
+  width: 15rem;
   height: 100dvh;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  border-right: 1px solid var(--border);
-  background: var(--canvas);
+  border-right: 1px solid var(--sidebar-border);
+  background: var(--sidebar-background);
   padding: var(--space-5) var(--space-3);
+  box-shadow: inset -1px 0 0 var(--surface-highlight);
 }
 
 .brand {
   display: flex;
   align-items: center;
   min-height: var(--size-touch);
-  color: var(--ink);
+  color: var(--sidebar-foreground);
   text-decoration: none;
   padding: var(--space-2) var(--space-3) var(--space-5);
   border-radius: var(--radius-sm);
@@ -161,7 +162,7 @@ watch(isCompact, (compact) => {
 }
 
 .brand:hover {
-  color: var(--color-primary);
+  color: var(--color-primary-bright);
 }
 
 .brand:focus-visible,
@@ -173,6 +174,7 @@ watch(isCompact, (compact) => {
 .content {
   flex: 1;
   min-width: 0;
+  background: var(--canvas);
 }
 
 /* Tablet — DESIGN.md sez. 7: sidebar collassabile a icone */
@@ -217,12 +219,18 @@ watch(isCompact, (compact) => {
     align-items: center;
     gap: var(--space-2);
     border-bottom: 1px solid var(--border);
-    background: var(--canvas);
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    backdrop-filter: blur(14px);
     padding: var(--space-2);
   }
 
   .brand {
     padding: 0 var(--space-2);
+    color: var(--ink);
+  }
+
+  .brand:hover {
+    color: var(--color-primary);
   }
 
   .topbar-toggle {
@@ -250,8 +258,8 @@ watch(isCompact, (compact) => {
 .nav-drawer.p-drawer {
   width: 17rem;
   max-width: 85vw;
-  background: var(--canvas);
-  border-right: 1px solid var(--border);
+  background: var(--sidebar-background);
+  border-right: 1px solid var(--sidebar-border);
 }
 
 .nav-drawer .p-drawer-header {
@@ -262,7 +270,11 @@ watch(isCompact, (compact) => {
   font-family: var(--sans);
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--ink);
+  color: var(--sidebar-foreground);
+}
+
+.nav-drawer .p-drawer-close-button {
+  color: var(--sidebar-foreground);
 }
 
 /* PrimeVue fissa height sul close button: serve min-height per arrivare a 44 */

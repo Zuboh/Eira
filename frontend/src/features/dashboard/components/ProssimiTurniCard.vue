@@ -24,7 +24,7 @@ function colleghiExtraCount(colleghi: Collega[]) {
 </script>
 
 <template>
-  <EiraCard flush title="Prossimi turni" class="dashboard-card">
+  <EiraCard title="Prossimi turni" class="dashboard-card">
     <SkeletonBlock v-if="loading" :lines="4" />
     <p v-else-if="props.turni.length === 0" class="muted">
       Nessun turno assegnato.

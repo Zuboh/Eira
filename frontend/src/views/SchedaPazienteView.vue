@@ -189,13 +189,28 @@ onMounted(load)
   padding: var(--page-padding);
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 20px;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 0;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--color-primary-bright);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.header h1 {
+  font-size: clamp(1.5rem, 2vw, 1.875rem);
+  letter-spacing: -0.035em;
 }
 
 .header-actions {
@@ -218,5 +233,15 @@ onMounted(load)
 .mono {
   font-family: var(--mono);
   font-size: 0.8125rem;
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+  }
 }
 </style>

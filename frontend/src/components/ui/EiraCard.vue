@@ -20,11 +20,17 @@ withDefaults(
 
 <style scoped>
 .eira-card {
-  padding: 20px;
+  min-width: 0;
+  padding: var(--space-5);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
-  box-shadow: var(--shadow);
+  box-shadow:
+    var(--shadow),
+    inset 0 1px 0 var(--surface-highlight);
+  transition:
+    border-color 160ms ease-out,
+    box-shadow 160ms ease-out;
 }
 
 .eira-card--flush {
@@ -34,7 +40,9 @@ withDefaults(
 }
 
 .eira-card__title {
-  margin: 0 0 12px;
+  margin: 0 0 1rem;
   font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 </style>

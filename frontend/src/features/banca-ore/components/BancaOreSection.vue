@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<BancaOreSectionProps>(), {
   infermieri: () => [],
   infermiereId: null,
   showInfermiereSelect: false,
+  compact: false,
 })
 
 const emit = defineEmits<BancaOreSectionEmits>()
@@ -29,11 +30,16 @@ function saldoLabel() {
 </script>
 
 <template>
-  <EiraCard flush class="banca-ore-section">
+  <EiraCard
+    class="banca-ore-section"
+    :class="{ 'banca-ore-section--compact': compact }"
+  >
     <div class="section-header">
       <div>
         <h2>Banca ore</h2>
-        <p>Saldo mensile tra ore effettuate e ore contrattuali.</p>
+        <p v-if="!compact">
+          Saldo mensile tra ore effettuate e ore contrattuali.
+        </p>
       </div>
       <div class="controls">
         <Select
@@ -139,6 +145,21 @@ function saldoLabel() {
 
 .banca-ore-section {
   container-type: inline-size;
+}
+
+.banca-ore-section--compact .section-header {
+  align-items: stretch;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.banca-ore-section--compact .controls,
+.banca-ore-section--compact .mese-picker {
+  width: 100%;
+}
+
+.banca-ore-section--compact .mese-picker {
+  justify-content: space-between;
 }
 
 .ledger {

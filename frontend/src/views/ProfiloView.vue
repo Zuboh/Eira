@@ -105,14 +105,17 @@ async function salvaAvatar() {
   padding: var(--page-padding);
   max-width: 960px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .profilo-section {
-  margin-top: var(--space-6);
-}
-
-.profilo-section:first-of-type {
-  margin-top: 0;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .profilo-section__title {
@@ -123,16 +126,17 @@ async function salvaAvatar() {
 
 .profilo-fields {
   display: grid;
-  gap: var(--space-3);
+  gap: 0;
   margin: 0;
   border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
 }
 
 .profilo-field {
   display: flex;
   justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-2) 0;
+  padding: 0.75rem 0;
   border-top: 1px solid var(--border);
 }
 
@@ -155,7 +159,7 @@ async function salvaAvatar() {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin-bottom: var(--space-3);
+  margin-bottom: 1rem;
 }
 
 .profilo-success {

@@ -9,7 +9,7 @@ defineProps<RichiesteCambioTurnoCardProps>()
 </script>
 
 <template>
-  <EiraCard flush class="dashboard-card">
+  <EiraCard class="dashboard-card">
     <DashboardSectionHeader
       title="In attesa di approvazione"
       route-name="cambio-turno"

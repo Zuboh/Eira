@@ -86,13 +86,14 @@ defineExpose({ focusFirst })
   align-items: center;
   gap: 8px;
   padding: 16px 12px;
-  background: var(--canvas);
+  background: var(--surface-inset);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
+    box-shadow 0.15s ease,
     transform 0.15s ease;
 }
 
@@ -108,8 +109,9 @@ defineExpose({ focusFirst })
 }
 
 .tile:hover {
-  background: color-mix(in oklch, var(--color-primary) 6%, var(--canvas));
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--surface));
   border-color: color-mix(in oklch, var(--color-primary) 35%, var(--border));
+  box-shadow: var(--shadow);
 }
 
 .tile:active {

@@ -11,7 +11,7 @@ defineProps<{
 </script>
 
 <template>
-  <EiraCard flush title="Priorità operative">
+  <EiraCard title="Priorità operative">
     <div class="ledger" :aria-busy="loading">
       <div class="ledger-row" :class="{ actionable: turniScopertiCount > 0 }">
         <span class="ledger-label">Turni scoperti (7 gg)</span>

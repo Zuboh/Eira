@@ -53,13 +53,7 @@ onMounted(load)
     <InlineError :message="error" />
 
     <div class="dashboard-grid">
-      <div class="main-column">
-        <TurniCalendarCard class="calendar-hero" :events="calendarEvents" />
-
-        <PazientiAttiviCard :pazienti="pazientiAttivi" :loading="loading" />
-      </div>
-
-      <div class="side-column">
+      <div class="priority-column">
         <ProssimiTurniCard
           :turni="prossimiTurniConColleghi"
           :loading="loading"
@@ -70,15 +64,15 @@ onMounted(load)
           :loading="loading"
           :nome-utente="nomeUtente"
         />
+      </div>
 
-        <BancaOreSection
-          :banca-ore="bancaOre"
-          :mese="bancaOreMese"
-          :loading="bancaOreLoading"
-          :error="bancaOreError"
-          @previous-month="spostaBancaOreMese(-1)"
-          @next-month="spostaBancaOreMese(1)"
-        />
+      <div class="main-column">
+        <TurniCalendarCard class="calendar-hero" :events="calendarEvents" />
+
+        <PazientiAttiviCard :pazienti="pazientiAttivi" :loading="loading" />
+      </div>
+
+      <div class="secondary-column">
         <ConsegneRecentiCard
           :consegne="consegneRecenti"
           :loading="loading"
@@ -86,6 +80,16 @@ onMounted(load)
         />
 
         <CarelloBassoStockCard :farmaci="farmaciCritici" :loading="loading" />
+
+        <BancaOreSection
+          compact
+          :banca-ore="bancaOre"
+          :mese="bancaOreMese"
+          :loading="bancaOreLoading"
+          :error="bancaOreError"
+          @previous-month="spostaBancaOreMese(-1)"
+          @next-month="spostaBancaOreMese(1)"
+        />
       </div>
     </div>
   </div>
@@ -98,7 +102,8 @@ onMounted(load)
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  container-type: inline-size;
 }
 
 .calendar-hero {
@@ -107,22 +112,38 @@ onMounted(load)
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(20rem, 1fr);
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'priority' 'main' 'secondary';
+  gap: 20px;
   align-items: start;
 }
 
+.priority-column {
+  grid-area: priority;
+}
+
+.main-column {
+  grid-area: main;
+}
+
+.secondary-column {
+  grid-area: secondary;
+}
+
+.priority-column,
 .main-column,
-.side-column {
+.secondary-column {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 18px;
   min-width: 0;
 }
 
-@media (max-width: 960px) {
+@container (min-width: 64rem) {
   .dashboard-grid {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.7fr) minmax(19rem, 0.9fr);
+    grid-template-rows: max-content 1fr;
+    grid-template-areas: 'main priority' 'main secondary';
   }
 }
 </style>

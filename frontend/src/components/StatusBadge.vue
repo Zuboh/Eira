@@ -62,6 +62,7 @@ const pulse = computed(
   align-items: center;
   padding: 2px 10px;
   border-radius: 999px;
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
   /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
   font-size: 0.8125rem;
   font-weight: 600;
