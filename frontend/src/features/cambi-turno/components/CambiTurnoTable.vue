@@ -42,6 +42,7 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
 
 <template>
   <EiraTable
+    label="Richieste cambio turno"
     flush
     :empty="richieste.length === 0"
     empty-message="Nessuna richiesta di cambio turno."
@@ -120,7 +121,7 @@ function canCancel(richiesta: CambiTurnoTableProps['richieste'][number]) {
 }
 
 .mono {
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
   font-size: 0.8125rem;
 }
 

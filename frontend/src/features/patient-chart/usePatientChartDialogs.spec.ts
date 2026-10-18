@@ -29,16 +29,23 @@ function makeDialogs() {
   const reloadTimeline = vi.fn().mockResolvedValue(undefined)
   const reloadValutazioni = vi.fn().mockResolvedValue(undefined)
   const reloadParametriVitali = vi.fn().mockResolvedValue(undefined)
+  const error = ref('')
   const dialogs = usePatientChartDialogs({
     pazienteId: 1,
     paziente: ref(paziente),
-    error: ref(''),
+    error,
     assegnazioni: ref([]),
     reloadTimeline,
     reloadValutazioni,
     reloadParametriVitali,
   })
-  return { dialogs, reloadTimeline, reloadValutazioni, reloadParametriVitali }
+  return {
+    dialogs,
+    error,
+    reloadTimeline,
+    reloadValutazioni,
+    reloadParametriVitali,
+  }
 }
 
 beforeEach(() => {
@@ -46,6 +53,25 @@ beforeEach(() => {
 })
 
 describe('usePatientChartDialogs — edit', () => {
+  it('keeps edits on failure, clears saving and allows an explicit retry', async () => {
+    const { dialogs, error } = makeDialogs()
+    dialogs.apriEdit()
+    dialogs.editForm.value.letto = '12A'
+    vi.mocked(pazientiApi.updatePaziente).mockRejectedValueOnce(
+      new Error('offline'),
+    )
+    const pending = dialogs.salvaEdit()
+    expect(dialogs.editSaving.value).toBe(true)
+    await pending
+    expect(dialogs.editSaving.value).toBe(false)
+    expect(dialogs.editing.value).toBe(true)
+    expect(dialogs.editForm.value.letto).toBe('12A')
+    expect(error.value).toBe('Impossibile salvare il paziente.')
+    await dialogs.salvaEdit()
+    expect(error.value).toBe('')
+    expect(dialogs.editing.value).toBe(false)
+  })
+
   it('apriEdit populates the form from the current paziente', () => {
     const { dialogs } = makeDialogs()
 

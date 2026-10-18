@@ -60,7 +60,7 @@ test('banca ore is visible to infermiere and selectable by caposala', async ({
   ).toBeVisible()
   await expect(
     caposalaPage.getByRole('combobox', {
-      name: SEED_INFERMIERE.cognome,
+      name: 'Infermiere',
     }),
   ).toBeVisible()
   await expectLedger(caposalaPage)

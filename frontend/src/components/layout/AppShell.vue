@@ -21,6 +21,7 @@ watch(isCompact, (compact) => {
 
 <template>
   <div class="app-shell">
+    <a href="#main-content" class="skip-link">Vai al contenuto</a>
     <header v-if="isCompact" class="topbar">
       <button
         type="button"
@@ -105,6 +106,8 @@ watch(isCompact, (compact) => {
     <Drawer
       id="app-nav-drawer"
       v-model:visible="drawerOpen"
+      aria-label="Navigazione principale"
+      :style="{ width: '17rem', maxWidth: '85vw' }"
       class="nav-drawer"
       header="Eira"
       position="left"
@@ -112,42 +115,53 @@ watch(isCompact, (compact) => {
       <AppNavPanel @navigate="drawerOpen = false" />
     </Drawer>
 
-    <main class="content">
+    <main id="main-content" class="content" tabindex="-1">
       <slot />
     </main>
   </div>
 </template>
 
 <style scoped>
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  z-index: var(--eira-z-tooltip);
+  background: var(--eira-bg-surface);
+  padding: 12px;
+}
+.skip-link:focus {
+  top: 8px;
+}
+
 .app-shell {
   display: flex;
   min-height: 100dvh;
-  background: var(--canvas);
+  background: var(--eira-bg-canvas);
 }
 
 .sidebar {
   position: sticky;
   top: 0;
-  width: 15rem;
+  width: var(--eira-sidebar-width);
   height: 100dvh;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  border-right: 1px solid var(--sidebar-border);
-  background: var(--sidebar-background);
-  padding: var(--space-5) var(--space-3);
-  box-shadow: inset -1px 0 0 var(--surface-highlight);
+  border-right: 1px solid var(--eira-border-default);
+  background: var(--eira-bg-subtle);
+  padding: var(--eira-space-5) var(--eira-space-3);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  min-height: var(--size-touch);
-  color: var(--sidebar-foreground);
+  min-height: var(--eira-size-touch);
+  color: var(--eira-text-primary);
   text-decoration: none;
-  padding: var(--space-2) var(--space-3) var(--space-5);
-  border-radius: var(--radius-sm);
+  padding: var(--eira-space-2) var(--eira-space-3) var(--eira-space-5);
+  border-radius: var(--eira-radius-md);
 }
 
 .brand-wordmark {
@@ -162,30 +176,30 @@ watch(isCompact, (compact) => {
 }
 
 .brand:hover {
-  color: var(--color-primary-bright);
+  color: var(--eira-action-primary);
 }
 
 .brand:focus-visible,
 .topbar-toggle:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 
 .content {
   flex: 1;
   min-width: 0;
-  background: var(--canvas);
+  background: var(--eira-bg-canvas);
 }
 
 /* Tablet — DESIGN.md sez. 7: sidebar collassabile a icone */
 @media (min-width: 48rem) and (max-width: 63.9375rem) {
   .sidebar {
     /* non 4rem: seguiva la scala tipografica e con root a 15px valeva
-       60px, meno dei 44px di --size-touch piu' il padding. I figli sono
+       60px, meno dei 44px di --eira-size-touch piu' il padding. I figli sono
        ancorati ai px, la larghezza del rail deve esserlo con loro. */
-    width: calc(var(--size-touch) + 2 * var(--space-3));
+    width: var(--eira-sidebar-rail);
     align-items: center;
-    padding: var(--space-5) var(--space-2);
+    padding: var(--eira-space-5) var(--eira-space-2);
   }
 
   .brand-wordmark {
@@ -199,8 +213,8 @@ watch(isCompact, (compact) => {
   /* senza wordmark il link resta largo quanto il padding: sotto i 44px */
   .brand {
     justify-content: center;
-    min-width: var(--size-touch);
-    padding: var(--space-2) 0 var(--space-5);
+    min-width: var(--eira-size-touch);
+    padding: var(--eira-space-2) 0 var(--eira-space-5);
   }
 }
 
@@ -214,35 +228,34 @@ watch(isCompact, (compact) => {
   .topbar {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: var(--eira-z-sticky);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    border-bottom: 1px solid var(--border);
-    background: color-mix(in srgb, var(--surface) 96%, transparent);
-    backdrop-filter: blur(14px);
-    padding: var(--space-2);
+    gap: var(--eira-space-2);
+    border-bottom: 1px solid var(--eira-border-default);
+    background: var(--eira-bg-surface);
+    padding: var(--eira-space-2);
   }
 
   .brand {
-    padding: 0 var(--space-2);
-    color: var(--ink);
+    padding: 0 var(--eira-space-2);
+    color: var(--eira-text-primary);
   }
 
   .brand:hover {
-    color: var(--color-primary);
+    color: var(--eira-action-primary);
   }
 
   .topbar-toggle {
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: var(--size-touch);
-    height: var(--size-touch);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    color: var(--ink);
+    width: var(--eira-size-touch);
+    height: var(--eira-size-touch);
+    border: 1px solid var(--eira-border-default);
+    border-radius: var(--eira-radius-md);
+    background: var(--eira-bg-surface);
+    color: var(--eira-text-primary);
     cursor: pointer;
   }
 
@@ -258,43 +271,43 @@ watch(isCompact, (compact) => {
 .nav-drawer.p-drawer {
   width: 17rem;
   max-width: 85vw;
-  background: var(--sidebar-background);
-  border-right: 1px solid var(--sidebar-border);
+  background: var(--eira-bg-subtle);
+  border-right: 1px solid var(--eira-border-default);
 }
 
 .nav-drawer .p-drawer-header {
-  padding: var(--space-4) var(--space-3) var(--space-2);
+  padding: var(--eira-space-4) var(--eira-space-3) var(--eira-space-2);
 }
 
 .nav-drawer .p-drawer-title {
-  font-family: var(--sans);
+  font-family: var(--eira-font-sans);
   font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--sidebar-foreground);
+  font-weight: 600;
+  color: var(--eira-text-primary);
 }
 
 .nav-drawer .p-drawer-close-button {
-  color: var(--sidebar-foreground);
+  color: var(--eira-text-primary);
 }
 
 /* PrimeVue fissa height sul close button: serve min-height per arrivare a 44 */
 .nav-drawer .p-drawer-close-button {
-  width: var(--size-touch);
-  height: var(--size-touch);
-  min-width: var(--size-touch);
-  min-height: var(--size-touch);
+  width: var(--eira-size-touch);
+  height: var(--eira-size-touch);
+  min-width: var(--eira-size-touch);
+  min-height: var(--eira-size-touch);
 }
 
 .nav-drawer .p-drawer-content {
   display: flex;
-  padding: 0 var(--space-3) var(--space-4);
+  padding: 0 var(--eira-space-3) var(--eira-space-4);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .nav-drawer.p-drawer,
   .p-drawer-mask {
-    transition: none !important;
-    animation: none !important;
+    transition: none;
+    animation: none;
   }
 }
 </style>

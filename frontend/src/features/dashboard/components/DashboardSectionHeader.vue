@@ -45,7 +45,7 @@ defineProps<{
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   font-weight: 600;
   text-decoration: none;

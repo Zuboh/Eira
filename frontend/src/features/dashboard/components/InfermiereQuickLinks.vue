@@ -32,12 +32,12 @@ const links: DashboardInfermiereQuickLink[] = [
 
 .quick-link {
   padding: 8px 16px;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-md);
+  background: var(--eira-bg-surface);
   color: inherit;
   text-decoration: none;
   font-size: 0.9375rem;

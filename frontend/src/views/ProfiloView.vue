@@ -86,9 +86,12 @@ async function salvaAvatar() {
       </div>
 
       <InlineError :message="error" />
-      <p v-if="success" class="profilo-success">Foto profilo aggiornata.</p>
+      <p v-if="success" class="profilo-success" role="status">
+        Foto profilo aggiornata.
+      </p>
 
       <Button
+        class="eira-saving-button"
         label="Salva foto"
         icon="pi pi-check"
         size="small"
@@ -102,7 +105,7 @@ async function salvaAvatar() {
 
 <style scoped>
 .profilo-view {
-  padding: var(--page-padding);
+  padding: var(--eira-page-padding);
   max-width: 960px;
   margin: 0 auto;
   display: flex;
@@ -111,15 +114,13 @@ async function salvaAvatar() {
 }
 
 .profilo-section {
-  padding: 1.25rem 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  padding-block: var(--eira-space-5);
+  border-top: 1px solid var(--eira-border-default);
+  background: var(--eira-bg-surface);
 }
 
 .profilo-section__title {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--eira-space-3);
   font-size: 1.125rem;
   font-weight: 600;
 }
@@ -128,16 +129,16 @@ async function salvaAvatar() {
   display: grid;
   gap: 0;
   margin: 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--eira-border-default);
   padding-top: 0.5rem;
 }
 
 .profilo-field {
   display: flex;
   justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--eira-space-3);
   padding: 0.75rem 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--eira-border-default);
 }
 
 .profilo-field:first-child {
@@ -145,7 +146,7 @@ async function salvaAvatar() {
 }
 
 .profilo-field dt {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
@@ -153,18 +154,21 @@ async function salvaAvatar() {
   margin: 0;
   font-weight: 600;
   text-align: right;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .profilo-avatar-row {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--eira-space-3);
   margin-bottom: 1rem;
 }
 
 .profilo-success {
-  margin: 0 0 var(--space-3);
-  color: var(--state-attiva-on-tint);
+  margin: 0 0 var(--eira-space-3);
+  color: var(--eira-status-success);
   font-size: 0.8125rem;
 }
 

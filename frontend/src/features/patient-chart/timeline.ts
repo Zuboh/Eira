@@ -1,9 +1,6 @@
+import { sectionsFor } from '@/features/patient-chart/consegnaSections'
 import type { ConsegnaSbar } from '@/api/consegneSbar'
 import type { VoceDiarioSoapie } from '@/api/diarioSoapie'
-import {
-  soapieToNarrative,
-  sbarToNarrative,
-} from '@/features/patient-chart/form'
 import type { ClinicalTimelineEntry } from '@/features/patient-chart/types'
 
 export function normalizeSoapieEntry(
@@ -16,7 +13,12 @@ export function normalizeSoapieEntry(
     timestamp: entry.timestamp,
     autoreId: entry.autore_id,
     title: 'Consegna SOAPIE',
-    body: soapieToNarrative(entry),
+    sections: sectionsFor('soapie')
+      .map((s) => ({
+        label: s.label,
+        value: String(entry[s.key as keyof VoceDiarioSoapie] ?? ''),
+      }))
+      .filter((s) => s.value.trim()),
   }
 }
 
@@ -28,7 +30,12 @@ export function normalizeSbarEntry(entry: ConsegnaSbar): ClinicalTimelineEntry {
     timestamp: entry.creata_il,
     autoreId: entry.autore_id,
     title: 'Consegna SBAR',
-    body: sbarToNarrative(entry),
+    sections: sectionsFor('sbar')
+      .map((s) => ({
+        label: s.label,
+        value: String(entry[s.key as keyof ConsegnaSbar] ?? ''),
+      }))
+      .filter((s) => s.value.trim()),
     priorita: entry.priorita,
   }
 }

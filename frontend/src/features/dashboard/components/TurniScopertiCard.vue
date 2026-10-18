@@ -42,6 +42,7 @@ const RANGE_OPTIONS = [7, 14, 30] as const
       </div>
     </div>
     <EiraTable
+      label="Turni da coprire"
       flush
       max-height="28rem"
       :loading="loading"
@@ -98,24 +99,24 @@ const RANGE_OPTIONS = [7, 14, 30] as const
 
 .card-header p {
   margin: 3px 0 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
 }
 
 .range-filter {
   display: inline-flex;
   padding: 2px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-md);
 }
 
 .range-filter button {
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   padding: 0 12px;
   border: 0;
-  border-radius: var(--radius-xs);
+  border-radius: var(--eira-radius-sm);
   background: transparent;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -123,12 +124,16 @@ const RANGE_OPTIONS = [7, 14, 30] as const
 }
 
 .range-filter button[aria-pressed='true'] {
-  background: color-mix(in srgb, var(--color-primary) 14%, var(--surface));
-  color: var(--color-primary-on-tint);
+  background: color-mix(
+    in srgb,
+    var(--eira-action-primary) 14%,
+    var(--eira-bg-surface)
+  );
+  color: var(--eira-action-selected-text);
 }
 
 .range-filter button:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 

@@ -1,4 +1,11 @@
 @font-face {
+  font-family: 'Geist';
+  src: url('./assets/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
   font-family: 'Geist Mono';
   src: url('./assets/fonts/GeistMono-Variable.woff2') format('woff2');
   font-weight: 100 900;
@@ -7,380 +14,232 @@
 }
 
 :root {
-  /* Atomize-inspired neutral surfaces, with Eira's clinical accent. */
-  --canvas: #f6f8f8;
-  --surface: #ffffff;
-  --surface-muted: #f0f4f3;
-  --surface-inset: #f8faf9;
-  --surface-highlight: rgba(255, 255, 255, 0.8);
-  --ink: #172724;
-  --steel: #526760;
-  --steel-on-tint: #3b554d;
-  --muted: #6a7e77;
-  --border: rgba(27, 65, 56, 0.14);
-  --border-strong: rgba(27, 65, 56, 0.22);
-
-  /* NHS aqua-teal #00a499 is the brand reference; actions use accessible teal-700. */
-  --color-primary: #00786f;
-  --color-primary-bright: #00a499;
-  --color-on-primary: #ffffff;
-  --color-on-danger: #ffffff;
-  --color-primary-on-tint: #005b54;
-
-  --sidebar-background: #edf4f1;
-  --sidebar-foreground: #1d3932;
-  --sidebar-muted: #4e6860;
-  --sidebar-hover: rgba(0, 107, 99, 0.07);
-  --sidebar-active: rgba(0, 164, 153, 0.14);
-  --sidebar-border: rgba(28, 78, 70, 0.1);
-  --sidebar-icon-background: rgba(255, 255, 255, 0.72);
-  --sidebar-icon-border: rgba(28, 78, 70, 0.12);
-  --sidebar-icon-active: transparent;
-  --sidebar-icon-active-foreground: #006b63;
-
-  /* Stati semantici — docs/DESIGN.md sez. 3 */
-  --state-urgente: #dc2626;
-  /* Same reasoning as --color-primary-on-tint (axe: 4.13:1 on its own tint). */
-  --state-urgente-on-tint: #b91c1c;
-  --state-pending: #d97706;
-  --state-pending-on-tint: #b45309;
-  --state-attiva: #16a34a;
-  /* axe: 4.23:1 at green-700 (#15803d), still short of 4.5:1 — green-800. */
-  --state-attiva-on-tint: #166534;
-  --state-chiusa: #71717a;
-  /* StatusBadge .chiusa text-on-own-tint fails 4.5:1 (axe: 4.01:1). */
-  --state-chiusa-on-tint: #52525b;
-
-  --turno-mattina: #d97706;
-  --turno-pomeriggio: #2563eb;
-  --turno-notte: #4f46e5;
-  --turno-riposo: #0d9488;
-  --turno-ferie: #71717a;
-  --turno-ferie-estive: #16a34a;
-
-  /* Calendar event-chip fill: solid color + white text, same in both
-     themes (dark-mode --turno-* above are lighter tints meant for
-     text-on-canvas use, e.g. sidebar identity dot — wrong for a filled
-     chip). Mattina/riposo darkened from the values above to clear
-     4.5:1 with white text (were 3.18:1 / 3.75:1). */
-  --turno-mattina-chip: #b45309;
-  --turno-pomeriggio-chip: #2563eb;
-  --turno-notte-chip: #4f46e5;
-  --turno-riposo-chip: #0f766e;
-  --turno-ferie-chip: #71717a;
-
-  /* Same reasoning as --color-primary-on-tint: --turno-* as text on its own
-     15% tint (calendar legend) fails 4.5:1 in light mode (2.61:1 mattina,
-     3.01:1 riposo, 3.86:1 ferie, 4.04:1 pomeriggio). */
-  --turno-mattina-on-tint: #92400e;
-  --turno-pomeriggio-on-tint: #1d4ed8;
-  --turno-notte-on-tint: #4338ca;
-  --turno-riposo-on-tint: #115e59;
-  --turno-ferie-on-tint: #52525b;
-
-  --shadow:
-    0 1px 2px rgba(18, 48, 41, 0.04), 0 10px 26px rgba(18, 48, 41, 0.055);
-  --shadow-raised:
-    0 2px 6px rgba(18, 48, 41, 0.06), 0 22px 56px rgba(18, 48, 41, 0.12);
-  --shadow-lg: var(--shadow-raised);
-  --radius-xs: 0.5rem;
-  --radius-sm: 0.75rem;
-  --radius: 1.125rem;
-  --radius-md: 1.25rem;
-  --radius-lg: 1.5rem;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  /* px e non rem: DESIGN.md sez. 7 impone 44px fisici come minimo di
-     tocco. In rem il valore segue la scala tipografica e sotto un root
-     < 16px scendeva a ~41px. */
-  --size-touch: 44px;
-  --page-sm: 56.25rem;
-  --page-md: 60rem;
-  --page-lg: 75rem;
-  --page-xl: 87.5rem;
-  --page-2xl: 112.5rem;
-  --page-padding: clamp(var(--space-4), 3vw, var(--space-8));
-  --table-min-wide: 47.5rem;
-  --dialog-sm: 24rem;
-  --dialog-md: 28rem;
-  --dialog-lg: 32rem;
-  --dialog-xl: 44rem;
-
-  --scrollbar-size: 10px;
-  --scrollbar-thumb: color-mix(in srgb, var(--steel) 32%, transparent);
-  --scrollbar-thumb-hover: color-mix(in srgb, var(--steel) 55%, transparent);
-  --scrollbar-track: transparent;
-
-  --sans: 'Manrope Variable', system-ui, sans-serif;
-  --mono: 'Geist Mono', ui-monospace, monospace;
-
-  font: 15px/1.6 var(--sans);
+  /* Primitives — values are defined here only. See docs/DESIGN.md. */
+  --eira-color-white: #ffffff;
+  --eira-color-neutral-50: #f7f7f5;
+  --eira-color-neutral-100: #f0f0ec;
+  --eira-color-neutral-200: #e7e7e2;
+  --eira-color-neutral-300: #c9c8c1;
+  --eira-color-neutral-400: #8a877f;
+  --eira-color-neutral-500: #706d66;
+  --eira-color-neutral-700: #37352f;
+  --eira-color-neutral-800: #252924;
+  --eira-color-neutral-850: #20231f;
+  --eira-color-neutral-900: #191b19;
+  --eira-color-dark-border: #353b33;
+  --eira-color-dark-control: #767e73;
+  --eira-color-dark-muted: #b2b8ad;
+  --eira-color-dark-text: #e9ece6;
+  --eira-color-forest-50: #eaf1ec;
+  --eira-color-forest-200: #c8ddcf;
+  --eira-color-forest-300: #bcd5c3;
+  --eira-color-forest-400: #a8c7b1;
+  --eira-color-forest-500: #91ab98;
+  --eira-color-forest-700: #3f6b57;
+  --eira-color-forest-800: #315443;
+  --eira-color-forest-900: #2d4033;
+  --eira-color-forest-950: #18271c;
+  --eira-color-green-50: #edf7ef;
+  --eira-color-green-200: #a7dcb5;
+  --eira-color-green-800: #166534;
+  --eira-color-green-950: #24382a;
+  --eira-color-amber-50: #fff5df;
+  --eira-color-amber-200: #f0cd8c;
+  --eira-color-amber-800: #8a4b08;
+  --eira-color-amber-950: #3c321f;
+  --eira-color-red-50: #fff0ee;
+  --eira-color-red-200: #ffb4ab;
+  --eira-color-red-800: #b42318;
+  --eira-color-red-950: #432826;
+  --eira-color-blue-50: #eff5fc;
+  --eira-color-blue-200: #a9cff2;
+  --eira-color-blue-800: #215a8a;
+  --eira-color-blue-950: #263544;
+  --eira-color-violet-50: #f1eff8;
+  --eira-color-violet-200: #c8bcec;
+  --eira-color-violet-800: #5e487e;
+  --eira-color-violet-950: #342c43;
+  --eira-space-1: 4px;
+  --eira-space-2: 8px;
+  --eira-space-3: 12px;
+  --eira-space-4: 16px;
+  --eira-space-5: 20px;
+  --eira-space-6: 24px;
+  --eira-space-8: 32px;
+  --eira-space-10: 40px;
+  --eira-space-12: 48px;
+  --eira-radius-sm: 4px;
+  --eira-radius-md: 6px;
+  --eira-radius-lg: 8px;
+  --eira-radius-dialog: 10px;
+  --eira-font-sans: 'Geist', system-ui, sans-serif;
+  --eira-font-mono: 'Geist Mono', ui-monospace, monospace;
+  --eira-font-body: 0.875rem;
+  --eira-font-clinical: 0.9375rem;
+  --eira-font-small: 0.8125rem;
+  --eira-size-touch: 44px;
+  --eira-motion-duration: 150ms;
+  --eira-motion-easing: ease-out;
+  --eira-shadow-overlay: 0 4px 16px rgb(0 0 0 / 12%);
+  --eira-z-sticky: 10;
+  --eira-z-overlay: 1000;
+  --eira-z-modal: 1100;
+  --eira-z-tooltip: 1200;
+  --eira-page-lg: 75rem;
+  --eira-page-xl: 90rem;
+  --eira-page-padding: clamp(16px, 3vw, 32px);
+  --eira-dialog-sm: 24rem;
+  --eira-dialog-md: 28rem;
+  --eira-dialog-lg: 32rem;
+  --eira-dialog-xl: 44rem;
+  --eira-table-min-wide: 47.5rem;
+  --eira-sidebar-width: 232px;
+  --eira-sidebar-rail: 72px;
+  /* Semantic roles — light. */
+  --eira-bg-canvas: var(--eira-color-white);
+  --eira-bg-surface: var(--eira-color-white);
+  --eira-bg-subtle: var(--eira-color-neutral-50);
+  --eira-bg-hover: var(--eira-color-neutral-100);
+  --eira-text-primary: var(--eira-color-neutral-700);
+  --eira-text-secondary: var(--eira-color-neutral-500);
+  --eira-text-disabled: var(--eira-color-neutral-400);
+  --eira-border-default: var(--eira-color-neutral-200);
+  --eira-border-strong: var(--eira-color-neutral-300);
+  --eira-border-control: var(--eira-color-neutral-400);
+  --eira-action-primary: var(--eira-color-forest-700);
+  --eira-action-primary-hover: var(--eira-color-forest-800);
+  --eira-action-on-primary: var(--eira-color-white);
+  --eira-action-selected-background: var(--eira-color-forest-50);
+  --eira-action-selected-text: var(--eira-color-forest-800);
+  --eira-focus-ring: var(--eira-color-forest-700);
+  --eira-status-danger-contrast: var(--eira-color-white);
+  --eira-status-success: var(--eira-color-green-800);
+  --eira-status-success-background: var(--eira-color-green-50);
+  --eira-status-warning: var(--eira-color-amber-800);
+  --eira-status-warning-background: var(--eira-color-amber-50);
+  --eira-status-danger: var(--eira-color-red-800);
+  --eira-status-danger-background: var(--eira-color-red-50);
+  --eira-status-info: var(--eira-color-blue-800);
+  --eira-status-info-background: var(--eira-color-blue-50);
+  --eira-status-neutral: var(--eira-color-neutral-500);
+  --eira-status-neutral-background: var(--eira-color-neutral-100);
+  --eira-shift-mattina: var(--eira-status-warning);
+  --eira-shift-mattina-on-tint: var(--eira-status-warning);
+  --eira-shift-mattina-chip: var(--eira-status-warning-background);
+  --eira-shift-pomeriggio: var(--eira-status-info);
+  --eira-shift-pomeriggio-on-tint: var(--eira-status-info);
+  --eira-shift-pomeriggio-chip: var(--eira-status-info-background);
+  --eira-shift-notte: var(--eira-color-violet-800);
+  --eira-shift-notte-on-tint: var(--eira-color-violet-800);
+  --eira-shift-notte-chip: var(--eira-color-violet-50);
+  --eira-shift-riposo: var(--eira-status-success);
+  --eira-shift-riposo-on-tint: var(--eira-status-success);
+  --eira-shift-riposo-chip: var(--eira-status-success-background);
+  --eira-shift-ferie: var(--eira-status-neutral);
+  --eira-shift-ferie-on-tint: var(--eira-status-neutral);
+  --eira-shift-ferie-chip: var(--eira-status-neutral-background);
+  --eira-shift-ferie-estive: var(--eira-status-success);
+  font: 16px/1.5 var(--eira-font-sans);
   color-scheme: light dark;
-  color: var(--ink);
-  background: var(--canvas);
+  color: var(--eira-text-primary);
+  background: var(--eira-bg-canvas);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
-
 @media (prefers-color-scheme: dark) {
   :root {
-    --canvas: #121b19;
-    --surface: #1c2825;
-    --surface-muted: #263530;
-    --surface-inset: #17221f;
-    --surface-highlight: rgba(255, 255, 255, 0.045);
-    --ink: #f1f7f4;
-    --steel: #b7cbc2;
-    --steel-on-tint: #c7d8d0;
-    --muted: #9db5aa;
-    --border: rgba(217, 244, 230, 0.13);
-    --border-strong: rgba(217, 244, 230, 0.22);
-
-    --color-primary: #6bc2b6;
-    --color-primary-bright: #51c5b2;
-    --color-on-primary: #07332f;
-    --color-primary-on-tint: #91e2d4;
-
-    --sidebar-background: #192521;
-    --sidebar-foreground: #edf5f2;
-    --sidebar-muted: #b2c5bf;
-    --sidebar-hover: rgba(255, 255, 255, 0.07);
-    --sidebar-active: rgba(98, 203, 185, 0.16);
-    --sidebar-border: rgba(203, 236, 228, 0.12);
-    --sidebar-icon-background: rgba(255, 255, 255, 0.06);
-    --sidebar-icon-border: rgba(203, 236, 228, 0.14);
-    --sidebar-icon-active: transparent;
-    --sidebar-icon-active-foreground: #72d5c4;
-
-    --state-urgente: #f87171;
-    --state-urgente-on-tint: #fca5a5;
-    --state-pending: #fbbf24;
-    --state-pending-on-tint: #fbbf24;
-    --state-attiva: #4ade80;
-    --state-attiva-on-tint: #4ade80;
-    --state-chiusa: #a1a1aa;
-    --state-chiusa-on-tint: #a1a1aa;
-
-    --turno-mattina: #f59e0b;
-    --turno-pomeriggio: #60a5fa;
-    --turno-notte: #818cf8;
-    --turno-riposo: #2dd4bf;
-    --turno-ferie: #a1a1aa;
-    --turno-ferie-estive: #4ade80;
-
-    /* In dark i --turno-* sono gia' tinte chiare: passano 4.5:1 sul proprio
-       tint al 15% su --canvas, nessuna variante piu' scura serve. */
-    --turno-mattina-on-tint: #f59e0b;
-    --turno-pomeriggio-on-tint: #60a5fa;
-    --turno-notte-on-tint: #a5b4fc;
-    --turno-riposo-on-tint: #2dd4bf;
-    --turno-ferie-on-tint: #a1a1aa;
-
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 12px 30px rgba(0, 0, 0, 0.16);
-    --shadow-raised:
-      0 2px 8px rgba(0, 0, 0, 0.18), 0 24px 56px rgba(0, 0, 0, 0.32);
-    --scrollbar-thumb: color-mix(in srgb, var(--steel) 40%, transparent);
-    --scrollbar-thumb-hover: color-mix(in srgb, var(--steel) 62%, transparent);
+    --eira-bg-canvas: var(--eira-color-neutral-900);
+    --eira-bg-surface: var(--eira-color-neutral-850);
+    --eira-bg-subtle: var(--eira-color-neutral-800);
+    --eira-bg-hover: var(--eira-color-dark-border);
+    --eira-text-primary: var(--eira-color-dark-text);
+    --eira-text-secondary: var(--eira-color-dark-muted);
+    --eira-text-disabled: var(--eira-color-dark-control);
+    --eira-border-default: var(--eira-color-dark-border);
+    --eira-border-strong: var(--eira-color-dark-control);
+    --eira-border-control: var(--eira-color-dark-control);
+    --eira-action-primary: var(--eira-color-forest-400);
+    --eira-action-primary-hover: var(--eira-color-forest-300);
+    --eira-action-on-primary: var(--eira-color-forest-950);
+    --eira-action-selected-background: var(--eira-color-forest-900);
+    --eira-action-selected-text: var(--eira-color-forest-200);
+    --eira-focus-ring: var(--eira-color-forest-400);
+    --eira-status-danger-contrast: var(--eira-color-red-950);
+    --eira-status-success: var(--eira-color-green-200);
+    --eira-status-success-background: var(--eira-color-green-950);
+    --eira-status-warning: var(--eira-color-amber-200);
+    --eira-status-warning-background: var(--eira-color-amber-950);
+    --eira-status-danger: var(--eira-color-red-200);
+    --eira-status-danger-background: var(--eira-color-red-950);
+    --eira-status-info: var(--eira-color-blue-200);
+    --eira-status-info-background: var(--eira-color-blue-950);
+    --eira-status-neutral: var(--eira-color-dark-muted);
+    --eira-status-neutral-background: var(--eira-color-dark-border);
+    --eira-shift-notte: var(--eira-color-violet-200);
+    --eira-shift-notte-on-tint: var(--eira-color-violet-200);
+    --eira-shift-notte-chip: var(--eira-color-violet-950);
+    --eira-shadow-overlay: 0 4px 16px rgb(0 0 0 / 28%);
   }
 }
-
 * {
   box-sizing: border-box;
 }
-
 html {
   min-width: 320px;
-  background: var(--canvas);
+  background: var(--eira-bg-canvas);
 }
-
 body {
   margin: 0;
   min-height: 100dvh;
-  background: var(--canvas);
+  font-size: var(--eira-font-body);
 }
-
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
 h1,
 h2,
 h3 {
-  font-family: var(--sans);
-  color: var(--ink);
-  margin: 0 0 8px;
+  color: var(--eira-text-primary);
+  margin: 0 0 var(--eira-space-2);
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
-
 h1 {
-  font-size: 1.75rem;
-  font-weight: 750;
-  letter-spacing: -0.035em;
+  font-size: clamp(1.75rem, 2vw, 2rem);
   line-height: 1.2;
+  letter-spacing: -0.025em;
 }
-
 h2 {
   font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
 }
-
+h3 {
+  font-size: 1rem;
+}
 p {
   margin: 0;
-  max-width: 65ch;
 }
-
-.mono {
-  font-family: var(--mono);
-  font-size: 0.8125rem;
+a {
+  color: var(--eira-action-primary);
 }
-
+.mono,
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+.numeric {
+  text-align: right;
+}
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-focus-ring);
   outline-offset: 2px;
 }
-
-:focus:not(:focus-visible) {
-  outline: none;
+:where(input, textarea, select, [role='combobox'], .p-select):focus-visible {
+  outline: 2px solid var(--eira-border-control) !important;
+  outline-offset: -2px !important;
 }
-
-.p-button,
-.p-inputtext,
-.p-select,
-.p-textarea,
-.p-paginator-page,
-.p-tab {
-  border-radius: var(--radius-sm);
-}
-
-.p-button {
-  font-weight: 650;
-  transition:
-    background-color 150ms ease-out,
-    border-color 150ms ease-out,
-    color 150ms ease-out,
-    box-shadow 150ms ease-out,
-    transform 150ms ease-out;
-}
-
-.p-button:not(.p-button-text):not(.p-button-outlined) {
-  box-shadow: var(--shadow);
-}
-
-.p-button:not(:disabled):hover {
-  transform: translateY(-1px);
-}
-
-.p-button:active {
-  transform: translateY(1px);
-}
-
-.p-inputtext,
-.p-select,
-.p-textarea {
-  background: var(--surface);
-  border-color: var(--border);
-  color: var(--ink);
-  transition:
-    border-color 150ms ease-out,
-    box-shadow 150ms ease-out;
-}
-
-.p-inputtext::placeholder,
-.p-textarea::placeholder,
-.p-select-label.p-placeholder {
-  color: var(--muted);
-}
-
-.p-inputtext:hover,
-.p-select:hover,
-.p-textarea:hover {
-  border-color: var(--border-strong);
-}
-
-.p-inputtext:focus,
-.p-select:focus-within,
-.p-textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px
-    color-mix(in srgb, var(--color-primary) 16%, transparent);
-}
-
-.p-dialog {
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-raised);
-}
-
-.p-select-overlay,
-.p-popover,
-.p-menu {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow-raised);
-}
-
-.p-select-option,
-.p-menu-item-content {
-  border-radius: var(--radius-xs);
-}
-
-.p-select-option.p-focus,
-.p-menu-item-content:hover {
-  background: var(--surface-muted);
-}
-
-.p-dialog .p-dialog-header {
-  padding: 1.25rem 1.5rem 0.875rem;
-}
-
-.p-dialog .p-dialog-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.p-tablist-tab-list {
-  border-color: var(--border);
-  gap: var(--space-1);
-}
-
-.p-tab {
-  font-weight: 600;
-  transition:
-    color 150ms ease-out,
-    background-color 150ms ease-out;
-}
-
-.p-tab:hover {
-  background: var(--surface-muted);
-}
-
-.p-tab[aria-selected='true'] {
-  color: var(--color-primary);
-}
-
-.p-paginator-page.p-paginator-page-selected {
-  background: color-mix(in srgb, var(--color-primary) 14%, var(--surface));
-  color: var(--color-primary-on-tint);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-}
-
 .sr-only {
   position: absolute;
   width: 1px;
@@ -392,91 +251,127 @@ p {
   white-space: nowrap;
   border: 0;
 }
-
-/* Hit-area 44px senza costo di layout.
-   DESIGN.md sez. 7 chiede --size-touch anche sui link inline (nomi
-   paziente in tabella, "vedi tutti", chip turno): quelli sono alti
-   19-20px per via del font, e alzare le righe a 44 distruggerebbe la
-   densita' del reparto. Il padding gonfia la box, la margin negativa
-   di pari valore la riporta a zero nel flusso: la margin box resta
-   quella di prima, la border box — quella che il dito colpisce e che
-   getBoundingClientRect misura — arriva a 44.
-   `position: relative` non e' decorativo: senza, un fratello
-   successivo non posizionato (es. .meta sotto il link) viene dipinto
-   sopra e si mangia i click nella zona di sovrapposizione. */
 .hit-area-touch {
-  position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  min-height: var(--size-touch);
-  padding-block: var(--hit-area-pad, 0.85rem);
-  margin-block: calc(-1 * var(--hit-area-pad, 0.85rem));
+  min-height: var(--eira-size-touch);
+  min-width: var(--eira-size-touch);
 }
-
-/* Touch target — PrimeVue Aura's stock size="small" button padding/width
-   resolves under --size-touch at this app's 15px root (~34px tall labeled,
-   ~30x34px icon-only). min-width/min-height only, never width/height: the
-   used box size is clamped by these regardless of PrimeVue's own literal
-   `width` on .p-button-icon-only, so no !important needed (same pattern
-   already used in TurniCalendarCard.vue's calendar-toolbar-nav buttons).
-   Scoped to mobile only (PageHeader.vue's own 640px breakpoint) so tablet/
-   desktop density set by Aura is untouched. */
-@media (max-width: 640px) {
-  .p-button-sm {
-    min-height: var(--size-touch);
-  }
-
-  .p-button-sm.p-button-icon-only {
-    min-width: var(--size-touch);
-  }
+/* Dimensions are not exposed as tokens by every PrimeVue control. */
+.p-button,
+.p-inputtext,
+.p-select,
+.p-textarea,
+.p-tab,
+.p-select-option,
+.p-menu-item-link,
+.p-paginator-page,
+.p-paginator-first,
+.p-paginator-prev,
+.p-paginator-next,
+.p-paginator-last,
+.p-datepicker-day,
+.p-datepicker-month,
+.p-datepicker-year,
+.p-datepicker-prev-button,
+.p-datepicker-next-button,
+.p-dialog-close-button,
+.p-drawer-close-button {
+  min-height: var(--eira-size-touch);
 }
-
-/* Scrollbar — sottile, tokenizzata, staccata dal bordo.
-   Da Chromium 121 `scrollbar-width` sullo stesso elemento disattiva le
-   pseudo `::-webkit-scrollbar`: i due rami restano quindi esclusivi. */
-::-webkit-scrollbar {
-  width: var(--scrollbar-size);
-  height: var(--scrollbar-size);
+.p-button,
+.p-tablist-nav-button,
+.p-dialog-close-button,
+.p-drawer-close-button,
+.p-paginator-page,
+.p-datepicker-day {
+  min-width: var(--eira-size-touch);
 }
-
-::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
+.p-inputtext,
+.p-select,
+.p-textarea {
+  max-width: 100%;
+  font-size: var(--eira-font-body);
 }
-
-::-webkit-scrollbar-thumb {
-  border: 3px solid transparent;
-  border-radius: 999px;
-  background: var(--scrollbar-thumb);
-  background-clip: content-box;
+/* Reserve the spinner slot before saving, keeping both label and width stable. */
+.eira-saving-button {
+  position: relative;
+  padding-inline-start: 2.5rem;
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-  background-clip: content-box;
+.eira-saving-button .p-button-icon,
+.eira-saving-button .p-button-loading-icon {
+  position: absolute;
+  left: 0.875rem;
 }
-
-::-webkit-scrollbar-corner {
-  background: transparent;
+/* Teleported surfaces need these layout rules at document scope. */
+.p-dialog {
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
 }
-
-/* Firefox: nessun supporto per le pseudo sopra */
-@supports not selector(::-webkit-scrollbar) {
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-  }
+.p-dialog :is(.p-dialog-close-button, .header-close):focus-visible {
+  outline: 2px solid var(--eira-border-control);
+  outline-offset: -2px;
+  box-shadow: none;
 }
-
-/* I Dialog PrimeVue vivono in un teleport su <body>: fuori portata dei CSS
-   scoped dei componenti. Gutter riservato -> niente shift quando l'autoResize
-   della textarea fa comparire la scrollbar a meta' digitazione. */
 .p-dialog-content {
+  min-width: 0;
   scrollbar-gutter: stable;
+  overflow-wrap: anywhere;
+}
+.p-dialog-footer {
+  border-top: 1px solid var(--eira-border-default);
+  background: var(--eira-bg-surface);
+  flex-wrap: wrap;
+}
+.p-tablist-content {
+  max-width: 100%;
+}
+.p-tablist-nav-button,
+.p-tab {
+  white-space: normal;
+}
+.p-tabpanels {
+  min-width: 0;
+}
+:is(.dashboard-infermiere, .dashboard-caposala) section.eira-card {
+  border-block-start: 0;
+}
+:is(.dashboard-infermiere, .dashboard-caposala) header.page-header {
+  margin-bottom: 0;
+}
+:is(.dashboard-infermiere, .dashboard-caposala) header.page-header,
+:is(.dashboard-infermiere, .dashboard-caposala) .eira-table .skeleton-row,
+:is(.dashboard-infermiere, .dashboard-caposala)
+  .eira-table
+  .eira-table__scroll
+  :is(th, td) {
+  border-bottom: 0;
+}
+:is(.dashboard-infermiere, .dashboard-caposala)
+  .eira-table
+  :is(.eira-table__scroll, .eira-table__empty, .eira-table__error) {
+  border-block: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --eira-motion-duration: 0ms;
+  }
 }
 
-/* Il footer del preset e' trasparente e senza bordo: sopra un contenuto che
-   scorre il testo passava sotto i bottoni senza alcun confine visibile. */
-.p-dialog-footer {
-  border-top: 1px solid var(--border);
-  background: var(--surface);
+.p-password .p-inputtext {
+  padding-inline-end: 3rem;
+}
+.p-password .eira-password-toggle {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 0;
+}
+@media (max-width: 390px) {
+  .p-datepicker-panel {
+    padding: 4px;
+    max-width: 100vw;
+  }
+  .p-datepicker-day-cell {
+    padding: 0;
+  }
 }

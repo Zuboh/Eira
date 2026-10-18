@@ -63,63 +63,64 @@ defineExpose({ focusFirst })
 
 <style scoped>
 .subtitle {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.9375rem;
   margin-bottom: 8px;
 }
 
 .hint {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
 .tile-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
 }
 
 .tile {
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
-  padding: 16px 12px;
-  background: var(--surface-inset);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  padding: 12px;
+  background: var(--eira-bg-subtle);
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-md);
   cursor: pointer;
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.15s ease;
+    background var(--eira-motion-duration) var(--eira-motion-easing),
+    border-color var(--eira-motion-duration) var(--eira-motion-easing),
+    opacity var(--eira-motion-duration) var(--eira-motion-easing);
 }
 
 .tile-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 0.9375rem;
   font-weight: 600;
-  text-align: center;
+  text-align: left;
 }
 
 .tile-role {
   font-size: 0.8125rem;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .tile:hover {
-  background: color-mix(in oklch, var(--color-primary) 6%, var(--surface));
-  border-color: color-mix(in oklch, var(--color-primary) 35%, var(--border));
-  box-shadow: var(--shadow);
-}
-
-.tile:active {
-  transform: scale(0.98);
+  background: var(--eira-bg-hover);
+  border-color: color-mix(
+    in oklch,
+    var(--eira-action-primary) 35%,
+    var(--eira-border-default)
+  );
 }
 
 .tile:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 
@@ -132,16 +133,16 @@ defineExpose({ focusFirst })
   background: none;
   border: none;
   padding: 4px 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   text-decoration: underline;
   cursor: pointer;
   align-self: flex-start;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
 }
 
 .link-btn:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 </style>

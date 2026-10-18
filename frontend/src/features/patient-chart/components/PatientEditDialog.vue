@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InlineError from '@/components/ui/InlineError.vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
@@ -12,6 +13,8 @@ import type {
 const visible = defineModel<boolean>('visible', { required: true })
 const form = defineModel<PatientEditForm>('form', { required: true })
 
+defineProps<{ saving: boolean; error?: string }>()
+
 const emit = defineEmits<PatientChartSaveEmit>()
 </script>
 
@@ -23,15 +26,28 @@ const emit = defineEmits<PatientChartSaveEmit>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Letto" for-id="paziente-modifica-letto" required>
-        <InputText id="paziente-modifica-letto" v-model="form.letto" required />
+      <InlineError :message="error" />
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Letto"
+        for-id="paziente-modifica-letto"
+        required
+      >
+        <InputText
+          v-bind="fieldAttrs"
+          id="paziente-modifica-letto"
+          v-model="form.letto"
+          required
+        />
       </FormField>
       <FormField
+        v-slot="{ fieldAttrs }"
         label="Diagnosi ingresso"
         for-id="paziente-modifica-diagnosi"
         required
       >
         <InputText
+          v-bind="fieldAttrs"
           id="paziente-modifica-diagnosi"
           v-model="form.diagnosi_ingresso"
           required
@@ -40,7 +56,12 @@ const emit = defineEmits<PatientChartSaveEmit>()
       <label class="checkbox">
         <input v-model="form.dimesso" type="checkbox" /> Dimesso
       </label>
-      <Button type="submit" label="Salva" />
+      <Button
+        class="eira-saving-button"
+        type="submit"
+        label="Salva"
+        :loading="saving"
+      />
     </form>
   </Dialog>
 </template>
@@ -53,10 +74,12 @@ const emit = defineEmits<PatientChartSaveEmit>()
 }
 
 .checkbox {
+  min-height: var(--eira-size-touch);
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   font-weight: 600;
 }

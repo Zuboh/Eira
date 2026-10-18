@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InlineError from '@/components/ui/InlineError.vue'
 import { computed } from 'vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
@@ -53,9 +54,16 @@ function setCollega(collegaId: number | null) {
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Tuo turno" for-id="cambio-turno-mio" required>
+      <InlineError :message="error" />
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Tuo turno"
+        for-id="cambio-turno-mio"
+        required
+      >
         <Select
           v-model="form.assegnazione_turno_id"
+          :pt="{ label: fieldAttrs }"
           input-id="cambio-turno-mio"
           :options="assegnazioniConLabel"
           optionLabel="label"
@@ -64,8 +72,14 @@ function setCollega(collegaId: number | null) {
           required
         />
       </FormField>
-      <FormField label="Collega" for-id="cambio-turno-collega" required>
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Collega"
+        for-id="cambio-turno-collega"
+        required
+      >
         <Select
+          :pt="{ label: fieldAttrs }"
           :model-value="form.collega_id"
           input-id="cambio-turno-collega"
           :options="colleghi"
@@ -77,12 +91,14 @@ function setCollega(collegaId: number | null) {
         />
       </FormField>
       <FormField
+        v-slot="{ fieldAttrs }"
         label="Turno del collega"
         for-id="cambio-turno-collega-assegnazione"
         required
       >
         <Select
           v-model="form.assegnazione_collega_id"
+          :pt="{ label: fieldAttrs }"
           input-id="cambio-turno-collega-assegnazione"
           :options="assegnazioniCollegaConLabel"
           optionLabel="label"
@@ -96,7 +112,12 @@ function setCollega(collegaId: number | null) {
           required
         />
       </FormField>
-      <Button type="submit" label="Invia richiesta" :loading="saving" />
+      <Button
+        class="eira-saving-button"
+        type="submit"
+        label="Invia richiesta"
+        :loading="saving"
+      />
     </form>
   </Dialog>
 </template>

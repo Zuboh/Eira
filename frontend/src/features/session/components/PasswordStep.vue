@@ -43,20 +43,54 @@ defineExpose({ focusPassword })
         toggle-mask
         autocomplete="current-password"
         :disabled="loading"
-        :aria-invalid="!!error"
+        :invalid="!!error"
+        :input-props="{
+          'aria-describedby': error ? 'password-error' : undefined,
+          'aria-invalid': !!error,
+        }"
         required
-      />
+      >
+        <template #maskicon="{ toggleCallback }">
+          <Button
+            class="eira-password-toggle"
+            type="button"
+            icon="pi pi-eye-slash"
+            text
+            severity="secondary"
+            aria-label="Nascondi password"
+            @click="toggleCallback"
+          />
+        </template>
+        <template #unmaskicon="{ toggleCallback }">
+          <Button
+            class="eira-password-toggle"
+            type="button"
+            icon="pi pi-eye"
+            text
+            severity="secondary"
+            aria-label="Mostra password"
+            @click="toggleCallback"
+          />
+        </template>
+      </Password>
     </div>
 
     <Transition name="error-pop">
-      <p v-if="error" class="error" role="alert">{{ error }}</p>
+      <p v-if="error" id="password-error" class="error" role="alert">
+        {{ error }}
+      </p>
     </Transition>
 
     <Transition name="error-pop">
       <p v-if="success" class="success" role="status">{{ success }}</p>
     </Transition>
 
-    <Button type="submit" label="Accedi" :loading="loading" class="submit" />
+    <Button
+      type="submit"
+      label="Accedi"
+      :loading="loading"
+      class="eira-saving-button submit"
+    />
 
     <div class="password-links">
       <button type="button" class="link-btn" @click="emit('backToTiles')">
@@ -85,7 +119,7 @@ defineExpose({ focusPassword })
 .field label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .field :deep(input) {
@@ -93,37 +127,30 @@ defineExpose({ focusPassword })
 }
 
 .error {
-  color: var(--state-urgente);
+  color: var(--eira-status-danger);
   font-size: 0.8125rem;
 }
 
 .success {
-  color: var(--state-attiva);
+  color: var(--eira-status-success);
   font-size: 0.8125rem;
 }
 
 .error-pop-enter-active,
 .error-pop-leave-active {
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
+  transition: opacity var(--eira-motion-duration) var(--eira-motion-easing);
 }
 
 .error-pop-enter-from,
 .error-pop-leave-to {
   opacity: 0;
-  transform: translateY(-2px);
 }
 
 .submit {
   margin-top: 8px;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   font-size: 1rem;
   font-weight: 600;
-}
-
-.submit:active {
-  transform: scale(0.98);
 }
 
 .password-links {
@@ -136,16 +163,16 @@ defineExpose({ focusPassword })
   background: none;
   border: none;
   padding: 4px 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   text-decoration: underline;
   cursor: pointer;
   align-self: flex-start;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
 }
 
 .link-btn:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 </style>

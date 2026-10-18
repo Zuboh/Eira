@@ -27,7 +27,7 @@ const emit = defineEmits<{
   <!-- niente aria-live sul contenitore: annuncerebbe l'intero elenco sezioni
        a ogni carattere digitato. Solo la riga di stato parla. -->
   <section class="preview">
-    <h3>Come verrà salvata</h3>
+    <h2>Come verrà salvata</h2>
     <p class="orphan" aria-live="polite">
       <template v-if="hasOrphanText">
         Il testo scritto prima della prima sigla è finito in
@@ -102,20 +102,18 @@ const emit = defineEmits<{
 
 <style scoped>
 .preview {
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--surface) 88%, var(--color-primary));
+  padding-block: var(--eira-space-4);
+  border-top: 1px solid var(--eira-border-default);
 }
 
-.preview h3 {
+.preview h2 {
   margin: 0 0 8px;
   font-size: 0.95rem;
 }
 
 .orphan {
   margin: 0 0 12px;
-  color: var(--steel-on-tint);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
@@ -128,7 +126,7 @@ const emit = defineEmits<{
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: var(--state-urgente);
+  color: var(--eira-status-danger);
   font-weight: 500;
   font-size: 0.8125rem;
 }
@@ -138,25 +136,12 @@ const emit = defineEmits<{
 }
 
 .row--missing .sigla {
-  color: var(--state-urgente);
-}
-
-/* target da 44px senza allargare il bottone: l'area cliccabile si estende
-   oltre i bordi visivi, il layout resta compatto */
-dd.empty :deep(.p-button) {
-  position: relative;
-  min-height: 32px;
-}
-
-dd.empty :deep(.p-button)::after {
-  content: '';
-  position: absolute;
-  inset: -6px -4px;
+  color: var(--eira-status-danger);
 }
 
 dl {
   display: grid;
-  gap: 10px;
+  gap: var(--eira-space-3);
   margin: 0;
 }
 
@@ -180,9 +165,8 @@ dt {
   place-items: center;
   min-width: 1.4rem;
   padding: 1px 4px;
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--steel);
+  border-radius: var(--eira-radius-md);
+  color: var(--eira-text-secondary);
   font-size: 0.75rem;
 }
 
@@ -206,14 +190,14 @@ dd.empty .actions {
 }
 
 .copied {
-  color: var(--steel-on-tint);
+  color: var(--eira-text-secondary);
   font-weight: 400;
 }
 
-/* --muted qui stava a 2.24:1: il fondo del pannello e' tintato, serve la
-   variante -on-tint (stessa regola di --color-primary-on-tint). */
+/* --eira-text-secondary qui stava a 2.24:1: il fondo del pannello e' tintato, serve la
+   variante -on-tint (stessa regola di --eira-action-selected-text). */
 .hint {
-  color: var(--steel-on-tint);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
   font-style: italic;
 }
@@ -221,7 +205,7 @@ dd.empty .actions {
 /* i due bottoni testuali secondari ereditano il grigio PrimeVue (4.15:1 sul
    fondo tintato): riportati sul token della palette */
 dd.empty :deep(.p-button-secondary) {
-  color: var(--steel-on-tint);
+  color: var(--eira-text-secondary);
 }
 
 @media (max-width: 720px) {

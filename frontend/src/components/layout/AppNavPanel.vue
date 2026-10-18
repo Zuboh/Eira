@@ -26,8 +26,23 @@ const navItems = computed(() => {
       to: { name: route.name! },
       label: route.meta.nav!.label,
       icon: route.meta.nav!.icon,
+      group: route.meta.nav!.group,
+      path: route.path,
     }))
 })
+
+const navGroups = computed(() =>
+  [
+    { key: 'panoramica', label: 'Panoramica' },
+    { key: 'assistenza', label: 'Assistenza' },
+    { key: 'organizzazione', label: 'Organizzazione' },
+  ]
+    .map((group) => ({
+      ...group,
+      items: navItems.value.filter((item) => item.group === group.key),
+    }))
+    .filter((group) => group.items.length),
+)
 
 const ROLE_LABEL: Record<string, string> = {
   infermiere: 'Infermiere',
@@ -42,7 +57,7 @@ const turnoOggi = ref<TipoTurno | null>(null)
 
 const turnoCssVar = computed(() =>
   turnoOggi.value
-    ? `var(--turno-${turnoOggi.value.replace(/_/g, '-')})`
+    ? `var(--eira-shift-${turnoOggi.value.replace(/_/g, '-')})`
     : undefined,
 )
 const turnoLabel = computed(() =>
@@ -78,21 +93,30 @@ function logout() {
 
 <template>
   <div class="nav-panel">
-    <nav class="nav">
-      <RouterLink
-        v-for="item in navItems"
-        :key="item.label"
-        :to="item.to"
-        class="nav-link"
-        active-class="active"
-        :aria-label="item.label"
-        @click="emit('navigate')"
-      >
-        <span class="nav-link-icon">
-          <i class="pi" :class="item.icon" aria-hidden="true" />
-        </span>
-        <span class="nav-link-label">{{ item.label }}</span>
-      </RouterLink>
+    <nav class="nav" aria-label="Navigazione principale">
+      <div v-for="group in navGroups" :key="group.key" class="nav-group">
+        <p v-if="group.key !== 'panoramica'" class="nav-group-label">
+          {{ group.label }}
+        </p>
+        <RouterLink
+          v-for="item in group.items"
+          :key="item.path"
+          :to="item.to"
+          class="nav-link"
+          active-class="active"
+          :aria-label="item.label"
+          :title="item.label"
+          :class="{
+            active:
+              item.path === '/pazienti' &&
+              router.currentRoute.value.path.startsWith('/pazienti/'),
+          }"
+          @click="emit('navigate')"
+        >
+          <i class="pi nav-link-icon" :class="item.icon" aria-hidden="true" />
+          <span class="nav-link-label">{{ item.label }}</span>
+        </RouterLink>
+      </div>
     </nav>
 
     <RouterLink
@@ -125,7 +149,7 @@ function logout() {
           <span
             class="turno-dot"
             aria-hidden="true"
-            :style="{ '--turno-color': turnoCssVar }"
+            :style="{ '--eira-shift-color': turnoCssVar }"
           />
           {{ turnoLabel }}
         </p>
@@ -152,235 +176,128 @@ function logout() {
   display: flex;
   flex: 1;
   flex-direction: column;
+  min-width: 0;
   min-height: 0;
 }
-
 .nav {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--eira-space-5);
   flex: 1;
 }
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: var(--size-touch);
-  padding: 0 var(--space-2);
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  color: var(--sidebar-muted);
-  text-decoration: none;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  transition:
-    background 150ms ease-out,
-    box-shadow 150ms ease-out,
-    border-color 150ms ease-out;
-}
-
-.nav-link:focus-visible,
-.logout:focus-visible {
-  outline: 2px solid var(--color-primary-bright);
-  outline-offset: 2px;
-}
-
-.nav-link-icon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 1.75rem;
-  height: 1.75rem;
-  border: 1px solid var(--sidebar-icon-border);
-  border-radius: var(--radius-sm);
-  background: var(--sidebar-icon-background);
-  color: var(--sidebar-foreground);
-}
-
-.nav-link-icon i {
-  font-size: 0.875rem;
-}
-
-.nav-link:hover {
-  background: var(--sidebar-hover);
-  color: var(--sidebar-foreground);
-}
-
-.nav-link.active {
-  background: var(--sidebar-active);
-  border-color: color-mix(
-    in srgb,
-    var(--color-primary) 20%,
-    var(--sidebar-border)
-  );
-  color: var(--sidebar-foreground);
-  font-weight: 650;
-  box-shadow: inset 0 1px 0 var(--surface-highlight);
-}
-
-.nav-link.active .nav-link-icon {
-  border-color: transparent;
-  background: var(--sidebar-icon-active);
-  color: var(--sidebar-icon-active-foreground);
-}
-
-.identity {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  margin-top: var(--space-2);
-  margin-bottom: var(--space-4);
-  border: 1px solid var(--sidebar-border);
-  background: var(--sidebar-icon-background);
-  color: inherit;
-  text-decoration: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background 150ms ease-out;
-}
-
-.identity:hover,
-.identity:focus-visible {
-  background: var(--sidebar-hover);
-}
-
-.identity-person {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+.nav-group {
   min-width: 0;
 }
-
-.identity-info {
-  min-width: 0;
-}
-
-.identity-name {
-  margin: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--sidebar-foreground);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.identity-role {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--sidebar-muted);
-}
-
-.identity-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.identity-detail {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--sidebar-muted);
-}
-
-.identity-reparto-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.identity-detail .pi {
-  flex-shrink: 0;
+.nav-group-label {
+  color: var(--eira-text-secondary);
   font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0 var(--eira-space-3) var(--eira-space-1);
 }
-
-.turno-dot {
-  flex-shrink: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--turno-color);
-}
-
-/* A riposo identico a .nav-link: il rosso e' un avviso, e tenerlo acceso
-   di continuo su una voce che non e' un errore lo spegne come segnale. */
+.nav-link,
 .logout {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  min-height: var(--size-touch);
-  padding: 0 var(--space-2);
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  gap: var(--eira-space-3);
+  min-height: var(--eira-size-touch);
+  padding: var(--eira-space-2) var(--eira-space-3);
+  border: 0;
+  border-radius: var(--eira-radius-sm);
+  color: var(--eira-text-secondary);
   background: transparent;
-  color: var(--sidebar-muted);
-  font-size: 0.9375rem;
-  font-weight: 500;
+  text-decoration: none;
+  font-size: var(--eira-font-body);
+  font-weight: 400;
   text-align: left;
   cursor: pointer;
-  transition:
-    background 150ms ease-out,
-    box-shadow 150ms ease-out,
-    border-color 150ms ease-out;
+  transition: background var(--eira-motion-duration) var(--eira-motion-easing);
 }
-
-/* Dove .nav-link vira su --color-primary, qui si vira sul rosso: stesso
-   gesto, colore diverso perche' l'azione lo e'. */
-.logout:hover {
-  background: color-mix(in srgb, var(--state-urgente) 18%, transparent);
-  color: var(--state-urgente);
+.nav-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  font-size: 1rem;
 }
-
-.logout:active {
-  transform: scale(0.98);
+.nav-link:hover,
+.logout:hover,
+.identity:hover {
+  background: var(--eira-bg-hover);
+  color: var(--eira-text-primary);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .nav-link {
-    transition: none;
-  }
-
-  .logout:active {
-    transform: none;
-  }
+.nav-link.active {
+  background: var(--eira-action-selected-background);
+  color: var(--eira-action-selected-text);
+  font-weight: 500;
 }
-
-/* Tablet — DESIGN.md sez. 7: sidebar collassabile a icone.
-   Non si applica dentro il Drawer, che vive sotto i 768px. */
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--eira-space-2);
+  margin-top: var(--eira-space-6);
+  padding: var(--eira-space-3);
+  border-top: 1px solid var(--eira-border-default);
+  color: inherit;
+  text-decoration: none;
+}
+.identity-person {
+  display: flex;
+  align-items: center;
+  gap: var(--eira-space-2);
+  min-width: 0;
+}
+.identity-info,
+.identity-details {
+  min-width: 0;
+}
+.identity-name {
+  font-size: var(--eira-font-body);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.identity-role,
+.identity-detail {
+  color: var(--eira-text-secondary);
+  font-size: var(--eira-font-small);
+}
+.identity-detail {
+  display: flex;
+  align-items: center;
+  gap: var(--eira-space-2);
+  margin-top: var(--eira-space-1);
+}
+.identity-reparto-name {
+  overflow-wrap: anywhere;
+}
+.turno-dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--eira-shift-color);
+}
 @media (min-width: 48rem) and (max-width: 63.9375rem) {
   .nav-link-label,
-  .logout-label {
+  .logout-label,
+  .identity-info,
+  .identity-details,
+  .nav-group-label {
     display: none;
   }
-
+  .nav-group + .nav-group {
+    border-top: 1px solid var(--eira-border-default);
+    padding-top: var(--eira-space-3);
+  }
   .nav-link,
   .logout {
     justify-content: center;
     padding: 0;
-    /* non 2.75rem: con root a 15px valeva 41px, sotto il minimo di tocco */
-    width: var(--size-touch);
+    width: var(--eira-size-touch);
   }
-
   .identity {
     align-items: center;
-    justify-content: center;
-    /* padding orizzontale inutile senza label, e con l'avatar a
-       flex-shrink: 0 spingeva il contenuto oltre il rail: la sidebar
-       si ritrovava overflow-x auto e una scrollbar orizzontale. */
-    padding: var(--space-2) 0;
-  }
-
-  .identity-info,
-  .identity-details {
-    display: none;
+    padding: var(--eira-space-3) 0;
   }
 }
 </style>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import Button from 'primevue/button'
+import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import CambiTurnoTable from '@/features/cambi-turno/components/CambiTurnoTable.vue'
@@ -52,10 +53,11 @@ onMounted(load)
       </template>
     </PageHeader>
 
-    <InlineError :message="error" />
+    <InlineError :message="error" retryable @retry="load" />
+    <SkeletonBlock v-if="loading" :lines="5" />
 
     <CambiTurnoTable
-      v-if="!loading"
+      v-if="!loading && !error"
       :richieste="richieste"
       :current-user-id="currentUserId"
       :current-role="currentRole"
@@ -69,6 +71,7 @@ onMounted(load)
     <NewCambioTurnoDialog
       v-model:visible="dialogOpen"
       v-model:form="form"
+      :error="error"
       :assegnazioni="assegnazioni"
       :assegnazioni-colleghi="assegnazioniScambiabili"
       :colleghi="colleghi"
@@ -79,6 +82,7 @@ onMounted(load)
     <RifiutoCambioTurnoDialog
       v-model:visible="rifiutoDialog"
       v-model:motivo="motivoRifiuto"
+      :error="error"
       @save="confermaRifiuto"
     />
   </div>
@@ -86,8 +90,8 @@ onMounted(load)
 
 <style scoped>
 .cambio-view {
-  padding: var(--page-padding);
-  max-width: 1200px;
+  padding: var(--eira-page-padding);
+  max-width: var(--eira-page-lg);
   margin: 0 auto;
 }
 </style>

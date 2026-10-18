@@ -68,6 +68,7 @@ function tooltipText(cella: CalendarioCella) {
       </div>
     </div>
     <EiraTable
+      label="Assegnazioni del reparto"
       flush
       :loading="loading"
       :empty="rows.length === 0"
@@ -139,8 +140,8 @@ function tooltipText(cella: CalendarioCella) {
 }
 
 .settimana-picker :deep(.p-button) {
-  min-width: var(--size-touch);
-  min-height: var(--size-touch);
+  min-width: var(--eira-size-touch);
+  min-height: var(--eira-size-touch);
 }
 
 .settimana-picker > span {
@@ -150,7 +151,7 @@ function tooltipText(cella: CalendarioCella) {
 }
 
 .today > :first-child {
-  border-left: 3px solid var(--color-primary);
+  border-left: 3px solid var(--eira-action-primary);
 }
 
 .calendar-table {
@@ -172,7 +173,7 @@ function tooltipText(cella: CalendarioCella) {
 }
 
 .row-label {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-weight: 600;
 }
 
@@ -187,13 +188,13 @@ function tooltipText(cella: CalendarioCella) {
 }
 
 .turno-cell.interactive:focus-visible {
-  border-radius: var(--radius-xs);
-  outline: 2px solid var(--color-primary);
+  border-radius: var(--eira-radius-sm);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 3px;
 }
 
 .scoperto {
-  color: var(--state-urgente);
+  color: var(--eira-status-danger);
   font-weight: 600;
 }
 
@@ -202,10 +203,10 @@ function tooltipText(cella: CalendarioCella) {
 }
 
 .assente {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .mono {
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
 }
 </style>

@@ -16,17 +16,10 @@ defineProps<{
 .reparto-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--border));
-  border-radius: var(--radius-sm);
-  background: color-mix(in oklch, var(--color-primary) 14%, var(--surface));
-  color: var(--color-primary-on-tint);
-  font-size: 0.8125rem;
-  font-weight: 600;
-}
-
-.reparto-badge .pi {
-  font-size: 0.875rem;
+  gap: var(--eira-space-2);
+  color: var(--eira-text-secondary);
+  font-size: var(--eira-font-small);
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 </style>

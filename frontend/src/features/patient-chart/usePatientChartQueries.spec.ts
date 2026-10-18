@@ -1,3 +1,4 @@
+import * as utentiApi from '@/api/utenti'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { usePatientChartQueries } from '@/features/patient-chart/usePatientChartQueries'
 import * as pazientiApi from '@/api/pazienti'
@@ -8,6 +9,7 @@ import * as consegneSbarApi from '@/api/consegneSbar'
 import * as parametriVitaliApi from '@/api/parametriVitali'
 
 vi.mock('@/api/pazienti')
+vi.mock('@/api/utenti')
 vi.mock('@/api/turni')
 vi.mock('@/api/diarioSoapie')
 vi.mock('@/api/valutazioni')
@@ -42,6 +44,7 @@ const soapie = [
 ]
 
 beforeEach(() => {
+  vi.mocked(utentiApi.listUtenti).mockResolvedValue({ data: [] })
   vi.mocked(pazientiApi.getPaziente).mockResolvedValue({ data: paziente })
   vi.mocked(diarioSoapieApi.listDiarioSoapie).mockResolvedValue({
     data: soapie,
@@ -127,5 +130,36 @@ describe('usePatientChartQueries — reload helpers', () => {
     await queries.reloadParametriVitali()
 
     expect(queries.parametriVitali.value).toEqual([{ id: 1 }])
+  })
+})
+
+describe('clinical author lookup', () => {
+  it('keeps clinical data available when the author directory fails', async () => {
+    vi.mocked(utentiApi.listUtenti).mockRejectedValue(new Error('offline'))
+    const queries = usePatientChartQueries(1, 'caposala')
+    await queries.load()
+    expect(queries.paziente.value).toEqual(paziente)
+    expect(queries.error.value).toBe('')
+    expect(queries.nomeAutore(9)).toBe('Operatore #9')
+  })
+  it('resolves names with one directory request per load', async () => {
+    vi.mocked(utentiApi.listUtenti).mockResolvedValue({
+      data: [
+        {
+          id: 9,
+          nome: 'Anna',
+          cognome: 'Rossi',
+          email: 'a@eira.local',
+          ruolo: 'infermiere',
+          reparto_id: 1,
+          stato: 'attivo',
+          avatar_url: null,
+        },
+      ],
+    })
+    const queries = usePatientChartQueries(1, 'caposala')
+    await queries.load()
+    expect(queries.nomeAutore(9)).toBe('Rossi Anna')
+    expect(utentiApi.listUtenti).toHaveBeenCalledOnce()
   })
 })

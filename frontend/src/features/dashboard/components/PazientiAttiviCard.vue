@@ -16,6 +16,7 @@ defineProps<PazientiAttiviCardProps>()
       link-label="Vedi tutti"
     />
     <EiraTable
+      label="Pazienti attivi"
       flush
       :loading="loading"
       :empty="pazienti.length === 0"

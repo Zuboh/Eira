@@ -29,8 +29,8 @@ const emit = defineEmits<TemporaryPasswordNoticeEmits>()
 .temporary-password {
   margin-top: 16px;
   padding: 12px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--eira-border-default);
+  border-bottom: 1px solid var(--eira-border-default);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,14 +39,14 @@ const emit = defineEmits<TemporaryPasswordNoticeEmits>()
 
 .temporary-title {
   margin: 0 0 4px;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   font-weight: 600;
 }
 
 .temporary-password code {
-  font-family: var(--mono);
+  font-family: var(--eira-font-mono);
   font-size: 0.9375rem;
-  color: var(--ink);
+  color: var(--eira-text-primary);
 }
 </style>

@@ -187,6 +187,14 @@ watch(
   },
 )
 
+function handleEscape(event: KeyboardEvent) {
+  if (event.isComposing) return
+  const root = event.currentTarget as HTMLElement
+  if (root.querySelector('[aria-expanded="true"]')) return
+  event.stopPropagation()
+  requestClose()
+}
+
 function requestClose() {
   if (isPristineScaffold(form.value.testo)) {
     visible.value = false
@@ -227,7 +235,7 @@ function quickFill(key: string) {
     :closable="false"
     :close-on-escape="false"
     :pt="{ root: { 'aria-labelledby': 'consegna-dialog-title' } }"
-    @keydown.esc="requestClose"
+    @keydown.esc.capture="handleEscape"
   >
     <!-- Con lo slot #header custom PrimeVue non rende piu' il proprio titolo,
          ma l'`aria-labelledby` che genera continua a puntarlo: il dialog
@@ -238,10 +246,10 @@ function quickFill(key: string) {
       }}</span>
       <Button
         class="header-close"
+        autofocus
         type="button"
         icon="pi pi-times"
         text
-        rounded
         severity="secondary"
         aria-label="Chiudi"
         @click="requestClose"
@@ -251,12 +259,14 @@ function quickFill(key: string) {
     <form id="consegna-form" class="form" @submit.prevent="submit">
       <FormField
         v-if="showPaziente"
+        v-slot="{ fieldAttrs }"
         for-id="consegna-paziente"
         label="Paziente"
         required
       >
         <Select
           v-model="form.paziente_id"
+          :pt="{ label: fieldAttrs }"
           input-id="consegna-paziente"
           :options="pazienteOptions"
           optionLabel="label"
@@ -266,38 +276,40 @@ function quickFill(key: string) {
           filter-placeholder="Cerca per cognome o letto"
           empty-message="Nessun paziente visibile"
           empty-filter-message="Nessun paziente corrisponde"
-          :aria-required="true"
         />
       </FormField>
 
       <FormField
         v-if="showTipo"
+        v-slot="{ fieldAttrs }"
         for-id="consegna-tipo"
         label="Tipo consegna"
         required
       >
         <Select
           v-model="tipoModel"
+          :pt="{ label: fieldAttrs }"
           input-id="consegna-tipo"
           :options="tipoOptions"
           optionLabel="label"
           optionValue="value"
-          :aria-required="true"
         />
       </FormField>
 
       <FormField
         v-if="showTurno"
+        v-slot="{ fieldAttrs }"
         for-id="consegna-data"
+        :required="turnoRequired"
         :label="turnoRequired ? 'Data turno' : 'Data turno (opzionale)'"
       >
         <DatePicker
           v-model="selectedDate"
+          :pt="{ pcInputText: { root: fieldAttrs } }"
           input-id="consegna-data"
           dateFormat="yy-mm-dd"
           placeholder="Seleziona data"
           :show-button-bar="!turnoRequired"
-          :aria-required="turnoRequired"
         />
         <p v-if="selectedTurnoLabel" class="field-hint">
           Turno rilevato: {{ selectedTurnoLabel }}
@@ -312,11 +324,13 @@ function quickFill(key: string) {
       <div class="field-slot">
         <FormField
           v-if="form.tipo === 'sbar'"
+          v-slot="{ fieldAttrs }"
           for-id="consegna-priorita"
           label="Priorità"
         >
           <Select
             v-model="form.priorita"
+            :pt="{ label: fieldAttrs }"
             input-id="consegna-priorita"
             :options="prioritaOptions"
             optionLabel="label"
@@ -326,23 +340,26 @@ function quickFill(key: string) {
       </div>
 
       <FormField
+        v-slot="{ fieldAttrs }"
         class="span-2"
         for-id="consegna-testo"
         label="Testo consegna"
         required
       >
         <Textarea
+          v-bind="fieldAttrs"
           id="consegna-testo"
           ref="testoRef"
           v-model="form.testo"
           rows="8"
           autoResize
-          :aria-required="true"
           :aria-invalid="missingKeys.length > 0"
+          :aria-describedby="visibleError ? 'consegna-error' : undefined"
           placeholder="Una sigla a inizio riga apre la sezione, il resto del testo la riempie."
         />
         <div v-if="canCopyForward" class="copy-forward">
           <Button
+            class="eira-saving-button"
             type="button"
             severity="secondary"
             outlined
@@ -376,7 +393,7 @@ function quickFill(key: string) {
          ricollega al form che ora non le contiene piu'. -->
     <template #footer>
       <div class="form-actions">
-        <InlineError :message="visibleError" />
+        <InlineError id="consegna-error" :message="visibleError" />
         <Button
           type="button"
           label="Annulla"
@@ -385,6 +402,7 @@ function quickFill(key: string) {
           @click="requestClose"
         />
         <Button
+          class="eira-saving-button"
           type="submit"
           form="consegna-form"
           :label="isEditing ? 'Salva modifiche' : 'Salva consegna'"
@@ -400,7 +418,7 @@ function quickFill(key: string) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: var(--space-3) var(--space-4);
+  gap: var(--eira-space-3) var(--eira-space-4);
 }
 
 .span-2 {
@@ -419,7 +437,7 @@ function quickFill(key: string) {
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--space-3);
+  gap: var(--eira-space-3);
   width: 100%;
 }
 
@@ -454,16 +472,14 @@ textarea {
   margin: 0;
 }
 
-/* --steel, non --muted: quest'ultimo sta a 2.56:1 su --surface e il "turno
-   rilevato" e' informazione, non decorazione. Allineato a FormField. */
 .field-hint {
   margin: 6px 0 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
 .field-hint--warning {
-  color: var(--state-urgente);
+  color: var(--eira-status-danger);
 }
 
 @media (max-width: 720px) {

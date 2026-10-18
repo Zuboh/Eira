@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InlineError from '@/components/ui/InlineError.vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
@@ -7,6 +8,8 @@ import { dialogStyle } from '@/components/ui/dialogStyles'
 
 const visible = defineModel<boolean>('visible', { required: true })
 const motivo = defineModel<string>('motivo', { required: true })
+
+defineProps<{ error?: string }>()
 
 const emit = defineEmits<{ save: [] }>()
 </script>
@@ -19,8 +22,17 @@ const emit = defineEmits<{ save: [] }>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Motivo" for-id="rifiuto-ferie-motivo">
-        <InputText id="rifiuto-ferie-motivo" v-model="motivo" />
+      <InlineError :message="error" />
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Motivo"
+        for-id="rifiuto-ferie-motivo"
+      >
+        <InputText
+          v-bind="fieldAttrs"
+          id="rifiuto-ferie-motivo"
+          v-model="motivo"
+        />
       </FormField>
       <Button type="submit" label="Conferma rifiuto" severity="secondary" />
     </form>

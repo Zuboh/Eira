@@ -15,7 +15,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 </script>
 
 <template>
-  <EiraCard>
+  <EiraCard flush>
     <div class="panel-header">
       <div>
         <h2 class="title">Parametri vitali</h2>
@@ -89,11 +89,12 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
       </section>
 
       <EiraTable
+        label="Storico parametri vitali"
         flush
         :empty="entries.length === 0"
         empty-message="Nessun parametro vitale registrato."
       >
-        <table style="min-width: var(--table-min-wide)">
+        <table style="min-width: var(--eira-table-min-wide)">
           <thead>
             <tr>
               <th>Data</th>
@@ -134,6 +135,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 
 <style scoped>
 .panel-header {
+  flex-wrap: wrap;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -148,16 +150,16 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 
 .subtitle {
   margin: 4px 0 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
 .snapshot {
   margin-bottom: 16px;
   padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--surface) 88%, var(--color-primary));
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-md);
+  background: var(--eira-bg-subtle);
 }
 
 .snapshot__title {
@@ -167,7 +169,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 
 .snapshot__timestamp {
   margin: 0 0 12px;
-  color: var(--steel-on-tint);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
 }
 
@@ -179,7 +181,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 }
 
 .snapshot__grid dt {
-  color: var(--steel-on-tint);
+  color: var(--eira-text-secondary);
   font-size: 0.75rem;
 }
 
@@ -193,7 +195,7 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 }
 
 .mono {
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
 }
 
 @media (max-width: 900px) {
@@ -204,11 +206,12 @@ const emit = defineEmits<ParametriVitaliTabEmits>()
 
 @media (max-width: 640px) {
   .panel-header {
+    flex-wrap: wrap;
     flex-direction: column;
   }
 
   .snapshot__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 </style>

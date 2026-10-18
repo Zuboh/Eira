@@ -36,6 +36,7 @@ export type NewStaffForm = {
 }
 
 export type NewStaffDialogProps = {
+  error?: string
   saving: boolean
 }
 

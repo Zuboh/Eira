@@ -45,27 +45,59 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
     <article v-for="entry in entries" :key="entry.id" class="timeline-entry">
       <div class="timeline-entry-header">
         <div>
-          <h3>{{ entry.title }}</h3>
+          <h2>{{ entry.title }}</h2>
           <p class="meta mono">
+            {{ nomeAutore(entry.autoreId) }} ·
             {{ formatDateTimeCompactIt(entry.timestamp) }}
           </p>
         </div>
         <div class="badges">
           <StatusBadge :status="entry.tipo" :label="entry.tipo.toUpperCase()" />
-          <StatusBadge
-            v-if="entry.priorita"
-            :status="entry.priorita"
-            :label="entry.priorita"
-          />
+          <StatusBadge v-if="entry.priorita" :status="entry.priorita" />
         </div>
       </div>
-      <pre class="body">{{ entry.body }}</pre>
+      <dl class="entry-sections">
+        <div v-for="section in entry.sections" :key="section.label">
+          <dt>{{ section.label }}</dt>
+          <dd>{{ section.value }}</dd>
+        </div>
+      </dl>
     </article>
   </div>
 </template>
 
 <style scoped>
+.entry-sections {
+  display: grid;
+  gap: var(--eira-space-3);
+  margin: 0;
+}
+.entry-sections > div {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: var(--eira-space-3);
+}
+.entry-sections dt {
+  font-size: var(--eira-font-small);
+  color: var(--eira-text-secondary);
+  padding-top: 2px;
+}
+.entry-sections dd {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--eira-font-clinical);
+  max-width: 75ch;
+}
+@media (max-width: 47.9375rem) {
+  .entry-sections > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--eira-space-1);
+  }
+}
+
 .panel-header {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -73,21 +105,21 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
 }
 
 .diario-link {
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 0 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--ink);
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-md);
+  color: var(--eira-text-primary);
   font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
 }
 
 .diario-link:hover {
-  background: var(--surface-muted);
+  background: var(--eira-bg-subtle);
 }
 
 .timeline {
@@ -100,24 +132,25 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
 }
 
 .timeline-entry + .timeline-entry {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--eira-border-default);
 }
 
 .timeline-entry-header {
+  flex-wrap: wrap;
   display: flex;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
 }
 
-.timeline-entry-header h3 {
+.timeline-entry-header h2 {
   margin: 0;
   font-size: 1rem;
 }
 
 .meta {
   margin: 4px 0 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
 }
 
@@ -129,14 +162,7 @@ const emit = defineEmits<ClinicalTimelineTabEmits>()
   gap: 8px;
 }
 
-.body {
-  margin: 0;
-  white-space: pre-wrap;
-  font-family: inherit;
-  color: var(--ink);
-}
-
 .mono {
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
 }
 </style>

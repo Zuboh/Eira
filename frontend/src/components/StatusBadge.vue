@@ -19,8 +19,8 @@ const STATE_MAP: Record<string, 'urgente' | 'pending' | 'attiva' | 'chiusa'> = {
   attivo: 'attiva',
   attiva: 'attiva',
   approvata: 'attiva',
-  sbar: 'pending',
-  soapie: 'attiva',
+  sbar: 'chiusa',
+  soapie: 'chiusa',
   cambiata: 'chiusa',
   disattivato: 'chiusa',
   dimesso: 'chiusa',
@@ -43,15 +43,10 @@ const STATUS_LABEL: Record<string, string> = {
 const displayLabel = computed(
   () => props.label ?? STATUS_LABEL[props.status] ?? props.status,
 )
-const pulse = computed(
-  () =>
-    props.status === 'in_attesa_collega' ||
-    props.status === 'in_attesa_caposala',
-)
 </script>
 
 <template>
-  <span class="status-badge" :class="[state, { pulse }]">
+  <span class="status-badge" :class="state">
     {{ displayLabel }}
   </span>
 </template>
@@ -60,46 +55,27 @@ const pulse = computed(
 .status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-  /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
-  font-size: 0.8125rem;
-  font-weight: 600;
-  white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: var(--eira-radius-sm);
+  font-size: var(--eira-font-small);
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: normal;
 }
-
 .status-badge.urgente {
-  background: color-mix(in srgb, var(--state-urgente) 15%, transparent);
-  color: var(--state-urgente-on-tint);
+  color: var(--eira-status-danger);
+  background: var(--eira-status-danger-background);
 }
-
 .status-badge.pending {
-  background: color-mix(in srgb, var(--state-pending) 15%, transparent);
-  color: var(--state-pending-on-tint);
+  color: var(--eira-status-warning);
+  background: var(--eira-status-warning-background);
 }
-
 .status-badge.attiva {
-  background: color-mix(in srgb, var(--state-attiva) 15%, transparent);
-  color: var(--state-attiva-on-tint);
+  color: var(--eira-status-success);
+  background: var(--eira-status-success-background);
 }
-
 .status-badge.chiusa {
-  background: color-mix(in srgb, var(--state-chiusa) 15%, transparent);
-  color: var(--state-chiusa-on-tint);
-}
-
-.status-badge.pulse {
-  animation: status-pulse 2s ease-in-out infinite;
-}
-
-@keyframes status-pulse {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
+  color: var(--eira-status-neutral);
+  background: var(--eira-status-neutral-background);
 }
 </style>

@@ -1,6 +1,7 @@
 import { onMounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { changeTemporaryPassword } from '@/api/auth'
+import { ApiError } from '@/api/apiError'
 import type { TipoTurno } from '@/api/turni'
 import {
   getTurnoOggiUtente,
@@ -19,15 +20,6 @@ import {
 
 export type LoginStep = 'reparto' | 'tiles' | 'password' | 'change-password'
 export type LoginFocusTarget = 'reparto' | 'tile' | 'password'
-
-type LoginApiError = {
-  response?: {
-    status?: number
-    data?: {
-      detail?: string
-    }
-  }
-}
 
 type UseLoginFlowOptions = {
   focusFirstOf: (target: LoginFocusTarget) => Promise<void> | void
@@ -58,10 +50,6 @@ type UseLoginFlowResult = {
 
 const TEMPORARY_PASSWORD_EXPIRED_MESSAGE =
   'Password temporanea scaduta. Chiedi alla caposala una nuova password temporanea.'
-
-function getLoginErrorResponse(err: unknown): LoginApiError['response'] {
-  return (err as LoginApiError)?.response
-}
 
 export function useLoginFlow({
   focusFirstOf,
@@ -219,10 +207,10 @@ export function useLoginFlow({
       await auth.login(selectedUtente.value.id, password.value)
       await router.push({ name: `${auth.ruolo}-dashboard` })
     } catch (err: unknown) {
-      const response = getLoginErrorResponse(err)
       if (
-        response?.status === 403 &&
-        response.data?.detail === 'password_change_required'
+        err instanceof ApiError &&
+        err.status === 403 &&
+        err.detail === 'password_change_required'
       ) {
         temporaryPassword.value = password.value
         password.value = ''
@@ -230,8 +218,9 @@ export function useLoginFlow({
         confirmPassword.value = ''
         step.value = 'change-password'
       } else if (
-        response?.status === 403 &&
-        response.data?.detail === 'temporary_password_expired'
+        err instanceof ApiError &&
+        err.status === 403 &&
+        err.detail === 'temporary_password_expired'
       ) {
         password.value = ''
         error.value = TEMPORARY_PASSWORD_EXPIRED_MESSAGE
@@ -267,10 +256,10 @@ export function useLoginFlow({
       success.value = 'Password aggiornata. Accedi con la nuova password.'
       await focusFirstOf('password')
     } catch (err: unknown) {
-      const response = getLoginErrorResponse(err)
       if (
-        response?.status === 403 &&
-        response.data?.detail === 'temporary_password_expired'
+        err instanceof ApiError &&
+        err.status === 403 &&
+        err.detail === 'temporary_password_expired'
       ) {
         error.value = TEMPORARY_PASSWORD_EXPIRED_MESSAGE
       } else {

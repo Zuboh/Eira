@@ -41,9 +41,7 @@ test('infermiere requests summer leave and caposala approves it', async ({
   ).toBeVisible()
   expect(await checkA11y(infermierePage)).toEqual([])
 
-  await infermierePage
-    .getByRole('combobox', { name: 'Seleziona un blocco di 2 settimane' })
-    .click()
+  await infermierePage.getByRole('combobox', { name: '1ª scelta' }).click()
   const primaPreferenza = infermierePage.getByRole('option').first()
   const preferenzaLabel = await primaPreferenza.textContent()
   await primaPreferenza.click()

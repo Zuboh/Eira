@@ -54,13 +54,17 @@ const resolvedAvatarUrl = computed(() => {
 
 .user-avatar:not(.user-avatar--initials) {
   object-fit: cover;
-  border: 1px solid var(--border);
+  border: 1px solid var(--eira-border-default);
 }
 
 .user-avatar--initials {
-  background: color-mix(in oklch, var(--color-primary) 14%, var(--surface));
-  color: var(--color-primary-on-tint);
+  background: color-mix(
+    in oklch,
+    var(--eira-action-primary) 14%,
+    var(--eira-bg-surface)
+  );
+  color: var(--eira-action-selected-text);
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 </style>

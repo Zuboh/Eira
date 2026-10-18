@@ -32,7 +32,7 @@ const { mese, infermieri, infermiereId, bancaOre, loading, error, spostaMese } =
 
 <style scoped>
 .banca-ore-view {
-  padding: var(--page-padding);
+  padding: var(--eira-page-padding);
   max-width: 900px;
   margin: 0 auto;
 }

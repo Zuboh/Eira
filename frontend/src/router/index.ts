@@ -10,6 +10,7 @@ declare module 'vue-router' {
     public?: boolean
     roles?: readonly UserRole[]
     nav?: {
+      group: 'assistenza' | 'organizzazione' | 'panoramica'
       label: string
       order: number
       icon: string
@@ -53,7 +54,12 @@ const router = createRouter({
       component: () => import('@/views/infermiere/DashboardView.vue'),
       meta: {
         roles: ['infermiere'],
-        nav: { label: 'Dashboard', order: 10, icon: 'pi-home' },
+        nav: {
+          group: 'panoramica',
+          label: 'Dashboard',
+          order: 10,
+          icon: 'pi-home',
+        },
       },
     },
     {
@@ -62,7 +68,12 @@ const router = createRouter({
       component: () => import('@/views/caposala/DashboardView.vue'),
       meta: {
         roles: ['caposala'],
-        nav: { label: 'Dashboard', order: 10, icon: 'pi-home' },
+        nav: {
+          group: 'panoramica',
+          label: 'Dashboard',
+          order: 10,
+          icon: 'pi-home',
+        },
       },
     },
     {
@@ -71,7 +82,12 @@ const router = createRouter({
       component: () => import('@/views/caposala/StaffView.vue'),
       meta: {
         roles: ['caposala'],
-        nav: { label: 'Personale', order: 60, icon: 'pi-id-card' },
+        nav: {
+          group: 'organizzazione',
+          label: 'Personale',
+          order: 60,
+          icon: 'pi-id-card',
+        },
       },
     },
     {
@@ -80,7 +96,12 @@ const router = createRouter({
       component: () => import('@/views/PazientiView.vue'),
       meta: {
         roles: ALL_ROLES,
-        nav: { label: 'Pazienti', order: 20, icon: 'pi-users' },
+        nav: {
+          group: 'assistenza',
+          label: 'Pazienti',
+          order: 20,
+          icon: 'pi-users',
+        },
       },
     },
     {
@@ -102,7 +123,12 @@ const router = createRouter({
       component: () => import('@/views/ConsegneSbarView.vue'),
       meta: {
         roles: ALL_ROLES,
-        nav: { label: 'Diario Clinico', order: 30, icon: 'pi-book' },
+        nav: {
+          group: 'assistenza',
+          label: 'Diario Clinico',
+          order: 30,
+          icon: 'pi-book',
+        },
       },
     },
     {
@@ -111,7 +137,12 @@ const router = createRouter({
       component: () => import('@/views/CarelloFarmaciView.vue'),
       meta: {
         roles: ALL_ROLES,
-        nav: { label: 'Carello Farmaci', order: 35, icon: 'pi-shopping-cart' },
+        nav: {
+          group: 'assistenza',
+          label: 'Carello Farmaci',
+          order: 35,
+          icon: 'pi-shopping-cart',
+        },
       },
     },
     {
@@ -120,7 +151,12 @@ const router = createRouter({
       component: () => import('@/views/CambioTurnoView.vue'),
       meta: {
         roles: ALL_ROLES,
-        nav: { label: 'Cambio Turno', order: 40, icon: 'pi-sync' },
+        nav: {
+          group: 'organizzazione',
+          label: 'Cambio Turno',
+          order: 40,
+          icon: 'pi-sync',
+        },
       },
     },
     {
@@ -129,7 +165,12 @@ const router = createRouter({
       component: () => import('@/views/FerieView.vue'),
       meta: {
         roles: ALL_ROLES,
-        nav: { label: 'Ferie', order: 45, icon: 'pi-sun' },
+        nav: {
+          group: 'organizzazione',
+          label: 'Ferie',
+          order: 45,
+          icon: 'pi-sun',
+        },
       },
     },
     {
@@ -138,7 +179,12 @@ const router = createRouter({
       component: () => import('@/views/BancaOreView.vue'),
       meta: {
         roles: ['caposala'],
-        nav: { label: 'Banca Ore', order: 50, icon: 'pi-wallet' },
+        nav: {
+          group: 'organizzazione',
+          label: 'Banca Ore',
+          order: 50,
+          icon: 'pi-wallet',
+        },
       },
     },
   ],

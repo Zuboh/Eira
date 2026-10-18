@@ -29,7 +29,14 @@ test('caposala logs in through the device reparto/tile flow and lands on the das
       name: `${SEED_CAPOSALA.nome} ${SEED_CAPOSALA.cognome}`,
     })
     .click()
-  await page.getByLabel('Password').fill(SEED_CAPOSALA.password)
+  expect(await checkA11y(page)).toEqual([])
+  const password = page.getByLabel('Password', { exact: true })
+  await password.fill(SEED_CAPOSALA.password)
+  await page.getByRole('button', { name: 'Mostra password' }).focus()
+  await page.keyboard.press('Enter')
+  await expect(password).toHaveAttribute('type', 'text')
+  await page.getByRole('button', { name: 'Nascondi password' }).click()
+  await expect(password).toHaveAttribute('type', 'password')
   await page.getByRole('button', { name: 'Accedi' }).click()
 
   await expect(

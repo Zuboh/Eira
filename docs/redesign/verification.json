@@ -1,0 +1,2958 @@
+{
+  "date": "2026-10-15",
+  "browser": "Chrome locale via Playwright",
+  "reports": {
+    "views": [
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/infermiere",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/consegne-sbar",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/cambio-turno",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/ferie",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/carello-farmaci",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/profilo",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/caposala/personale",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/banca-ore",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "infermiere",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 1024,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 768,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      },
+      {
+        "role": "caposala",
+        "path": "/pazienti/1",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "targets": [],
+        "violations": [],
+        "errors": []
+      }
+    ],
+    "dialogs": [
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 1440,
+        "button": "Nuova consegna",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 1440,
+        "button": "Nuovi parametri",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 1440,
+        "button": "Nuova Norton",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 1440,
+        "button": "Nuova Conley",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 1440,
+        "button": "Richiedi cambio",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 390,
+        "button": "Nuova consegna",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 390,
+        "button": "Nuovi parametri",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 390,
+        "button": "Nuova Norton",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 390,
+        "button": "Nuova Conley",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 390,
+        "button": "Richiedi cambio",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 320,
+        "button": "Nuova consegna",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 320,
+        "button": "Nuovi parametri",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 320,
+        "button": "Nuova Norton",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 320,
+        "button": "Nuova Conley",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "light",
+        "width": 320,
+        "button": "Richiedi cambio",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 1440,
+        "button": "Nuova consegna",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 1440,
+        "button": "Nuovi parametri",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 1440,
+        "button": "Nuova Norton",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 1440,
+        "button": "Nuova Conley",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 1440,
+        "button": "Richiedi cambio",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 390,
+        "button": "Nuova consegna",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 390,
+        "button": "Nuovi parametri",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 390,
+        "button": "Nuova Norton",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 390,
+        "button": "Nuova Conley",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 390,
+        "button": "Richiedi cambio",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 320,
+        "button": "Nuova consegna",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 320,
+        "button": "Nuovi parametri",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 320,
+        "button": "Nuova Norton",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 320,
+        "button": "Nuova Conley",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "infermiere",
+        "scheme": "dark",
+        "width": 320,
+        "button": "Richiedi cambio",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 1440,
+        "button": "Nuovo paziente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 1440,
+        "button": "Modifica",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 1440,
+        "button": "Aggiungi utente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 390,
+        "button": "Nuovo paziente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 390,
+        "button": "Modifica",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 390,
+        "button": "Aggiungi utente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 320,
+        "button": "Nuovo paziente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 320,
+        "button": "Modifica",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "light",
+        "width": 320,
+        "button": "Aggiungi utente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 1440,
+        "button": "Nuovo paziente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 1440,
+        "button": "Modifica",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 1440,
+        "button": "Aggiungi utente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 390,
+        "button": "Nuovo paziente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 390,
+        "button": "Modifica",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 390,
+        "button": "Aggiungi utente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 320,
+        "button": "Nuovo paziente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 320,
+        "button": "Modifica",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      },
+      {
+        "role": "caposala",
+        "scheme": "dark",
+        "width": 320,
+        "button": "Aggiungi utente",
+        "pageOverflow": false,
+        "dialogOverflow": false,
+        "targets": [],
+        "focusReturned": true,
+        "violations": []
+      }
+    ],
+    "menus": [
+      {
+        "name": "date",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-datepicker-panel p-component",
+            "w": 318,
+            "left": 720.5,
+            "right": 1038.5
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "select",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-select-overlay p-component",
+            "w": 316,
+            "left": 389,
+            "right": 705
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "confirm",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "panels": [],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "month",
+        "scheme": "light",
+        "width": 1440,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-popover p-component",
+            "w": 250,
+            "left": 264,
+            "right": 514
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "date",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-datepicker-panel p-component",
+            "w": 318,
+            "left": 37,
+            "right": 355
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "select",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-select-overlay p-component",
+            "w": 301,
+            "left": 37,
+            "right": 338
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "confirm",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "panels": [],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "drawer",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-drawer p-component nav-drawer",
+            "w": 272,
+            "left": 0,
+            "right": 272
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "month",
+        "scheme": "light",
+        "width": 390,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-popover p-component",
+            "w": 250,
+            "left": 16,
+            "right": 266
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "date",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-datepicker-panel p-component",
+            "w": 318,
+            "left": 0,
+            "right": 318
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "select",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-select-overlay p-component",
+            "w": 231,
+            "left": 37,
+            "right": 268
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "confirm",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "panels": [],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "drawer",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-drawer p-component nav-drawer",
+            "w": 272,
+            "left": 0,
+            "right": 272
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "month",
+        "scheme": "light",
+        "width": 320,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-popover p-component",
+            "w": 250,
+            "left": 16,
+            "right": 266
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "date",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-datepicker-panel p-component",
+            "w": 318,
+            "left": 720.5,
+            "right": 1038.5
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "select",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-select-overlay p-component",
+            "w": 316,
+            "left": 389,
+            "right": 705
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "confirm",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "panels": [],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "month",
+        "scheme": "dark",
+        "width": 1440,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-popover p-component",
+            "w": 250,
+            "left": 264,
+            "right": 514
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "date",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-datepicker-panel p-component",
+            "w": 318,
+            "left": 37,
+            "right": 355
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "select",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-select-overlay p-component",
+            "w": 301,
+            "left": 37,
+            "right": 338
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "confirm",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "panels": [],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "drawer",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-drawer p-component nav-drawer",
+            "w": 272,
+            "left": 0,
+            "right": 272
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "month",
+        "scheme": "dark",
+        "width": 390,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-popover p-component",
+            "w": 250,
+            "left": 16,
+            "right": 266
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "date",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-datepicker-panel p-component",
+            "w": 318,
+            "left": 0,
+            "right": 318
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "select",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-select-overlay p-component",
+            "w": 231,
+            "left": 37,
+            "right": 268
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "confirm",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "panels": [],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "drawer",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-drawer p-component nav-drawer",
+            "w": 272,
+            "left": 0,
+            "right": 272
+          }
+        ],
+        "small": [],
+        "violations": []
+      },
+      {
+        "name": "month",
+        "scheme": "dark",
+        "width": 320,
+        "overflow": false,
+        "panels": [
+          {
+            "c": "p-popover p-component",
+            "w": 250,
+            "left": 16,
+            "right": 266
+          }
+        ],
+        "small": [],
+        "violations": []
+      }
+    ],
+    "login": [
+      {
+        "scheme": "light",
+        "width": 1440,
+        "step": "reparto",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 1440,
+        "step": "utenti",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 1440,
+        "step": "password",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 1440,
+        "step": "invalid",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 1440,
+        "step": "temporanea",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 390,
+        "step": "reparto",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 390,
+        "step": "utenti",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 390,
+        "step": "password",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 390,
+        "step": "invalid",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 390,
+        "step": "temporanea",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 320,
+        "step": "reparto",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 320,
+        "step": "utenti",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 320,
+        "step": "password",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 320,
+        "step": "invalid",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "light",
+        "width": 320,
+        "step": "temporanea",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 1440,
+        "step": "reparto",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 1440,
+        "step": "utenti",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 1440,
+        "step": "password",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 1440,
+        "step": "invalid",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 1440,
+        "step": "temporanea",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 390,
+        "step": "reparto",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 390,
+        "step": "utenti",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 390,
+        "step": "password",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 390,
+        "step": "invalid",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 390,
+        "step": "temporanea",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 320,
+        "step": "reparto",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 320,
+        "step": "utenti",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 320,
+        "step": "password",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 320,
+        "step": "invalid",
+        "overflow": false,
+        "violations": []
+      },
+      {
+        "scheme": "dark",
+        "width": 320,
+        "step": "temporanea",
+        "overflow": false,
+        "violations": []
+      }
+    ]
+  }
+}

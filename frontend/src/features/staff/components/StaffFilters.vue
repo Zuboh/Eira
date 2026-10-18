@@ -15,6 +15,7 @@ defineProps<StaffFiltersProps>()
       type="button"
       class="chip"
       :class="{ active: filter === option.value }"
+      :aria-pressed="filter === option.value"
       @click="filter = option.value"
     >
       {{ option.label }}
@@ -32,19 +33,19 @@ defineProps<StaffFiltersProps>()
 
 .chip {
   padding: 6px 14px;
-  min-height: var(--size-touch);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--steel);
+  min-height: var(--eira-size-touch);
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-md);
+  background: var(--eira-bg-surface);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
 }
 
 .chip.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--eira-action-selected-background);
+  border-color: transparent;
+  color: var(--eira-action-selected-text);
 }
 </style>

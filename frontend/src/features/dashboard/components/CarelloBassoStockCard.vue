@@ -33,6 +33,7 @@ function isLowStock(riga: CarelloFarmaco) {
     />
     <p class="summary">{{ summary }}</p>
     <EiraTable
+      label="Farmaci sotto soglia"
       flush
       :loading="loading"
       :empty="alertRows.length === 0"
@@ -79,7 +80,7 @@ function isLowStock(riga: CarelloFarmaco) {
 
 .summary,
 .meta {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
 }
 

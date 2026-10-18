@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InlineError from '@/components/ui/InlineError.vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputNumber from 'primevue/inputnumber'
@@ -27,49 +28,80 @@ const emit = defineEmits<PatientChartSaveEmit>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Data" for-id="norton-data" required
+      <InlineError :message="error" />
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Data"
+        for-id="norton-data"
+        required
         ><InputText
+          v-bind="fieldAttrs"
           id="norton-data"
           v-model="form.data_valutazione"
           type="date"
           required
       /></FormField>
-      <FormField label="Condizioni generali (1-4)" for-id="norton-condizioni"
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Condizioni generali (1-4)"
+        for-id="norton-condizioni"
         ><InputNumber
           v-model="form.condizioni_generali"
+          :pt="{ pcInputText: { root: fieldAttrs } }"
           input-id="norton-condizioni"
           :min="1"
           :max="4"
       /></FormField>
-      <FormField label="Stato mentale (1-4)" for-id="norton-stato-mentale"
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Stato mentale (1-4)"
+        for-id="norton-stato-mentale"
         ><InputNumber
           v-model="form.stato_mentale"
+          :pt="{ pcInputText: { root: fieldAttrs } }"
           input-id="norton-stato-mentale"
           :min="1"
           :max="4"
       /></FormField>
-      <FormField label="Attività (1-4)" for-id="norton-attivita"
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Attività (1-4)"
+        for-id="norton-attivita"
         ><InputNumber
           v-model="form.attivita"
+          :pt="{ pcInputText: { root: fieldAttrs } }"
           input-id="norton-attivita"
           :min="1"
           :max="4"
       /></FormField>
-      <FormField label="Mobilità (1-4)" for-id="norton-mobilita"
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Mobilità (1-4)"
+        for-id="norton-mobilita"
         ><InputNumber
           v-model="form.mobilita"
+          :pt="{ pcInputText: { root: fieldAttrs } }"
           input-id="norton-mobilita"
           :min="1"
           :max="4"
       /></FormField>
-      <FormField label="Incontinenza (1-4)" for-id="norton-incontinenza"
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Incontinenza (1-4)"
+        for-id="norton-incontinenza"
         ><InputNumber
           v-model="form.incontinenza"
+          :pt="{ pcInputText: { root: fieldAttrs } }"
           input-id="norton-incontinenza"
           :min="1"
           :max="4"
       /></FormField>
-      <Button type="submit" label="Salva" :loading="saving" />
+      <Button
+        class="eira-saving-button"
+        type="submit"
+        label="Salva"
+        :loading="saving"
+      />
     </form>
   </Dialog>
 </template>

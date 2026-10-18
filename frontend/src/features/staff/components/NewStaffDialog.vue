@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InlineError from '@/components/ui/InlineError.vue'
 import { watch } from 'vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
@@ -36,32 +37,94 @@ watch(visible, (isVisible) => {
     :style="dialogStyle.md"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Nome" forId="staff-nome" required>
-        <InputText id="staff-nome" v-model="form.nome" required />
-      </FormField>
-      <FormField label="Cognome" forId="staff-cognome" required>
-        <InputText id="staff-cognome" v-model="form.cognome" required />
-      </FormField>
-      <FormField label="Email" forId="staff-email" required>
+      <InlineError :message="error" />
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Nome"
+        forId="staff-nome"
+        required
+      >
         <InputText
+          v-bind="fieldAttrs"
+          id="staff-nome"
+          v-model="form.nome"
+          required
+        />
+      </FormField>
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Cognome"
+        forId="staff-cognome"
+        required
+      >
+        <InputText
+          v-bind="fieldAttrs"
+          id="staff-cognome"
+          v-model="form.cognome"
+          required
+        />
+      </FormField>
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Email"
+        forId="staff-email"
+        required
+      >
+        <InputText
+          v-bind="fieldAttrs"
           id="staff-email"
           v-model="form.email"
           type="email"
           required
         />
       </FormField>
-      <FormField label="Password" forId="staff-password" required>
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Password"
+        forId="staff-password"
+        required
+      >
         <Password
           v-model="form.password"
+          :input-props="fieldAttrs"
           inputId="staff-password"
           toggleMask
           :feedback="false"
           required
-        />
+        >
+          <template #maskicon="{ toggleCallback }">
+            <Button
+              class="eira-password-toggle"
+              type="button"
+              icon="pi pi-eye-slash"
+              text
+              severity="secondary"
+              aria-label="Nascondi password"
+              @click="toggleCallback"
+            />
+          </template>
+          <template #unmaskicon="{ toggleCallback }">
+            <Button
+              class="eira-password-toggle"
+              type="button"
+              icon="pi pi-eye"
+              text
+              severity="secondary"
+              aria-label="Mostra password"
+              @click="toggleCallback"
+            />
+          </template>
+        </Password>
       </FormField>
-      <FormField label="Ruolo" forId="staff-ruolo" required>
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Ruolo"
+        forId="staff-ruolo"
+        required
+      >
         <Select
           v-model="form.ruolo"
+          :pt="{ label: fieldAttrs }"
           inputId="staff-ruolo"
           :options="ruoloOptions"
           optionLabel="label"
@@ -71,7 +134,12 @@ watch(visible, (isVisible) => {
       <FormField label="Foto profilo (opzionale)" forId="staff-avatar">
         <AvatarFilePicker v-model="avatarFile" :disabled="saving" />
       </FormField>
-      <Button type="submit" label="Crea" :loading="saving" />
+      <Button
+        class="eira-saving-button"
+        type="submit"
+        label="Crea"
+        :loading="saving"
+      />
     </form>
   </Dialog>
 </template>

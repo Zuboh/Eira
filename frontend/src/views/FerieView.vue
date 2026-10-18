@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import Button from 'primevue/button'
 import Select from 'primevue/select'
 import FormField from '@/components/ui/FormField.vue'
+import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import ApprovaFerieDialog from '@/features/ferie/components/ApprovaFerieDialog.vue'
@@ -70,7 +71,8 @@ onMounted(load)
   <div class="ferie-view">
     <PageHeader title="Ferie" />
 
-    <InlineError :message="error" />
+    <InlineError :message="error" retryable @retry="load" />
+    <SkeletonBlock v-if="loading" :lines="5" />
 
     <form v-if="showForm" class="richiesta-form" @submit.prevent="salva">
       <p class="form-title">
@@ -83,6 +85,7 @@ onMounted(load)
       <FormField
         v-for="(_, index) in preferenzeSelezionate"
         :key="preferenceFieldIds[index]"
+        v-slot="{ fieldAttrs }"
         :for-id="preferenceFieldIds[index]"
         :label="`${index + 1}ª scelta`"
         :required="index === 0"
@@ -90,6 +93,7 @@ onMounted(load)
         <div class="slot-row">
           <Select
             v-model="preferenzeSelezionate[index]"
+            :pt="{ label: fieldAttrs }"
             :input-id="preferenceFieldIds[index]"
             :options="slotOptionsFor(index)"
             optionLabel="label"
@@ -127,6 +131,7 @@ onMounted(load)
             @click="resetForm"
           />
           <Button
+            class="eira-saving-button"
             type="submit"
             :label="
               editingId !== null ? 'Salva modifiche' : 'Richiedi ferie estive'
@@ -139,7 +144,7 @@ onMounted(load)
     </form>
 
     <FerieTable
-      v-if="!loading"
+      v-if="!loading && !error"
       :richieste="richieste"
       :current-role="currentRole"
       :current-user-id="auth.user?.id ?? null"
@@ -153,10 +158,12 @@ onMounted(load)
     <RifiutoFerieDialog
       v-model:visible="rifiutoDialog"
       v-model:motivo="motivoRifiuto"
+      :error="error"
       @save="confermaRifiuto"
     />
     <ApprovaFerieDialog
       v-model:visible="approvaDialog"
+      :error="error"
       :richiesta="approvaTarget"
       @confirm="confermaApprova"
     />
@@ -165,8 +172,8 @@ onMounted(load)
 
 <style scoped>
 .ferie-view {
-  padding: var(--page-padding);
-  max-width: 1200px;
+  padding: var(--eira-page-padding);
+  max-width: var(--eira-page-lg);
   margin: 0 auto;
 }
 
@@ -175,11 +182,9 @@ onMounted(load)
   flex-direction: column;
   gap: 16px;
   margin-bottom: 24px;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  padding-block: var(--eira-space-5);
+  border-block: 1px solid var(--eira-border-default);
+  background: var(--eira-bg-surface);
 }
 
 .form-title {
@@ -194,6 +199,7 @@ onMounted(load)
 }
 
 .form-actions {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -201,8 +207,18 @@ onMounted(load)
 }
 
 .form-actions-submit {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+@media (max-width: 47.9375rem) {
+  .slot-row {
+    min-width: 0;
+  }
+  .slot-row :deep(.p-select) {
+    min-width: 0;
+    flex: 1;
+  }
 }
 </style>

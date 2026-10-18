@@ -25,32 +25,23 @@ const hasContent = computed(() =>
 
 <style scoped>
 .empty-state {
-  width: 100%;
-  padding: var(--space-6);
-  margin-top: var(--space-4);
-  background: var(--surface-inset);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-sm);
-  text-align: center;
+  min-width: 0;
+  padding-block: var(--eira-space-6);
+  border-block: 1px solid var(--eira-border-default);
 }
-
 .empty-state__title {
-  margin-bottom: 4px;
+  margin-bottom: var(--eira-space-2);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
 }
-
 .empty-state__message {
-  margin: 0 auto;
-  color: var(--steel);
-  font-size: 0.875rem;
+  color: var(--eira-text-secondary);
+  font-size: var(--eira-font-body);
 }
-
 .empty-state__actions {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+  gap: var(--eira-space-2);
+  margin-top: var(--eira-space-4);
 }
 </style>

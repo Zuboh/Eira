@@ -1,3 +1,4 @@
+import * as utentiApi from '@/api/utenti'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useConsegneSbar } from '@/features/sbar/useConsegneSbar'
@@ -12,6 +13,7 @@ import type { ConsegnaSbar } from '@/api/consegneSbar'
 vi.mock('@/api/consegneSbar')
 vi.mock('@/api/diarioSoapie')
 vi.mock('@/api/pazienti')
+vi.mock('@/api/utenti')
 vi.mock('@/api/turni')
 
 const infermiere = {
@@ -53,6 +55,7 @@ function consegna(overrides: Partial<ConsegnaSbar> = {}): ConsegnaSbar {
 }
 
 beforeEach(() => {
+  vi.mocked(utentiApi.listUtenti).mockResolvedValue({ data: [] })
   setActivePinia(createPinia())
   vi.mocked(consegneSbarApi.listConsegneSbar).mockResolvedValue({
     data: { items: [], total: 0 },

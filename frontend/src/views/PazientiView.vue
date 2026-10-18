@@ -42,7 +42,7 @@ onMounted(load)
       </template>
     </PageHeader>
 
-    <InlineError :message="error" />
+    <InlineError :message="error" retryable @retry="load" />
 
     <PatientsTable
       v-if="loading || pazienti.length > 0"
@@ -51,12 +51,12 @@ onMounted(load)
     />
 
     <EmptyState
-      v-if="!loading && pazienti.length === 0 && isNurse"
+      v-if="!loading && !error && pazienti.length === 0 && isNurse"
       title="Nessun paziente visibile"
       message="Nessun turno attivo assegnato: nessun paziente visibile."
     />
     <EmptyState
-      v-else-if="!loading && pazienti.length === 0"
+      v-else-if="!loading && !error && pazienti.length === 0"
       title="Nessun paziente in reparto"
       message="Quando saranno creati pazienti attivi, appariranno in questa lista."
     />
@@ -64,6 +64,7 @@ onMounted(load)
     <NewPatientDialog
       v-model:visible="dialogOpen"
       v-model:form="form"
+      :error="error"
       :saving="saving"
       @save="salva"
     />
@@ -72,8 +73,8 @@ onMounted(load)
 
 <style scoped>
 .pazienti-view {
-  padding: var(--page-padding);
-  max-width: 1200px;
+  padding: var(--eira-page-padding);
+  max-width: var(--eira-page-lg);
   margin: 0 auto;
 }
 </style>

@@ -25,8 +25,12 @@ withDefaults(defineProps<{ lines?: number; ariaLabel?: string }>(), {
 
 .skeleton-block__bar {
   height: 0.875rem;
-  border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--steel) 16%, var(--surface));
+  border-radius: var(--eira-radius-md);
+  background: color-mix(
+    in srgb,
+    var(--eira-text-secondary) 16%,
+    var(--eira-bg-surface)
+  );
 }
 
 .skeleton-block__bar:nth-child(odd) {
