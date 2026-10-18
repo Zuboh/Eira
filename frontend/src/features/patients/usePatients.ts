@@ -34,6 +34,7 @@ export function usePatients() {
   }
 
   function apriNuovo() {
+    error.value = ''
     form.value = createEmptyNewPatientForm()
     dialogOpen.value = true
   }

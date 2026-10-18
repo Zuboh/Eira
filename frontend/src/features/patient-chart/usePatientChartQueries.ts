@@ -1,4 +1,5 @@
-import { ref, unref, type MaybeRef } from 'vue'
+import { ref, unref, computed, type MaybeRef } from 'vue'
+import { listUtenti, type Utente } from '@/api/utenti'
 import { getPaziente, type Paziente } from '@/api/pazienti'
 import { getMieAssegnazioni, listTurni } from '@/api/turni'
 import { listDiarioSoapie, type VoceDiarioSoapie } from '@/api/diarioSoapie'
@@ -24,6 +25,12 @@ export function usePatientChartQueries(
   pazienteId: MaybeRef<number>,
   ruolo: MaybeRef<string | null>,
 ) {
+  const autori = ref<Utente[]>([])
+  const autoriById = computed(
+    () => new Map(autori.value.map((u) => [u.id, `${u.cognome} ${u.nome}`])),
+  )
+  const nomeAutore = (id: number) =>
+    autoriById.value.get(id) ?? `Operatore #${id}`
   const paziente = ref<Paziente | null>(null)
   const error = ref('')
   const loading = ref(false)
@@ -59,7 +66,7 @@ export function usePatientChartQueries(
     error.value = ''
     loading.value = true
     try {
-      const [p, timelineData, v, pv] = await Promise.all([
+      const [p, timelineData, v, pv, users] = await Promise.all([
         getPaziente(unref(pazienteId)),
         Promise.all([
           listDiarioSoapie(unref(pazienteId)),
@@ -67,7 +74,9 @@ export function usePatientChartQueries(
         ]),
         getValutazioni(unref(pazienteId)),
         listParametriVitali(unref(pazienteId)),
+        listUtenti().catch(() => ({ data: [] as Utente[] })),
       ])
+      autori.value = users.data
       paziente.value = p.data
       soapie.value = timelineData[0].data
       sbar.value = timelineData[1].data
@@ -92,6 +101,7 @@ export function usePatientChartQueries(
   }
 
   return {
+    nomeAutore,
     paziente,
     error,
     loading,

@@ -26,42 +26,98 @@ const emit = defineEmits<{
     <div class="field">
       <label for="new-password">Nuova password</label>
       <Password
-        id="new-password"
         v-model="newPassword"
+        input-id="new-password"
         :feedback="false"
         toggle-mask
         autocomplete="new-password"
         :disabled="loading"
-        :aria-invalid="!!error"
+        :invalid="!!error"
+        :input-props="{
+          'aria-describedby': error ? 'password-error' : undefined,
+          'aria-invalid': !!error,
+        }"
         required
         minlength="8"
-      />
+      >
+        <template #maskicon="{ toggleCallback }">
+          <Button
+            class="eira-password-toggle"
+            type="button"
+            icon="pi pi-eye-slash"
+            text
+            severity="secondary"
+            aria-label="Nascondi password"
+            @click="toggleCallback"
+          />
+        </template>
+        <template #unmaskicon="{ toggleCallback }">
+          <Button
+            class="eira-password-toggle"
+            type="button"
+            icon="pi pi-eye"
+            text
+            severity="secondary"
+            aria-label="Mostra password"
+            @click="toggleCallback"
+          />
+        </template>
+      </Password>
     </div>
 
     <div class="field">
       <label for="confirm-password">Conferma password</label>
       <Password
-        id="confirm-password"
         v-model="confirmPassword"
+        input-id="confirm-password"
         :feedback="false"
         toggle-mask
         autocomplete="new-password"
         :disabled="loading"
-        :aria-invalid="!!error"
+        :invalid="!!error"
+        :input-props="{
+          'aria-describedby': error ? 'password-error' : undefined,
+          'aria-invalid': !!error,
+        }"
         required
         minlength="8"
-      />
+      >
+        <template #maskicon="{ toggleCallback }">
+          <Button
+            class="eira-password-toggle"
+            type="button"
+            icon="pi pi-eye-slash"
+            text
+            severity="secondary"
+            aria-label="Nascondi password"
+            @click="toggleCallback"
+          />
+        </template>
+        <template #unmaskicon="{ toggleCallback }">
+          <Button
+            class="eira-password-toggle"
+            type="button"
+            icon="pi pi-eye"
+            text
+            severity="secondary"
+            aria-label="Mostra password"
+            @click="toggleCallback"
+          />
+        </template>
+      </Password>
     </div>
 
     <Transition name="error-pop">
-      <p v-if="error" class="error" role="alert">{{ error }}</p>
+      <p v-if="error" id="password-error" class="error" role="alert">
+        {{ error }}
+      </p>
     </Transition>
 
     <Button
       type="submit"
       label="Aggiorna password"
       :loading="loading"
-      class="submit"
+      class="eira-saving-button submit"
     />
 
     <div class="password-links">
@@ -91,7 +147,7 @@ const emit = defineEmits<{
 .field label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .field :deep(input) {
@@ -99,32 +155,25 @@ const emit = defineEmits<{
 }
 
 .error {
-  color: var(--state-urgente);
+  color: var(--eira-status-danger);
   font-size: 0.8125rem;
 }
 
 .error-pop-enter-active,
 .error-pop-leave-active {
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
+  transition: opacity var(--eira-motion-duration) var(--eira-motion-easing);
 }
 
 .error-pop-enter-from,
 .error-pop-leave-to {
   opacity: 0;
-  transform: translateY(-2px);
 }
 
 .submit {
   margin-top: 8px;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   font-size: 1rem;
   font-weight: 600;
-}
-
-.submit:active {
-  transform: scale(0.98);
 }
 
 .password-links {
@@ -137,16 +186,16 @@ const emit = defineEmits<{
   background: none;
   border: none;
   padding: 4px 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   text-decoration: underline;
   cursor: pointer;
   align-self: flex-start;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
 }
 
 .link-btn:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 </style>

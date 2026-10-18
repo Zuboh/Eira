@@ -50,37 +50,32 @@ onMounted(load)
   <div class="dashboard-infermiere">
     <PageHeader title="Dashboard" :reparto="auth.repartoNome" />
 
-    <InlineError :message="error" />
+    <InlineError :message="error" retryable @retry="load" />
 
-    <div class="dashboard-grid">
-      <div class="priority-column">
+    <div v-if="!error" class="dashboard-grid">
+      <div class="operational-row">
         <ProssimiTurniCard
           :turni="prossimiTurniConColleghi"
           :loading="loading"
         />
-
         <RichiesteCambioTurnoCard
           :richieste="richiesteCambioTurno"
           :loading="loading"
           :nome-utente="nomeUtente"
         />
       </div>
-
-      <div class="main-column">
-        <TurniCalendarCard class="calendar-hero" :events="calendarEvents" />
-
+      <div class="clinical-row">
         <PazientiAttiviCard :pazienti="pazientiAttivi" :loading="loading" />
-      </div>
-
-      <div class="secondary-column">
         <ConsegneRecentiCard
           :consegne="consegneRecenti"
           :loading="loading"
           :nome-paziente="nomePaziente"
         />
-
+      </div>
+      <TurniCalendarCardSkeleton v-if="loading" />
+      <TurniCalendarCard v-else :events="calendarEvents" />
+      <div class="operational-row">
         <CarelloBassoStockCard :farmaci="farmaciCritici" :loading="loading" />
-
         <BancaOreSection
           compact
           :banca-ore="bancaOre"
@@ -97,53 +92,30 @@ onMounted(load)
 
 <style scoped>
 .dashboard-infermiere {
-  padding: var(--page-padding);
-  max-width: var(--page-2xl);
+  padding: var(--eira-page-padding);
+  max-width: var(--eira-page-xl);
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  container-type: inline-size;
 }
-
-.calendar-hero {
-  width: 100%;
-}
-
 .dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'priority' 'main' 'secondary';
-  gap: 20px;
-  align-items: start;
-}
-
-.priority-column {
-  grid-area: priority;
-}
-
-.main-column {
-  grid-area: main;
-}
-
-.secondary-column {
-  grid-area: secondary;
-}
-
-.priority-column,
-.main-column,
-.secondary-column {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  gap: var(--eira-space-6);
   min-width: 0;
 }
-
-@container (min-width: 64rem) {
-  .dashboard-grid {
-    grid-template-columns: minmax(0, 1.7fr) minmax(19rem, 0.9fr);
-    grid-template-rows: max-content 1fr;
-    grid-template-areas: 'main priority' 'main secondary';
+.operational-row,
+.clinical-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--eira-space-8);
+  align-items: start;
+}
+@media (max-width: 74.9375rem) {
+  .clinical-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 47.9375rem) {
+  .operational-row {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 </style>

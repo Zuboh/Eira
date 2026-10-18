@@ -1,8 +1,7 @@
 import type { PazienteUpdatePayload } from '@/api/pazienti'
-import type { ConsegnaSbar, PrioritaConsegna } from '@/api/consegneSbar'
+import type { PrioritaConsegna } from '@/api/consegneSbar'
 import type { Paziente } from '@/api/pazienti'
 import type { AssegnazioneTurnoOption } from '@/features/sbar/turnoOptions'
-import type { VoceDiarioSoapie } from '@/api/diarioSoapie'
 import type {
   ParametriVitali,
   ParametriVitaliCreatePayload,
@@ -40,7 +39,7 @@ export type ClinicalTimelineEntry = {
   timestamp: string
   autoreId: number
   title: string
-  body: string
+  sections: { label: string; value: string }[]
   priorita?: PrioritaConsegna
 }
 
@@ -49,6 +48,7 @@ export type PatientChartSaveEmit = {
 }
 
 export type ClinicalTimelineTabProps = {
+  nomeAutore: (id: number) => string
   entries: ClinicalTimelineEntry[]
   canCreate: boolean
 }
@@ -80,10 +80,12 @@ export type GenericConsegnaDialogEmits = {
 }
 
 export type ParametriVitaliDialogProps = {
+  error?: string
   saving: boolean
 }
 
 export type ValutazioneDialogProps = {
+  error?: string
   saving: boolean
 }
 
@@ -106,21 +108,6 @@ export type ParametriVitaliTabProps = {
 export type ParametriVitaliTabEmits = {
   newEntry: []
 }
-
-export type SoapieNarrativeSource = Pick<
-  VoceDiarioSoapie,
-  | 'coscienza'
-  | 'emotivita'
-  | 'dolore'
-  | 'emodinamica'
-  | 'mobilizzazione'
-  | 'allert'
->
-
-export type SbarNarrativeSource = Pick<
-  ConsegnaSbar,
-  'situation' | 'background' | 'assessment' | 'recommendation'
->
 
 export type StatoCoscienzaOption = {
   value: StatoCoscienza

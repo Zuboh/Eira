@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import Button from 'primevue/button'
+import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
 import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import NewStaffDialog from '@/features/staff/components/NewStaffDialog.vue'
@@ -49,11 +50,12 @@ onMounted(load)
 
     <StaffFilters v-model="filtro" :options="filtri" />
 
-    <InlineError :message="error" />
+    <InlineError :message="error" retryable @retry="load" />
+    <SkeletonBlock v-if="loading" :lines="5" />
     <InlineError :message="avatarWarning" />
 
     <StaffTable
-      v-if="!loading"
+      v-if="!loading && !error"
       :utenti="filtrati"
       :reset-loading-id="resetLoadingId"
       @approve="approva"
@@ -70,6 +72,7 @@ onMounted(load)
       v-model:visible="newDialogOpen"
       v-model:form="newForm"
       v-model:avatar-file="newAvatarFile"
+      :error="error"
       :saving="newSaving"
       @save="salvaNuovo"
     />
@@ -78,7 +81,7 @@ onMounted(load)
 
 <style scoped>
 .staff-view {
-  padding: var(--page-padding);
+  padding: var(--eira-page-padding);
   max-width: 960px;
   margin: 0 auto;
 }

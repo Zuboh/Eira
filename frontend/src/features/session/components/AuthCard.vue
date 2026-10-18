@@ -15,7 +15,9 @@ const props = defineProps<{
 }>()
 
 const turnoCssVar = computed(() =>
-  props.turno ? `var(--turno-${props.turno.replace(/_/g, '-')})` : undefined,
+  props.turno
+    ? `var(--eira-shift-${props.turno.replace(/_/g, '-')})`
+    : undefined,
 )
 const turnoLabel = computed(() =>
   props.turno ? `Turno ${TIPO_TURNO_LABEL[props.turno]}` : '',
@@ -40,7 +42,7 @@ const turnoLabel = computed(() =>
         <p
           v-if="turno"
           class="turno-indicator"
-          :style="{ '--turno-color': turnoCssVar }"
+          :style="{ '--eira-shift-color': turnoCssVar }"
         >
           <span class="turno-dot" aria-hidden="true" />
           {{ turnoLabel }}
@@ -56,7 +58,7 @@ const turnoLabel = computed(() =>
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  background: var(--canvas);
+  background: var(--eira-bg-canvas);
   padding: 16px;
 }
 
@@ -64,14 +66,11 @@ const turnoLabel = computed(() =>
   position: relative;
   overflow: hidden;
   width: 100%;
-  max-width: 480px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow:
-    var(--shadow-raised),
-    inset 0 1px 0 var(--surface-highlight);
-  padding: clamp(2rem, 5vw, 3rem);
+  max-width: 440px;
+  background: var(--eira-bg-surface);
+  border: 0;
+  border-radius: var(--eira-radius-dialog);
+  padding: var(--eira-space-6) var(--eira-space-4);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -83,7 +82,7 @@ const turnoLabel = computed(() =>
 
 .auth-title {
   margin-bottom: 12px;
-  color: var(--color-primary-on-tint);
+  color: var(--eira-action-selected-text);
   font-size: 2rem;
   letter-spacing: -0.045em;
 }
@@ -97,7 +96,7 @@ const turnoLabel = computed(() =>
 }
 
 .auth-name {
-  color: var(--ink);
+  color: var(--eira-text-primary);
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -108,7 +107,7 @@ const turnoLabel = computed(() =>
   justify-content: center;
   gap: 6px;
   margin-top: 6px;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   font-weight: 500;
 }
@@ -117,6 +116,6 @@ const turnoLabel = computed(() =>
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--turno-color);
+  background: var(--eira-shift-color);
 }
 </style>

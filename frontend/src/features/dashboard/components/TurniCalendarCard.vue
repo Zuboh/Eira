@@ -235,7 +235,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
       </div>
     </div>
 
-    <Popover ref="monthPickerRef">
+    <Popover ref="monthPickerRef" aria-label="Scegli mese e anno">
       <div class="month-picker">
         <div class="month-picker-year">
           <Button
@@ -290,6 +290,8 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
           :aria-label="eventAriaLabel(arg.event)"
           @focus="handleEventFocus(arg.event, $event)"
           @blur="hideTooltip"
+          @keydown.esc="hideTooltip"
+          @click="showTooltip(arg.event, $event.currentTarget as HTMLElement)"
         >
           <span class="turno-event-title">{{ arg.event.title }}</span>
         </span>
@@ -338,34 +340,29 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 
 <style scoped>
 .turni-calendar-card {
-  --fc-border-color: var(--border);
-  --fc-page-bg-color: var(--surface);
-  --fc-neutral-bg-color: var(--canvas);
-  --fc-list-event-hover-bg-color: var(--canvas);
-  color: var(--ink);
+  --fc-border-color: var(--eira-border-default);
+  --fc-page-bg-color: var(--eira-bg-surface);
+  --fc-neutral-bg-color: var(--eira-bg-canvas);
+  --fc-today-bg-color: var(--eira-action-selected-background);
+  --fc-list-event-hover-bg-color: var(--eira-bg-canvas);
+  color: var(--eira-text-primary);
 }
 
 .turni-calendar-card :deep(.fc) {
   font-family: inherit;
-  color: var(--ink);
+  color: var(--eira-text-primary);
 }
 
 .turni-calendar-card :deep(.fc-day-today) {
-  background: color-mix(
-    in srgb,
-    var(--color-primary) 8%,
-    var(--surface)
-  ) !important;
-  box-shadow: var(--shadow);
+  background: var(--eira-action-selected-background);
 }
 
 .turni-calendar-card :deep(.fc-day-today .fc-daygrid-day-frame) {
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--eira-action-primary);
 }
 
-/* --steel sul tint primary della cella "oggi" si ferma a 4.41:1. */
 .turni-calendar-card :deep(.fc-day-today .fc-daygrid-day-number) {
-  color: var(--steel-on-tint);
+  color: var(--eira-action-selected-text);
 }
 
 .turni-calendar-card :deep(.fc-scrollgrid) {
@@ -387,32 +384,32 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   padding: 4px 6px;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--eira-radius-md);
   background: transparent;
-  font-family: var(--sans);
+  font-family: var(--eira-font-sans);
   font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--ink);
+  font-weight: 600;
+  color: var(--eira-text-primary);
   text-transform: capitalize;
   cursor: pointer;
-  transition: color 150ms ease-out;
+  transition: color var(--eira-motion-duration) var(--eira-motion-easing);
 }
 
 .calendar-toolbar-title:hover {
-  color: var(--color-primary);
+  color: var(--eira-action-primary);
 }
 
 .calendar-toolbar-title:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 
 .calendar-toolbar-title-caret {
   font-size: 0.75rem;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .month-picker {
@@ -434,7 +431,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   min-width: 3.5rem;
   text-align: center;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--eira-text-primary);
 }
 
 .month-picker-grid {
@@ -444,26 +441,26 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 .month-picker-cell {
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--eira-radius-md);
   background: transparent;
-  color: var(--ink);
-  font-family: var(--sans);
+  color: var(--eira-text-primary);
+  font-family: var(--eira-font-sans);
   font-size: 0.875rem;
   cursor: pointer;
   transition:
-    background 150ms ease-out,
-    color 150ms ease-out;
+    background var(--eira-motion-duration) var(--eira-motion-easing),
+    color var(--eira-motion-duration) var(--eira-motion-easing);
 }
 
 .month-picker-cell:hover {
-  background: var(--canvas);
-  color: var(--color-primary);
+  background: var(--eira-bg-canvas);
+  color: var(--eira-action-primary);
 }
 
 .month-picker-cell:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 
@@ -474,16 +471,16 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 .calendar-toolbar-nav :deep(.p-button) {
-  min-width: var(--size-touch);
-  min-height: var(--size-touch);
-  padding: 0 var(--space-2);
+  min-width: var(--eira-size-touch);
+  min-height: var(--eira-size-touch);
+  padding: 0 var(--eira-space-2);
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--eira-radius-md);
   background: transparent;
-  font-family: var(--sans);
+  font-family: var(--eira-font-sans);
   font-size: 1.125rem;
-  color: var(--ink);
-  transition: color 0.15s ease-out;
+  color: var(--eira-text-primary);
+  transition: color var(--eira-motion-duration) var(--eira-motion-easing);
 }
 
 .calendar-toolbar-nav :deep(.p-button .p-button-icon) {
@@ -492,22 +489,22 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 
 .calendar-toolbar-nav :deep(.p-button:hover) {
   background: transparent;
-  color: var(--color-primary);
+  color: var(--eira-action-primary);
 }
 
 .turni-calendar-card :deep(.fc-daygrid-day-number) {
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
   font-size: 0.8125rem;
 }
 
 .turni-calendar-card :deep(.fc-col-header-cell-cushion),
 .turni-calendar-card :deep(.fc-daygrid-day-number) {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   text-decoration: none;
 }
 
 .turni-calendar-card :deep(.fc-col-header-cell-cushion) {
-  font-family: var(--sans);
+  font-family: var(--eira-font-sans);
   font-weight: 600;
 }
 
@@ -517,7 +514,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 
 .turni-calendar-card :deep(.fc-daygrid-event) {
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--eira-radius-sm);
   padding: 2px 6px;
   /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
   font-size: 0.8125rem;
@@ -525,19 +522,14 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 .turni-calendar-card :deep(.fc-event-main) {
+  color: inherit;
   width: 100%;
 }
 
-/* La pillola colorata e' .fc-daygrid-event (il wrapper di FullCalendar):
-   il chip resta alto ~24px perche' .hit-area-touch lascia la margin box
-   invariata. La border box del focus target sale a 44 sconfinando sopra
-   e sotto la pillola, ma e' trasparente — si vede solo al tocco. */
 .turni-calendar-card :deep(.turno-event) {
-  --hit-area-pad: 12px;
   display: flex;
   width: 100%;
   max-width: 100%;
-  outline: none;
 }
 
 .turni-calendar-card :deep(.turno-event.with-tooltip) {
@@ -548,63 +540,48 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--sans);
+  font-family: var(--eira-font-sans);
 }
 
-/* L'outline diretto seguirebbe la border box da 44px e disegnerebbe un
-   anello enorme attorno a una pillola da 24. Lo ridisegna uno pseudo
-   rimesso sulla geometria di prima: inset verticale = --hit-area-pad. */
-.turni-calendar-card :deep(.turno-event:focus-visible)::before {
-  content: '';
-  position: absolute;
-  inset: var(--hit-area-pad) 0;
-  border-radius: 999px;
-  outline: 2px solid white;
-  outline-offset: 2px;
+.turni-calendar-card :deep(.turno-event:focus-visible) {
+  outline: 2px solid var(--eira-focus-ring);
+  outline-offset: -2px;
 }
 
 .turni-calendar-card :deep(.fc-day-past) {
   background: var(--fc-neutral-bg-color);
 }
 
-/* Niente color-mix trasparente qui: al 60% il numero scendeva a 2.27:1 in
-   light / 3.33:1 in dark, e con "oggi" a fine mese quasi tutta la griglia e'
-   .fc-day-past. Il passato resta distinguibile via --fc-neutral-bg-color
-   sulla cella + opacity 0.5 sui chip. */
 .turni-calendar-card :deep(.fc-day-past .fc-daygrid-day-number) {
-  color: var(--steel);
-}
-
-.turni-calendar-card :deep(.fc-day-past .fc-daygrid-event) {
-  opacity: 0.5;
+  color: var(--eira-text-secondary);
 }
 
 /* Le classi turno-* stanno sull'evento in entrambe le viste: qui il
    riempimento pieno vale solo per il chip della griglia, in lista
    colorano il pallino (vedi .fc-list-event-dot piu' sotto). */
 .turni-calendar-card :deep(.fc-daygrid-event.turno-mattina) {
-  background: var(--turno-mattina-chip);
-  color: white;
+  background: var(--eira-shift-mattina-chip);
+  color: var(--eira-shift-mattina);
 }
 
 .turni-calendar-card :deep(.fc-daygrid-event.turno-pomeriggio) {
-  background: var(--turno-pomeriggio-chip);
-  color: white;
+  background: var(--eira-shift-pomeriggio-chip);
+  color: var(--eira-shift-pomeriggio);
 }
 
 .turni-calendar-card :deep(.fc-daygrid-event.turno-notte) {
-  background: var(--turno-notte-chip);
-  color: white;
+  background: var(--eira-shift-notte-chip);
+  color: var(--eira-shift-notte);
 }
 
 .turni-calendar-card :deep(.fc-daygrid-event.turno-riposo) {
-  background: var(--turno-riposo-chip);
-  color: white;
+  background: var(--eira-shift-riposo-chip);
+  color: var(--eira-shift-riposo);
 }
 
 .turni-calendar-card :deep(.fc-daygrid-event.turno-ferie) {
-  background: var(--turno-ferie-chip);
-  color: white;
+  background: var(--eira-shift-ferie-chip);
+  color: var(--eira-shift-ferie);
 }
 
 /* --- Vista lista (<600px) --- */
@@ -614,26 +591,26 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 .turni-calendar-card :deep(.fc-list-day-cushion) {
-  background: var(--canvas);
-  padding: var(--space-2) var(--space-3);
+  background: var(--eira-bg-canvas);
+  padding: var(--eira-space-2) var(--eira-space-3);
 }
 
 .turni-calendar-card :deep(.fc-list-day-text),
 .turni-calendar-card :deep(.fc-list-day-side-text) {
-  font-family: var(--sans);
+  font-family: var(--eira-font-sans);
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--eira-text-primary);
   text-decoration: none;
   text-transform: capitalize;
 }
 
 .turni-calendar-card :deep(.fc-list-event td) {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--eira-space-2) var(--eira-space-3);
 }
 
 .turni-calendar-card :deep(.fc-list-event:hover td) {
-  background: var(--canvas);
+  background: var(--eira-bg-canvas);
 }
 
 /* displayEventTime e' false: la colonna orario resta vuota e ruberebbe
@@ -643,27 +620,27 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 .turni-calendar-card :deep(.fc-list-event-dot) {
-  border-color: var(--steel);
+  border-color: var(--eira-text-secondary);
 }
 
 .turni-calendar-card :deep(.turno-mattina .fc-list-event-dot) {
-  border-color: var(--turno-mattina-chip);
+  border-color: var(--eira-shift-mattina-chip);
 }
 
 .turni-calendar-card :deep(.turno-pomeriggio .fc-list-event-dot) {
-  border-color: var(--turno-pomeriggio-chip);
+  border-color: var(--eira-shift-pomeriggio-chip);
 }
 
 .turni-calendar-card :deep(.turno-notte .fc-list-event-dot) {
-  border-color: var(--turno-notte-chip);
+  border-color: var(--eira-shift-notte-chip);
 }
 
 .turni-calendar-card :deep(.turno-riposo .fc-list-event-dot) {
-  border-color: var(--turno-riposo-chip);
+  border-color: var(--eira-shift-riposo-chip);
 }
 
 .turni-calendar-card :deep(.turno-ferie .fc-list-event-dot) {
-  border-color: var(--turno-ferie-chip);
+  border-color: var(--eira-shift-ferie-chip);
 }
 
 .turni-calendar-card :deep(.turno-list-event) {
@@ -671,27 +648,27 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   flex-direction: column;
   gap: 2px;
   /* riga a 44px anche quando il turno non ha meta (riposo/ferie) */
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   justify-content: center;
 }
 
 .turni-calendar-card :deep(.turno-list-event-title) {
-  font-family: var(--sans);
+  font-family: var(--eira-font-sans);
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--eira-text-primary);
 }
 
 .turni-calendar-card :deep(.turno-list-event-meta) {
-  font-family: var(--sans);
+  font-family: var(--eira-font-sans);
   font-size: 0.8125rem;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .turni-calendar-card :deep(.fc-list-empty) {
   background: transparent;
-  color: var(--steel);
-  font-family: var(--sans);
+  color: var(--eira-text-secondary);
+  font-family: var(--eira-font-sans);
   font-size: 0.875rem;
 }
 
@@ -709,7 +686,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
   align-items: center;
   gap: 6px;
   padding: 3px 10px 3px 8px;
-  border-radius: 999px;
+  border-radius: var(--eira-radius-sm);
   /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
   font-size: 0.8125rem;
   font-weight: 600;
@@ -718,53 +695,53 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 .dot {
   width: 8px;
   height: 8px;
-  border-radius: 999px;
+  border-radius: var(--eira-radius-sm);
   flex-shrink: 0;
 }
 
 .legend li.turno-mattina {
-  background: color-mix(in srgb, var(--turno-mattina) 15%, transparent);
-  color: var(--turno-mattina-on-tint);
+  background: var(--eira-shift-mattina-chip);
+  color: var(--eira-shift-mattina-on-tint);
 }
 
 .legend li.turno-pomeriggio {
-  background: color-mix(in srgb, var(--turno-pomeriggio) 15%, transparent);
-  color: var(--turno-pomeriggio-on-tint);
+  background: var(--eira-shift-pomeriggio-chip);
+  color: var(--eira-shift-pomeriggio-on-tint);
 }
 
 .legend li.turno-notte {
-  background: color-mix(in srgb, var(--turno-notte) 15%, transparent);
-  color: var(--turno-notte-on-tint);
+  background: var(--eira-shift-notte-chip);
+  color: var(--eira-shift-notte-on-tint);
 }
 
 .legend li.turno-riposo {
-  background: color-mix(in srgb, var(--turno-riposo) 15%, transparent);
-  color: var(--turno-riposo-on-tint);
+  background: var(--eira-shift-riposo-chip);
+  color: var(--eira-shift-riposo-on-tint);
 }
 
 .legend li.turno-ferie {
-  background: color-mix(in srgb, var(--turno-ferie) 15%, transparent);
-  color: var(--turno-ferie-on-tint);
+  background: var(--eira-shift-ferie-chip);
+  color: var(--eira-shift-ferie-on-tint);
 }
 
 .dot.turno-mattina {
-  background: var(--turno-mattina);
+  background: var(--eira-shift-mattina);
 }
 
 .dot.turno-pomeriggio {
-  background: var(--turno-pomeriggio);
+  background: var(--eira-shift-pomeriggio);
 }
 
 .dot.turno-notte {
-  background: var(--turno-notte);
+  background: var(--eira-shift-notte);
 }
 
 .dot.turno-riposo {
-  background: var(--turno-riposo);
+  background: var(--eira-shift-riposo);
 }
 
 .dot.turno-ferie {
-  background: var(--turno-ferie);
+  background: var(--eira-shift-ferie);
 }
 
 @media (max-width: 640px) {
@@ -798,18 +775,18 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 <style>
 .turno-floating-tooltip {
   position: fixed;
-  z-index: 9999;
+  z-index: var(--eira-z-tooltip);
   display: flex;
   width: 18rem;
   max-width: calc(100vw - 24px);
   flex-direction: column;
   gap: 4px;
   padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  box-shadow: var(--shadow-lg);
-  color: var(--ink);
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-lg);
+  background: var(--eira-bg-surface);
+  box-shadow: var(--eira-shadow-overlay);
+  color: var(--eira-text-primary);
   font-size: 0.8125rem;
   font-weight: 500;
   line-height: 1.35;
@@ -834,26 +811,26 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 
 .turno-floating-tooltip.placement-top::after {
   top: 100%;
-  border-top-color: var(--surface);
+  border-top-color: var(--eira-bg-surface);
 }
 
 .turno-floating-tooltip.placement-bottom::after {
   bottom: 100%;
-  border-bottom-color: var(--surface);
+  border-bottom-color: var(--eira-bg-surface);
 }
 
 .turno-floating-tooltip .tooltip-kicker,
 .turno-floating-tooltip .tooltip-meta,
 .turno-floating-tooltip .tooltip-section,
 .turno-floating-tooltip .tooltip-empty {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .turno-floating-tooltip .tooltip-section {
   margin-top: 4px;
   font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-weight: 600;
+  text-transform: none;
   letter-spacing: 0.04em;
 }
 
@@ -864,7 +841,7 @@ function handleEventFocus(event: EventApi, domEvent: FocusEvent) {
 }
 
 .turno-floating-tooltip .tooltip-collega {
-  color: var(--ink);
+  color: var(--eira-text-primary);
   font-weight: 600;
 }
 </style>

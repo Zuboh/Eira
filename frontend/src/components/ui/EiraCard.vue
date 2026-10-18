@@ -21,28 +21,16 @@ withDefaults(
 <style scoped>
 .eira-card {
   min-width: 0;
-  padding: var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow:
-    var(--shadow),
-    inset 0 1px 0 var(--surface-highlight);
-  transition:
-    border-color 160ms ease-out,
-    box-shadow 160ms ease-out;
+  padding-block: var(--eira-space-5);
+  border-block-start: 1px solid var(--eira-border-default);
 }
-
 .eira-card--flush {
-  border: none;
-  box-shadow: none;
-  background: transparent;
+  border: 0;
+  padding: 0;
 }
-
 .eira-card__title {
-  margin: 0 0 1rem;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  margin-bottom: var(--eira-space-4);
+  font-size: 1rem;
+  font-weight: 600;
 }
 </style>

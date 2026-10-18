@@ -3,7 +3,7 @@ import { onMounted } from 'vue'
 import Button from 'primevue/button'
 import Paginator from 'primevue/paginator'
 import EiraTable from '@/components/ui/EiraTable.vue'
-import InlineError from '@/components/ui/InlineError.vue'
+import { RouterLink } from 'vue-router'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import GenericConsegnaDialog from '@/features/patient-chart/components/GenericConsegnaDialog.vue'
@@ -27,6 +27,7 @@ const {
   total,
   canCreateConsegna,
   nomePaziente,
+  nomeAutore,
   canEditConsegna,
   load,
   goToPage,
@@ -62,21 +63,23 @@ function onPageChange(event: { page: number }) {
       </template>
     </PageHeader>
 
-    <InlineError :message="error" />
-
     <EiraTable
+      label="Consegne cliniche"
+      :error="error"
+      retryable
       flush
       :loading="loading"
       :empty="consegne.length === 0"
       empty-message="Nessuna consegna SBAR."
+      @retry="load"
     >
-      <table style="min-width: var(--table-min-wide)">
+      <table style="min-width: var(--eira-table-min-wide)">
         <thead>
           <tr>
             <th>Data</th>
             <th>Paziente</th>
             <th>Priorità</th>
-            <th>Situation</th>
+            <th>Situazione</th>
             <th><span class="sr-only">Azioni</span></th>
           </tr>
         </thead>
@@ -85,7 +88,17 @@ function onPageChange(event: { page: number }) {
             <td class="mono">
               {{ formatDateTimeCompactIt(consegna.creata_il) }}
             </td>
-            <td>{{ nomePaziente(consegna.paziente_id) }}</td>
+            <td>
+              <RouterLink
+                :to="{
+                  name: 'paziente-scheda',
+                  params: { id: consegna.paziente_id },
+                }"
+                >{{ nomePaziente(consegna.paziente_id) }}</RouterLink
+              ><span class="entry-author">{{
+                nomeAutore(consegna.autore_id)
+              }}</span>
+            </td>
             <td><StatusBadge :status="consegna.priorita" /></td>
             <td>{{ consegna.situation }}</td>
             <td>
@@ -105,7 +118,7 @@ function onPageChange(event: { page: number }) {
     </EiraTable>
 
     <Paginator
-      v-if="!loading && total > PAGE_SIZE"
+      v-if="!error && !loading && total > PAGE_SIZE"
       :rows="PAGE_SIZE"
       :total-records="total"
       :first="(page - 1) * PAGE_SIZE"
@@ -131,9 +144,16 @@ function onPageChange(event: { page: number }) {
 </template>
 
 <style scoped>
+.entry-author {
+  display: block;
+  color: var(--eira-text-secondary);
+  font-size: var(--eira-font-small);
+  padding-bottom: var(--eira-space-2);
+}
+
 .sbar-view {
-  padding: var(--page-padding);
-  max-width: var(--page-lg);
+  padding: var(--eira-page-padding);
+  max-width: var(--eira-page-lg);
   margin: 0 auto;
 }
 </style>

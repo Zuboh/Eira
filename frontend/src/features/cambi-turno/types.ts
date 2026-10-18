@@ -29,6 +29,7 @@ export type CambiTurnoTableEmits = {
 }
 
 export type NewCambioTurnoDialogProps = {
+  error?: string
   assegnazioni: AssegnazioneTurno[]
   assegnazioniColleghi: AssegnazioneTurno[]
   colleghi: Utente[]
@@ -36,6 +37,7 @@ export type NewCambioTurnoDialogProps = {
 }
 
 export type RifiutoCambioTurnoDialogProps = {
+  error?: string
   saving?: boolean
 }
 

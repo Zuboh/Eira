@@ -14,6 +14,7 @@ export type PatientsTableProps = {
 }
 
 export type NewPatientDialogProps = {
+  error?: string
   saving: boolean
 }
 

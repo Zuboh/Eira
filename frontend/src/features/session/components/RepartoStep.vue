@@ -18,10 +18,6 @@ function focusFirst() {
   firstButton.value?.focus()
 }
 
-function repartoInitial(nome: string): string {
-  return nome.charAt(0).toUpperCase()
-}
-
 defineExpose({ focusFirst })
 </script>
 
@@ -38,9 +34,7 @@ defineExpose({ focusFirst })
         :disabled="loading"
         @click="emit('choose', reparto)"
       >
-        <span class="reparto-avatar" aria-hidden="true">{{
-          repartoInitial(reparto.nome)
-        }}</span>
+        <i class="pi pi-building" aria-hidden="true" />
         <span class="reparto-name">{{ reparto.nome }}</span>
       </button>
     </li>
@@ -52,13 +46,13 @@ defineExpose({ focusFirst })
 
 <style scoped>
 .subtitle {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.9375rem;
   margin-bottom: 8px;
 }
 
 .hint {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
@@ -73,34 +67,20 @@ defineExpose({ focusFirst })
 
 .reparto-item {
   width: 100%;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   display: flex;
   align-items: center;
   gap: 12px;
   text-align: left;
   padding: 10px 16px;
-  background: var(--surface-inset);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  background: var(--eira-bg-subtle);
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-md);
   cursor: pointer;
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.15s ease;
-}
-
-.reparto-avatar {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--radius-sm);
-  background: color-mix(in oklch, var(--color-primary) 14%, var(--surface));
-  color: var(--color-primary-on-tint);
-  font-size: 0.8125rem;
-  font-weight: 700;
+    background var(--eira-motion-duration) var(--eira-motion-easing),
+    border-color var(--eira-motion-duration) var(--eira-motion-easing),
+    opacity var(--eira-motion-duration) var(--eira-motion-easing);
 }
 
 .reparto-name {
@@ -108,17 +88,16 @@ defineExpose({ focusFirst })
 }
 
 .reparto-item:hover {
-  background: color-mix(in oklch, var(--color-primary) 6%, var(--surface));
-  border-color: color-mix(in oklch, var(--color-primary) 35%, var(--border));
-  box-shadow: var(--shadow);
-}
-
-.reparto-item:active {
-  transform: scale(0.98);
+  background: var(--eira-bg-hover);
+  border-color: color-mix(
+    in oklch,
+    var(--eira-action-primary) 35%,
+    var(--eira-border-default)
+  );
 }
 
 .reparto-item:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 

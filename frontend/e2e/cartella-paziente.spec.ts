@@ -64,6 +64,7 @@ test('infermiere records vital signs, Norton and Conley in the patient chart', a
   ).toBeVisible()
   expect(await checkA11y(page)).toEqual([])
 
+  await page.getByRole('tab', { name: 'Parametri vitali', exact: true }).click()
   await page.getByRole('button', { name: 'Nuovi parametri' }).click()
   const parametriDialog = page.getByRole('dialog', {
     name: 'Nuovi parametri vitali',
@@ -75,7 +76,9 @@ test('infermiere records vital signs, Norton and Conley in the patient chart', a
   await parametriDialog.getByLabel('FR').fill('18')
   await parametriDialog.getByLabel('SpO₂').fill('97')
   await parametriDialog.getByLabel('Scala dolore (NRS)').fill('3')
-  await parametriDialog.getByRole('combobox', { name: 'Vigile' }).click()
+  await parametriDialog
+    .getByRole('combobox', { name: 'Stato di coscienza' })
+    .click()
   await page.getByRole('option', { name: 'Vigile' }).click()
   await parametriDialog
     .getByRole('textbox', { name: 'Note', exact: true })

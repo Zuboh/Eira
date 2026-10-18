@@ -6,7 +6,6 @@ import Select from 'primevue/select'
 import EiraCard from '@/components/ui/EiraCard.vue'
 import EiraTable from '@/components/ui/EiraTable.vue'
 import FormField from '@/components/ui/FormField.vue'
-import InlineError from '@/components/ui/InlineError.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import { useCarelloFarmaci } from '@/features/carello-farmaci/useCarelloFarmaci'
@@ -63,8 +62,6 @@ onMounted(async () => {
   <div class="carello-view">
     <PageHeader title="Carello Farmaci" />
 
-    <InlineError :message="error || movimentiError" />
-
     <div class="tabs" role="tablist" aria-label="Carello farmaci">
       <button
         id="carello-tab-stock"
@@ -105,16 +102,26 @@ onMounted(async () => {
       tabindex="0"
     >
       <div class="filters">
-        <FormField label="Cerca farmaco" for-id="farmaco-search">
+        <FormField
+          v-slot="{ fieldAttrs }"
+          label="Cerca farmaco"
+          for-id="farmaco-search"
+        >
           <InputText
+            v-bind="fieldAttrs"
             id="farmaco-search"
             v-model="search"
             placeholder="Nome farmaco"
           />
         </FormField>
-        <FormField label="Categoria" for-id="farmaco-categoria">
+        <FormField
+          v-slot="{ fieldAttrs }"
+          label="Categoria"
+          for-id="farmaco-categoria"
+        >
           <Select
             v-model="categoria"
+            :pt="{ label: fieldAttrs }"
             input-id="farmaco-categoria"
             :options="categorie"
             placeholder="Tutte"
@@ -126,16 +133,24 @@ onMounted(async () => {
       <EiraTable
         flush
         :loading="loading"
+        label="Scorte farmaci"
+        :error="error"
+        retryable
         :empty="farmaciFiltrati.length === 0"
-        empty-message="Nessun farmaco nel carello."
+        :empty-message="
+          search || categoria
+            ? 'Nessun farmaco corrisponde ai filtri. Modifica la ricerca o la categoria.'
+            : 'Nessun farmaco nel carello.'
+        "
+        @retry="load"
       >
-        <table style="min-width: var(--table-min-wide)">
+        <table style="min-width: var(--eira-table-min-wide)">
           <thead>
             <tr>
               <th>Farmaco</th>
               <th>Categoria</th>
-              <th>Quantità</th>
-              <th>Soglia</th>
+              <th class="numeric">Quantità</th>
+              <th class="numeric">Soglia</th>
               <th><span class="sr-only">Azioni</span></th>
             </tr>
           </thead>
@@ -146,7 +161,7 @@ onMounted(async () => {
                 <span class="unit">{{ riga.farmaco.unita_misura }}</span>
               </td>
               <td>{{ riga.farmaco.categoria }}</td>
-              <td>
+              <td class="numeric">
                 <span class="quantity">
                   {{ riga.quantita }}
                   <StatusBadge
@@ -156,7 +171,7 @@ onMounted(async () => {
                   />
                 </span>
               </td>
-              <td>{{ riga.soglia_minima }}</td>
+              <td class="numeric">{{ riga.soglia_minima }}</td>
               <td>
                 <div class="stepper" aria-label="Modifica quantità">
                   <Button
@@ -172,6 +187,7 @@ onMounted(async () => {
                     v-tooltip.top="'Aumenta quantità'"
                     icon="pi pi-plus"
                     aria-label="Aumenta quantità"
+                    severity="secondary"
                     size="small"
                     :disabled="updatingIds.has(riga.id)"
                     @click="adjust(riga, 1)"
@@ -196,10 +212,14 @@ onMounted(async () => {
       <EiraTable
         flush
         :loading="movimentiLoading"
+        label="Movimenti farmaci"
+        :error="movimentiError"
+        retryable
         :empty="movimenti.length === 0"
         empty-message="Nessun movimento registrato."
+        @retry="loadMovimenti"
       >
-        <table style="min-width: var(--table-min-wide)">
+        <table style="min-width: var(--eira-table-min-wide)">
           <thead>
             <tr>
               <th>Data</th>
@@ -230,8 +250,8 @@ onMounted(async () => {
 
 <style scoped>
 .carello-view {
-  padding: var(--page-padding);
-  max-width: var(--page-xl);
+  padding: var(--eira-page-padding);
+  max-width: var(--eira-page-xl);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -263,28 +283,26 @@ onMounted(async () => {
 }
 
 .tab {
-  min-height: var(--size-touch);
+  border-radius: 0;
+  min-height: var(--eira-size-touch);
   padding: 0 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  color: var(--steel);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: var(--eira-bg-surface);
+  color: var(--eira-text-secondary);
   font-weight: 600;
   cursor: pointer;
 }
 
 .tab.active {
-  background: color-mix(
-    in srgb,
-    var(--color-primary-bright) 14%,
-    var(--surface)
-  );
-  color: var(--color-primary-on-tint);
+  background: transparent;
+  border-bottom-color: var(--eira-action-primary);
+  color: var(--eira-action-selected-text);
 }
 
 .unit {
   display: block;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   margin-top: 2px;
 }

@@ -1,3 +1,4 @@
+import * as utentiApi from '@/api/utenti'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { usePatientChart } from '@/features/patient-chart/usePatientChart'
@@ -10,6 +11,7 @@ import * as valutazioniApi from '@/api/valutazioni'
 import * as consegneSbarApi from '@/api/consegneSbar'
 
 vi.mock('@/api/pazienti')
+vi.mock('@/api/utenti')
 vi.mock('@/api/turni')
 vi.mock('@/api/diarioSoapie')
 vi.mock('@/api/parametriVitali')
@@ -30,6 +32,7 @@ const paziente = {
 }
 
 beforeEach(() => {
+  vi.mocked(utentiApi.listUtenti).mockResolvedValue({ data: [] })
   setActivePinia(createPinia())
   vi.mocked(pazientiApi.getPaziente).mockResolvedValue({ data: paziente })
   vi.mocked(diarioSoapieApi.listDiarioSoapie).mockResolvedValue({ data: [] })

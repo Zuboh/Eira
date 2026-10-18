@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SkeletonBlock from '@/components/ui/SkeletonBlock.vue'
+import FormField from '@/components/ui/FormField.vue'
 import Button from 'primevue/button'
 import Select from 'primevue/select'
 import EiraCard from '@/components/ui/EiraCard.vue'
@@ -42,15 +44,21 @@ function saldoLabel() {
         </p>
       </div>
       <div class="controls">
-        <Select
+        <FormField
           v-if="showInfermiereSelect"
-          :modelValue="infermiereId"
-          :options="infermieri"
-          optionLabel="cognome"
-          optionValue="id"
-          placeholder="Seleziona infermiere"
-          @update:modelValue="emit('update:infermiereId', $event)"
-        />
+          v-slot="{ fieldAttrs }"
+          label="Infermiere"
+          for-id="banca-infermiere"
+          ><Select
+            :pt="{ label: fieldAttrs }"
+            input-id="banca-infermiere"
+            :modelValue="infermiereId"
+            :options="infermieri"
+            optionLabel="cognome"
+            optionValue="id"
+            placeholder="Seleziona infermiere"
+            @update:modelValue="emit('update:infermiereId', $event)"
+        /></FormField>
         <div class="mese-picker">
           <Button
             icon="pi pi-chevron-left"
@@ -71,7 +79,8 @@ function saldoLabel() {
 
     <InlineError :message="error" />
 
-    <div v-if="bancaOre" class="ledger">
+    <SkeletonBlock v-if="loading" :lines="3" />
+    <div v-else-if="bancaOre" class="ledger">
       <div class="ledger-row">
         <span class="ledger-label">Ore effettuate</span>
         <span class="ledger-value mono">{{ bancaOre.ore_effettuate }}</span>
@@ -114,7 +123,7 @@ function saldoLabel() {
 
 .section-header p {
   margin: 4px 0 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
@@ -134,12 +143,13 @@ function saldoLabel() {
 
 /* I text button di PrimeVue si fermano a 38x36: sotto il minimo di tocco */
 .mese-picker :deep(.p-button) {
-  min-width: var(--size-touch);
-  min-height: var(--size-touch);
+  min-width: var(--eira-size-touch);
+  min-height: var(--eira-size-touch);
 }
 
 .mese-picker span {
-  min-width: 8rem;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
   text-align: center;
 }
 
@@ -150,7 +160,7 @@ function saldoLabel() {
 .banca-ore-section--compact .section-header {
   align-items: stretch;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--eira-space-2);
 }
 
 .banca-ore-section--compact .controls,
@@ -163,8 +173,7 @@ function saldoLabel() {
 }
 
 .ledger {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-block: 1px solid var(--eira-border-default);
 }
 
 .ledger-row {
@@ -176,26 +185,26 @@ function saldoLabel() {
 }
 
 .ledger-row + .ledger-row {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--eira-border-default);
 }
 
 .ledger-label {
   font-size: 0.8125rem;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .ledger-value {
   font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--ink);
+  font-weight: 600;
+  color: var(--eira-text-primary);
 }
 
 .ledger-row.negative .ledger-value {
-  color: var(--state-urgente);
+  color: var(--eira-status-danger);
 }
 
 .mono {
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
 }
 
 @media (max-width: 720px) {

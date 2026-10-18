@@ -27,6 +27,7 @@ const emit = defineEmits<{
       link-label="Vedi tutti"
     />
     <EiraTable
+      label="Cambi turno da gestire"
       flush
       :loading="loading"
       :empty="richieste.length === 0"
@@ -86,7 +87,7 @@ const emit = defineEmits<{
 }
 
 .muted {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
   white-space: nowrap;
 }

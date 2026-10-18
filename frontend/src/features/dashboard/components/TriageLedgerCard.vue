@@ -44,8 +44,9 @@ defineProps<{
 
 <style scoped>
 .ledger {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--eira-space-6);
 }
 
 .ledger-row {
@@ -53,27 +54,27 @@ defineProps<{
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  min-height: var(--size-touch);
+  min-height: var(--eira-size-touch);
   padding: 10px 14px;
 }
 
 .ledger-row + .ledger-row {
-  border-top: 1px solid var(--border);
+  border: 0;
 }
 
 .ledger-label {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.8125rem;
 }
 
 .ledger-value {
-  color: var(--ink);
+  color: var(--eira-text-primary);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .ledger-row.actionable .ledger-value {
-  color: var(--state-urgente);
+  color: var(--eira-status-warning);
 }
 
 .ledger-link {
@@ -82,16 +83,22 @@ defineProps<{
 }
 
 .ledger-link:hover .ledger-label {
-  color: var(--color-primary);
+  color: var(--eira-action-primary);
 }
 
 .ledger-link:focus-visible {
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-  outline: 2px solid var(--color-primary);
+  border-radius: 0 0 var(--eira-radius-md) var(--eira-radius-md);
+  outline: 2px solid var(--eira-action-primary);
   outline-offset: 2px;
 }
 
 .mono {
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
+}
+@media (max-width: 47.9375rem) {
+  .ledger {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--eira-space-2);
+  }
 }
 </style>

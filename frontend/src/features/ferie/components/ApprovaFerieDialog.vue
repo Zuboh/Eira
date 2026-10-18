@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InlineError from '@/components/ui/InlineError.vue'
 import { ref, watch } from 'vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
@@ -11,6 +12,7 @@ const visible = defineModel<boolean>('visible', { required: true })
 
 const props = defineProps<{
   richiesta: RichiestaFerie | null
+  error?: string
 }>()
 
 const emit = defineEmits<{ confirm: [preferenzaRank: number] }>()
@@ -45,19 +47,25 @@ function conferma() {
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="conferma">
+      <InlineError :message="error" />
       <p class="hint">Scegli quale preferenza approvare:</p>
-      <div v-for="p in preferenzeOrdinate()" :key="p.rank" class="option">
+      <label
+        v-for="p in preferenzeOrdinate()"
+        :key="p.rank"
+        class="option"
+        :for="`pref-${p.rank}`"
+      >
         <RadioButton
           v-model="rankSelezionato"
           :input-id="`pref-${p.rank}`"
           :value="p.rank"
           name="preferenza"
         />
-        <label :for="`pref-${p.rank}`">
+        <span>
           {{ p.rank }}ª scelta — {{ formatDateShortIt(p.data_inizio) }} →
           {{ formatDateShortIt(p.data_fine) }}
-        </label>
-      </div>
+        </span>
+      </label>
       <Button
         type="submit"
         label="Conferma approvazione"
@@ -76,11 +84,13 @@ function conferma() {
 
 .hint {
   margin: 0;
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
 .option {
+  min-height: var(--eira-size-touch);
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;

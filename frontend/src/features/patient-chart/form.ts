@@ -12,13 +12,11 @@ import {
   serializeToSigle,
 } from '@/features/patient-chart/consegnaSections'
 import type {
-  SoapieNarrativeSource,
   GenericConsegnaForm,
   NortonForm,
   ConleyForm,
   ParametriVitaliForm,
   PatientEditForm,
-  SbarNarrativeSource,
   StatoCoscienzaOption,
 } from '@/features/patient-chart/types'
 
@@ -106,7 +104,7 @@ export function toSoapiePayload(form: GenericConsegnaForm) {
 /**
  * Precompila il dialog in modifica. Il testo torna in **sigle**, come lo
  * scaffold che si digita in creazione; le etichette estese restano alla
- * timeline (`sbarToNarrative`).
+ * timeline strutturata.
  */
 export function createFormFromConsegnaSbar(
   consegna: ConsegnaSbar,
@@ -182,38 +180,4 @@ export function validateConsegnaForm(form: GenericConsegnaForm): string | null {
   }
 
   return null
-}
-
-function uniqueNonEmpty(values: string[]) {
-  return [...new Set(values.map((value) => value.trim()).filter(Boolean))]
-}
-
-export function soapieToNarrative(entry: SoapieNarrativeSource) {
-  const sections = [
-    ['Coscienza', entry.coscienza],
-    ['Emotività', entry.emotivita],
-    ['Dolore', entry.dolore],
-    ['Emodinamica', entry.emodinamica],
-    ['Mobilizzazione', entry.mobilizzazione],
-    ['Alert', entry.allert],
-  ] as const
-  const values = uniqueNonEmpty(sections.map(([, value]) => value))
-  if (values.length === 0) return ''
-  if (values.length === 1) return values[0]
-  return sections
-    .filter(([, value]) => value.trim())
-    .map(([label, value]) => `${label}: ${value.trim()}`)
-    .join('\n')
-}
-
-export function sbarToNarrative(entry: SbarNarrativeSource) {
-  return [
-    ['Situation', entry.situation],
-    ['Background', entry.background],
-    ['Assessment', entry.assessment],
-    ['Recommendation', entry.recommendation],
-  ]
-    .filter(([, value]) => value.trim())
-    .map(([label, value]) => `${label}: ${value.trim()}`)
-    .join('\n')
 }

@@ -11,6 +11,7 @@ const emit = defineEmits<StaffTableEmits>()
 
 <template>
   <EiraTable
+    label="Personale del reparto"
     flush
     :empty="utenti.length === 0"
     empty-message="Nessun utente in questo filtro."
@@ -42,6 +43,7 @@ const emit = defineEmits<StaffTableEmits>()
               v-else-if="
                 utente.stato === 'attivo' && utente.ruolo === 'infermiere'
               "
+              class="eira-saving-button"
               label="Reimposta password"
               size="small"
               severity="secondary"

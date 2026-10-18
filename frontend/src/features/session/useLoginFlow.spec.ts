@@ -1,3 +1,4 @@
+import { ApiError } from '@/api/apiError'
 import { defineComponent, h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
@@ -181,9 +182,9 @@ describe('useLoginFlow — onSubmit', () => {
   })
 
   it('moves to change-password step when the API demands a password change', async () => {
-    vi.mocked(authApi.login).mockRejectedValue({
-      response: { status: 403, data: { detail: 'password_change_required' } },
-    })
+    vi.mocked(authApi.login).mockRejectedValue(
+      new ApiError('login', 403, 'password_change_required', 'Forbidden'),
+    )
 
     const { flow } = mountLoginFlow()
     await flushMounted()
@@ -198,9 +199,9 @@ describe('useLoginFlow — onSubmit', () => {
   })
 
   it('shows the expired-password message and clears the password on a 403 expired response', async () => {
-    vi.mocked(authApi.login).mockRejectedValue({
-      response: { status: 403, data: { detail: 'temporary_password_expired' } },
-    })
+    vi.mocked(authApi.login).mockRejectedValue(
+      new ApiError('login', 403, 'temporary_password_expired', 'Forbidden'),
+    )
 
     const { flow } = mountLoginFlow()
     await flushMounted()

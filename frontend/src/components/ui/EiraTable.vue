@@ -1,6 +1,12 @@
 <script setup lang="ts">
+import Button from 'primevue/button'
+import InlineError from './InlineError.vue'
+defineEmits<{ retry: [] }>()
 withDefaults(
   defineProps<{
+    label?: string
+    error?: string | null
+    retryable?: boolean
     empty?: boolean
     emptyMessage?: string
     loading?: boolean
@@ -9,6 +15,9 @@ withDefaults(
     maxHeight?: string
   }>(),
   {
+    label: 'Tabella dati',
+    error: null,
+    retryable: false,
     empty: false,
     emptyMessage: 'Nessun dato da mostrare',
     loading: false,
@@ -42,6 +51,16 @@ withDefaults(
       </div>
     </div>
 
+    <div v-else-if="error" class="eira-table__error">
+      <InlineError :message="error" />
+      <Button
+        v-if="retryable"
+        label="Riprova"
+        severity="secondary"
+        outlined
+        @click="$emit('retry')"
+      />
+    </div>
     <div v-else-if="empty" class="eira-table__empty" role="status">
       <slot name="empty">
         <p>{{ emptyMessage }}</p>
@@ -51,6 +70,9 @@ withDefaults(
     <div
       v-else
       class="eira-table__scroll"
+      role="region"
+      :aria-label="label"
+      tabindex="0"
       :class="{ 'eira-table__scroll--bounded': maxHeight }"
       :style="{ maxHeight }"
     >
@@ -62,158 +84,109 @@ withDefaults(
 <style scoped>
 .eira-table {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
-
 .eira-table__actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  gap: var(--eira-space-2);
+  margin-bottom: var(--eira-space-3);
 }
-
 .eira-table__scroll {
+  position: relative;
   width: 100%;
-  overflow-x: auto;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  box-shadow:
-    var(--shadow),
-    inset 0 1px 0 var(--surface-highlight);
+  max-width: 100%;
+  min-width: 0;
+  overflow: auto;
+  contain: inline-size;
+  border-block: 1px solid var(--eira-border-default);
 }
-
-.eira-table__scroll--bounded {
-  overflow-y: auto;
+.eira-table__scroll:focus-visible {
+  outline-offset: -2px;
 }
-
 .eira-table__scroll--bounded :deep(th) {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 1;
 }
-
-.eira-table__scroll--bounded :deep(table) {
+.eira-table__scroll :deep(table) {
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0;
 }
-
-.eira-table__scroll :deep(table) {
-  width: 100%;
-  min-width: 100%;
-  border-collapse: collapse;
-}
-
 .eira-table__scroll :deep(th) {
-  padding: 0.8rem 1rem;
+  padding: var(--eira-space-3);
   text-align: left;
-  /* 0.75rem scendeva sotto i 12px minimi con root < 16px */
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.045em;
-  text-transform: uppercase;
+  font-size: var(--eira-font-small);
+  font-weight: 500;
   white-space: nowrap;
-  color: var(--steel);
-  background: var(--surface-muted);
-  border-bottom: 1px solid var(--border);
+  color: var(--eira-text-secondary);
+  background: var(--eira-bg-subtle);
+  border-bottom: 1px solid var(--eira-border-default);
 }
-
 .eira-table__scroll :deep(td) {
-  padding: 0.75rem 1rem;
-  color: var(--ink);
-  border-bottom: 1px solid var(--border);
+  padding: var(--eira-space-2) var(--eira-space-3);
+  color: var(--eira-text-primary);
+  border-bottom: 1px solid var(--eira-border-default);
+  vertical-align: middle;
 }
-
-.eira-table__scroll :deep(tbody tr) {
-  transition: background 140ms ease-out;
+.eira-table__scroll :deep(.numeric) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
-
+.eira-table__scroll :deep(.mono) {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 .eira-table__scroll :deep(tbody tr:hover) {
-  background: color-mix(
-    in srgb,
-    var(--color-primary-bright) 6%,
-    var(--surface)
-  );
+  background: var(--eira-bg-subtle);
 }
-
 .eira-table__scroll :deep(tbody tr:last-child td) {
   border-bottom: 0;
 }
-
-/* I link nelle celle arrivano dallo slot, quindi la classe utility
-   .hit-area-touch andrebbe ricordata a ogni nuova tabella: la regola
-   sta qui perche' valga per tutte senza doverla riapplicare. Stessa
-   tecnica (padding + margin negativa di pari valore), spiegata per
-   esteso in style.css. Il valore combacia con il padding della cella,
-   quindi l'hit-area riempie la cella e non sconfina nella riga
-   accanto. */
 .eira-table__scroll :deep(td a) {
-  position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  min-height: var(--size-touch);
-  padding-block: 0.85rem;
-  margin-block: -0.85rem;
+  min-height: var(--eira-size-touch);
+  min-width: var(--eira-size-touch);
+  font-weight: 500;
+  text-decoration: none;
 }
-
-.eira-table__empty {
+.eira-table__scroll :deep(td a:hover) {
+  text-decoration: underline;
+}
+.eira-table__empty,
+.eira-table__error {
   display: grid;
-  place-items: center;
-  min-height: 8rem;
-  padding: 2rem;
-  text-align: center;
-  color: var(--steel);
-  background: var(--surface-inset);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-sm);
+  justify-items: start;
+  gap: var(--eira-space-3);
+  padding: var(--eira-space-6) 0;
+  color: var(--eira-text-secondary);
+  border-block: 1px solid var(--eira-border-default);
 }
-
-.eira-table__empty :deep(p) {
-  margin: 0;
-}
-
 .eira-table__skeleton {
-  background: var(--surface-inset);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
   overflow: hidden;
 }
-
-.eira-table--flush .eira-table__scroll :deep(th) {
-  background: var(--surface-muted);
-}
-
-.eira-table--flush .eira-table__scroll--bounded :deep(th) {
-  background: var(--surface);
-  box-shadow: 0 1px 0 var(--border);
-}
-
 .skeleton-row {
   display: flex;
-  gap: 1rem;
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid var(--border);
+  gap: var(--eira-space-4);
+  padding: var(--eira-space-5) var(--eira-space-3);
+  border-bottom: 1px solid var(--eira-border-default);
 }
-
-.skeleton-row:last-child {
-  border-bottom: 0;
-}
-
 .skeleton-bar {
-  height: 0.875rem;
-  border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--steel) 16%, var(--surface));
+  height: 14px;
+  border-radius: var(--eira-radius-sm);
+  background: var(--eira-bg-hover);
 }
-
 .skeleton-bar--lg {
-  flex: 0 0 30%;
+  flex: 3;
 }
-
 .skeleton-bar--md {
-  flex: 0 0 45%;
+  flex: 4;
 }
-
 .skeleton-bar--sm {
-  flex: 0 0 15%;
+  flex: 2;
 }
 </style>

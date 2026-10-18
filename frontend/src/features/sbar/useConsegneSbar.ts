@@ -1,4 +1,5 @@
 import { computed, ref } from 'vue'
+import { listUtenti, type Utente } from '@/api/utenti'
 import { apiErrorMessage } from '@/api/apiError'
 import { createVoceDiarioSoapie } from '@/api/diarioSoapie'
 import {
@@ -32,6 +33,13 @@ const PAGE_SIZE = 25
 
 export function useConsegneSbar() {
   const auth = useAuthStore()
+
+  const autori = ref<Utente[]>([])
+  const autoriById = computed(
+    () => new Map(autori.value.map((u) => [u.id, `${u.cognome} ${u.nome}`])),
+  )
+  const nomeAutore = (id: number) =>
+    autoriById.value.get(id) ?? `Operatore #${id}`
 
   const consegne = ref<ConsegnaSbar[]>([])
   const pazienti = ref<Paziente[]>([])
@@ -87,13 +95,15 @@ export function useConsegneSbar() {
     error.value = ''
     loading.value = true
     try {
-      const [c, p] = await Promise.all([
+      const [c, p, users] = await Promise.all([
         listConsegneSbar({
           skip: (page.value - 1) * PAGE_SIZE,
           limit: PAGE_SIZE,
         }),
         listPazienti(),
+        listUtenti().catch(() => ({ data: [] as Utente[] })),
       ])
+      autori.value = users.data
       consegne.value = c.data.items
       total.value = c.data.total
       pazienti.value = p.data
@@ -172,6 +182,7 @@ export function useConsegneSbar() {
   }
 
   return {
+    nomeAutore,
     consegne,
     pazienti,
     assegnazioni,

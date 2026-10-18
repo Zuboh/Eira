@@ -47,6 +47,7 @@ export function usePatientChartDialogs({
   reloadParametriVitali,
 }: PatientChartDialogOptions) {
   const editing = ref(false)
+  const editSaving = ref(false)
   const editForm = ref<PatientEditForm>({
     letto: '',
     diagnosi_ingresso: '',
@@ -81,15 +82,25 @@ export function usePatientChartDialogs({
   )
 
   function apriEdit() {
+    error.value = ''
     if (!paziente.value) return
     editForm.value = createPatientEditForm(paziente.value)
     editing.value = true
   }
 
   async function salvaEdit() {
-    const { data } = await updatePaziente(unref(pazienteId), editForm.value)
-    paziente.value = data
-    editing.value = false
+    if (editSaving.value) return
+    editSaving.value = true
+    error.value = ''
+    try {
+      const { data } = await updatePaziente(unref(pazienteId), editForm.value)
+      paziente.value = data
+      editing.value = false
+    } catch {
+      error.value = 'Impossibile salvare il paziente.'
+    } finally {
+      editSaving.value = false
+    }
   }
 
   function apriConsegna() {
@@ -144,11 +155,13 @@ export function usePatientChartDialogs({
   }
 
   function apriNorton() {
+    error.value = ''
     nortonForm.value = createEmptyNortonForm()
     nortonDialog.value = true
   }
 
   async function salvaNorton() {
+    error.value = ''
     nortonSaving.value = true
     try {
       await createNorton(unref(pazienteId), nortonForm.value)
@@ -162,11 +175,13 @@ export function usePatientChartDialogs({
   }
 
   function apriConley() {
+    error.value = ''
     conleyForm.value = createEmptyConleyForm()
     conleyDialog.value = true
   }
 
   async function salvaConley() {
+    error.value = ''
     conleySaving.value = true
     try {
       await createConley(unref(pazienteId), conleyForm.value)
@@ -180,11 +195,13 @@ export function usePatientChartDialogs({
   }
 
   function apriParametri() {
+    error.value = ''
     parametriForm.value = createEmptyParametriVitaliForm()
     parametriDialog.value = true
   }
 
   async function salvaParametri() {
+    error.value = ''
     parametriSaving.value = true
     try {
       await createParametriVitali(unref(pazienteId), parametriForm.value)
@@ -199,6 +216,7 @@ export function usePatientChartDialogs({
 
   return {
     editing,
+    editSaving,
     editForm,
     consegnaDrawer,
     consegnaSaving,

@@ -67,7 +67,7 @@ test('caposala assigns an uncovered turno to an infermiere', async ({
   ).toBeVisible()
   await page
     .getByRole('dialog', { name: 'Assegna turno' })
-    .getByRole('combobox', { name: 'Seleziona infermiere' })
+    .getByRole('combobox', { name: 'Infermiere' })
     .click()
   await page.getByRole('option', { name: infermiere.cognome }).click()
   await page

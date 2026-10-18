@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, RouterLink } from 'vue-router'
+import PageHeader from '@/components/ui/PageHeader.vue'
 import Button from 'primevue/button'
 import Tabs from 'primevue/tabs'
 import TabList from 'primevue/tablist'
@@ -25,6 +26,7 @@ const pazienteId = computed(() => Number(route.params.id))
 
 const {
   paziente,
+  nomeAutore,
   loading,
   error,
   timeline,
@@ -33,6 +35,7 @@ const {
   parametriVitali,
   assegnazioni,
   editing,
+  editSaving,
   editForm,
   consegnaDrawer,
   consegnaSaving,
@@ -74,59 +77,71 @@ onMounted(load)
 
 <template>
   <div class="scheda-view">
-    <InlineError :message="error" />
+    <InlineError :message="error" retryable @retry="load" />
 
     <div v-if="loading && !paziente" class="header-skeleton">
       <SkeletonBlock :lines="3" style="max-width: 22rem" />
     </div>
 
     <template v-if="paziente">
-      <div class="header">
-        <div>
-          <h1>{{ paziente.cognome }} {{ paziente.nome }}</h1>
-          <p class="sub mono">
-            Letto {{ paziente.letto }} · {{ paziente.eta }} anni · ricovero
-            {{ paziente.data_ricovero }}
-          </p>
-          <p class="diagnosi">{{ paziente.diagnosi_ingresso }}</p>
-        </div>
-        <div class="header-actions">
-          <StatusBadge
-            :status="paziente.dimesso ? 'dimesso' : 'attivo'"
-            :label="paziente.dimesso ? 'Dimesso' : 'Attivo'"
-          />
+      <RouterLink :to="{ name: 'pazienti' }" class="back-link"
+        ><i class="pi pi-arrow-left" aria-hidden="true" /> Pazienti</RouterLink
+      >
+      <PageHeader :title="`${paziente.cognome} ${paziente.nome}`">
+        <template #actions>
+          <StatusBadge :status="paziente.dimesso ? 'dimesso' : 'attivo'" />
           <Button
             v-if="canEditPatient"
-            v-tooltip.top="'Modifica'"
             icon="pi pi-pencil"
             label="Modifica"
-            size="small"
             severity="secondary"
+            outlined
             @click="apriEdit"
           />
+        </template>
+      </PageHeader>
+      <dl class="patient-properties">
+        <div>
+          <dt>Letto</dt>
+          <dd class="bed">{{ paziente.letto }}</dd>
         </div>
-      </div>
-
-      <ParametriVitaliTab
-        :entries="parametriVitali"
-        :can-create="canCreateClinicalEntries"
-        @new-entry="apriParametri"
-      />
+        <div>
+          <dt>Età</dt>
+          <dd>{{ paziente.eta }} anni</dd>
+        </div>
+        <div>
+          <dt>Ricovero</dt>
+          <dd>{{ paziente.data_ricovero }}</dd>
+        </div>
+        <div class="diagnosis">
+          <dt>Diagnosi d’ingresso</dt>
+          <dd>{{ paziente.diagnosi_ingresso }}</dd>
+        </div>
+      </dl>
 
       <Tabs v-model:value="activeTab">
         <TabList>
           <Tab value="diario">Diario clinico</Tab>
+          <Tab value="parametri">Parametri vitali</Tab>
           <Tab value="valutazioni">Scale di valutazione</Tab>
         </TabList>
         <TabPanels>
           <TabPanel value="diario">
             <ClinicalTimelineTab
               :entries="timeline"
+              :nome-autore="nomeAutore"
               :can-create="canCreateClinicalEntries"
               @new-entry="apriConsegna"
             />
           </TabPanel>
 
+          <TabPanel value="parametri">
+            <ParametriVitaliTab
+              :entries="parametriVitali"
+              :can-create="canCreateClinicalEntries"
+              @new-entry="apriParametri"
+            />
+          </TabPanel>
           <TabPanel value="valutazioni">
             <ValutazioniTab
               :norton="norton"
@@ -143,6 +158,8 @@ onMounted(load)
     <PatientEditDialog
       v-model:visible="editing"
       v-model:form="editForm"
+      :saving="editSaving"
+      :error="error"
       @save="salvaEdit"
     />
 
@@ -164,6 +181,7 @@ onMounted(load)
     <NortonDialog
       v-model:visible="nortonDialog"
       v-model:form="nortonForm"
+      :error="error"
       :saving="nortonSaving"
       @save="salvaNorton"
     />
@@ -171,6 +189,7 @@ onMounted(load)
     <ConleyDialog
       v-model:visible="conleyDialog"
       v-model:form="conleyForm"
+      :error="error"
       :saving="conleySaving"
       @save="salvaConley"
     />
@@ -178,6 +197,7 @@ onMounted(load)
     <ParametriVitaliDialog
       v-model:visible="parametriDialog"
       v-model:form="parametriForm"
+      :error="error"
       :saving="parametriSaving"
       @save="salvaParametri"
     />
@@ -186,62 +206,45 @@ onMounted(load)
 
 <style scoped>
 .scheda-view {
-  padding: var(--page-padding);
-  max-width: 1200px;
+  padding: var(--eira-page-padding);
+  max-width: var(--eira-page-lg);
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  min-width: 0;
 }
-
-.header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 0;
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--color-primary-bright);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-}
-
-.header h1 {
-  font-size: clamp(1.5rem, 2vw, 1.875rem);
-  letter-spacing: -0.035em;
-}
-
-.header-actions {
-  display: flex;
+.back-link {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--eira-space-2);
+  min-height: var(--eira-size-touch);
+  margin-bottom: var(--eira-space-3);
+  text-decoration: none;
+  color: var(--eira-text-secondary);
 }
-
-.sub {
-  color: var(--steel);
-  font-size: 0.8125rem;
-  margin: 4px 0;
+.patient-properties {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--eira-space-5);
+  margin: 0 0 var(--eira-space-6);
 }
-
-.diagnosi {
-  color: var(--ink);
-  font-size: 0.9375rem;
+.patient-properties dt {
+  color: var(--eira-text-secondary);
+  font-size: var(--eira-font-small);
 }
-
-.mono {
-  font-family: var(--mono);
-  font-size: 0.8125rem;
+.patient-properties dd {
+  margin: var(--eira-space-1) 0 0;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
-
-@media (max-width: 640px) {
-  .header {
-    flex-direction: column;
-  }
-
-  .header-actions {
-    flex-wrap: wrap;
+.patient-properties .bed {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.diagnosis {
+  grid-column: 1 / -1;
+}
+@media (max-width: 47.9375rem) {
+  .patient-properties {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 </style>

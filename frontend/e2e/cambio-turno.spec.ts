@@ -101,11 +101,11 @@ test('cambio turno round-trip: richiedente -> collega accetta -> caposala approv
     .getByRole('option', { name: turnoOptionLabel, exact: true })
     .click()
   await richiedentePage
-    .getByRole('combobox', { name: 'Seleziona collega' })
+    .getByRole('combobox', { name: 'Collega', exact: true })
     .click()
   await richiedentePage.getByRole('option', { name: collega.cognome }).click()
   await richiedentePage
-    .getByRole('combobox', { name: 'Seleziona il turno offerto' })
+    .getByRole('combobox', { name: 'Turno del collega' })
     .click()
   await richiedentePage
     .getByRole('option', { name: turnoCollegaOptionLabel, exact: true })

@@ -17,6 +17,7 @@ defineProps<RichiesteCambioTurnoCardProps>()
     />
 
     <EiraTable
+      label="Le mie richieste cambio turno"
       flush
       :loading="loading"
       :empty="richieste.length === 0"

@@ -33,12 +33,13 @@ const emit = defineEmits<ValutazioniTabEmits>()
   </div>
   <h2>Norton</h2>
   <EiraTable
+    label="Valutazioni Norton"
     flush
     class="clinical-table"
     :empty="norton.length === 0"
     empty-message="Nessuna valutazione Norton."
   >
-    <table style="min-width: var(--table-min-wide)">
+    <table style="min-width: var(--eira-table-min-wide)">
       <thead>
         <tr>
           <th>Data</th>
@@ -68,12 +69,13 @@ const emit = defineEmits<ValutazioniTabEmits>()
 
   <h2>Conley</h2>
   <EiraTable
+    label="Valutazioni Conley"
     flush
     class="clinical-table"
     :empty="conley.length === 0"
     empty-message="Nessuna valutazione Conley."
   >
-    <table style="min-width: var(--table-min-wide)">
+    <table style="min-width: var(--eira-table-min-wide)">
       <thead>
         <tr>
           <th>Data</th>

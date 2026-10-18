@@ -27,6 +27,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
   )
 
   return {
+    nomeAutore: chart.nomeAutore,
     paziente: chart.paziente,
     error: chart.error,
     loading: chart.loading,
@@ -36,6 +37,7 @@ export function usePatientChart(pazienteId: MaybeRef<number>) {
     parametriVitali: chart.parametriVitali,
     assegnazioni: chart.assegnazioni,
     editing: dialogs.editing,
+    editSaving: dialogs.editSaving,
     editForm: dialogs.editForm,
     consegnaDrawer: dialogs.consegnaDrawer,
     consegnaSaving: dialogs.consegnaSaving,

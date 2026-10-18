@@ -75,7 +75,7 @@ function colleghiExtraCount(colleghi: Collega[]) {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  color: var(--ink);
+  color: var(--eira-text-primary);
   font-size: 0.9375rem;
 }
 
@@ -87,39 +87,39 @@ function colleghiExtraCount(colleghi: Collega[]) {
 
 .colleghi,
 .muted {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 
 .dot {
   width: 10px;
   height: 10px;
-  border-radius: 999px;
+  border-radius: var(--eira-radius-sm);
   flex: 0 0 auto;
   margin-top: 5px;
 }
 
 .turno-mattina {
-  background: var(--turno-mattina);
+  background: var(--eira-shift-mattina);
 }
 
 .turno-pomeriggio {
-  background: var(--turno-pomeriggio);
+  background: var(--eira-shift-pomeriggio);
 }
 
 .turno-notte {
-  background: var(--turno-notte);
+  background: var(--eira-shift-notte);
 }
 
 .turno-riposo {
-  background: var(--turno-riposo);
+  background: var(--eira-shift-riposo);
 }
 
 .turno-ferie {
-  background: var(--turno-ferie);
+  background: var(--eira-shift-ferie);
 }
 
 .turno-ferie_estive {
-  background: var(--turno-ferie-estive);
+  background: var(--eira-shift-ferie-estive);
 }
 </style>

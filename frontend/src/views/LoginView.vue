@@ -106,20 +106,17 @@ const {
 
 <style scoped>
 .step-error {
-  color: var(--state-urgente);
+  color: var(--eira-status-danger);
   font-size: 0.8125rem;
 }
 
 .error-pop-enter-active,
 .error-pop-leave-active {
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
+  transition: opacity var(--eira-motion-duration) var(--eira-motion-easing);
 }
 
 .error-pop-enter-from,
 .error-pop-leave-to {
   opacity: 0;
-  transform: translateY(-2px);
 }
 </style>

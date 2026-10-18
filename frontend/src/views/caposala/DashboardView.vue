@@ -59,9 +59,10 @@ onMounted(load)
   <div class="dashboard-caposala">
     <PageHeader title="Dashboard Caposala" :reparto="auth.repartoNome" />
 
-    <InlineError :message="error || cambioTurnoError" />
+    <InlineError :message="error" retryable @retry="load" />
+    <InlineError :message="cambioTurnoError" />
 
-    <div class="dashboard-row dashboard-row--triage">
+    <div v-if="!error" class="dashboard-row dashboard-row--triage">
       <TriageLedgerCard
         :turni-scoperti-count="turniScopertiSetteGiorniCount"
         :cambi-da-approvare-count="cambiDaApprovareCount"
@@ -78,7 +79,7 @@ onMounted(load)
       />
     </div>
 
-    <div class="dashboard-row">
+    <div v-if="!error" class="dashboard-row">
       <TurniScopertiCard
         :turni="dashboard?.turni_scoperti ?? []"
         :total="dashboard?.turni_scoperti_count ?? 0"
@@ -107,13 +108,20 @@ onMounted(load)
       :style="dialogStyle.sm"
     >
       <form class="form" @submit.prevent="confermaAssegna">
+        <InlineError :message="error" />
         <p v-if="assegnaTarget" class="hint">
           {{ formatDateShortIt(assegnaTarget.data) }} ·
           {{ TIPO_TURNO_LABEL[assegnaTarget.tipo] }}
         </p>
-        <FormField label="Infermiere" for-id="assegna-infermiere" required>
+        <FormField
+          v-slot="{ fieldAttrs }"
+          label="Infermiere"
+          for-id="assegna-infermiere"
+          required
+        >
           <Select
             v-model="assegnaInfermiereId"
+            :pt="{ label: fieldAttrs }"
             input-id="assegna-infermiere"
             :options="infermieri"
             optionLabel="cognome"
@@ -122,7 +130,12 @@ onMounted(load)
             required
           />
         </FormField>
-        <Button type="submit" label="Assegna" :loading="saving" />
+        <Button
+          class="eira-saving-button"
+          type="submit"
+          label="Assegna"
+          :loading="saving"
+        />
       </form>
     </Dialog>
 
@@ -133,8 +146,14 @@ onMounted(load)
       :style="dialogStyle.sm"
     >
       <form class="form" @submit.prevent="confermaRifiutoCambioTurno">
-        <FormField label="Motivo" for-id="cambio-turno-motivo">
+        <InlineError :message="cambioTurnoError" />
+        <FormField
+          v-slot="{ fieldAttrs }"
+          label="Motivo"
+          for-id="cambio-turno-motivo"
+        >
           <InputText
+            v-bind="fieldAttrs"
             id="cambio-turno-motivo"
             v-model="cambioTurnoMotivoRifiuto"
           />
@@ -147,23 +166,23 @@ onMounted(load)
 
 <style scoped>
 .dashboard-caposala {
-  padding: var(--page-padding);
-  max-width: var(--page-2xl);
+  padding: var(--eira-page-padding);
+  max-width: var(--eira-page-xl);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--eira-space-6);
 }
 
 .dashboard-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(19rem, 1fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--eira-space-6);
   align-items: start;
 }
 
 .dashboard-row--triage {
-  grid-template-columns: minmax(19rem, 0.9fr) minmax(0, 1.6fr);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .dashboard-row > * {
@@ -177,7 +196,7 @@ onMounted(load)
 }
 
 .hint {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
   font-size: 0.875rem;
 }
 

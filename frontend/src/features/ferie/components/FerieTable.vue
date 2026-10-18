@@ -42,6 +42,7 @@ function preferenzeOrdinate(richiesta: RichiestaFerie) {
 
 <template>
   <EiraTable
+    label="Richieste ferie"
     flush
     :empty="richieste.length === 0"
     empty-message="Nessuna richiesta di ferie."
@@ -129,18 +130,18 @@ function preferenzeOrdinate(richiesta: RichiestaFerie) {
 }
 
 .mono {
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
   font-size: 0.8125rem;
 }
 
 .muted {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .preferenze {
   margin: 0;
   padding-left: 1.1rem;
-  font-family: var(--mono);
+  font-family: var(--eira-font-sans);
   font-size: 0.8125rem;
 }
 </style>

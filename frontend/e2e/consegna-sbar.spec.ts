@@ -70,6 +70,20 @@ test('infermiere creates a SBAR handoff for a patient on their assigned turno', 
     page.getByRole('dialog', { name: 'Nuova consegna' }),
   ).toBeVisible()
 
+  await expect(
+    page.getByRole('button', { name: 'Chiudi', exact: true }),
+  ).toBeFocused()
+  expect(await checkA11y(page)).toEqual([])
+  await page.getByLabel('Testo consegna').fill('S: Bozza da conservare')
+  await page.keyboard.press('Escape')
+  await expect(
+    page.getByRole('alertdialog', { name: 'Consegna non salvata' }),
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Continua a scrivere' }).click()
+  await expect(page.getByLabel('Testo consegna')).toHaveValue(
+    'S: Bozza da conservare',
+  )
+  await page.getByLabel('Testo consegna').fill('S:\nB:\nA:\nR:')
   await page.getByLabel('Paziente').click()
   await page.getByRole('option', { name: paziente.cognome }).click()
 

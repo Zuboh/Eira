@@ -155,12 +155,16 @@ onBeforeUnmount(revokePreview)
 .avatar-picker {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--eira-space-3);
   min-width: 0;
-  padding: var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--canvas) 65%, var(--surface));
+  padding: var(--eira-space-3);
+  border: 1px solid var(--eira-border-default);
+  border-radius: var(--eira-radius-md);
+  background: color-mix(
+    in srgb,
+    var(--eira-bg-canvas) 65%,
+    var(--eira-bg-surface)
+  );
 }
 
 .avatar-picker__preview {
@@ -170,10 +174,14 @@ onBeforeUnmount(revokePreview)
   width: 4.5rem;
   height: 4.5rem;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--eira-border-default);
   border-radius: 50%;
-  background: color-mix(in oklch, var(--color-primary) 12%, var(--surface));
-  color: var(--color-primary-on-tint);
+  background: color-mix(
+    in oklch,
+    var(--eira-action-primary) 12%,
+    var(--eira-bg-surface)
+  );
+  color: var(--eira-action-selected-text);
   font-size: 1.25rem;
 }
 
@@ -191,31 +199,31 @@ onBeforeUnmount(revokePreview)
 .avatar-picker__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
+  gap: var(--eira-space-1);
 }
 
 .avatar-picker__file,
 .avatar-picker__help,
 .avatar-picker__error {
-  margin: var(--space-1) 0 0;
+  margin: var(--eira-space-1) 0 0;
   font-size: 0.75rem;
   line-height: 1.4;
 }
 
 .avatar-picker__file {
   overflow: hidden;
-  color: var(--ink);
+  color: var(--eira-text-primary);
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .avatar-picker__help {
-  color: var(--steel);
+  color: var(--eira-text-secondary);
 }
 
 .avatar-picker__error {
-  color: var(--state-urgente);
+  color: var(--eira-status-danger);
 }
 
 @media (max-width: 24rem) {

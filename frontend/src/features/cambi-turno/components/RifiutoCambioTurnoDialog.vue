@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InlineError from '@/components/ui/InlineError.vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
@@ -25,10 +26,20 @@ const emit = defineEmits<CambioTurnoSubmitEmits>()
     :style="dialogStyle.sm"
   >
     <form class="form" @submit.prevent="emit('save')">
-      <FormField label="Motivo" for-id="rifiuto-cambio-motivo">
-        <InputText id="rifiuto-cambio-motivo" v-model="motivo" />
+      <InlineError :message="error" />
+      <FormField
+        v-slot="{ fieldAttrs }"
+        label="Motivo"
+        for-id="rifiuto-cambio-motivo"
+      >
+        <InputText
+          v-bind="fieldAttrs"
+          id="rifiuto-cambio-motivo"
+          v-model="motivo"
+        />
       </FormField>
       <Button
+        class="eira-saving-button"
         type="submit"
         label="Conferma rifiuto"
         severity="secondary"
